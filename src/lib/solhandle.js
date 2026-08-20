@@ -1,4 +1,4 @@
-export const FALLBACK_PRICES = { 1: 500000000, 2: 300000000, 3: 100000000, 4: 50000000, 5: 10000000 };
+export const FALLBACK_PRICES = { 1: 2000000000, 2: 1000000000, 3: 500000000, 4: 200000000, 5: 100000000 };
 
 export function normalizeHandle(value = "") {
   return value.trim().replace(/^@+/, "").toLowerCase();

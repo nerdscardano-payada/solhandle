@@ -8,6 +8,7 @@ use mpl_core::{
 
 // Secondary marketplace royalty for the official collection.
 const REWARDS_BPS: u64 = 500;
+const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [2_000_000_000, 1_000_000_000, 500_000_000, 200_000_000, 100_000_000];
 const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 
@@ -18,7 +19,6 @@ pub mod solhandle {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>, args: InitializeArgs) -> Result<()> {
-        require!(args.prices_lamports.iter().all(|price| *price > 0), SolHandleError::InvalidPrice);
         require!(args.treasury != Pubkey::default() && args.rewards_vault != Pubkey::default(), SolHandleError::InvalidDestination);
         require!(args.collection_uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
 
@@ -43,7 +43,7 @@ pub mod solhandle {
         ctx.accounts.config.set_inner(Config {
             authority: ctx.accounts.authority.key(), collection: ctx.accounts.collection.key(),
             treasury: args.treasury, rewards_vault: args.rewards_vault,
-            prices_lamports: args.prices_lamports, total_minted: 0, paused: false, bump: ctx.bumps.config,
+            prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: false, bump: ctx.bumps.config,
         });
         Ok(())
     }
@@ -108,7 +108,7 @@ pub mod solhandle {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct InitializeArgs { pub collection_uri: String, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5] }
+pub struct InitializeArgs { pub collection_uri: String, pub treasury: Pubkey, pub rewards_vault: Pubkey }
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct MintHandleArgs { pub handle: String, pub uri: String, pub max_price_lamports: u64 }
 
