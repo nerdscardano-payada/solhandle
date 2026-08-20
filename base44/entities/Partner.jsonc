@@ -1,0 +1,42 @@
+{
+  "name": "Partner",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "integration_level": {
+      "type": "string",
+      "enum": [
+        "native_resolution",
+        "identity_integration",
+        "ecosystem_integration"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ]
+    },
+    "payout_wallet": {
+      "type": "string"
+    },
+    "reward_weight": {
+      "type": "number"
+    },
+    "activated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "integration_level",
+    "status"
+  ]
+}

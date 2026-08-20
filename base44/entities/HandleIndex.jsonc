@@ -1,0 +1,55 @@
+{
+  "name": "HandleIndex",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "display_handle": {
+      "type": "string"
+    },
+    "handle_pda": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "burned",
+        "retired",
+        "pending"
+      ]
+    },
+    "original_minter": {
+      "type": "string"
+    },
+    "current_owner_cached": {
+      "type": "string"
+    },
+    "mint_price_lamports": {
+      "type": "number"
+    },
+    "mint_signature": {
+      "type": "string"
+    },
+    "mint_slot": {
+      "type": "number"
+    },
+    "minted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_chain_sync": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "handle",
+    "display_handle",
+    "status"
+  ]
+}

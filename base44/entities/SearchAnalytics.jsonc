@@ -1,0 +1,23 @@
+{
+  "name": "SearchAnalytics",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "available_at_search": {
+      "type": "boolean"
+    },
+    "session_hash": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "handle",
+    "available_at_search"
+  ]
+}

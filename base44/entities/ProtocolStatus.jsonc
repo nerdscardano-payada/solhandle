@@ -1,0 +1,40 @@
+{
+  "name": "ProtocolStatus",
+  "type": "object",
+  "properties": {
+    "paused": {
+      "type": "boolean"
+    },
+    "total_minted": {
+      "type": "number"
+    },
+    "collection": {
+      "type": "string"
+    },
+    "treasury": {
+      "type": "string"
+    },
+    "price_1_char": {
+      "type": "number"
+    },
+    "price_2_char": {
+      "type": "number"
+    },
+    "price_3_char": {
+      "type": "number"
+    },
+    "price_4_char": {
+      "type": "number"
+    },
+    "price_5_plus": {
+      "type": "number"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "paused"
+  ]
+}

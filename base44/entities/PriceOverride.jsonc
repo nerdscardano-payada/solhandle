@@ -1,0 +1,27 @@
+{
+  "name": "PriceOverride",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "price_lamports": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "removed"
+      ]
+    },
+    "onchain_pda": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "handle",
+    "price_lamports",
+    "status"
+  ]
+}

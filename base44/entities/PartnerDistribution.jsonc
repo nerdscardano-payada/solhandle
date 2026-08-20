@@ -1,0 +1,36 @@
+{
+  "name": "PartnerDistribution",
+  "type": "object",
+  "properties": {
+    "period": {
+      "type": "string"
+    },
+    "partner": {
+      "type": "string"
+    },
+    "amount_sol": {
+      "type": "number"
+    },
+    "transaction_signature": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "failed"
+      ]
+    },
+    "paid_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "period",
+    "partner",
+    "amount_sol",
+    "status"
+  ]
+}

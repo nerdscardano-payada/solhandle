@@ -1,0 +1,36 @@
+{
+  "name": "ProtectedName",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "brand",
+        "strategic",
+        "protocol",
+        "verified_claim"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "released"
+      ]
+    },
+    "onchain_reserved_pda": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "handle",
+    "category",
+    "status"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "HandleTransfer",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "from_wallet": {
+      "type": "string"
+    },
+    "to_wallet": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "slot": {
+      "type": "number"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "handle",
+    "asset_address",
+    "to_wallet",
+    "signature"
+  ]
+}

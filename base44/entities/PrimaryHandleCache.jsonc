@@ -1,0 +1,24 @@
+{
+  "name": "PrimaryHandleCache",
+  "type": "object",
+  "properties": {
+    "wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "is_currently_valid": {
+      "type": "boolean"
+    },
+    "last_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "wallet",
+    "handle",
+    "is_currently_valid"
+  ]
+}

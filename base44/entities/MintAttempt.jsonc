@@ -1,0 +1,40 @@
+{
+  "name": "MintAttempt",
+  "type": "object",
+  "properties": {
+    "wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "quoted_price": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "preparing",
+        "submitted",
+        "confirmed",
+        "rejected",
+        "failed"
+      ]
+    },
+    "signature": {
+      "type": "string"
+    },
+    "error_code": {
+      "type": "string"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "handle",
+    "quoted_price",
+    "status"
+  ]
+}
