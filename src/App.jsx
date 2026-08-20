@@ -10,6 +10,11 @@ import Home from '@/pages/Home';
 import MyHandles from '@/pages/MyHandles';
 import Docs from '@/pages/Docs';
 import HandlePage from '@/pages/HandlePage';
+import Legal from '@/pages/Legal';
+import Privacy from '@/pages/Privacy';
+import Faq from '@/pages/Faq';
+import Contact from '@/pages/Contact';
+import Footer from '@/components/solhandle/Footer';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -36,13 +41,20 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/my-handles" element={<MyHandles />} />
-      <Route path="/docs" element={<Docs />} />
-      <Route path="/:handle" element={<HandlePage />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/my-handles" element={<MyHandles />} />
+        <Route path="/docs" element={<Docs />} />
+        <Route path="/legal" element={<Legal />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/:handle" element={<HandlePage />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+      <Footer />
+    </>
   );
 };
 
