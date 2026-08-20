@@ -6,8 +6,7 @@ use mpl_core::{
     ID as MPL_CORE_ID,
 };
 
-const BPS_DENOMINATOR: u64 = 10_000;
-// Single source of truth: primary mint split and secondary marketplace royalty.
+// Secondary marketplace royalty for the official collection.
 const REWARDS_BPS: u64 = 500;
 const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
@@ -44,7 +43,7 @@ pub mod solhandle {
         ctx.accounts.config.set_inner(Config {
             authority: ctx.accounts.authority.key(), collection: ctx.accounts.collection.key(),
             treasury: args.treasury, rewards_vault: args.rewards_vault,
-            prices_lamports: args.prices_lamports, paused: false, bump: ctx.bumps.config,
+            prices_lamports: args.prices_lamports, total_minted: 0, paused: false, bump: ctx.bumps.config,
         });
         Ok(())
     }
@@ -59,16 +58,12 @@ pub mod solhandle {
         require!(!ctx.accounts.config.paused, SolHandleError::ProtocolPaused);
         require!(args.uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
         let price = ctx.accounts.config.price_for(args.handle.len());
-        let rewards = price.checked_mul(REWARDS_BPS).ok_or(SolHandleError::MathOverflow)?
-            .checked_div(BPS_DENOMINATOR).ok_or(SolHandleError::MathOverflow)?;
-        let treasury = price.checked_sub(rewards).ok_or(SolHandleError::MathOverflow)?;
+        require!(price <= args.max_price_lamports, SolHandleError::PriceLimitExceeded);
 
+        // Primary registration proceeds go exclusively to the protocol treasury.
         system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer {
             from: ctx.accounts.payer.to_account_info(), to: ctx.accounts.treasury.to_account_info(),
-        }), treasury)?;
-        system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer {
-            from: ctx.accounts.payer.to_account_info(), to: ctx.accounts.rewards_vault.to_account_info(),
-        }), rewards)?;
+        }), price)?;
 
         CreateV2CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
             .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
@@ -78,6 +73,9 @@ pub mod solhandle {
             handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.payer.key(),
             minted_at: Clock::get()?.unix_timestamp, bump: ctx.bumps.handle_record,
         });
+        ctx.accounts.config.total_minted = ctx.accounts.config.total_minted
+            .checked_add(1)
+            .ok_or(SolHandleError::MathOverflow)?;
         emit!(HandleMinted { handle: args.handle, asset: ctx.accounts.asset.key(), owner: ctx.accounts.payer.key(), price_lamports: price });
         Ok(())
     }
@@ -86,7 +84,7 @@ pub mod solhandle {
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitializeArgs { pub collection_uri: String, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5] }
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct MintHandleArgs { pub handle: String, pub uri: String }
+pub struct MintHandleArgs { pub handle: String, pub uri: String, pub max_price_lamports: u64 }
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -107,7 +105,7 @@ pub struct UpdateConfig<'info> {
 #[instruction(args: MintHandleArgs)]
 pub struct MintHandle<'info> {
     #[account(mut)] pub payer: Signer<'info>,
-    #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>,
+    #[account(mut, seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>,
     #[account(init, payer = payer, space = 8 + HandleRecord::INIT_SPACE, seeds = [b"handle", args.handle.as_bytes()], bump)] pub handle_record: Account<'info, HandleRecord>,
     #[account(mut)] pub asset: Signer<'info>,
     #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>,
@@ -120,7 +118,7 @@ pub struct MintHandle<'info> {
 
 #[account]
 #[derive(InitSpace)]
-pub struct Config { pub authority: Pubkey, pub collection: Pubkey, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5], pub paused: bool, pub bump: u8 }
+pub struct Config { pub authority: Pubkey, pub collection: Pubkey, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5], pub total_minted: u64, pub paused: bool, pub bump: u8 }
 impl Config { fn price_for(&self, length: usize) -> u64 { self.prices_lamports[length.saturating_sub(1).min(4)] } }
 #[account]
 #[derive(InitSpace)]
@@ -143,4 +141,5 @@ pub enum SolHandleError {
     #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination,
     #[msg("Metadata URI exceeds the supported size.")] UriTooLong,
     #[msg("Arithmetic overflow.")] MathOverflow,
+    #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded,
 }
