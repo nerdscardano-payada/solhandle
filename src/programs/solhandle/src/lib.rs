@@ -1,6 +1,6 @@
 use anchor_lang::{prelude::*, system_program};
 use mpl_core::{
-    accounts::BaseCollectionV1,
+    accounts::{BaseAssetV1, BaseCollectionV1},
     instructions::{CreateCollectionV2CpiBuilder, CreateV2CpiBuilder},
     types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, Royalties, RuleSet},
     ID as MPL_CORE_ID,
@@ -53,11 +53,35 @@ pub mod solhandle {
         Ok(())
     }
 
+    pub fn set_reserved_handle(ctx: Context<SetReservedHandle>, handle: String, active: bool) -> Result<()> {
+        validate_handle(&handle)?;
+        ctx.accounts.reserved_handle.set_inner(ReservedHandle { active, bump: ctx.bumps.reserved_handle });
+        Ok(())
+    }
+
+    pub fn set_price_override(ctx: Context<SetPriceOverride>, handle: String, price_lamports: u64, active: bool) -> Result<()> {
+        validate_handle(&handle)?;
+        require!(price_lamports > 0, SolHandleError::InvalidPrice);
+        ctx.accounts.price_override.set_inner(PriceOverride { price_lamports, active, bump: ctx.bumps.price_override });
+        Ok(())
+    }
+
+    pub fn set_primary_handle(ctx: Context<SetPrimaryHandle>, handle: String) -> Result<()> {
+        validate_handle(&handle)?;
+        require_keys_eq!(ctx.accounts.asset.owner, ctx.accounts.owner.key(), SolHandleError::AssetNotOwnedBySigner);
+        ctx.accounts.primary_handle.set_inner(PrimaryHandle {
+            handle, asset: ctx.accounts.asset.key(), updated_at: Clock::get()?.unix_timestamp,
+            bump: ctx.bumps.primary_handle,
+        });
+        Ok(())
+    }
+
     pub fn mint_handle(ctx: Context<MintHandle>, args: MintHandleArgs) -> Result<()> {
         validate_handle(&args.handle)?;
         require!(!ctx.accounts.config.paused, SolHandleError::ProtocolPaused);
         require!(args.uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
-        let price = ctx.accounts.config.price_for(args.handle.len());
+        require!(!is_active_reserved(&ctx.accounts.reserved_handle)?, SolHandleError::HandleReserved);
+        let price = price_for_handle(&ctx.accounts.config, &ctx.accounts.price_override, &args.handle)?;
         require!(price <= args.max_price_lamports, SolHandleError::PriceLimitExceeded);
 
         // Primary registration proceeds go exclusively to the protocol treasury.
@@ -65,10 +89,12 @@ pub mod solhandle {
             from: ctx.accounts.payer.to_account_info(), to: ctx.accounts.treasury.to_account_info(),
         }), price)?;
 
+        let asset_seeds: &[&[u8]] = &[b"asset", args.handle.as_bytes(), &[ctx.bumps.asset]];
         CreateV2CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
             .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
             .payer(&ctx.accounts.payer.to_account_info()).owner(Some(&ctx.accounts.payer.to_account_info()))
-            .system_program(&ctx.accounts.system_program.to_account_info()).name(format!("@{}", args.handle)).uri(args.uri).invoke()?;
+            .system_program(&ctx.accounts.system_program.to_account_info()).name(format!("@{}", args.handle)).uri(args.uri)
+            .invoke_signed(&[asset_seeds])?;
         ctx.accounts.handle_record.set_inner(HandleRecord {
             handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.payer.key(),
             minted_at: Clock::get()?.unix_timestamp, bump: ctx.bumps.handle_record,
@@ -102,15 +128,47 @@ pub struct UpdateConfig<'info> {
     #[account(mut, seeds = [b"config"], bump = config.bump, has_one = authority)] pub config: Account<'info, Config>,
 }
 #[derive(Accounts)]
+#[instruction(handle: String)]
+pub struct SetReservedHandle<'info> {
+    #[account(mut)] pub authority: Signer<'info>,
+    #[account(seeds = [b"config"], bump = config.bump, has_one = authority)] pub config: Account<'info, Config>,
+    #[account(init_if_needed, payer = authority, space = 8 + ReservedHandle::INIT_SPACE, seeds = [b"reserved", handle.as_bytes()], bump)] pub reserved_handle: Account<'info, ReservedHandle>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+#[instruction(handle: String)]
+pub struct SetPriceOverride<'info> {
+    #[account(mut)] pub authority: Signer<'info>,
+    #[account(seeds = [b"config"], bump = config.bump, has_one = authority)] pub config: Account<'info, Config>,
+    #[account(init_if_needed, payer = authority, space = 8 + PriceOverride::INIT_SPACE, seeds = [b"price", handle.as_bytes()], bump)] pub price_override: Account<'info, PriceOverride>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+#[instruction(handle: String)]
+pub struct SetPrimaryHandle<'info> {
+    #[account(mut)] pub owner: Signer<'info>,
+    #[account(seeds = [b"handle", handle.as_bytes()], bump = handle_record.bump)] pub handle_record: Account<'info, HandleRecord>,
+    #[account(address = handle_record.asset @ SolHandleError::WrongAsset)] pub asset: Account<'info, BaseAssetV1>,
+    #[account(init_if_needed, payer = owner, space = 8 + PrimaryHandle::INIT_SPACE, seeds = [b"primary", owner.key().as_ref()], bump)] pub primary_handle: Account<'info, PrimaryHandle>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
 #[instruction(args: MintHandleArgs)]
 pub struct MintHandle<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     #[account(mut, seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>,
     #[account(init, payer = payer, space = 8 + HandleRecord::INIT_SPACE, seeds = [b"handle", args.handle.as_bytes()], bump)] pub handle_record: Account<'info, HandleRecord>,
-    #[account(mut)] pub asset: Signer<'info>,
+    #[account(mut, seeds = [b"asset", args.handle.as_bytes()], bump)] /// CHECK: Metaplex Core creates this signed PDA.
+    pub asset: UncheckedAccount<'info>,
+    #[account(seeds = [b"reserved", args.handle.as_bytes()], bump)] /// CHECK: Optional program-owned reservation PDA checked in mint_handle.
+    pub reserved_handle: UncheckedAccount<'info>,
+    #[account(seeds = [b"price", args.handle.as_bytes()], bump)] /// CHECK: Optional program-owned override PDA checked in mint_handle.
+    pub price_override: UncheckedAccount<'info>,
     #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>,
     #[account(mut, address = config.treasury @ SolHandleError::WrongTreasury)] pub treasury: SystemAccount<'info>,
-    #[account(mut, address = config.rewards_vault @ SolHandleError::WrongRewardsVault)] pub rewards_vault: SystemAccount<'info>,
     pub system_program: Program<'info, System>,
     #[account(address = MPL_CORE_ID)] /// CHECK: canonical Metaplex Core program.
     pub mpl_core_program: UncheckedAccount<'info>,
@@ -123,12 +181,34 @@ impl Config { fn price_for(&self, length: usize) -> u64 { self.prices_lamports[l
 #[account]
 #[derive(InitSpace)]
 pub struct HandleRecord { #[max_len(20)] pub handle: String, pub asset: Pubkey, pub original_minter: Pubkey, pub minted_at: i64, pub bump: u8 }
+#[account]
+#[derive(InitSpace)]
+pub struct ReservedHandle { pub active: bool, pub bump: u8 }
+#[account]
+#[derive(InitSpace)]
+pub struct PriceOverride { pub price_lamports: u64, pub active: bool, pub bump: u8 }
+#[account]
+#[derive(InitSpace)]
+pub struct PrimaryHandle { #[max_len(20)] pub handle: String, pub asset: Pubkey, pub updated_at: i64, pub bump: u8 }
 #[event]
 pub struct HandleMinted { pub handle: String, pub asset: Pubkey, pub owner: Pubkey, pub price_lamports: u64 }
 fn validate_handle(handle: &str) -> Result<()> {
     require!(!handle.is_empty() && handle.len() <= MAX_HANDLE_LENGTH, SolHandleError::InvalidHandle);
     require!(handle.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_'), SolHandleError::InvalidHandle);
     Ok(())
+}
+
+fn is_active_reserved(account: &UncheckedAccount) -> Result<bool> {
+    if account.owner != &crate::ID || account.data_is_empty() { return Ok(false); }
+    let mut data: &[u8] = &account.try_borrow_data()?;
+    Ok(ReservedHandle::try_deserialize(&mut data)?.active)
+}
+
+fn price_for_handle(config: &Config, account: &UncheckedAccount, handle: &str) -> Result<u64> {
+    if account.owner != &crate::ID || account.data_is_empty() { return Ok(config.price_for(handle.len())); }
+    let mut data: &[u8] = &account.try_borrow_data()?;
+    let override_price = PriceOverride::try_deserialize(&mut data)?;
+    Ok(if override_price.active { override_price.price_lamports } else { config.price_for(handle.len()) })
 }
 #[error_code]
 pub enum SolHandleError {
@@ -142,4 +222,7 @@ pub enum SolHandleError {
     #[msg("Metadata URI exceeds the supported size.")] UriTooLong,
     #[msg("Arithmetic overflow.")] MathOverflow,
     #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded,
+    #[msg("This handle is reserved by the protocol.")] HandleReserved,
+    #[msg("The supplied asset does not match the handle record.")] WrongAsset,
+    #[msg("Only the current NFT owner may set a primary handle.")] AssetNotOwnedBySigner,
 }
