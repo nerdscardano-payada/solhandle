@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Wallet } from "lucide-react";
 import { shortenAddress } from "@/lib/solhandle";
 
 export default function WalletButton({ onConnected }) {
   const [wallet, setWallet] = useState("");
+  useEffect(() => {
+    const savedWallet = localStorage.getItem("solhandle_wallet");
+    if (savedWallet) { setWallet(savedWallet); onConnected?.(savedWallet); }
+  }, [onConnected]);
   const [busy, setBusy] = useState(false);
   async function connect() {
     const provider = window?.solana?.isPhantom ? window.solana : window?.solflare;
