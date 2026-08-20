@@ -1,8 +1,6 @@
 use anchor_lang::{prelude::*, system_program};
 use mpl_core::{accounts::BaseCollectionV1, instructions::CreateV2CpiBuilder, ID as MPL_CORE_ID};
 
-const BPS_DENOMINATOR: u64 = 10_000;
-const REWARDS_BPS: u64 = 500;
 const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 
@@ -25,6 +23,7 @@ pub mod solhandle {
             rewards_vault: args.rewards_vault,
             prices_lamports: args.prices_lamports,
             paused: false,
+            total_minted: 0,
             bump: ctx.bumps.config,
         });
         Ok(())
@@ -42,23 +41,16 @@ pub mod solhandle {
         require_keys_eq!(ctx.accounts.collection.key(), ctx.accounts.config.collection, SolHandleError::WrongCollection);
 
         let price = ctx.accounts.config.price_for(args.handle.len());
-        let rewards_amount = price.checked_mul(REWARDS_BPS).ok_or(SolHandleError::MathOverflow)?
-            .checked_div(BPS_DENOMINATOR).ok_or(SolHandleError::MathOverflow)?;
-        let treasury_amount = price.checked_sub(rewards_amount).ok_or(SolHandleError::MathOverflow)?;
+        require!(price <= args.max_price, SolHandleError::PriceExceeded);
 
+        // Primary mint revenue belongs entirely to the SolHandle treasury.
+        // The integration-rewards vault is used exclusively by collection royalties on secondary sales.
         system_program::transfer(
             CpiContext::new(
                 ctx.accounts.system_program.to_account_info(),
                 system_program::Transfer { from: ctx.accounts.payer.to_account_info(), to: ctx.accounts.treasury.to_account_info() },
             ),
-            treasury_amount,
-        )?;
-        system_program::transfer(
-            CpiContext::new(
-                ctx.accounts.system_program.to_account_info(),
-                system_program::Transfer { from: ctx.accounts.payer.to_account_info(), to: ctx.accounts.rewards_vault.to_account_info() },
-            ),
-            rewards_amount,
+            price,
         )?;
 
         CreateV2CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
@@ -78,6 +70,7 @@ pub mod solhandle {
             minted_at: Clock::get()?.unix_timestamp,
             bump: ctx.bumps.handle_record,
         });
+        ctx.accounts.config.total_minted = ctx.accounts.config.total_minted.checked_add(1).ok_or(SolHandleError::MathOverflow)?;
         emit!(HandleMinted { handle: args.handle, asset: ctx.accounts.asset.key(), owner: ctx.accounts.payer.key(), price_lamports: price });
         Ok(())
     }
@@ -96,6 +89,7 @@ pub struct InitializeArgs {
 pub struct MintHandleArgs {
     pub handle: String,
     pub uri: String,
+    pub max_price: u64,
 }
 
 #[derive(Accounts)]
@@ -146,6 +140,7 @@ pub struct Config {
     pub rewards_vault: Pubkey,
     pub prices_lamports: [u64; 5],
     pub paused: bool,
+    pub total_minted: u64,
     pub bump: u8,
 }
 
@@ -200,4 +195,6 @@ pub enum SolHandleError {
     UriTooLong,
     #[msg("Arithmetic overflow.")]
     MathOverflow,
+    #[msg("The current price exceeds the maximum price approved by the signer.")]
+    PriceExceeded,
 }
