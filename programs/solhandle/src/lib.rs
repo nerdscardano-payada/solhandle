@@ -171,13 +171,13 @@ pub struct HandleMinted {
 
 fn validate_handle(handle: &str) -> Result<()> {
     require!(!handle.is_empty() && handle.len() <= MAX_HANDLE_LENGTH, SolHandleError::InvalidHandle);
-    require!(handle.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_'), SolHandleError::InvalidHandle);
+    require!(handle.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit()), SolHandleError::InvalidHandle);
     Ok(())
 }
 
 #[error_code]
 pub enum SolHandleError {
-    #[msg("Handle must use 1-20 lowercase letters, digits, or underscores.")]
+    #[msg("Handle must use 1-20 lowercase letters or digits.")]
     InvalidHandle,
     #[msg("The protocol is paused.")]
     ProtocolPaused,

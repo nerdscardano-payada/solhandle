@@ -7,7 +7,7 @@ export function normalizeHandle(value = "") {
 export function validateHandle(handle) {
   if (!handle) return "Enter a handle to search.";
   if (handle.length > 20) return "Handles can be up to 20 characters.";
-  if (!/^[a-z0-9_]+$/.test(handle)) return "Use lowercase letters, numbers, or underscores only.";
+  if (!/^[a-z0-9]+$/.test(handle)) return "Use lowercase letters and numbers only.";
   return null;
 }
 

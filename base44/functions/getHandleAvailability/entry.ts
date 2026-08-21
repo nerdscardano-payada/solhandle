@@ -8,7 +8,7 @@ export default async function(req: Request): Promise<Response> {
   try {
     const { handle: rawHandle } = await req.json();
     const handle = String(rawHandle || '').trim().replace(/^@+/, '').toLowerCase();
-    if (!/^[a-z0-9_]{1,20}$/.test(handle)) return Response.json({ handle, available: false, state: 'invalid' }, { status: 400 });
+    if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ handle, available: false, state: 'invalid' }, { status: 400 });
     const base44 = createClientFromRequest(req);
     const [indexed, protectedRows, overrides, premiumRows] = await Promise.all([
       base44.asServiceRole.entities.HandleIndex.filter({ handle }, '-updated_date', 1),

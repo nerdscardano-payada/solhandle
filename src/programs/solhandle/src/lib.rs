@@ -194,7 +194,7 @@ pub struct PrimaryHandle { #[max_len(20)] pub handle: String, pub asset: Pubkey,
 pub struct HandleMinted { pub handle: String, pub asset: Pubkey, pub owner: Pubkey, pub price_lamports: u64 }
 fn validate_handle(handle: &str) -> Result<()> {
     require!(!handle.is_empty() && handle.len() <= MAX_HANDLE_LENGTH, SolHandleError::InvalidHandle);
-    require!(handle.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_'), SolHandleError::InvalidHandle);
+    require!(handle.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit()), SolHandleError::InvalidHandle);
     Ok(())
 }
 
@@ -212,7 +212,7 @@ fn price_for_handle(config: &Config, account: &UncheckedAccount, handle: &str) -
 }
 #[error_code]
 pub enum SolHandleError {
-    #[msg("Handle must use 1-20 lowercase letters, digits, or underscores.")] InvalidHandle,
+    #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle,
     #[msg("The protocol is paused.")] ProtocolPaused,
     #[msg("The provided collection is not the SolHandle collection.")] WrongCollection,
     #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury,

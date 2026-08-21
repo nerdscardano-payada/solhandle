@@ -14,7 +14,7 @@ export default async function(req: Request): Promise<Response> {
 
     const { handle: rawHandle } = await req.json();
     const handle = String(rawHandle || '').trim().replace(/^@+/, '').toLowerCase();
-    if (!/^[a-z0-9_]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle' }, { status: 400 });
+    if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle' }, { status: 400 });
 
     const storedKeypair = secrets.get('IRYS_UPLOADER_PRIVATE_KEY').trim();
     const keypair = storedKeypair.startsWith('[') ? bs58.encode(Uint8Array.from(JSON.parse(storedKeypair))) : storedKeypair;
@@ -24,7 +24,7 @@ export default async function(req: Request): Promise<Response> {
     const rarity = length === 1 ? 'Legendary' : length === 2 ? 'Ultra Rare' : length === 3 ? 'Rare' : length === 4 ? 'Uncommon' : 'Standard';
     const premiumRows = await base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1);
     const nameClass = premiumRows.length > 0 ? 'Premium' : 'Standard';
-    const characterType = /^[a-z]+$/.test(handle) ? 'Letters' : /^[0-9]+$/.test(handle) ? 'Numbers' : handle.includes('_') ? 'Underscore' : 'Alphanumeric';
+    const characterType = /^[a-z]+$/.test(handle) ? 'Letters' : /^[0-9]+$/.test(handle) ? 'Numbers' : 'Alphanumeric';
     const metadata = {
       name: `@${handle}`,
       symbol: 'SOLHANDLE',
