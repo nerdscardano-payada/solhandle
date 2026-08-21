@@ -13,20 +13,22 @@ export default async function(req: Request): Promise<Response> {
       base44.asServiceRole.entities.HandleIndex.list('-minted_at', 250)
     ]);
     const config = configs[0];
-    let treasuryLamports = null;
-    if (config?.treasury) {
+    const balanceFor = async (address: string | undefined) => {
+      if (!address) return null;
       const response = await fetch(secrets.get('SOLANA_RPC_URL'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getBalance', params: [config.treasury, { commitment: 'confirmed' }] })
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getBalance', params: [address, { commitment: 'confirmed' }] })
       });
       const balance = await response.json();
-      treasuryLamports = balance?.result?.value ?? null;
-    }
+      return balance?.result?.value ?? null;
+    };
+    const [treasuryLamports, rewardsLamports] = await Promise.all([balanceFor(config?.treasury), balanceFor(config?.rewards_vault)]);
     const confirmed = handles.filter((handle) => handle.status === 'active');
     const revenueLamports = confirmed.reduce((total, handle) => total + (handle.mint_price_lamports || 0), 0);
     return Response.json({
-      treasury: config?.treasury || null, treasuryLamports, totalMinted: config?.total_minted ?? confirmed.length,
-      indexedRevenueLamports: revenueLamports, paused: config?.paused ?? false, lastSync: config?.last_sync || null,
+      treasury: config?.treasury || null, treasuryLamports, rewardsVault: config?.rewards_vault || null, rewardsLamports,
+      totalMinted: config?.total_minted ?? confirmed.length, indexedRevenueLamports: revenueLamports,
+      paused: config?.paused ?? false, lastSync: config?.last_sync || null,
       recentMints: handles.slice(0, 12).map((handle) => ({ handle: handle.display_handle, signature: handle.mint_signature, priceLamports: handle.mint_price_lamports, mintedAt: handle.minted_at, asset: handle.asset_address }))
     });
   } catch (error) {

@@ -14,6 +14,9 @@
     "treasury": {
       "type": "string"
     },
+    "rewards_vault": {
+      "type": "string"
+    },
     "price_1_char": {
       "type": "number"
     },
