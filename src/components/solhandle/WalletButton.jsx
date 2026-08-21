@@ -9,7 +9,10 @@ export default function WalletButton({ onConnected }) {
   const { setVisible } = useWalletModal();
   const address = publicKey?.toBase58() || "";
 
-  useEffect(() => { onConnected?.(address); }, [address, onConnected]);
+  useEffect(() => {
+    if (address) localStorage.setItem("solhandle_wallet", address);
+    onConnected?.(address);
+  }, [address, onConnected]);
   useEffect(() => {
     const openWallets = () => setVisible(true);
     window.addEventListener("solhandle:connect-wallet", openWallets);
