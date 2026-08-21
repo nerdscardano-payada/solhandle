@@ -22,6 +22,8 @@ export default async function(req: Request): Promise<Response> {
     const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).devnet();
     const length = handle.length;
     const rarity = length === 1 ? 'Legendary' : length === 2 ? 'Ultra Rare' : length === 3 ? 'Rare' : length === 4 ? 'Uncommon' : 'Standard';
+    const premiumRows = await base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1);
+    const nameClass = premiumRows.length > 0 ? 'Premium' : 'Standard';
     const characterType = /^[a-z]+$/.test(handle) ? 'Letters' : /^[0-9]+$/.test(handle) ? 'Numbers' : handle.includes('_') ? 'Underscore' : 'Alphanumeric';
     const metadata = {
       name: `@${handle}`,
@@ -33,7 +35,7 @@ export default async function(req: Request): Promise<Response> {
         { trait_type: 'Handle', value: `@${handle}` },
         { trait_type: 'Length', value: String(length) },
         { trait_type: 'Rarity', value: rarity },
-        { trait_type: 'Name Class', value: length <= 3 ? 'Premium' : 'Standard' },
+        { trait_type: 'Name Class', value: nameClass },
         { trait_type: 'Character Type', value: characterType },
         { trait_type: 'Network', value: 'Solana Devnet' }
       ],

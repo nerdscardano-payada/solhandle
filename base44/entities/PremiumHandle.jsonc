@@ -1,0 +1,12 @@
+{
+  "name": "PremiumHandle",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "handle"
+  ]
+}

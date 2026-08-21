@@ -10,10 +10,11 @@ export default async function(req: Request): Promise<Response> {
     const handle = String(rawHandle || '').trim().replace(/^@+/, '').toLowerCase();
     if (!/^[a-z0-9_]{1,20}$/.test(handle)) return Response.json({ handle, available: false, state: 'invalid' }, { status: 400 });
     const base44 = createClientFromRequest(req);
-    const [indexed, protectedRows, overrides] = await Promise.all([
+    const [indexed, protectedRows, overrides, premiumRows] = await Promise.all([
       base44.asServiceRole.entities.HandleIndex.filter({ handle }, '-updated_date', 1),
       base44.asServiceRole.entities.ProtectedName.filter({ handle, status: 'active' }, '-updated_date', 1),
-      base44.asServiceRole.entities.PriceOverride.filter({ handle, status: 'active' }, '-updated_date', 1)
+      base44.asServiceRole.entities.PriceOverride.filter({ handle, status: 'active' }, '-updated_date', 1),
+      base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1)
     ]);
     const isProtected = reserved.has(handle) || protectedRows.length > 0;
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
@@ -24,6 +25,7 @@ export default async function(req: Request): Promise<Response> {
       await base44.asServiceRole.entities.HandleIndex.update(record.id, { current_owner_cached: currentOwner, last_chain_sync: new Date().toISOString() });
     }
     const priceLamports = overrides[0]?.price_lamports || prices[Math.min(handle.length, 5)];
-    return Response.json({ handle, display: `@${handle}`, available: !chainRecord && !record && !isProtected, protected: isProtected, status: chainRecord || record ? 'active' : null, currentOwner, assetAddress: chainRecord?.assetAddress || record?.asset_address || null, priceLamports });
+    const nameClass = premiumRows.length > 0 ? 'Premium' : 'Standard';
+    return Response.json({ handle, display: `@${handle}`, available: !chainRecord && !record && !isProtected, protected: isProtected, status: chainRecord || record ? 'active' : null, currentOwner, assetAddress: chainRecord?.assetAddress || record?.asset_address || null, priceLamports, nameClass });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
