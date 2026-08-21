@@ -1,3 +1,5 @@
+import { PublicKey } from "npm:@solana/web3.js@1.98.4";
+
 const PROGRAM_ID = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5";
 
 function base64Bytes(value: string) {
@@ -66,6 +68,22 @@ export async function getHandleOnChain(rpcUrl: string, handlePda: string) {
   const account = await rpc(rpcUrl, "getAccountInfo", [handlePda, { encoding: "base64", commitment: "confirmed" }]);
   if (!account?.value?.data?.[0]) return null;
   return parseHandleRecord(account.value.data[0]);
+}
+
+export async function getPrimaryHandle(rpcUrl: string, wallet: string) {
+  try {
+    const owner = new PublicKey(wallet);
+    const program = new PublicKey(PROGRAM_ID);
+    const [primaryPda] = PublicKey.findProgramAddressSync([new TextEncoder().encode("primary"), owner.toBytes()], program);
+    const account = await rpc(rpcUrl, "getAccountInfo", [primaryPda.toBase58(), { encoding: "base64", commitment: "confirmed" }]);
+    if (!account?.value?.data?.[0]) return null;
+    const bytes = base64Bytes(account.value.data[0]);
+    const length = readU32(bytes, 8);
+    const handle = new TextDecoder().decode(bytes.slice(12, 12 + length));
+    return { handle, assetAddress: encodeBase58(bytes.slice(12 + length, 44 + length)) };
+  } catch {
+    return null;
+  }
 }
 
 export async function findHandleOnChain(rpcUrl: string, handle: string) {

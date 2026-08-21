@@ -17,6 +17,28 @@ const u64Bytes = (value) => {
   return data;
 };
 
+export async function setPrimarySolHandle({ handle, wallet, sendTransaction }) {
+  const seed = new TextEncoder().encode(handle);
+  const [record] = PublicKey.findProgramAddressSync([new TextEncoder().encode("handle"), seed], PROGRAM_ID);
+  const [asset] = PublicKey.findProgramAddressSync([new TextEncoder().encode("asset"), seed], PROGRAM_ID);
+  const [primary] = PublicKey.findProgramAddressSync([new TextEncoder().encode("primary"), wallet.toBytes()], PROGRAM_ID);
+  const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode("global:set_primary_handle")));
+  const instruction = new TransactionInstruction({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: wallet, isSigner: true, isWritable: true }, { pubkey: record, isSigner: false, isWritable: false },
+      { pubkey: asset, isSigner: false, isWritable: false }, { pubkey: primary, isSigner: false, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+    ],
+    data: bytes(hash.slice(0, 8), stringBytes(handle))
+  });
+  const { blockhash } = await connection.getLatestBlockhash("confirmed");
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: blockhash }).add(instruction);
+  const signature = await sendTransaction(transaction, connection);
+  await connection.confirmTransaction(signature, "confirmed");
+  return { signature };
+}
+
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sendTransaction }) {
   const [config] = PublicKey.findProgramAddressSync([new TextEncoder().encode("config")], PROGRAM_ID);
   const configInfo = await connection.getAccountInfo(config, "confirmed");
