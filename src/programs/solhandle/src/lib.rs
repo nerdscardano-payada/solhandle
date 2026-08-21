@@ -12,7 +12,7 @@ const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [2_000_000_000, 1_000_000_000, 500_000
 const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5");
 
 #[program]
 pub mod solhandle {

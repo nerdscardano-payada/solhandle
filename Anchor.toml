@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-solhandle = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
 
 [programs.devnet]
-solhandle = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
 
 [provider]
 cluster = "Localnet"
