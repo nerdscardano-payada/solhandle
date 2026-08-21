@@ -1,11 +1,20 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { secrets } from 'base44:runtime';
+import { getAssetOwner } from '../../shared/solanaRpc.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
     const { wallet } = await req.json();
     if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(String(wallet || ''))) return Response.json({ error: 'Invalid Solana wallet.' }, { status: 400 });
     const base44 = createClientFromRequest(req);
-    const records = await base44.asServiceRole.entities.HandleIndex.filter({ current_owner_cached: wallet, status: 'active' }, '-minted_at', 100);
-    return Response.json({ wallet, handles: records.map(record => ({ handle: record.handle, display: record.display_handle || `@${record.handle}`, asset: record.asset_address, mintedAt: record.minted_at })) });
+    const records = await base44.asServiceRole.entities.HandleIndex.filter({ status: 'active' }, '-minted_at', 100);
+    const rpcUrl = secrets.get('SOLANA_RPC_URL');
+    const handles = [];
+    for (const record of records) {
+      const owner = await getAssetOwner(rpcUrl, record.asset_address, record.current_owner_cached || '');
+      if (owner !== record.current_owner_cached) await base44.asServiceRole.entities.HandleIndex.update(record.id, { current_owner_cached: owner, last_chain_sync: new Date().toISOString() });
+      if (owner === wallet) handles.push({ handle: record.handle, display: record.display_handle || `@${record.handle}`, asset: record.asset_address, mintedAt: record.minted_at, verifiedAt: new Date().toISOString() });
+    }
+    return Response.json({ wallet, handles });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
