@@ -11,6 +11,7 @@ export default function WalletButton({ onConnected }) {
 
   useEffect(() => {
     if (address) localStorage.setItem("solhandle_wallet", address);
+    else localStorage.removeItem("solhandle_wallet");
     onConnected?.(address);
   }, [address, onConnected]);
   useEffect(() => {
