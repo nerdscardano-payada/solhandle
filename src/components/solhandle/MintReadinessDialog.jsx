@@ -4,6 +4,7 @@ import { CheckCircle2, Copy, ExternalLink, Wallet } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { base44 } from "@/api/base44Client";
 import { mintSolHandle } from "@/lib/mintSolHandle";
+import { buildHandlePngBlob } from "@/lib/buildHandlePng";
 import MintProgress from "@/components/solhandle/MintProgress";
 import { lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
@@ -20,7 +21,9 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
     setSignature("");
     setPhase("metadata");
     try {
-      const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle });
+      const png = await buildHandlePngBlob(handle);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: png });
+      const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle, image_url: file_url });
       setPhase("wallet");
       const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, sendTransaction });
       setSignature(mintResult.signature);

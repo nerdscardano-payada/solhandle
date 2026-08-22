@@ -8,23 +8,30 @@ import { buildHandleCardSvg } from '../../shared/handleCardSvg.ts';
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    const { handle: rawHandle } = await req.json();
-    const handle = String(rawHandle || '').trim().replace(/^@+/, '').toLowerCase();
+    const body = await req.json().catch(() => ({}));
+    const handle = String(body.handle || '').trim().replace(/^@+/, '').toLowerCase();
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle' }, { status: 400 });
 
     const storedKeypair = secrets.get('IRYS_UPLOADER_PRIVATE_KEY').trim();
     const keypair = storedKeypair.startsWith('[') ? bs58.encode(Uint8Array.from(JSON.parse(storedKeypair))) : storedKeypair;
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).devnet();
-    const svgBytes = buildHandleCardSvg(handle);
-    const svgReceipt = await uploader.upload(svgBytes, {
-      tags: [
-        { name: 'Content-Type', value: 'image/svg+xml' },
-        { name: 'App-Name', value: 'SolHandle' },
-        { name: 'Handle', value: handle }
-      ]
-    });
-    const imageUrl = `https://devnet.irys.xyz/${svgReceipt.id}`;
+
+    // Prefer a PNG produced on the frontend (wallets/marketplaces handle raster reliably);
+    // fall back to generating a deterministic SVG when none is supplied.
+    let imageUrl = body.image_url;
+    if (!imageUrl) {
+      const svgBytes = buildHandleCardSvg(handle);
+      const svgReceipt = await uploader.upload(svgBytes, {
+        tags: [
+          { name: 'Content-Type', value: 'image/svg+xml' },
+          { name: 'App-Name', value: 'SolHandle' },
+          { name: 'Handle', value: handle }
+        ]
+      });
+      imageUrl = `https://devnet.irys.xyz/${svgReceipt.id}`;
+    }
+
     const length = handle.length;
     const rarity = length === 1 ? 'Legendary' : length === 2 ? 'Ultra Rare' : length === 3 ? 'Rare' : length === 4 ? 'Uncommon' : 'Standard';
     const premiumRows = await base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1);
