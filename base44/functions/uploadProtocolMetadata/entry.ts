@@ -9,9 +9,6 @@ const imageUrl = 'https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a4
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user || user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
-
     const { handle: rawHandle } = await req.json();
     const handle = String(rawHandle || '').trim().replace(/^@+/, '').toLowerCase();
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle' }, { status: 400 });
