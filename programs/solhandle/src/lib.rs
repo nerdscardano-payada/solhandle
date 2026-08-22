@@ -42,7 +42,7 @@ pub mod solhandle {
         ctx.accounts.config.set_inner(Config {
             authority: ctx.accounts.authority.key(), collection: ctx.accounts.collection.key(),
             treasury: args.treasury, rewards_vault: args.rewards_vault,
-            prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: false, bump: ctx.bumps.config,
+            prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: false, bump: ctx.bumps.config, protocol_version: 1,
         });
         Ok(())
     }
@@ -78,6 +78,7 @@ pub mod solhandle {
     pub fn mint_handle(ctx: Context<MintHandle>, args: MintHandleArgs) -> Result<()> {
         validate_handle(&args.handle)?;
         require!(!ctx.accounts.config.paused, SolHandleError::ProtocolPaused);
+        require!(ctx.accounts.config.protocol_version == 1, SolHandleError::ProtocolVersionMismatch);
         require!(args.uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
         require!(!is_active_reserved(&ctx.accounts.reserved_handle)?, SolHandleError::HandleReserved);
         let price = price_for_handle(&ctx.accounts.config, &ctx.accounts.price_override, &args.handle)?;
@@ -167,7 +168,7 @@ pub struct MintHandle<'info> {
 
 #[account]
 #[derive(InitSpace)]
-pub struct Config { pub authority: Pubkey, pub collection: Pubkey, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5], pub total_minted: u64, pub paused: bool, pub bump: u8 }
+pub struct Config { pub authority: Pubkey, pub collection: Pubkey, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5], pub total_minted: u64, pub paused: bool, pub bump: u8, pub protocol_version: u8 }
 impl Config { fn price_for(&self, length: usize) -> u64 { self.prices_lamports[length.saturating_sub(1).min(4)] } }
 #[account]
 #[derive(InitSpace)]
@@ -213,4 +214,5 @@ pub enum SolHandleError {
     #[msg("This handle is reserved by the protocol.")] HandleReserved,
     #[msg("The supplied asset does not match the handle record.")] WrongAsset,
     #[msg("Only the current NFT owner may set a primary handle.")] AssetNotOwnedBySigner,
+    #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch,
 }

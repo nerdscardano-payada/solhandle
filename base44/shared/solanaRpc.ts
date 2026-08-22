@@ -1,6 +1,5 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
-
-const PROGRAM_ID = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5";
+import { PROGRAM_ID, SEEDS } from "./solhandleProtocol.ts";
 
 function base64Bytes(value: string) {
   const binary = atob(value);
@@ -74,7 +73,7 @@ export async function getPrimaryHandle(rpcUrl: string, wallet: string) {
   try {
     const owner = new PublicKey(wallet);
     const program = new PublicKey(PROGRAM_ID);
-    const [primaryPda] = PublicKey.findProgramAddressSync([new TextEncoder().encode("primary"), owner.toBytes()], program);
+    const [primaryPda] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.primary), owner.toBytes()], program);
     const account = await rpc(rpcUrl, "getAccountInfo", [primaryPda.toBase58(), { encoding: "base64", commitment: "confirmed" }]);
     if (!account?.value?.data?.[0]) return null;
     const bytes = base64Bytes(account.value.data[0]);
