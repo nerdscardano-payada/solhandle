@@ -22,9 +22,9 @@ solana-keygen new --no-bip39-passphrase --silent --outfile "$PROGRAM_KEYPAIR"
 PROGRAM_ID="$(solana address -k "$PROGRAM_KEYPAIR")"
 echo "Deploying SolHandle V1: $PROGRAM_ID"
 
-perl -0pi -e 's/(declare_id!\(")[^"]+/$1'"$PROGRAM_ID"'/; s/(solhandle = ")[^"]+/$1'"$PROGRAM_ID"'/g' Anchor.toml programs/solhandle/src/lib.rs
-perl -0pi -e 's/(PROGRAM_ID = new PublicKey\(")[^"]+/$1'"$PROGRAM_ID"'/' src/lib/solhandleProtocol.js
-perl -0pi -e 's/(PROGRAM_ID = ")[^"]+/$1'"$PROGRAM_ID"'/' base44/shared/solhandleProtocol.ts
+perl -0pi -e 's/(declare_id!\(")[^"]+/${1}'"$PROGRAM_ID"'/; s/(solhandle = ")[^"]+/${1}'"$PROGRAM_ID"'/g' Anchor.toml programs/solhandle/src/lib.rs
+perl -0pi -e 's/(PROGRAM_ID = new PublicKey\(")[^"]+/${1}'"$PROGRAM_ID"'/' src/lib/solhandleProtocol.js
+perl -0pi -e 's/(PROGRAM_ID = ")[^"]+/${1}'"$PROGRAM_ID"'/' base44/shared/solhandleProtocol.ts
 
 anchor build
 solana program deploy --url "$RPC_URL" --program-id "$PROGRAM_KEYPAIR" target/deploy/solhandle.so
