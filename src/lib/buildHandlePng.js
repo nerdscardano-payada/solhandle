@@ -90,10 +90,10 @@ export async function buildHandlePngBlob(handle) {
   ctx.fillRect(0, 0, W, H);
 
   // --- Glass card with neon gradient border ---
-  const cx = W * 0.08;
-  const cy = H * 0.15;
-  const cw = W * 0.84;
-  const ch = H * 0.7;
+  const cx = W * 0.05;
+  const cy = H * 0.12;
+  const cw = W * 0.9;
+  const ch = H * 0.76;
   const r = 30;
 
   roundRect(ctx, cx, cy, cw, ch, r);
@@ -121,11 +121,17 @@ export async function buildHandlePngBlob(handle) {
 
   // --- Handle text with horizontal gradient ---
   const label = `@${clean}`;
-  const size = label.length <= 4 ? 132 : label.length <= 6 ? 116 : label.length <= 10 ? 92 : label.length <= 14 ? 74 : 58;
+  let size = 132;
   ctx.font = `700 ${size}px Arial, Helvetica, sans-serif`;
+  let tw = ctx.measureText(label).width;
+  const maxWidth = cw - 160;
+  if (tw > maxWidth) {
+    size = Math.max(40, Math.floor((size * maxWidth) / tw));
+    ctx.font = `700 ${size}px Arial, Helvetica, sans-serif`;
+    tw = ctx.measureText(label).width;
+  }
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  const tw = ctx.measureText(label).width;
   const tx = W / 2;
   const ty = cy + ch * 0.6;
   const textGrad = ctx.createLinearGradient(tx - tw / 2, 0, tx + tw / 2, 0);
