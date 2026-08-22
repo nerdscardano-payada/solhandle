@@ -1,11 +1,11 @@
 # SolHandle V1 Devnet-heruitrol
 
-Open WSL, ga naar de hoofdmap van dit project (de map die `Anchor.toml` bevat) en plak exact deze opdracht:
+Open WSL en plak exact deze ene opdracht. Die zoekt eerst automatisch de juiste `src`-projectmap en start daarna het script:
 
 ```bash
-chmod +x scripts/redeploy-devnet.sh && bash scripts/redeploy-devnet.sh
+PROJECT_DIR="$(find "$HOME" /mnt/c/Users -type f -path "*/src/Anchor.toml" -print -quit 2>/dev/null | xargs -r dirname)" && test -n "$PROJECT_DIR" && cd "$PROJECT_DIR" && echo "Projectmap: $(pwd)" && bash scripts/redeploy-devnet.sh
 ```
 
-Het script maakt automatisch een nieuw Devnet-programma-ID, bouwt en publiceert V1, initialiseert de Config en controleert de protocolversie. De wallet op `~/.config/solana/solhandle-devnet.json` moet bestaan en minstens 1 Devnet SOL bevatten.
+Als de opdracht werkt, zie je meteen eerst `Projectmap:` en daarna je Devnet-walletadres. De wallet op `~/.config/solana/solhandle-devnet.json` moet bestaan en minstens 1 Devnet SOL bevatten.
 
 Na een geslaagde uitvoer: commit de gewijzigde publieke programma-ID-bestanden, publiceer de app opnieuw en voer daarna de acceptatietests uit met `@demo1` en `@travel`.
