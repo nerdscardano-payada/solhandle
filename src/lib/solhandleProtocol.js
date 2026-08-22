@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 
-export const PROGRAM_ID = new PublicKey("FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5");
+export const PROGRAM_ID = new PublicKey("5GGfmZZTGmnKkBjrQT8HAZ57suoPtuhpSiS66w3fv3KG");
 export const PROTOCOL_VERSION = 1;
 export const SEEDS = {
   config: "config",
