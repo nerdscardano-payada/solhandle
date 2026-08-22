@@ -15,7 +15,7 @@ export default async function(req: Request): Promise<Response> {
       const dataLine = transaction?.meta?.logMessages?.find((line: string) => line.startsWith('Program data: '));
       if (!dataLine) continue;
       const mint = parseMintEvent(dataLine.replace('Program data: ', ''));
-      if (!/^[a-z0-9_]{1,20}$/.test(mint.handle)) continue;
+      if (!/^[a-z0-9]{1,20}$/.test(mint.handle)) continue;
 
       const owner = await getAssetOwner(rpcUrl, mint.assetAddress, mint.owner);
       const existing = await base44.asServiceRole.entities.HandleIndex.filter({ handle: mint.handle }, '-updated_date', 1);
