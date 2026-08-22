@@ -1,0 +1,8 @@
+Je staat al in ~/solhandle. Doe dit precies:
+
+1. Sluit de extra bash-shell die je per ongeluk opende met Ctrl+D.
+2. Plak daarna deze opdracht in ~/solhandle:
+
+bash -x scripts/redeploy-devnet.sh
+
+De -x toont elke stap. Als het stopt, kopieer vanaf de eerste regel met 'Missing', 'Error' of 'command not found' en stuur die hier door.
