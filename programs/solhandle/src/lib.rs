@@ -115,9 +115,11 @@ pub struct MintHandleArgs { pub handle: String, pub uri: String, pub max_price_l
 pub struct Initialize<'info> {
     #[account(mut)] pub authority: Signer<'info>,
     #[account(init, payer = authority, space = 8 + Config::INIT_SPACE, seeds = [b"config"], bump)] pub config: Account<'info, Config>,
+    /// CHECK: SolHandle collection PDA derived from seeds ["collection"]; verified via seeds constraint. Created as the Metaplex Core collection during initialize.
     #[account(mut, seeds = [b"collection"], bump)]
     pub collection: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
+    /// CHECK: Metaplex Core program; address verified via the address constraint against MPL_CORE_ID.
     #[account(address = MPL_CORE_ID)]
     pub mpl_core_program: UncheckedAccount<'info>,
 }
@@ -157,12 +159,16 @@ pub struct MintHandle<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     #[account(mut, seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>,
     #[account(init, payer = payer, space = 8 + HandleRecord::INIT_SPACE, seeds = [b"handle", args.handle.as_bytes()], bump)] pub handle_record: Account<'info, HandleRecord>,
+    /// CHECK: Handle asset PDA derived from seeds ["asset", handle_bytes]; verified via seeds constraint. Created as a Metaplex Core asset during mint.
     #[account(mut, seeds = [b"asset", args.handle.as_bytes()], bump)] pub asset: UncheckedAccount<'info>,
+    /// CHECK: Reserved-handle PDA derived from seeds ["reserved", handle_bytes]; verified via seeds constraint. Read to check reserved status.
     #[account(seeds = [b"reserved", args.handle.as_bytes()], bump)] pub reserved_handle: UncheckedAccount<'info>,
+    /// CHECK: Price-override PDA derived from seeds ["price", handle_bytes]; verified via seeds constraint. Read to check custom price.
     #[account(seeds = [b"price", args.handle.as_bytes()], bump)] pub price_override: UncheckedAccount<'info>,
     #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>,
     #[account(mut, address = config.treasury @ SolHandleError::WrongTreasury)] pub treasury: SystemAccount<'info>,
     pub system_program: Program<'info, System>,
+    /// CHECK: Metaplex Core program; address verified via the address constraint against MPL_CORE_ID.
     #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info>,
 }
 
