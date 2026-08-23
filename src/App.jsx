@@ -15,6 +15,7 @@ import Faq from '@/pages/Faq';
 import Contact from '@/pages/Contact';
 import Footer from '@/components/solhandle/Footer';
 import Admin from '@/pages/Admin';
+import HandlePage from '@/pages/HandlePage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -59,7 +60,8 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="*" element={<PageNotFound />} />
+                <Route path="/:handle" element={<HandlePage />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </>
