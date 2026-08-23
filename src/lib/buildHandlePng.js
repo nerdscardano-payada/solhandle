@@ -1,5 +1,5 @@
 // Single source of truth for the SolHandle NFT card.
-// Renders a 1280x720 PNG via the Canvas 2D API (no SVG rasterization) so output
+// Renders a 1080x1080 PNG via the Canvas 2D API (no SVG rasterization) so output
 // is identical across browsers and wallets. The official Solana logomark
 // (purple #9945FF -> green #14F195) is drawn from path data for crispness.
 // The same renderer feeds both the on-site card (via HandleCard) and the mint.
@@ -51,7 +51,7 @@ function drawSolanaLogo(ctx, cx, top, targetHeight) {
 
 export async function buildHandlePngBlob(handle) {
   const clean = String(handle).replace(/^@/, "").toLowerCase();
-  const W = 1280, H = 720;
+  const W = 1080, H = 1080;
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
@@ -65,7 +65,10 @@ export async function buildHandlePngBlob(handle) {
     bg = null;
   }
   if (bg && bg.width > 0) {
-    ctx.drawImage(bg, 0, 0, W, H);
+    const scale = Math.max(W / bg.width, H / bg.height);
+    const width = bg.width * scale;
+    const height = bg.height * scale;
+    ctx.drawImage(bg, (W - width) / 2, (H - height) / 2, width, height);
   } else {
     const bgGrad = ctx.createLinearGradient(0, 0, W, 0);
     bgGrad.addColorStop(0, "#022B27");
@@ -90,10 +93,10 @@ export async function buildHandlePngBlob(handle) {
   ctx.fillRect(0, 0, W, H);
 
   // --- Glass card with neon gradient border ---
-  const cx = W * 0.05;
-  const cy = H * 0.12;
-  const cw = W * 0.9;
-  const ch = H * 0.76;
+  const cx = W * 0.06;
+  const cy = H * 0.065;
+  const cw = W * 0.88;
+  const ch = H * 0.87;
   const r = 30;
 
   roundRect(ctx, cx, cy, cw, ch, r);
@@ -117,14 +120,14 @@ export async function buildHandlePngBlob(handle) {
   ctx.shadowBlur = 0;
 
   // --- Solana logomark (official purple -> green) ---
-  drawSolanaLogo(ctx, W / 2, cy + 54, 116);
+  drawSolanaLogo(ctx, W / 2, cy + 86, 138);
 
   // --- Handle text with horizontal gradient ---
   const label = `@${clean}`;
   let size = 132;
   ctx.font = `700 ${size}px Arial, Helvetica, sans-serif`;
   let tw = ctx.measureText(label).width;
-  const maxWidth = cw - 160;
+  const maxWidth = cw - 140;
   if (tw > maxWidth) {
     size = Math.max(40, Math.floor((size * maxWidth) / tw));
     ctx.font = `700 ${size}px Arial, Helvetica, sans-serif`;
@@ -133,7 +136,7 @@ export async function buildHandlePngBlob(handle) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   const tx = W / 2;
-  const ty = cy + ch * 0.6;
+  const ty = cy + ch * 0.57;
   const textGrad = ctx.createLinearGradient(tx - tw / 2, 0, tx + tw / 2, 0);
   textGrad.addColorStop(0, "#67E8F9");
   textGrad.addColorStop(0.5, "#7DD3FC");

@@ -34,7 +34,7 @@ export default function HandleCard({ handle, display, to, className }) {
 
   const label = display || `@${clean}`;
   const frame = (
-    <div className={`relative w-full overflow-hidden rounded-2xl border border-cyan-300/25 bg-slate-950 ${className || ""}`} style={{ aspectRatio: "16 / 9" }}>
+    <div className={`relative aspect-square w-full overflow-hidden rounded-2xl border border-cyan-300/25 bg-slate-950 ${className || ""}`}>
       {url ? (
         <img src={url} alt={`SolHandle NFT card for ${label}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       ) : (
