@@ -2,7 +2,7 @@ import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstructi
 import { decodeSolHandleConfig, PROGRAM_ID, PROTOCOL_VERSION, SEEDS } from "@/lib/solhandleProtocol";
 
 const MPL_CORE = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
-const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const encoder = new TextEncoder();
 const bytes = (...parts) => Uint8Array.from(parts.flatMap((part) => [...part]));
 const stringBytes = (value) => {
