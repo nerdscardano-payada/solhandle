@@ -50,7 +50,7 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sen
   const seed = encoder.encode(handle);
   const [record] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.handle), seed], PROGRAM_ID);
   const [asset] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.asset), seed], PROGRAM_ID);
-  const [reserved] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.reserved), seed], PROGRAM_ID);
+  const [restriction] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.restriction), seed], PROGRAM_ID);
   const [price] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.price), seed], PROGRAM_ID);
   const hash = await instructionHash("mint_handle");
   const instruction = new TransactionInstruction({
@@ -58,7 +58,7 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sen
     keys: [
       { pubkey: wallet, isSigner: true, isWritable: true }, { pubkey: config, isSigner: false, isWritable: true },
       { pubkey: record, isSigner: false, isWritable: true }, { pubkey: asset, isSigner: false, isWritable: true },
-      { pubkey: reserved, isSigner: false, isWritable: false }, { pubkey: price, isSigner: false, isWritable: false },
+      { pubkey: restriction, isSigner: false, isWritable: false }, { pubkey: price, isSigner: false, isWritable: false },
       { pubkey: protocol.collection, isSigner: false, isWritable: true }, { pubkey: protocol.treasury, isSigner: false, isWritable: true },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, { pubkey: MPL_CORE, isSigner: false, isWritable: false }
     ],

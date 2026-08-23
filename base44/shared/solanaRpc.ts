@@ -1,98 +1,23 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
 import { PROGRAM_ID, SEEDS } from "./solhandleProtocol.ts";
 
-function base64Bytes(value: string) {
-  const binary = atob(value);
-  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
-}
+function base64Bytes(value: string) { const binary = atob(value); return Uint8Array.from(binary, (character) => character.charCodeAt(0)); }
+function readU32(bytes: Uint8Array, offset: number) { return bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24); }
+function readU64(bytes: Uint8Array, offset: number) { let value = 0n; for (let index = 0; index < 8; index += 1) value |= BigInt(bytes[offset + index]) << BigInt(index * 8); return Number(value); }
+function encodeBase58(bytes: Uint8Array) { const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; let value = 0n; for (const byte of bytes) value = (value << 8n) + BigInt(byte); let result = ""; while (value > 0n) { result = alphabet[Number(value % 58n)] + result; value /= 58n; } for (const byte of bytes) { if (byte === 0) result = "1" + result; else break; } return result || "1"; }
 
-function readU32(bytes: Uint8Array, offset: number) {
-  return bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24);
+export async function rpc(rpcUrl: string, method: string, params: unknown[] = []) { const response = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) }); const payload = await response.json(); if (!response.ok || payload.error) throw new Error(payload.error?.message || "Solana RPC request failed."); return payload.result; }
+export function parseHandleRecord(encoded: string) { const bytes = base64Bytes(encoded); const length = readU32(bytes, 8); const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); const assetOffset = 12 + length; return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)) }; }
+export function parseMintEvent(encoded: string) { const bytes = base64Bytes(encoded); const length = readU32(bytes, 8); const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); const assetOffset = 12 + length; return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)), owner: encodeBase58(bytes.slice(assetOffset + 32, assetOffset + 64)), priceLamports: readU64(bytes, assetOffset + 64) }; }
+export async function getAssetOwner(rpcUrl: string, assetAddress: string, fallbackOwner = "") { try { const asset = await rpc(rpcUrl, "getAsset", [assetAddress]); return asset?.ownership?.owner || fallbackOwner; } catch { return fallbackOwner; } }
+export async function getHandleOnChain(rpcUrl: string, handlePda: string) { const account = await rpc(rpcUrl, "getAccountInfo", [handlePda, { encoding: "base64", commitment: "confirmed" }]); if (!account?.value?.data?.[0]) return null; return parseHandleRecord(account.value.data[0]); }
+export async function getNameRestriction(rpcUrl: string, handle: string) {
+  const program = new PublicKey(PROGRAM_ID); const [pda] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.restriction), new TextEncoder().encode(handle)], program);
+  const account = await rpc(rpcUrl, "getAccountInfo", [pda.toBase58(), { encoding: "base64", commitment: "confirmed" }]);
+  if (!account?.value?.data?.[0] || account.value.owner !== PROGRAM_ID) return null;
+  const bytes = base64Bytes(account.value.data[0]); const restrictionType = bytes[8] === 0 ? "RESERVED" : "PROTECTED"; const active = bytes[9] === 1; const length = readU32(bytes, 10); const reservedFor = new TextDecoder().decode(bytes.slice(14, 14 + length));
+  return { pda: pda.toBase58(), restrictionType, active, reservedFor };
 }
-
-function readU64(bytes: Uint8Array, offset: number) {
-  let value = 0n;
-  for (let index = 0; index < 8; index += 1) value |= BigInt(bytes[offset + index]) << BigInt(index * 8);
-  return Number(value);
-}
-
-function encodeBase58(bytes: Uint8Array) {
-  const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-  let value = 0n;
-  for (const byte of bytes) value = (value << 8n) + BigInt(byte);
-  let result = "";
-  while (value > 0n) { result = alphabet[Number(value % 58n)] + result; value /= 58n; }
-  for (const byte of bytes) { if (byte === 0) result = "1" + result; else break; }
-  return result || "1";
-}
-
-export async function rpc(rpcUrl: string, method: string, params: unknown[] = []) {
-  const response = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) });
-  const payload = await response.json();
-  if (!response.ok || payload.error) throw new Error(payload.error?.message || "Solana RPC request failed.");
-  return payload.result;
-}
-
-export function parseHandleRecord(encoded: string) {
-  const bytes = base64Bytes(encoded);
-  const length = readU32(bytes, 8);
-  const handle = new TextDecoder().decode(bytes.slice(12, 12 + length));
-  const assetOffset = 12 + length;
-  return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)) };
-}
-
-export function parseMintEvent(encoded: string) {
-  const bytes = base64Bytes(encoded);
-  const length = readU32(bytes, 8);
-  const handle = new TextDecoder().decode(bytes.slice(12, 12 + length));
-  const assetOffset = 12 + length;
-  return {
-    handle,
-    assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)),
-    owner: encodeBase58(bytes.slice(assetOffset + 32, assetOffset + 64)),
-    priceLamports: readU64(bytes, assetOffset + 64),
-  };
-}
-
-export async function getAssetOwner(rpcUrl: string, assetAddress: string, fallbackOwner = "") {
-  try {
-    const asset = await rpc(rpcUrl, "getAsset", [assetAddress]);
-    return asset?.ownership?.owner || fallbackOwner;
-  } catch {
-    return fallbackOwner;
-  }
-}
-
-export async function getHandleOnChain(rpcUrl: string, handlePda: string) {
-  const account = await rpc(rpcUrl, "getAccountInfo", [handlePda, { encoding: "base64", commitment: "confirmed" }]);
-  if (!account?.value?.data?.[0]) return null;
-  return parseHandleRecord(account.value.data[0]);
-}
-
-export async function getPrimaryHandle(rpcUrl: string, wallet: string) {
-  try {
-    const owner = new PublicKey(wallet);
-    const program = new PublicKey(PROGRAM_ID);
-    const [primaryPda] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.primary), owner.toBytes()], program);
-    const account = await rpc(rpcUrl, "getAccountInfo", [primaryPda.toBase58(), { encoding: "base64", commitment: "confirmed" }]);
-    if (!account?.value?.data?.[0]) return null;
-    const bytes = base64Bytes(account.value.data[0]);
-    const length = readU32(bytes, 8);
-    const handle = new TextDecoder().decode(bytes.slice(12, 12 + length));
-    return { handle, assetAddress: encodeBase58(bytes.slice(12 + length, 44 + length)) };
-  } catch {
-    return null;
-  }
-}
-
-export async function findHandleOnChain(rpcUrl: string, handle: string) {
-  const prefix = encodeBase58(new TextEncoder().encode(handle));
-  const accounts = await rpc(rpcUrl, "getProgramAccounts", [PROGRAM_ID, { encoding: "base64", filters: [{ memcmp: { offset: 12, bytes: prefix } }] }]);
-  for (const account of accounts || []) {
-    const parsed = parseHandleRecord(account.account.data[0]);
-    if (parsed.handle === handle) return { ...parsed, handlePda: account.pubkey };
-  }
-  return null;
-}
-
+export async function getPrimaryHandle(rpcUrl: string, wallet: string) { try { const owner = new PublicKey(wallet); const program = new PublicKey(PROGRAM_ID); const [primaryPda] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.primary), owner.toBytes()], program); const account = await rpc(rpcUrl, "getAccountInfo", [primaryPda.toBase58(), { encoding: "base64", commitment: "confirmed" }]); if (!account?.value?.data?.[0]) return null; const bytes = base64Bytes(account.value.data[0]); const length = readU32(bytes, 8); const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); return { handle, assetAddress: encodeBase58(bytes.slice(12 + length, 44 + length)) }; } catch { return null; } }
+export async function findHandleOnChain(rpcUrl: string, handle: string) { const program = new PublicKey(PROGRAM_ID); const [handlePda] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.handle), new TextEncoder().encode(handle)], program); const record = await getHandleOnChain(rpcUrl, handlePda.toBase58()); return record ? { ...record, handlePda: handlePda.toBase58() } : null; }
 export { PROGRAM_ID };

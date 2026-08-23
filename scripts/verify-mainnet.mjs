@@ -16,13 +16,13 @@ if (configInfo.data.length !== 187) throw new Error(`Unexpected Config size: ${c
 // layout: 8 disc | 32 authority | 32 collection | 32 treasury | 32 rewards | 40 prices | 8 totalMinted | 1 paused | 1 bump | 1 version
 const paused = configInfo.data[184] === 1;
 const protocolVersion = configInfo.data[186];
-if (protocolVersion !== 1) throw new Error(`Unexpected protocol version: ${protocolVersion}.`);
+if (protocolVersion !== 2) throw new Error(`Unexpected protocol version: ${protocolVersion}.`);
 if (!collectionInfo) throw new Error("Official SolHandle collection is missing.");
 
 console.log(JSON.stringify({
   verified: true,
   network: "mainnet",
-  protocolVersion: 1,
+  protocolVersion: 2,
   programId: programId.toBase58(),
   config: config.toBase58(),
   collection: collection.toBase58(),

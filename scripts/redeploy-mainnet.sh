@@ -10,7 +10,8 @@
 # Optional:
 #   SOLHANDLE_PROGRAM_KEYPAIR   defaults to keys/solhandle-v1-mainnet-program.json
 #   SOLANA_RPC_URL              defaults to https://api.mainnet-beta.solana.com
-#   RESERVE_NAMES               comma-separated protected handles (defaults to the built-in list)
+#   RESERVED_NAMES              comma-separated handle|organization entries for verified Solana organizations
+#   PROTECTED_NAMES             comma-separated handle|reason entries for protected brands
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -66,7 +67,7 @@ node scripts/initialize-mainnet.mjs
 echo "=> Verifying mainnet config"
 node scripts/verify-mainnet.mjs
 
-echo "=> Reserving protected names on mainnet"
+echo "=> Creating RESERVED and PROTECTED name restrictions on mainnet"
 node scripts/reserve-names-mainnet.mjs
 
 echo ""

@@ -32,8 +32,9 @@ export default function HandlePage() {
       .catch(() => setData({ state: "invalid" }));
   }, [handle]);
 
-  const invalid = data?.state === "invalid";
+  const invalid = data?.status === "INVALID";
   const available = data?.available;
+  const restriction = data?.restriction;
   const priceLamports = data?.priceLamports;
   const owner = data?.currentOwner || data?.original_minter;
 
@@ -44,7 +45,7 @@ export default function HandlePage() {
         <section className="mx-auto max-w-3xl px-5 py-16 text-center">
           <h1 className="text-5xl font-semibold">@{handle || "—"}</h1>
           <span className={`mt-3 inline-block rounded-full px-3 py-1 text-sm ${invalid ? "bg-red-400/10 text-red-300" : available ? "bg-emerald-400/10 text-emerald-300" : "bg-cyan-400/10 text-cyan-300"}`}>
-            {invalid ? "Invalid handle" : available ? "Available to mint" : "Official SolHandle ✓"}
+            {invalid ? "Invalid handle" : available ? "Available to mint" : data?.status === "RESERVED" ? "Reserved for official claim" : data?.status === "PROTECTED" ? "Protected brand name" : "Official SolHandle ✓"}
           </span>
 
           <div className="mx-auto mt-8 max-w-xl">
@@ -53,7 +54,8 @@ export default function HandlePage() {
 
           <div className="card-glow mt-10 text-left">
             <p className="mb-1 text-xs uppercase tracking-wider text-cyan-300">Handle record</p>
-            <Detail label="Status" value={invalid ? "Invalid handle" : available ? "Available" : data?.status || "Indexed on-chain"} accent={available ? "text-emerald-300" : undefined} />
+            <Detail label="Status" value={invalid ? "Invalid handle" : data?.status || "AVAILABLE"} accent={available ? "text-emerald-300" : undefined} />
+            {restriction && <Detail label={restriction.restrictionType === "RESERVED" ? "Reserved for" : "Protection reason"} value={restriction.reservedFor} />}
             <Detail label="Current owner" value={owner ? shortenAddress(owner) : "—"} />
             <Detail label="Mint price" value={priceLamports ? `${lamportsToSol(priceLamports)} SOL` : "—"} />
             <Detail label="Rarity tier" value={rarityFor(handle.length)} accent="text-violet-300" />
