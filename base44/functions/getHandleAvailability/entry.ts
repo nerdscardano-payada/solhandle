@@ -3,7 +3,7 @@ import { secrets } from 'base44:runtime';
 import { findHandleOnChain, getAssetOwner } from '../../shared/solanaRpc.ts';
 
 const reserved = new Set(['apple','google','nike','microsoft','amazon','cocacola','facebook','instagram','youtube','whatsapp','tiktok','meta','x','twitter','openai','chatgpt','solhandle','solana','sol','solanafoundation','solanalabs','phantom','solflare','backpack']);
-const prices = { 1: 2000000000, 2: 1000000000, 3: 500000000, 4: 300000000, 5: 100000000 };
+const prices = { 1: 3000000000, 2: 2000000000, 3: 1000000000, 4: 500000000, 5: 100000000 };
 export default async function(req: Request): Promise<Response> {
   try {
     const { handle: rawHandle } = await req.json();
