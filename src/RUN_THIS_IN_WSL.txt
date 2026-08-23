@@ -1,8 +1,13 @@
-Je staat al in ~/solhandle. Doe dit precies:
+# Devnet restrictielijst testen
 
-1. Sluit de extra bash-shell die je per ongeluk opende met Ctrl+D.
-2. Plak daarna deze opdracht in ~/solhandle:
+Plak dit volledige blok in WSL nadat je naar je SolHandle-projectmap bent gegaan. Het gebruikt de huidige Devnet-programma-ID en je Devnet-authority-wallet, en schrijft de volledige reserved- en protected-lijst on-chain.
 
-bash -x scripts/redeploy-devnet.sh
+```bash
+cd ~/solhandle
+export SOLHANDLE_PROGRAM_ID="FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
+export SOLHANDLE_AUTHORITY="$HOME/.config/solana/solhandle-devnet.json"
+export SOLANA_RPC_URL="https://api.devnet.solana.com"
+node scripts/reserve-names-devnet.mjs
+```
 
-De -x toont elke stap. Als het stopt, kopieer vanaf de eerste regel met 'Missing', 'Error' of 'command not found' en stuur die hier door.
+Bij succes toont het script `created` voor nieuwe restricties en `skipped` voor namen die al op Devnet bestaan. De wallet in `SOLHANDLE_AUTHORITY` moet de Devnet-authority van het programma zijn en voldoende Devnet SOL bevatten.
