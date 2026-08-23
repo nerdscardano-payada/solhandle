@@ -9,7 +9,6 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from '@/pages/Home';
 import MyHandles from '@/pages/MyHandles';
 import Docs from '@/pages/Docs';
-import HandlePage from '@/pages/HandlePage';
 import Legal from '@/pages/Legal';
 import Privacy from '@/pages/Privacy';
 import Faq from '@/pages/Faq';
@@ -60,8 +59,7 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/:handle" element={<HandlePage />} />
-        <Route path="*" element={<PageNotFound />} />
+                <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </>
