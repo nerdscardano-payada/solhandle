@@ -7,7 +7,7 @@ use mpl_core::{
 };
 
 const REWARDS_BPS: u64 = 500;
-const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [2_000_000_000, 1_000_000_000, 500_000_000, 200_000_000, 100_000_000];
+const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [50_000_000_000, 25_000_000_000, 12_500_000_000, 5_000_000_000, 2_500_000_000];
 const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 
@@ -42,7 +42,7 @@ pub mod solhandle {
         ctx.accounts.config.set_inner(Config {
             authority: ctx.accounts.authority.key(), collection: ctx.accounts.collection.key(),
             treasury: args.treasury, rewards_vault: args.rewards_vault,
-            prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: false, bump: ctx.bumps.config, protocol_version: 1,
+            prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: true, bump: ctx.bumps.config, protocol_version: 1,
         });
         Ok(())
     }

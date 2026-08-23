@@ -11,6 +11,9 @@ solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
 [programs.devnet]
 solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
 
+[programs.mainnet]
+solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
+
 [provider]
 cluster = "Devnet"
 wallet = "~/.config/solana/solhandle-devnet.json"

@@ -15,7 +15,7 @@ export default async function(req: Request): Promise<Response> {
     const storedKeypair = secrets.get('IRYS_UPLOADER_PRIVATE_KEY').trim();
     const keypair = storedKeypair.startsWith('[') ? bs58.encode(Uint8Array.from(JSON.parse(storedKeypair))) : storedKeypair;
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).devnet();
+    const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).mainnet();
 
     // Prefer a PNG produced on the frontend (wallets/marketplaces handle raster reliably);
     // fall back to generating a deterministic SVG when none is supplied.
@@ -29,7 +29,7 @@ export default async function(req: Request): Promise<Response> {
           { name: 'Handle', value: handle }
         ]
       });
-      imageUrl = `https://devnet.irys.xyz/${svgReceipt.id}`;
+      imageUrl = `https://arweave.net/${svgReceipt.id}`;
     }
 
     const length = handle.length;
@@ -40,7 +40,7 @@ export default async function(req: Request): Promise<Response> {
     const metadata = {
       name: `@${handle}`,
       symbol: 'SOLHANDLE',
-      description: `The official, permanent SolHandle identity NFT for @${handle} on Solana Devnet.`,
+      description: `The official, permanent SolHandle identity NFT for @${handle} on Solana Mainnet.`,
       image: imageUrl,
       external_url: `https://solhandle.base44.app/${handle}`,
       attributes: [
@@ -49,7 +49,7 @@ export default async function(req: Request): Promise<Response> {
         { trait_type: 'Rarity', value: rarity },
         { trait_type: 'Name Class', value: nameClass },
         { trait_type: 'Character Type', value: characterType },
-        { trait_type: 'Network', value: 'Solana Devnet' }
+        { trait_type: 'Network', value: 'Solana Mainnet' }
       ],
       properties: { category: 'image', creators: [] }
     };
@@ -60,7 +60,7 @@ export default async function(req: Request): Promise<Response> {
         { name: 'Handle', value: handle }
       ]
     });
-    return Response.json({ handle, uri: `https://devnet.irys.xyz/${receipt.id}`, transactionId: receipt.id, metadata });
+    return Response.json({ handle, uri: `https://arweave.net/${receipt.id}`, transactionId: receipt.id, metadata });
   } catch (error) {
     return Response.json({ error: error.message || 'Metadata upload failed' }, { status: 500 });
   }
