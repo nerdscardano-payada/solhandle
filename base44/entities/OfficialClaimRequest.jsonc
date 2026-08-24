@@ -26,10 +26,40 @@
     "reserved_for": {
       "type": "string"
     },
+    "official_domain": {
+      "type": "string"
+    },
+    "challenge": {
+      "type": "string"
+    },
+    "challenge_expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "domain_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "wallet_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "wallet_signature": {
+      "type": "string"
+    },
+    "high_risk": {
+      "type": "boolean"
+    },
+    "manual_channel_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
     "status": {
       "type": "string",
       "enum": [
         "pending",
+        "domain_verified",
+        "verified",
         "rejected",
         "minted"
       ]
@@ -53,6 +83,10 @@
     "proof_url",
     "recipient_wallet",
     "statement",
+    "official_domain",
+    "challenge",
+    "challenge_expires_at",
+    "high_risk",
     "status"
   ],
   "rls": {
@@ -62,7 +96,9 @@
       }
     },
     "create": {
-      "data.status": "pending"
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "update": {
       "user_condition": {
