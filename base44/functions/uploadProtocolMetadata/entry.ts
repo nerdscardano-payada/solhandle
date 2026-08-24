@@ -18,23 +18,9 @@ export default async function(req: Request): Promise<Response> {
     const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).mainnet();
     const irysGateway = 'https://gateway.irys.xyz';
 
-    // Store the generated PNG on Irys as well; Base44's upload is only the staging source.
-    let imageUrl = '';
-    if (body.image_url) {
-      const sourceUrl = new URL(String(body.image_url));
-      const allowedHost = sourceUrl.hostname === 'base44.app' || sourceUrl.hostname.endsWith('.base44.app') || sourceUrl.hostname === 'media.base44.com' || sourceUrl.hostname.endsWith('.wixstatic.com');
-      if (sourceUrl.protocol !== 'https:' || !allowedHost) return Response.json({ error: 'Invalid image source' }, { status: 400 });
-      const imageResponse = await fetch(sourceUrl);
-      if (!imageResponse.ok) throw new Error('Generated PNG could not be loaded');
-      const imageReceipt = await uploader.upload(new Uint8Array(await imageResponse.arrayBuffer()), {
-        tags: [
-          { name: 'Content-Type', value: 'image/png' },
-          { name: 'App-Name', value: 'SolHandle' },
-          { name: 'Handle', value: handle }
-        ]
-      });
-      imageUrl = `${irysGateway}/${imageReceipt.id}`;
-    } else {
+    // Use the generated PNG URL; fall back to a deterministic Irys-hosted SVG.
+    let imageUrl = String(body.image_url || '');
+    if (!imageUrl) {
       const svgBytes = buildHandleCardSvg(handle);
       const svgReceipt = await uploader.upload(svgBytes, {
         tags: [
@@ -74,7 +60,7 @@ export default async function(req: Request): Promise<Response> {
         { name: 'Handle', value: handle }
       ]
     });
-    return Response.json({ handle, uri: `https://arweave.net/${receipt.id}`, transactionId: receipt.id, metadata });
+    return Response.json({ handle, uri: `${irysGateway}/${receipt.id}`, transactionId: receipt.id, metadata });
   } catch (error) {
     return Response.json({ error: error.message || 'Metadata upload failed' }, { status: 500 });
   }
