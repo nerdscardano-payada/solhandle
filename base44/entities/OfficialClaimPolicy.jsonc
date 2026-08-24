@@ -1,0 +1,42 @@
+{
+  "name": "OfficialClaimPolicy",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "official_domain": {
+      "type": "string"
+    },
+    "high_risk": {
+      "type": "boolean"
+    },
+    "active": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "handle",
+    "official_domain",
+    "high_risk",
+    "active"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
