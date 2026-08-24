@@ -10,7 +10,7 @@ export default function ProtectedBrandCard({ brand, onClaim }) {
         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-300/10 px-2.5 py-1 text-xs text-emerald-200"><BadgeCheck className="h-3.5 w-3.5"/>{reserved ? "Reserved" : "Protected"}</span>
       </div>
       <h3 className="mt-5 text-xl font-semibold text-white">@{brand.handle}</h3>
-      {brand.domain && <p className="mt-1 text-sm text-cyan-200">{brand.domain}</p>}
+      {brand.domain && <a href={`https://${brand.domain}`} target="_blank" rel="noreferrer" className="mt-1 text-sm text-cyan-200 underline-offset-4 hover:underline">{brand.domain}</a>}
       <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-400">{brand.reason || (reserved ? "Reserved for the verified Solana organization." : "Protected against public minting and impersonation.")}</p>
       <p className="mt-4 border-t border-white/5 pt-4 text-xs text-slate-500">{reserved ? "Eligible for a free official claim after verification and approval." : "Permanently unavailable for public or official claims."}</p>
       {reserved ? (
