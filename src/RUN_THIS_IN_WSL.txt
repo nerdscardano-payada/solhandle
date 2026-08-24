@@ -3,7 +3,7 @@
 Plak dit volledige blok in WSL nadat je naar je SolHandle-projectmap bent gegaan. Het gebruikt de huidige Devnet-programma-ID en je Devnet-authority-wallet, en schrijft de volledige reserved- en protected-lijst on-chain.
 
 ```bash
-cd ~/solhandle-repo && export SOLHANDLE_PROGRAM_ID="FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5" && export SOLHANDLE_AUTHORITY="$HOME/.config/solana/solhandle-devnet.json" && export SOLANA_RPC_URL="https://api.devnet.solana.com" && node scripts/reserve-names-devnet.mjs
+cd ~/solhandle-repo && export SOLHANDLE_PROGRAM_ID="ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT" && export SOLHANDLE_AUTHORITY="$HOME/.config/solana/solhandle-devnet.json" && node scripts/reserve-names-devnet.mjs
 ```
 
 Bij succes toont het script `created` voor nieuwe restricties en `skipped` voor namen die al op Devnet bestaan. De wallet in `SOLHANDLE_AUTHORITY` moet de Devnet-authority van het programma zijn en voldoende Devnet SOL bevatten.
