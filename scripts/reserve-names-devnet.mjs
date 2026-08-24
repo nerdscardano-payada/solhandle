@@ -11,7 +11,7 @@ const authorityPath = process.env.SOLHANDLE_AUTHORITY || `${homedir()}/.config/s
 const rpcUrl = process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
 const defaults = {
   reserved: "solana|Solana,sol|Solana,solanafoundation|Solana Foundation,solanalabs|Solana Labs,anza|Anza,phantom|Phantom,phantomwallet|Phantom,solflare|Solflare,solflarewallet|Solflare,backpack|Backpack,backpackwallet|Backpack,jupiter|Jupiter,jup|Jupiter,raydium|Raydium,orca|Orca,kamino|Kamino,drift|Drift,meteora|Meteora,jito|Jito,metaplex|Metaplex,magiceden|Magic Eden,tensor|Tensor,helius|Helius,pyth|Pyth,squads|Squads,sns|Bonfida,bonfida|Bonfida,helium|Helium,hivemapper|Hivemapper,rendernetwork|Render Network,pumpfun|pump.fun,bonk|BONK",
-  protected: "apple|Trademark / Brand,google|Trademark / Brand,nike|Trademark / Brand,microsoft|Trademark / Brand,amazon|Trademark / Brand,cocacola|Trademark / Brand,facebook|Trademark / Brand,instagram|Trademark / Brand,youtube|Trademark / Brand,whatsapp|Trademark / Brand,tiktok|Trademark / Brand,meta|Trademark / Brand,twitter|Trademark / Brand,openai|Trademark / Brand,chatgpt|Trademark / Brand"
+  protected: "apple|Trademark / Brand,google|Trademark / Brand,nike|Trademark / Brand,microsoft|Trademark / Brand,amazon|Trademark / Brand,cocacola|Trademark / Brand,facebook|Trademark / Brand,instagram|Trademark / Brand,youtube|Trademark / Brand,whatsapp|Trademark / Brand,tiktok|Trademark / Brand,meta|Trademark / Brand,twitter|Trademark / Brand,openai|Trademark / Brand,chatgpt|Trademark / Brand,bmw|BMW"
 };
 const parse = (value, type) => String(value).split(",").map((entry) => {
   const [rawHandle, reservedFor] = entry.trim().split("|");
