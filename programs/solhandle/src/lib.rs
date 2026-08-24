@@ -67,6 +67,7 @@ pub mod solhandle {
         validate_handle(&args.handle)?; require!(!ctx.accounts.config.paused, SolHandleError::ProtocolPaused);
         require!(ctx.accounts.config.protocol_version == 2, SolHandleError::ProtocolVersionMismatch); require!(args.uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
         require!(ctx.accounts.restriction.active, SolHandleError::RestrictionInactive);
+        require!(ctx.accounts.restriction.restriction_type == RestrictionType::Reserved, SolHandleError::ProtectedHandleCannotBeClaimed);
         create_handle_asset(&ctx.accounts.mpl_core_program, &ctx.accounts.asset, &ctx.accounts.collection, &ctx.accounts.config, &ctx.accounts.authority, &ctx.accounts.recipient.to_account_info(), &ctx.accounts.system_program, &args.handle, args.uri, ctx.bumps.asset)?;
         ctx.accounts.handle_record.set_inner(HandleRecord { handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.recipient.key(), minted_at: Clock::get()?.unix_timestamp, official_claim: true, bump: ctx.bumps.handle_record });
         ctx.accounts.restriction.active = false;

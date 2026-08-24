@@ -24,6 +24,30 @@
         "released"
       ]
     },
+    "restriction_type": {
+      "type": "string",
+      "enum": [
+        "PROTECTED",
+        "RESERVED"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "CRITICAL",
+        "HIGH",
+        "STANDARD"
+      ]
+    },
+    "public_mint": {
+      "type": "boolean"
+    },
+    "official_claim_allowed": {
+      "type": "boolean"
+    },
+    "reserved_for": {
+      "type": "string"
+    },
     "onchain_reserved_pda": {
       "type": "string"
     }
