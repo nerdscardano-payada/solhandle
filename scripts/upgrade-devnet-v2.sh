@@ -7,19 +7,29 @@ cd "$ROOT_DIR"
 PROGRAM_ID="ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
 RPC_URL="https://api.devnet.solana.com"
 AUTHORITY="${SOLHANDLE_AUTHORITY:-$HOME/.config/solana/solhandle-devnet.json}"
-PROGRAM_KEYPAIR="${SOLHANDLE_PROGRAM_KEYPAIR:-$ROOT_DIR/keys/solhandle-v1-devnet-program.json}"
+PROGRAM_KEYPAIR="${SOLHANDLE_PROGRAM_KEYPAIR:-}"
 
 for command in cargo solana solana-keygen node; do
   command -v "$command" >/dev/null || { echo "Missing required command: $command" >&2; exit 1; }
 done
 [[ -f "$AUTHORITY" ]] || { echo "Missing authority: $AUTHORITY" >&2; exit 1; }
-[[ -f "$PROGRAM_KEYPAIR" ]] || { echo "Missing program keypair: $PROGRAM_KEYPAIR" >&2; exit 1; }
 
-ACTUAL_PROGRAM_ID="$(solana-keygen pubkey "$PROGRAM_KEYPAIR")"
-[[ "$ACTUAL_PROGRAM_ID" == "$PROGRAM_ID" ]] || {
-  echo "Program keypair mismatch: expected $PROGRAM_ID, found $ACTUAL_PROGRAM_ID" >&2
+if [[ -z "$PROGRAM_KEYPAIR" ]]; then
+  for candidate in "$ROOT_DIR"/keys/*.json "$ROOT_DIR"/target/deploy/*-keypair.json "$HOME"/.config/solana/*.json; do
+    [[ -f "$candidate" ]] || continue
+    if [[ "$(solana-keygen pubkey "$candidate" 2>/dev/null || true)" == "$PROGRAM_ID" ]]; then
+      PROGRAM_KEYPAIR="$candidate"
+      break
+    fi
+  done
+fi
+
+[[ -n "$PROGRAM_KEYPAIR" && -f "$PROGRAM_KEYPAIR" ]] || {
+  echo "No local program keypair found for $PROGRAM_ID." >&2
+  echo "The existing Devnet program cannot be upgraded without its original program keypair." >&2
   exit 1
 }
+echo "Program keypair: $PROGRAM_KEYPAIR"
 
 grep -q "declare_id!(\"$PROGRAM_ID\")" programs/solhandle/src/lib.rs || {
   echo "Rust program ID does not match $PROGRAM_ID" >&2
