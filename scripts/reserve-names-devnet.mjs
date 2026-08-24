@@ -4,18 +4,16 @@ import { Connection, Keypair, PublicKey, SystemProgram, Transaction, Transaction
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
+import { DEFAULT_PROTECTED_NAMES, DEFAULT_RESERVED_NAMES } from "./name-restrictions.mjs";
 
 const programIdText = process.env.SOLHANDLE_PROGRAM_ID;
 if (!programIdText) throw new Error("SOLHANDLE_PROGRAM_ID is required.");
 const authorityPath = process.env.SOLHANDLE_AUTHORITY || `${homedir()}/.config/solana/solhandle-devnet.json`;
 const rpcUrl = process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
-const defaults = {
-  reserved: "solana|Solana,sol|Solana,solanafoundation|Solana Foundation,solanalabs|Solana Labs,anza|Anza,phantom|Phantom,phantomwallet|Phantom,solflare|Solflare,solflarewallet|Solflare,backpack|Backpack,backpackwallet|Backpack,jupiter|Jupiter,jup|Jupiter,raydium|Raydium,orca|Orca,kamino|Kamino,drift|Drift,meteora|Meteora,jito|Jito,metaplex|Metaplex,magiceden|Magic Eden,tensor|Tensor,helius|Helius,pyth|Pyth,squads|Squads,sns|Bonfida,bonfida|Bonfida,helium|Helium,hivemapper|Hivemapper,rendernetwork|Render Network,pumpfun|pump.fun,bonk|BONK",
-  protected: "apple|Trademark / Brand,google|Trademark / Brand,nike|Trademark / Brand,microsoft|Trademark / Brand,amazon|Trademark / Brand,cocacola|Trademark / Brand,facebook|Trademark / Brand,instagram|Trademark / Brand,youtube|Trademark / Brand,whatsapp|Trademark / Brand,tiktok|Trademark / Brand,meta|Trademark / Brand,twitter|Trademark / Brand,openai|Trademark / Brand,chatgpt|Trademark / Brand,bmw|BMW"
-};
+const defaults = { reserved: DEFAULT_RESERVED_NAMES, protected: DEFAULT_PROTECTED_NAMES };
 const parse = (value, type) => String(value).split(",").map((entry) => {
   const [rawHandle, reservedFor] = entry.trim().split("|");
-  const handle = rawHandle.toLowerCase();
+  const handle = rawHandle.trim().replace(/^@+/, "").toLowerCase();
   return { handle, reservedFor: reservedFor || (type === 0 ? handle : "Trademark / Brand"), type };
 }).filter((item) => item.handle);
 const names = [...parse(process.env.RESERVED_NAMES || defaults.reserved, 0), ...parse(process.env.PROTECTED_NAMES || defaults.protected, 1)];
@@ -38,10 +36,7 @@ if (!configInfo || !configInfo.owner.equals(programId)) throw new Error("No init
 const results = [];
 for (const item of names) {
   const [restriction] = PublicKey.findProgramAddressSync([Buffer.from("restriction"), encoder.encode(item.handle)], programId);
-  if (await connection.getAccountInfo(restriction, "confirmed")) {
-    results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: "skipped", restriction: restriction.toBase58() });
-    continue;
-  }
+  const existed = Boolean(await connection.getAccountInfo(restriction, "confirmed"));
   const data = Uint8Array.from([...discriminator, ...stringBytes(item.handle), item.type, ...stringBytes(item.reservedFor), 1]);
   const instruction = new TransactionInstruction({
     programId,
@@ -54,7 +49,7 @@ for (const item of names) {
     data
   });
   const signature = await sendAndConfirmTransaction(connection, new Transaction().add(instruction), [authority], { commitment: "confirmed" });
-  results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: "created", restriction: restriction.toBase58(), signature });
+  results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: existed ? "updated" : "created", restriction: restriction.toBase58(), signature });
 }
 
-console.log(JSON.stringify({ network: "devnet", restrictions: results.length, created: results.filter((item) => item.status === "created").length, skipped: results.filter((item) => item.status === "skipped").length, results }, null, 2));
+console.log(JSON.stringify({ network: "devnet", restrictions: results.length, created: results.filter((item) => item.status === "created").length, updated: results.filter((item) => item.status === "updated").length, results }, null, 2));

@@ -11,7 +11,13 @@ export default async function(req: Request): Promise<Response> {
     if (!/^[a-z0-9]{1,20}$/.test(handle) || required.some((field) => !String(body[field] || '').trim())) return Response.json({ error: 'Complete every claim field.' }, { status: 400 });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(body.contact_email))) return Response.json({ error: 'Enter a valid work email.' }, { status: 400 });
     try { bs58.decode(String(body.recipient_wallet)); } catch { return Response.json({ error: 'Enter a valid Solana wallet.' }, { status: 400 }); }
-    const policies = await base44.asServiceRole.entities.OfficialClaimPolicy.filter({ handle, active: true }, '-updated_date', 1);
+    const [policies, restrictions] = await Promise.all([
+      base44.asServiceRole.entities.OfficialClaimPolicy.filter({ handle, active: true }, '-updated_date', 1),
+      base44.asServiceRole.entities.ProtectedName.filter({ handle, status: 'active' }, '-updated_date', 1)
+    ]);
+    const restriction = restrictions[0];
+    const restrictionType = restriction?.restriction_type || (restriction?.category === 'brand' ? 'PROTECTED' : 'RESERVED');
+    if (restrictionType !== 'RESERVED' || restriction?.official_claim_allowed !== true) return Response.json({ error: 'This protected handle is not eligible for an official claim.' }, { status: 409 });
     if (!policies.length) return Response.json({ error: 'No official verification policy is configured for this handle.' }, { status: 409 });
     const policy = policies[0];
     const challenge = `solhandle=${crypto.randomUUID().replaceAll('-', '')}`;

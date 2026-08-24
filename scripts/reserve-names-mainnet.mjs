@@ -2,16 +2,14 @@
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction, sendAndConfirmTransaction } from "@solana/web3.js";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { DEFAULT_PROTECTED_NAMES, DEFAULT_RESERVED_NAMES } from "./name-restrictions.mjs";
 
 const programIdText = process.env.SOLHANDLE_PROGRAM_ID;
 const authorityPath = process.env.SOLHANDLE_AUTHORITY;
 if (!programIdText || !authorityPath) throw new Error("SOLHANDLE_PROGRAM_ID and SOLHANDLE_AUTHORITY are required.");
 const rpcUrl = process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
-const defaults = {
-  reserved: "solana|Solana,sol|Solana,solanafoundation|Solana Foundation,solanalabs|Solana Labs,anza|Anza,phantom|Phantom,phantomwallet|Phantom,solflare|Solflare,solflarewallet|Solflare,backpack|Backpack,backpackwallet|Backpack,jupiter|Jupiter,jup|Jupiter,raydium|Raydium,orca|Orca,kamino|Kamino,drift|Drift,meteora|Meteora,jito|Jito,metaplex|Metaplex,magiceden|Magic Eden,tensor|Tensor,helius|Helius,pyth|Pyth,squads|Squads,sns|Bonfida,bonfida|Bonfida,helium|Helium,hivemapper|Hivemapper,rendernetwork|Render Network,pumpfun|pump.fun,bonk|BONK",
-  protected: "apple|Trademark / Brand,google|Trademark / Brand,nike|Trademark / Brand,microsoft|Trademark / Brand,amazon|Trademark / Brand,cocacola|Trademark / Brand,facebook|Trademark / Brand,instagram|Trademark / Brand,youtube|Trademark / Brand,whatsapp|Trademark / Brand,tiktok|Trademark / Brand,meta|Trademark / Brand,twitter|Trademark / Brand,openai|Trademark / Brand,chatgpt|Trademark / Brand"
-};
-const parse = (value, type) => String(value).split(",").map((entry) => { const [rawHandle, reservedFor] = entry.trim().split("|"); const handle = rawHandle.toLowerCase(); return { handle, reservedFor: reservedFor || (type === 0 ? handle : "Trademark / Brand"), type }; }).filter((item) => item.handle);
+const defaults = { reserved: DEFAULT_RESERVED_NAMES, protected: DEFAULT_PROTECTED_NAMES };
+const parse = (value, type) => String(value).split(",").map((entry) => { const [rawHandle, reservedFor] = entry.trim().split("|"); const handle = rawHandle.trim().replace(/^@+/, "").toLowerCase(); return { handle, reservedFor: reservedFor || (type === 0 ? handle : "Trademark / Brand"), type }; }).filter((item) => item.handle);
 const names = [...parse(process.env.RESERVED_NAMES || defaults.reserved, 0), ...parse(process.env.PROTECTED_NAMES || defaults.protected, 1)];
 const programId = new PublicKey(programIdText);
 const authority = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(authorityPath, "utf8"))));

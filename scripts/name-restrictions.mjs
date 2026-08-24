@@ -1,4 +1,5 @@
 export const CRITICAL_PROTECTED_GROUPS = {
+  protocol: ["solhandle"],
   bigTech: ["apple", "google", "microsoft", "amazon", "samsung", "sony", "nvidia", "intel", "amd", "ibm", "oracle", "adobe", "salesforce", "cloudflare", "github", "gitlab"],
   socialMessaging: ["meta", "facebook", "instagram", "whatsapp", "threads", "twitter", "x", "tiktok", "youtube", "snapchat", "linkedin", "discord", "telegram", "reddit", "twitch"],
   ai: ["openai", "chatgpt", "anthropic", "claude", "gemini", "deepmind", "perplexity", "midjourney"],
@@ -31,5 +32,6 @@ export const SOLANA_RESERVED_NAMES = [
   ["pumpfun", "pump.fun"], ["dexscreener", "DEX Screener"]
 ].map(([handle, reservedFor]) => ({ handle, reservedFor }));
 
+export const LEGACY_NAMES_TO_RELEASE = "3m,accenture,airbus,airfrance,aldi,allianz,aramco,armani,astrazeneca,audemarspiguet,axa,balenciaga,bayer,bentley,bestbuy,blackrock,bloomberg,boeing,bookingcom,bp,britishairways,budweiser,burgerking,byd,calvinklein,carrefour,caterpillar,chevrolet,chevron,cisco,colgate,corona,costco,danone,dell,dhl,dominos,elililly,emirates,espn,etsy,exxonmobil,fedex,ford,geaerospace,gillette,handm,harleydavidson,heineken,herms,hilton,homedepot,honda,hp,huawei,hyatt,hyundai,johndeere,kfc,kia,klm,lego,lexus,lidl,loral,lufthansa,lululemon,marriott,maserati,mclaren,monster,nasdaq,nescaf,nespresso,nestl,newbalance,nissan,novartis,novonordisk,omega,pampers,pandora,patekphilippe,pfizer,philips,pinterest,puma,qatarairways,qualcomm,ralphlauren,rangerover,redbull,reuters,roche,ryanair,sap,schneiderelectric,sephora,shell,siemens,subway,tencent,tesco,thenewyorktimes,tiffanyandco,tommyhilfiger,totalenergies,tripadvisor,underarmour,uniqlo,ups,versace,volvo,wechat,wise,xiaomi,zara,zoom".split(",");
 export const DEFAULT_PROTECTED_NAMES = CRITICAL_PROTECTED_NAMES.map(({ handle, reservedFor }) => `${handle}|${reservedFor}`).join(",");
 export const DEFAULT_RESERVED_NAMES = SOLANA_RESERVED_NAMES.map(({ handle, reservedFor }) => `${handle}|${reservedFor}`).join(",");
