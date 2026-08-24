@@ -40,6 +40,31 @@ export async function setPrimarySolHandle({ handle, wallet, sendTransaction }) {
   return { signature };
 }
 
+export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, wallet, sendTransaction }) {
+  const recipient = new PublicKey(recipientWallet);
+  const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
+  const configInfo = await connection.getAccountInfo(config, "confirmed");
+  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Devnet.");
+  const protocol = decodeSolHandleConfig(configInfo.data);
+  if (!protocol.authority.equals(wallet)) throw new Error("The connected wallet is not the protocol authority.");
+  const seed = encoder.encode(handle);
+  const [restriction] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.restriction), seed], PROGRAM_ID);
+  const [record] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.handle), seed], PROGRAM_ID);
+  const [asset] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.asset), seed], PROGRAM_ID);
+  const hash = await instructionHash("claim_restricted_handle");
+  const instruction = new TransactionInstruction({ programId: PROGRAM_ID, keys: [
+    { pubkey: wallet, isSigner: true, isWritable: true }, { pubkey: config, isSigner: false, isWritable: true },
+    { pubkey: restriction, isSigner: false, isWritable: true }, { pubkey: record, isSigner: false, isWritable: true },
+    { pubkey: asset, isSigner: false, isWritable: true }, { pubkey: recipient, isSigner: false, isWritable: false },
+    { pubkey: protocol.collection, isSigner: false, isWritable: true }, { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    { pubkey: MPL_CORE, isSigner: false, isWritable: false }
+  ], data: bytes(hash.slice(0, 8), stringBytes(handle), stringBytes(uri)) });
+  const { blockhash } = await connection.getLatestBlockhash("confirmed");
+  const signature = await sendTransaction(new Transaction({ feePayer: wallet, recentBlockhash: blockhash }).add(instruction), connection);
+  await connection.confirmTransaction(signature, "confirmed");
+  return { signature, asset: asset.toBase58() };
+}
+
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sendTransaction }) {
   const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
   const configInfo = await connection.getAccountInfo(config, "confirmed");

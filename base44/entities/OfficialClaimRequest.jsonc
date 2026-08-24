@@ -1,0 +1,78 @@
+{
+  "name": "OfficialClaimRequest",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "proof_url": {
+      "type": "string"
+    },
+    "recipient_wallet": {
+      "type": "string"
+    },
+    "statement": {
+      "type": "string"
+    },
+    "reserved_for": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "rejected",
+        "minted"
+      ]
+    },
+    "mint_signature": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "handle",
+    "organization",
+    "contact_name",
+    "contact_email",
+    "proof_url",
+    "recipient_wallet",
+    "statement",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "data.status": "pending"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

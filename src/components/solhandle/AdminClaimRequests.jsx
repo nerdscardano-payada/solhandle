@@ -1,0 +1,33 @@
+import { useEffect, useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { base44 } from "@/api/base44Client";
+import { buildHandlePngBlob } from "@/lib/buildHandlePng";
+import { claimRestrictedSolHandle } from "@/lib/mintSolHandle";
+import AdminClaimRequestCard from "@/components/solhandle/AdminClaimRequestCard";
+
+export default function AdminClaimRequests() {
+  const { publicKey, sendTransaction } = useWallet();
+  const [requests, setRequests] = useState([]); const [busy, setBusy] = useState(""); const [error, setError] = useState("");
+  const load = async () => setRequests(await base44.entities.OfficialClaimRequest.list("-created_date", 50));
+  useEffect(() => { load(); }, []);
+  const reject = async (request) => {
+    setBusy(request.id); setError("");
+    try { await base44.entities.OfficialClaimRequest.update(request.id, { status: "rejected", reviewed_at: new Date().toISOString() }); await load(); }
+    catch (caught) { setError(caught.message || "Request could not be rejected."); }
+    finally { setBusy(""); }
+  };
+  const mint = async (request) => {
+    setBusy(request.id); setError("");
+    try {
+      if (!publicKey) { window.dispatchEvent(new Event("solhandle:connect-wallet")); throw new Error("Connect the protocol authority wallet, then try again."); }
+      const png = await buildHandlePngBlob(request.handle);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: png });
+      const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle: request.handle, image_url: file_url });
+      const result = await claimRestrictedSolHandle({ handle: request.handle, uri: upload.data.uri, recipientWallet: request.recipient_wallet, wallet: publicKey, sendTransaction });
+      await base44.entities.OfficialClaimRequest.update(request.id, { status: "minted", mint_signature: result.signature, asset_address: result.asset, reviewed_at: new Date().toISOString() });
+      await load();
+    } catch (caught) { setError(caught.message || "Official claim failed."); }
+    finally { setBusy(""); }
+  };
+  return <section className="card-glow mt-8"><div><h2 className="font-semibold text-white">Official claim requests</h2><p className="mt-1 text-sm text-slate-500">Verify proof before signing with the protocol authority wallet.</p></div>{error && <p className="mt-4 rounded-lg border border-rose-300/20 bg-rose-300/10 p-3 text-sm text-rose-200">{error}</p>}<div className="mt-5 grid gap-4">{requests.length ? requests.map((request) => <AdminClaimRequestCard key={request.id} request={request} busy={busy === request.id} onMint={mint} onReject={reject}/>) : <p className="text-sm text-slate-400">No official claim requests yet.</p>}</div></section>;
+}
