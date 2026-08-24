@@ -49,19 +49,16 @@ const results = [];
 for (const item of names) {
   const [restriction] = PublicKey.findProgramAddressSync([Buffer.from("restriction"), encoder.encode(item.handle)], programId);
   const existed = Boolean(await connection.getAccountInfo(restriction, "confirmed"));
+  if (existed) {
+    results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: "skipped", restriction: restriction.toBase58() });
+    continue;
+  }
   const data = Uint8Array.from([...discriminator, ...stringBytes(item.handle), item.type, ...stringBytes(item.reservedFor), 1]);
   const instruction = new TransactionInstruction({
-    programId,
-    keys: [
-      { pubkey: authority.publicKey, isSigner: true, isWritable: true },
-      { pubkey: config, isSigner: false, isWritable: false },
-      { pubkey: restriction, isSigner: false, isWritable: true },
-      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
-    ],
-    data
-  });
+...
   const signature = await sendWithRetry(new Transaction().add(instruction));
-  results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: existed ? "updated" : "created", restriction: restriction.toBase58(), signature });
+  results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: "created", restriction: restriction.toBase58(), signature });
+  await new Promise((resolve) => setTimeout(resolve, 3500));
 }
 
-console.log(JSON.stringify({ network: "devnet", restrictions: results.length, created: results.filter((item) => item.status === "created").length, updated: results.filter((item) => item.status === "updated").length, results }, null, 2));
+console.log(JSON.stringify({ network: "devnet", restrictions: results.length, created: results.filter((item) => item.status === "created").length, skipped: results.filter((item) => item.status === "skipped").length, results }, null, 2));
