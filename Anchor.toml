@@ -6,13 +6,13 @@ resolution = true
 skip-lint = true
 
 [programs.localnet]
-solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
+solhandle = "ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
 
 [programs.devnet]
-solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
+solhandle = "ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
 
 [programs.mainnet]
-solhandle = "FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5"
+solhandle = "ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
 
 [provider]
 cluster = "Devnet"

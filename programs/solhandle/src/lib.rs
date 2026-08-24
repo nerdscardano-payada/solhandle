@@ -12,7 +12,7 @@ const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 const MAX_RESERVED_FOR_LENGTH: usize = 80;
 
-declare_id!("FQ5yTNhKMbdTYbAcAD4YjcdwRhsFroYN4UpvXbAFuCK5");
+declare_id!("ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT");
 
 #[program]
 pub mod solhandle {
@@ -57,7 +57,7 @@ pub mod solhandle {
         require!(!is_active_restriction(&ctx.accounts.restriction)?, SolHandleError::HandleRestricted);
         let price = price_for_handle(&ctx.accounts.config, &ctx.accounts.price_override, &args.handle)?; require!(price <= args.max_price_lamports, SolHandleError::PriceLimitExceeded);
         system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.payer.to_account_info(), to: ctx.accounts.treasury.to_account_info() }), price)?;
-        create_handle_asset(&ctx.accounts.mpl_core_program, &ctx.accounts.asset, &ctx.accounts.collection, &ctx.accounts.payer, &ctx.accounts.payer.to_account_info(), &ctx.accounts.system_program, &args.handle, args.uri, ctx.bumps.asset)?;
+        create_handle_asset(&ctx.accounts.mpl_core_program, &ctx.accounts.asset, &ctx.accounts.collection, &ctx.accounts.config, &ctx.accounts.payer, &ctx.accounts.payer.to_account_info(), &ctx.accounts.system_program, &args.handle, args.uri, ctx.bumps.asset)?;
         ctx.accounts.handle_record.set_inner(HandleRecord { handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.payer.key(), minted_at: Clock::get()?.unix_timestamp, official_claim: false, bump: ctx.bumps.handle_record });
         ctx.accounts.config.total_minted = ctx.accounts.config.total_minted.checked_add(1).ok_or(SolHandleError::MathOverflow)?;
         emit!(HandleMinted { handle: args.handle, asset: ctx.accounts.asset.key(), owner: ctx.accounts.payer.key(), price_lamports: price, official_claim: false }); Ok(())
@@ -67,7 +67,7 @@ pub mod solhandle {
         validate_handle(&args.handle)?; require!(!ctx.accounts.config.paused, SolHandleError::ProtocolPaused);
         require!(ctx.accounts.config.protocol_version == 2, SolHandleError::ProtocolVersionMismatch); require!(args.uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
         require!(ctx.accounts.restriction.active, SolHandleError::RestrictionInactive);
-        create_handle_asset(&ctx.accounts.mpl_core_program, &ctx.accounts.asset, &ctx.accounts.collection, &ctx.accounts.authority, &ctx.accounts.recipient.to_account_info(), &ctx.accounts.system_program, &args.handle, args.uri, ctx.bumps.asset)?;
+        create_handle_asset(&ctx.accounts.mpl_core_program, &ctx.accounts.asset, &ctx.accounts.collection, &ctx.accounts.config, &ctx.accounts.authority, &ctx.accounts.recipient.to_account_info(), &ctx.accounts.system_program, &args.handle, args.uri, ctx.bumps.asset)?;
         ctx.accounts.handle_record.set_inner(HandleRecord { handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.recipient.key(), minted_at: Clock::get()?.unix_timestamp, official_claim: true, bump: ctx.bumps.handle_record });
         ctx.accounts.restriction.active = false;
         ctx.accounts.config.total_minted = ctx.accounts.config.total_minted.checked_add(1).ok_or(SolHandleError::MathOverflow)?;
@@ -75,9 +75,22 @@ pub mod solhandle {
     }
 }
 
-fn create_handle_asset<'info>(mpl_core_program: &UncheckedAccount<'info>, asset: &UncheckedAccount<'info>, collection: &Account<'info, BaseCollectionV1>, payer: &Signer<'info>, owner: &AccountInfo<'info>, system_program: &Program<'info, System>, handle: &String, uri: String, bump: u8) -> Result<()> {
-    let asset_seeds: &[&[u8]] = &[b"asset", handle.as_bytes(), &[bump]];
-    CreateV2CpiBuilder::new(&mpl_core_program.to_account_info()).asset(&asset.to_account_info()).collection(Some(&collection.to_account_info())).payer(&payer.to_account_info()).owner(Some(owner)).system_program(&system_program.to_account_info()).name(format!("@{}", handle)).uri(uri).invoke_signed(&[asset_seeds])
+fn create_handle_asset<'info>(mpl_core_program: &UncheckedAccount<'info>, asset: &UncheckedAccount<'info>, collection: &Account<'info, BaseCollectionV1>, config: &Account<'info, Config>, payer: &Signer<'info>, owner: &AccountInfo<'info>, system_program: &Program<'info, System>, handle: &String, uri: String, bump: u8) -> Result<()> {
+    let asset_bump = [bump];
+    let config_bump = [config.bump];
+    let asset_seeds: &[&[u8]] = &[b"asset", handle.as_bytes(), &asset_bump];
+    let config_seeds: &[&[u8]] = &[b"config", &config_bump];
+    CreateV2CpiBuilder::new(&mpl_core_program.to_account_info())
+        .asset(&asset.to_account_info())
+        .collection(Some(&collection.to_account_info()))
+        .authority(Some(&config.to_account_info()))
+        .payer(&payer.to_account_info())
+        .owner(Some(owner))
+        .system_program(&system_program.to_account_info())
+        .name(format!("@{}", handle))
+        .uri(uri)
+        .invoke_signed(&[asset_seeds, config_seeds])?;
+    Ok(())
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize)] pub struct InitializeArgs { pub collection_uri: String, pub treasury: Pubkey, pub rewards_vault: Pubkey }

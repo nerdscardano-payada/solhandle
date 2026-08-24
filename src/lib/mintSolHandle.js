@@ -43,7 +43,7 @@ export async function setPrimarySolHandle({ handle, wallet, sendTransaction }) {
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sendTransaction }) {
   const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
   const configInfo = await connection.getAccountInfo(config, "confirmed");
-  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V1 is not initialized on Solana.");
+  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Devnet.");
   const protocol = decodeSolHandleConfig(configInfo.data);
   if (protocol.protocolVersion !== PROTOCOL_VERSION) throw new Error(`Protocol version mismatch: website expects V${PROTOCOL_VERSION}.`);
   if (protocol.paused) throw new Error("SolHandle minting is currently paused.");
