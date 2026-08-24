@@ -16,11 +16,25 @@ export default async function(req: Request): Promise<Response> {
     const keypair = storedKeypair.startsWith('[') ? bs58.encode(Uint8Array.from(JSON.parse(storedKeypair))) : storedKeypair;
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).mainnet();
+    const irysGateway = 'https://gateway.irys.xyz';
 
-    // Prefer a PNG produced on the frontend (wallets/marketplaces handle raster reliably);
-    // fall back to generating a deterministic SVG when none is supplied.
-    let imageUrl = body.image_url;
-    if (!imageUrl) {
+    // Store the generated PNG on Irys as well; Base44's upload is only the staging source.
+    let imageUrl = '';
+    if (body.image_url) {
+      const sourceUrl = new URL(String(body.image_url));
+      const allowedHost = sourceUrl.hostname === 'base44.app' || sourceUrl.hostname.endsWith('.base44.app') || sourceUrl.hostname === 'media.base44.com' || sourceUrl.hostname.endsWith('.wixstatic.com');
+      if (sourceUrl.protocol !== 'https:' || !allowedHost) return Response.json({ error: 'Invalid image source' }, { status: 400 });
+      const imageResponse = await fetch(sourceUrl);
+      if (!imageResponse.ok) throw new Error('Generated PNG could not be loaded');
+      const imageReceipt = await uploader.upload(new Uint8Array(await imageResponse.arrayBuffer()), {
+        tags: [
+          { name: 'Content-Type', value: 'image/png' },
+          { name: 'App-Name', value: 'SolHandle' },
+          { name: 'Handle', value: handle }
+        ]
+      });
+      imageUrl = `${irysGateway}/${imageReceipt.id}`;
+    } else {
       const svgBytes = buildHandleCardSvg(handle);
       const svgReceipt = await uploader.upload(svgBytes, {
         tags: [
@@ -29,7 +43,7 @@ export default async function(req: Request): Promise<Response> {
           { name: 'Handle', value: handle }
         ]
       });
-      imageUrl = `https://arweave.net/${svgReceipt.id}`;
+      imageUrl = `${irysGateway}/${svgReceipt.id}`;
     }
 
     const length = handle.length;
@@ -40,7 +54,7 @@ export default async function(req: Request): Promise<Response> {
     const metadata = {
       name: `@${handle}`,
       symbol: 'SOLHANDLE',
-      description: `The official, permanent SolHandle identity NFT for @${handle} on Solana Mainnet.`,
+      description: `The official SolHandle identity NFT for @${handle} on Solana Devnet.`,
       image: imageUrl,
       external_url: `https://solhandle.base44.app/${handle}`,
       attributes: [
@@ -49,7 +63,7 @@ export default async function(req: Request): Promise<Response> {
         { trait_type: 'Rarity', value: rarity },
         { trait_type: 'Name Class', value: nameClass },
         { trait_type: 'Character Type', value: characterType },
-        { trait_type: 'Network', value: 'Solana Mainnet' }
+        { trait_type: 'Network', value: 'Solana Devnet' }
       ],
       properties: { category: 'image', creators: [] }
     };
