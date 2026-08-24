@@ -33,6 +33,18 @@ const discriminator = createHash("sha256").update("global:set_name_restriction")
 const configInfo = await connection.getAccountInfo(config, "confirmed");
 if (!configInfo || !configInfo.owner.equals(programId)) throw new Error("No initialized SolHandle V2 Config was found for this Devnet program ID.");
 
+const sendWithRetry = async (transaction, maxAttempts = 5) => {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await sendAndConfirmTransaction(connection, transaction, [authority], { commitment: "confirmed" });
+    } catch (error) {
+      const retryable = String(error?.message || error).includes("Blockhash not found");
+      if (!retryable || attempt === maxAttempts) throw error;
+      await new Promise((resolve) => setTimeout(resolve, attempt * 3000));
+    }
+  }
+};
+
 const results = [];
 for (const item of names) {
   const [restriction] = PublicKey.findProgramAddressSync([Buffer.from("restriction"), encoder.encode(item.handle)], programId);
@@ -48,7 +60,7 @@ for (const item of names) {
     ],
     data
   });
-  const signature = await sendAndConfirmTransaction(connection, new Transaction().add(instruction), [authority], { commitment: "confirmed" });
+  const signature = await sendWithRetry(new Transaction().add(instruction));
   results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: existed ? "updated" : "created", restriction: restriction.toBase58(), signature });
 }
 
