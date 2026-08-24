@@ -17,6 +17,12 @@ export function claimMessage(request: Record<string, unknown>) {
   ].join("\n");
 }
 
+export async function findClaim(entity: any, id: unknown) {
+  const value = String(id || "");
+  if (!/^[a-f0-9]{24}$/i.test(value)) return null;
+  try { return await entity.get(value); } catch { return null; }
+}
+
 export function verifiedStatus(domainVerified: boolean, walletVerified: boolean) {
   if (domainVerified && walletVerified) return "verified";
   if (domainVerified) return "domain_verified";

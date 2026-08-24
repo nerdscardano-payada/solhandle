@@ -1,11 +1,11 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { normalizeDomain, verifiedStatus } from '../../shared/officialClaim.ts';
+import { findClaim, normalizeDomain, verifiedStatus } from '../../shared/officialClaim.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));
-    const request = await base44.asServiceRole.entities.OfficialClaimRequest.get(String(body.request_id || ''));
+    const request = await findClaim(base44.asServiceRole.entities.OfficialClaimRequest, body.request_id);
     if (!request || ['rejected', 'minted'].includes(request.status)) return Response.json({ error: 'Claim request not found.' }, { status: 404 });
     if (new Date(request.challenge_expires_at).getTime() <= Date.now()) return Response.json({ error: 'The verification challenge has expired.' }, { status: 410 });
     const domain = normalizeDomain(request.official_domain);
