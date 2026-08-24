@@ -29,7 +29,12 @@ export const SOLANA_RESERVED_NAMES = [
   ["drift", "Drift"], ["meteora", "Meteora"], ["jito", "Jito"], ["sanctum", "Sanctum"], ["marinade", "Marinade"],
   ["pyth", "Pyth Network"], ["pythnetwork", "Pyth Network"], ["metaplex", "Metaplex"], ["magiceden", "Magic Eden"],
   ["tensor", "Tensor"], ["helius", "Helius"], ["squads", "Squads"], ["wormhole", "Wormhole"],
-  ["pumpfun", "pump.fun"], ["dexscreener", "DEX Screener"]
+  ["pumpfun", "pump.fun"], ["dexscreener", "DEX Screener"], ["solscan", "Solscan"], ["birdeye", "Birdeye"],
+  ["switchboard", "Switchboard"], ["marginfi", "marginfi"], ["save", "Save"], ["solend", "Solend"],
+  ["phoenix", "Phoenix"], ["tiplink", "TipLink"], ["dialect", "Dialect"], ["lightprotocol", "Light Protocol"],
+  ["triton", "Triton One"], ["tritonone", "Triton One"], ["solanamobile", "Solana Mobile"], ["orb", "Orb"],
+  ["quicknode", "QuickNode"], ["syndica", "Syndica"], ["ironforge", "Ironforge"], ["perena", "Perena"],
+  ["lifinity", "Lifinity"], ["drip", "DRiP"], ["exchangeart", "Exchange Art"], ["solanapay", "Solana Pay"]
 ].map(([handle, reservedFor]) => ({ handle, reservedFor }));
 
 export const LEGACY_NAMES_TO_RELEASE = "3m,accenture,airbus,airfrance,aldi,allianz,aramco,armani,astrazeneca,audemarspiguet,axa,balenciaga,bayer,bentley,bestbuy,blackrock,bloomberg,boeing,bookingcom,bp,britishairways,budweiser,burgerking,byd,calvinklein,carrefour,caterpillar,chevrolet,chevron,cisco,colgate,corona,costco,danone,dell,dhl,dominos,elililly,emirates,espn,etsy,exxonmobil,fedex,ford,geaerospace,gillette,handm,harleydavidson,heineken,herms,hilton,homedepot,honda,hp,huawei,hyatt,hyundai,johndeere,kfc,kia,klm,lego,lexus,lidl,loral,lufthansa,lululemon,marriott,maserati,mclaren,monster,nasdaq,nescaf,nespresso,nestl,newbalance,nissan,novartis,novonordisk,omega,pampers,pandora,patekphilippe,pfizer,philips,pinterest,puma,qatarairways,qualcomm,ralphlauren,rangerover,redbull,reuters,roche,ryanair,sap,schneiderelectric,sephora,shell,siemens,subway,tencent,tesco,thenewyorktimes,tiffanyandco,tommyhilfiger,totalenergies,tripadvisor,underarmour,uniqlo,ups,versace,volvo,wechat,wise,xiaomi,zara,zoom".split(",");
