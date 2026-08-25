@@ -22,6 +22,12 @@ function loadImage(src, crossOrigin) {
   });
 }
 
+let backgroundImagePromise;
+const getBackgroundImage = () => {
+  if (!backgroundImagePromise) backgroundImagePromise = loadImage(BG_URL, true).catch(() => null);
+  return backgroundImagePromise;
+};
+
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -49,21 +55,17 @@ function drawSolanaLogo(ctx, cx, top, targetHeight) {
   ctx.restore();
 }
 
-export async function buildHandlePngBlob(handle) {
+async function renderHandlePngBlob(handle, outputSize) {
   const clean = String(handle).replace(/^@/, "").toLowerCase();
   const W = 1080, H = 1080;
   const canvas = document.createElement("canvas");
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = outputSize;
+  canvas.height = outputSize;
   const ctx = canvas.getContext("2d");
+  ctx.scale(outputSize / W, outputSize / H);
 
   // --- Background wave artwork (same asset the on-site card uses) ---
-  let bg = null;
-  try {
-    bg = await loadImage(BG_URL, true);
-  } catch (_) {
-    bg = null;
-  }
+  const bg = await getBackgroundImage();
   if (bg && bg.width > 0) {
     const scale = Math.max(W / bg.width, H / bg.height);
     const width = bg.width * scale;
@@ -183,4 +185,15 @@ export async function buildHandlePngBlob(handle) {
       "image/png"
     );
   });
+}
+
+const pngCache = new Map();
+export function buildHandlePngBlob(handle, outputSize = 1080) {
+  const clean = String(handle).replace(/^@/, "").toLowerCase();
+  const key = `${outputSize}:${clean}`;
+  if (!pngCache.has(key)) {
+    if (pngCache.size >= 100) pngCache.delete(pngCache.keys().next().value);
+    pngCache.set(key, renderHandlePngBlob(clean, outputSize));
+  }
+  return pngCache.get(key);
 }

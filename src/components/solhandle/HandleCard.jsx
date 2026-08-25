@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { buildHandlePngBlob } from "@/lib/buildHandlePng";
 
-// The canonical SolHandle card — renders the exact same PNG that is minted,
-// so the homepage, handle info page and My Handles all look byte-identical
-// to what appears in the user's wallet.
+// The canonical SolHandle card design, rendered at a web-optimized resolution.
+// Minting still uses the full-resolution version of the same renderer.
 export default function HandleCard({ handle, display, to, className }) {
   const clean = String(handle || "").replace(/^@/, "").toLowerCase();
   const [url, setUrl] = useState(null);
@@ -15,7 +14,7 @@ export default function HandleCard({ handle, display, to, className }) {
     let cancelled = false;
     setFailed(false);
     setUrl(null);
-    buildHandlePngBlob(clean)
+    buildHandlePngBlob(clean, 540)
       .then((file) => {
         const objectUrl = URL.createObjectURL(file);
         if (cancelled) {
