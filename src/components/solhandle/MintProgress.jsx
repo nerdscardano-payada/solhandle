@@ -1,9 +1,9 @@
 import { CheckCircle2, CircleAlert, LoaderCircle } from "lucide-react";
 
 const steps = [
-  ["metadata", "Metadata publiceren"],
-  ["wallet", "Wallet bevestiging"],
-  ["confirmed", "Claim bevestigd"]
+  ["metadata", "Publishing metadata"],
+  ["wallet", "Wallet confirmation"],
+  ["confirmed", "Claim confirmed"]
 ];
 
 export default function MintProgress({ phase, error }) {
