@@ -1,9 +1,9 @@
 const items = [
   ["Forward resolution", "Working on Devnet", "@handle → current Core NFT owner"],
-  ["Reverse resolution", "Proof pending", "Implemented; needs a live Devnet Primary Handle for a positive end-to-end test"],
+  ["Reverse resolution", "Working on Devnet", "Live verified wallet → @bullhead Primary Handle proof"],
   ["Destination safety", "Working on Devnet", "System wallet / unfunded on-curve validation"],
   ["Forward REST endpoint", "Working on Devnet", "Live positive proof; chain remains authoritative"],
-  ["Reverse REST endpoint", "Proof pending", "Correctly rejects wallets without a verified primary handle"],
+  ["Reverse REST endpoint", "Working on Devnet", "Returns only a currently owned and verified Primary Handle"],
   ["@solhandle/sdk on npm", "Not published", "Source implementation exists; package release pending"],
   ["Native wallet support", "Not integrated", "Requires review and adoption by wallet providers"]
 ];

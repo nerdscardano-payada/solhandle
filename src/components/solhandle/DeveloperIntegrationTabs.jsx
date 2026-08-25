@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const content = {
   sdk: { title: "SDK source · Devnet ready", note: "The resolver module is working in this app. @ansem is only an example—replace it with any SolHandle you want to resolve. Publication as @solhandle/sdk on npm is still pending.", code: 'const result = await resolveHandle("@ansem");\nif (!result.safeForNativeSol) throw new Error("Unsafe recipient");\nconsole.log(result.address);' },
-  api: { title: "REST convenience layer · Devnet", note: "Forward resolution is positively verified. Reverse resolution is implemented and correctly rejects unverified or stale primary records, but still awaits a positive live Primary Handle test.", code: 'POST /functions/resolveSolHandle\n{ "handle": "@ansem" }\n\nPOST /functions/reverseResolveSolHandle\n{ "address": "7xQu...R20q" }' },
+  api: { title: "REST convenience layer · Devnet", note: "Forward and reverse resolution are positively verified on Devnet. Reverse lookup returns a handle only when the wallet still owns its Primary Handle asset.", code: 'POST /functions/resolveSolHandle\n{ "handle": "@ansem" }\n\nPOST /functions/reverseResolveSolHandle\n{ "address": "7xQu...R20q" }' },
   chain: { title: "Direct on-chain · Working", note: "No SolHandle website or database is required. Read the deterministic HandleRecord and Core Asset directly from an RPC node.", code: 'handle PDA: ["handle", normalizedHandle]\nasset PDA: ["asset", normalizedHandle]\nprimary PDA: ["primary", wallet]\n\nProgram: ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT' }
 };
 export default function DeveloperIntegrationTabs() {
