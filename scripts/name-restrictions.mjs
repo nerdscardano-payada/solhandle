@@ -1,5 +1,4 @@
 export const CRITICAL_PROTECTED_GROUPS = {
-  protocol: ["solhandle"],
   bigTech: ["apple", "google", "microsoft", "amazon", "samsung", "sony", "nvidia", "intel", "amd", "ibm", "oracle", "adobe", "salesforce", "cloudflare", "github", "gitlab"],
   socialMessaging: ["meta", "facebook", "instagram", "whatsapp", "threads", "twitter", "x", "tiktok", "youtube", "snapchat", "linkedin", "discord", "telegram", "reddit", "twitch"],
   ai: ["openai", "chatgpt", "anthropic", "claude", "gemini", "deepmind", "perplexity", "midjourney"],
@@ -22,7 +21,7 @@ export const CRITICAL_PROTECTED_NAMES = Object.entries(CRITICAL_PROTECTED_GROUPS
 );
 
 export const SOLANA_RESERVED_NAMES = [
-  ["solana", "Solana"], ["sol", "Solana"], ["solanafoundation", "Solana Foundation"], ["solanalabs", "Solana Labs"],
+  ["solhandle", "SolHandle"], ["solana", "Solana"], ["sol", "Solana"], ["solanafoundation", "Solana Foundation"], ["solanalabs", "Solana Labs"],
   ["anza", "Anza"], ["firedancer", "Firedancer"], ["phantom", "Phantom"], ["phantomwallet", "Phantom"],
   ["solflare", "Solflare"], ["solflarewallet", "Solflare"], ["backpack", "Backpack"], ["backpackwallet", "Backpack"],
   ["jupiter", "Jupiter"], ["jup", "Jupiter"], ["raydium", "Raydium"], ["orca", "Orca"], ["kamino", "Kamino"],

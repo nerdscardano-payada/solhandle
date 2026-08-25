@@ -16,7 +16,8 @@ const parse = (value, type) => String(value).split(",").map((entry) => {
   const handle = rawHandle.trim().replace(/^@+/, "").toLowerCase();
   return { handle, reservedFor: reservedFor || (type === 0 ? handle : "Trademark / Brand"), type };
 }).filter((item) => item.handle);
-const names = [...parse(process.env.RESERVED_NAMES || defaults.reserved, 0), ...parse(process.env.PROTECTED_NAMES || defaults.protected, 1)];
+const names = [...parse(process.env.RESERVED_NAMES ?? defaults.reserved, 0), ...parse(process.env.PROTECTED_NAMES ?? defaults.protected, 1)];
+const forceUpdateNames = new Set(String(process.env.FORCE_UPDATE_NAMES || "").split(",").map((handle) => handle.trim().replace(/^@+/, "").toLowerCase()).filter(Boolean));
 const programId = new PublicKey(programIdText);
 const authority = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(authorityPath, "utf8"))));
 const connection = new Connection(rpcUrl, "confirmed");
@@ -66,12 +67,13 @@ const results = [];
 for (const item of names) {
   const [restriction] = PublicKey.findProgramAddressSync([Buffer.from("restriction"), encoder.encode(item.handle)], programId);
   const existed = Boolean(await rpcWithRetry(() => connection.getAccountInfo(restriction, "confirmed")));
-  if (existed) {
+  if (existed && !forceUpdateNames.has(item.handle)) {
     results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: "skipped", restriction: restriction.toBase58() });
     console.log(`@${item.handle}: bestaat al; volgende controle over ${ITEM_DELAY_MS / 1000}s.`);
     await sleep(ITEM_DELAY_MS);
     continue;
   }
+  if (existed) console.log(`@${item.handle}: bestaande restrictie wordt bijgewerkt naar ${item.type === 0 ? "RESERVED" : "PROTECTED"}.`);
   const data = Uint8Array.from([...discriminator, ...stringBytes(item.handle), item.type, ...stringBytes(item.reservedFor), 1]);
   const instruction = new TransactionInstruction({
 ...
