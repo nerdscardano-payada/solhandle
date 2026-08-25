@@ -18,7 +18,11 @@ export default async function(req: Request): Promise<Response> {
       if (!/^[a-z0-9]{1,20}$/.test(mint.handle)) continue;
 
       const owner = await getAssetOwner(rpcUrl, mint.assetAddress, mint.owner);
-      const existing = await base44.asServiceRole.entities.HandleIndex.filter({ handle: mint.handle }, '-updated_date', 1);
+      const [existing, premiumRows] = await Promise.all([
+        base44.asServiceRole.entities.HandleIndex.filter({ handle: mint.handle }, '-updated_date', 1),
+        base44.asServiceRole.entities.PremiumHandle.filter({ handle: mint.handle }, '-updated_date', 1)
+      ]);
+      const length = mint.handle.length;
       const record = {
         handle: mint.handle,
         display_handle: `@${mint.handle}`,
@@ -31,6 +35,10 @@ export default async function(req: Request): Promise<Response> {
         mint_slot: transaction.slot,
         minted_at: new Date((transaction.blockTime || Math.floor(Date.now() / 1000)) * 1000).toISOString(),
         last_chain_sync: new Date().toISOString(),
+        rarity: length === 1 ? 'LEGENDARY' : length === 2 ? 'ULTRA_RARE' : length === 3 ? 'RARE' : length === 4 ? 'UNCOMMON' : 'STANDARD',
+        name_class: premiumRows.length ? 'Premium' : 'Standard',
+        length,
+        character_type: /^\d+$/.test(mint.handle) ? 'NUMBERS' : /^[a-z]+$/.test(mint.handle) ? 'LETTERS' : 'ALPHANUMERIC',
       };
       if (existing[0]) await base44.asServiceRole.entities.HandleIndex.update(existing[0].id, record);
       else await base44.asServiceRole.entities.HandleIndex.create(record);

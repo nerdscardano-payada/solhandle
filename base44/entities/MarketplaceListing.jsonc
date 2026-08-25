@@ -1,0 +1,47 @@
+{
+  "name": "MarketplaceListing",
+  "type": "object",
+  "properties": {
+    "asset_address": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "marketplace": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "listing_url": {
+      "type": "string"
+    },
+    "seller": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "last_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "asset_address",
+    "marketplace",
+    "price",
+    "currency",
+    "listing_url",
+    "status",
+    "last_verified_at"
+  ]
+}

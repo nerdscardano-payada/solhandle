@@ -45,6 +45,37 @@
     "last_chain_sync": {
       "type": "string",
       "format": "date-time"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": [
+        "LEGENDARY",
+        "ULTRA_RARE",
+        "RARE",
+        "UNCOMMON",
+        "STANDARD"
+      ]
+    },
+    "name_class": {
+      "type": "string",
+      "enum": [
+        "Premium",
+        "Standard"
+      ]
+    },
+    "length": {
+      "type": "number"
+    },
+    "character_type": {
+      "type": "string",
+      "enum": [
+        "LETTERS",
+        "NUMBERS",
+        "ALPHANUMERIC"
+      ]
+    },
+    "image_uri": {
+      "type": "string"
     }
   },
   "required": [
