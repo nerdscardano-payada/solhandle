@@ -75,8 +75,12 @@ for (const item of names) {
   }
   if (existed) console.log(`@${item.handle}: bestaande restrictie wordt bijgewerkt naar ${item.type === 0 ? "RESERVED" : "PROTECTED"}.`);
   const data = Uint8Array.from([...discriminator, ...stringBytes(item.handle), item.type, ...stringBytes(item.reservedFor), 1]);
-  const instruction = new TransactionInstruction({
-...
+  const instruction = new TransactionInstruction({ programId, keys: [
+    { pubkey: authority.publicKey, isSigner: true, isWritable: true },
+    { pubkey: config, isSigner: false, isWritable: false },
+    { pubkey: restriction, isSigner: false, isWritable: true },
+    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+  ], data });
   const signature = await sendWithRetry(new Transaction().add(instruction));
   results.push({ handle: item.handle, type: item.type === 0 ? "RESERVED" : "PROTECTED", status: "created", restriction: restriction.toBase58(), signature });
   console.log(`@${item.handle}: aangemaakt; volgende naam over ${ITEM_DELAY_MS / 1000}s.`);
