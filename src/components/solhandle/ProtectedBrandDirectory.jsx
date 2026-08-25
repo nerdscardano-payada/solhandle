@@ -30,7 +30,7 @@ export default function ProtectedBrandDirectory() {
   const protectedBrands = brands.filter((brand) => brand.restrictionType !== "RESERVED");
 
   return <div>
-    <div className="mb-7 flex items-center justify-between"><p className="text-sm text-slate-400">{solanaBrands.length} Solana brands · {protectedBrands.length} protected brands</p><p className="flex items-center gap-2 text-xs text-emerald-300"><ShieldCheck className="h-4 w-4"/>Anti-squatting protection</p></div>
+    <div className="mb-7 flex items-center justify-between"><p className="text-sm text-slate-400">Public protection registry</p><p className="flex items-center gap-2 text-xs text-emerald-300"><ShieldCheck className="h-4 w-4"/>Anti-squatting protection</p></div>
     <ProtectedBrandGroup title="Solana Brands" description="Reserved for free claim by verified Solana ecosystem organizations." brands={solanaBrands} onClaim={setSelectedBrand}/>
     <ProtectedBrandGroup title="Protected Brands" description="World-famous trademarks blocked from public registration under the impersonation policy." brands={protectedBrands} onClaim={setSelectedBrand}/>
     <OfficialClaimDialog open={Boolean(selectedBrand)} onOpenChange={(open) => !open && setSelectedBrand(null)} handle={selectedBrand?.handle || ""} restriction={{ reservedFor: selectedBrand?.reserved_for || "" }}/>
