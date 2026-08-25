@@ -1,0 +1,11 @@
+import { useState } from "react";
+
+const content = {
+  sdk: { title: "SDK source · Devnet ready", note: "The resolver module is working in this app. Publication as @solhandle/sdk on npm is still pending.", code: 'const result = await resolveHandle("@ansem");\nif (!result.safeForNativeSol) throw new Error("Unsafe recipient");\nconsole.log(result.address);' },
+  api: { title: "REST convenience layer · Devnet", note: "Forward resolution is positively verified. Reverse resolution is implemented and correctly rejects unverified or stale primary records, but still awaits a positive live Primary Handle test.", code: 'POST /functions/resolveSolHandle\n{ "handle": "@ansem" }\n\nPOST /functions/reverseResolveSolHandle\n{ "address": "7xQu...R20q" }' },
+  chain: { title: "Direct on-chain · Working", note: "No SolHandle website or database is required. Read the deterministic HandleRecord and Core Asset directly from an RPC node.", code: 'handle PDA: ["handle", normalizedHandle]\nasset PDA: ["asset", normalizedHandle]\nprimary PDA: ["primary", wallet]\n\nProgram: ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT' }
+};
+export default function DeveloperIntegrationTabs() {
+  const [tab, setTab] = useState("sdk"); const selected = content[tab];
+  return <section className="mt-10"><div className="flex flex-wrap gap-2">{[["sdk","SDK"],["api","REST API"],["chain","Direct On-chain"]].map(([value,label]) => <button key={value} onClick={() => setTab(value)} className={`rounded-full px-4 py-2 text-sm ${tab === value ? "bg-cyan-300 text-slate-950" : "border border-white/10 text-slate-300"}`}>{label}</button>)}</div><div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/70 p-5"><h2 className="text-xl font-semibold">{selected.title}</h2><p className="mt-2 text-sm leading-relaxed text-slate-400">{selected.note}</p><pre className="mt-5 overflow-x-auto rounded-xl bg-black/40 p-4 text-sm leading-relaxed text-cyan-100"><code>{selected.code}</code></pre></div></section>;
+}

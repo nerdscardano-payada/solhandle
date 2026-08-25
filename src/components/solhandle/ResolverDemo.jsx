@@ -1,0 +1,8 @@
+import { useState } from "react";
+import { resolveHandle } from "@/lib/solhandleSdk";
+
+export default function ResolverDemo() {
+  const [handle, setHandle] = useState("@bullhead"); const [result, setResult] = useState(null); const [loading, setLoading] = useState(false); const [error, setError] = useState("");
+  const resolve = async () => { setLoading(true); setError(""); setResult(null); try { const value = await resolveHandle(handle); if (!value) setError("This handle is not claimed on Devnet."); else setResult(value); } catch (caught) { setError(caught.message); } finally { setLoading(false); } };
+  return <div className="card-glow mt-8"><p className="text-xs font-semibold tracking-wider text-emerald-300">LIVE DEVNET PROOF</p><div className="mt-4 flex gap-2"><input value={handle} onChange={event => setHandle(event.target.value)} className="min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-900 px-3 py-2.5" aria-label="SolHandle"/><button onClick={resolve} disabled={loading} className="rounded-lg bg-cyan-300 px-4 py-2.5 font-semibold text-slate-950 disabled:opacity-50">{loading ? "Resolving…" : "Resolve"}</button></div>{error && <p className="mt-3 text-sm text-rose-300">{error}</p>}{result && <div className="mt-4 space-y-2 break-all text-sm text-slate-300"><p><span className="text-slate-500">Owner:</span> {result.address}</p><p><span className="text-slate-500">Official collection:</span> {result.collectionVerified ? "Verified" : "No"}</p><p><span className="text-slate-500">Native SOL:</span> {result.safeForNativeSol ? "Safe wallet destination" : `Blocked · ${result.destinationType}`}</p></div>}</div>;
+}

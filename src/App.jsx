@@ -22,6 +22,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import ProtectedBrands from '@/pages/ProtectedBrands';
 import Explore from '@/pages/Explore';
+import Developers from '@/pages/Developers';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/my-handles" element={<MyHandles />} />
         <Route path="/docs" element={<Docs />} />
+        <Route path="/developers" element={<Developers />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
         <Route path="/legal" element={<Legal />} />
