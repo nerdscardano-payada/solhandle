@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import OfficialClaimDialog from "@/components/solhandle/OfficialClaimDialog";
-import ProtectedBrandCard from "@/components/solhandle/ProtectedBrandCard";
+import ProtectedBrandGroup from "@/components/solhandle/ProtectedBrandGroup";
 
 export default function ProtectedBrandDirectory() {
   const [brands, setBrands] = useState([]);
@@ -26,9 +26,13 @@ export default function ProtectedBrandDirectory() {
   if (state === "error") return <p className="rounded-xl border border-rose-300/20 bg-rose-300/5 p-5 text-rose-200">The protected brand directory could not be loaded.</p>;
   if (!brands.length) return <p className="py-12 text-center text-slate-400">No protected brands are listed yet.</p>;
 
+  const solanaBrands = brands.filter((brand) => brand.restrictionType === "RESERVED");
+  const protectedBrands = brands.filter((brand) => brand.restrictionType !== "RESERVED");
+
   return <div>
-    <div className="mb-5 flex items-center justify-between"><p className="text-sm text-slate-400">{brands.length} protected organizations</p><p className="flex items-center gap-2 text-xs text-emerald-300"><ShieldCheck className="h-4 w-4"/>Protected & reserved</p></div>
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{brands.map((brand) => <ProtectedBrandCard key={brand.handle} brand={brand} onClaim={setSelectedBrand}/>)}</div>
+    <div className="mb-7 flex items-center justify-between"><p className="text-sm text-slate-400">{brands.length} names listed</p><p className="flex items-center gap-2 text-xs text-emerald-300"><ShieldCheck className="h-4 w-4"/>Anti-squatting protection</p></div>
+    <ProtectedBrandGroup title="Solana Brands" description="Reserved for free claim by verified Solana ecosystem organizations." brands={solanaBrands} onClaim={setSelectedBrand}/>
+    <ProtectedBrandGroup title="Protected Brands" description="World-famous trademarks blocked from public registration under the impersonation policy." brands={protectedBrands} onClaim={setSelectedBrand}/>
     <OfficialClaimDialog open={Boolean(selectedBrand)} onOpenChange={(open) => !open && setSelectedBrand(null)} handle={selectedBrand?.handle || ""} restriction={{ reservedFor: selectedBrand?.reserved_for || "" }}/>
   </div>;
 }

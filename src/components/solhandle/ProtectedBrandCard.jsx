@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 
 export default function ProtectedBrandCard({ brand, onClaim }) {
   const reserved = brand.restrictionType === "RESERVED";
+  const details = reserved
+    ? [["NFT exists", "No"], ["Owner", "None"], ["For sale", "No"], ["Mint price", "N/A"], ["Reserved for", brand.reserved_for || "Verified organization"], ["Official claim", "Free"]]
+    : [["NFT exists", "No"], ["Owner", "None"], ["For sale", "No"], ["Public registration", "Blocked"]];
+  const description = reserved ? "Reserved for verified official organization claim." : "Protected under SolHandle’s trademark and impersonation policy.";
+
   return (
     <article className="flex flex-col rounded-2xl border border-white/10 bg-slate-950/70 p-5 shadow-lg shadow-black/20">
       <div className="flex items-start justify-between gap-3">
@@ -11,13 +16,9 @@ export default function ProtectedBrandCard({ brand, onClaim }) {
       </div>
       <h3 className="mt-5 text-xl font-semibold text-white">@{brand.handle}</h3>
       {brand.domain && <a href={`https://${brand.domain}`} target="_blank" rel="noreferrer" className="mt-1 text-sm text-cyan-200 underline-offset-4 hover:underline">{brand.domain}</a>}
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-400">{brand.reason || (reserved ? "Reserved for the verified Solana organization." : "Protected against public minting and impersonation.")}</p>
-      <p className="mt-4 border-t border-white/5 pt-4 text-xs text-slate-500">{reserved ? "Eligible for a free official claim after verification and approval." : "Permanently unavailable for public or official claims."}</p>
-      {reserved ? (
-        <button onClick={() => onClaim(brand)} className="mt-4 w-full rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-400 to-violet-500 px-4 py-2.5 text-sm font-semibold text-slate-950">Claim @{brand.handle}</button>
-      ) : (
-        <Link to={`/contact?handle=${encodeURIComponent(brand.handle)}`} className="mt-4 block w-full rounded-lg border border-cyan-300/30 bg-cyan-300/5 px-4 py-2.5 text-center text-sm font-semibold text-cyan-200">Request information</Link>
-      )}
+      <p className="mt-3 text-sm leading-relaxed text-slate-400">{description}</p>
+      <dl className="mt-4 flex-1 space-y-2 border-t border-white/5 pt-4">{details.map(([label, value]) => <div key={label} className="flex justify-between gap-3 text-xs"><dt className="text-slate-500">{label}</dt><dd className="text-right font-medium text-slate-300">{value}</dd></div>)}</dl>
+      {reserved ? <button onClick={() => onClaim(brand)} className="mt-5 w-full rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-400 to-violet-500 px-4 py-2.5 text-sm font-semibold text-slate-950">Claim @{brand.handle}</button> : <Link to={`/contact?handle=${encodeURIComponent(brand.handle)}`} className="mt-5 block w-full rounded-lg border border-cyan-300/30 bg-cyan-300/5 px-4 py-2.5 text-center text-sm font-semibold text-cyan-200">Request information</Link>}
     </article>
   );
 }
