@@ -15,6 +15,7 @@ export default function SetPrimaryButton({ handle, onSuccess }) {
     try {
       await setPrimarySolHandle({ handle, wallet: publicKey, sendTransaction });
       onSuccess(handle);
+      window.dispatchEvent(new CustomEvent("solhandle:primary-set", { detail: handle }));
     } catch (caught) {
       setError(caught.message || "Could not set your primary handle.");
     } finally {
