@@ -27,4 +27,4 @@ process.env.RESERVED_NAMES = [
 process.env.PROTECTED_NAMES = "";
 process.env.FORCE_UPDATE_NAMES = "solhandle";
 
-await import("./reserve-names-devnet.mjs");
+await import("../../scripts/reserve-names-devnet.mjs");
