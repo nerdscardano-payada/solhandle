@@ -17,7 +17,7 @@ export default async function(req: Request): Promise<Response> {
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const [chainRecord, restriction] = await Promise.all([findHandleOnChain(rpcUrl, handle), getNameRestriction(rpcUrl, handle)]);
     const record = indexed[0];
-    const currentOwner = chainRecord ? await getAssetOwner(rpcUrl, chainRecord.assetAddress, record?.current_owner_cached || '') : record?.current_owner_cached || null;
+    const currentOwner = chainRecord ? await getAssetOwner(rpcUrl, chainRecord.assetAddress, record?.current_owner_cached || '') : null;
     if (record && chainRecord && (record.current_owner_cached !== currentOwner || record.last_chain_sync === null)) await base44.asServiceRole.entities.HandleIndex.update(record.id, { current_owner_cached: currentOwner, last_chain_sync: new Date().toISOString() });
     const claimed = Boolean(chainRecord);
     const activeRestriction = restriction?.active ? restriction : null;
