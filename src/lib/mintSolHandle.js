@@ -1,4 +1,5 @@
 import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { base44 } from "@/api/base44Client";
 import { decodeSolHandleConfig, PROGRAM_ID, PROTOCOL_VERSION, SEEDS } from "@/lib/solhandleProtocol";
 
 const MPL_CORE = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
@@ -40,13 +41,12 @@ export async function setPrimarySolHandle({ handle, wallet, sendTransaction }) {
   return { signature };
 }
 
-export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, wallet, sendTransaction }) {
+export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, wallet, signTransaction }) {
   const recipient = new PublicKey(recipientWallet);
-  const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
-  const configInfo = await connection.getAccountInfo(config, "confirmed");
-  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Mainnet-beta.");
-  const protocol = decodeSolHandleConfig(configInfo.data);
-  if (!protocol.authority.equals(wallet)) throw new Error("The connected wallet is not the protocol authority.");
+  const prepared = await base44.functions.invoke("solanaAdminTransaction", { action: "prepare" });
+  const protocol = prepared.data;
+  if (protocol.authority !== wallet.toBase58()) throw new Error(`Connect the protocol authority wallet: ${protocol.authority}`);
+  const config = new PublicKey(protocol.config);
   const seed = encoder.encode(handle);
   const [restriction] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.restriction), seed], PROGRAM_ID);
   const [record] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.handle), seed], PROGRAM_ID);
@@ -56,13 +56,14 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
     { pubkey: wallet, isSigner: true, isWritable: true }, { pubkey: config, isSigner: false, isWritable: true },
     { pubkey: restriction, isSigner: false, isWritable: true }, { pubkey: record, isSigner: false, isWritable: true },
     { pubkey: asset, isSigner: false, isWritable: true }, { pubkey: recipient, isSigner: false, isWritable: false },
-    { pubkey: protocol.collection, isSigner: false, isWritable: true }, { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    { pubkey: new PublicKey(protocol.collection), isSigner: false, isWritable: true }, { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
     { pubkey: MPL_CORE, isSigner: false, isWritable: false }
   ], data: bytes(hash.slice(0, 8), stringBytes(handle), stringBytes(uri)) });
-  const { blockhash } = await connection.getLatestBlockhash("confirmed");
-  const signature = await sendTransaction(new Transaction({ feePayer: wallet, recentBlockhash: blockhash }).add(instruction), connection);
-  await connection.confirmTransaction(signature, "confirmed");
-  return { signature, asset: asset.toBase58() };
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
+  const signed = await signTransaction(transaction);
+  const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
+  const submitted = await base44.functions.invoke("solanaAdminTransaction", { action: "submit", transaction_base64: transactionBase64 });
+  return { signature: submitted.data.signature, asset: asset.toBase58() };
 }
 
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sendTransaction }) {

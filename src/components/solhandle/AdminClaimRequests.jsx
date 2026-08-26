@@ -6,7 +6,7 @@ import { claimRestrictedSolHandle } from "@/lib/mintSolHandle";
 import AdminClaimRequestCard from "@/components/solhandle/AdminClaimRequestCard";
 
 export default function AdminClaimRequests() {
-  const { publicKey, sendTransaction } = useWallet(); const [requests, setRequests] = useState([]); const [busy, setBusy] = useState(""); const [error, setError] = useState("");
+  const { publicKey, signTransaction } = useWallet(); const [requests, setRequests] = useState([]); const [busy, setBusy] = useState(""); const [error, setError] = useState("");
   const load = async () => setRequests(await base44.entities.OfficialClaimRequest.list("-created_date", 50));
   useEffect(() => { load(); }, []);
   const updateRequest = async (request, data) => { setBusy(request.id); setError(""); try { await base44.entities.OfficialClaimRequest.update(request.id, data); await load(); } catch (caught) { setError(caught.message); } finally { setBusy(""); } };
@@ -16,9 +16,10 @@ export default function AdminClaimRequests() {
     try {
       if (!request.domain_verified_at || !request.wallet_verified_at || (request.high_risk && !request.manual_channel_verified_at)) throw new Error("All required verification checks must pass before minting.");
       if (!publicKey) { window.dispatchEvent(new Event("solhandle:connect-wallet")); throw new Error("Connect the protocol authority wallet, then try again."); }
+      if (!signTransaction) throw new Error("The connected wallet does not support transaction signing.");
       const png = await buildHandlePngBlob(request.handle); const { file_url } = await base44.integrations.Core.UploadFile({ file: png });
       const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle: request.handle, image_url: file_url });
-      const result = await claimRestrictedSolHandle({ handle: request.handle, uri: upload.data.uri, recipientWallet: request.recipient_wallet, wallet: publicKey, sendTransaction });
+      const result = await claimRestrictedSolHandle({ handle: request.handle, uri: upload.data.uri, recipientWallet: request.recipient_wallet, wallet: publicKey, signTransaction });
       await base44.entities.OfficialClaimRequest.update(request.id, { status: "minted", mint_signature: result.signature, asset_address: result.asset, reviewed_at: new Date().toISOString() }); await load();
     } catch (caught) { setError(caught.message || "Official claim failed."); } finally { setBusy(""); }
   };
