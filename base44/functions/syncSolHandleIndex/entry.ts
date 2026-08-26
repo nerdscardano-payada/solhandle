@@ -6,7 +6,12 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    const signatures = await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, { limit: 250, commitment: 'confirmed' }]);
+    const body = await req.json().catch(() => ({}));
+    const signature = typeof body.signature === 'string' ? body.signature.trim() : '';
+    if (signature && !/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature)) return Response.json({ error: 'Invalid transaction signature.' }, { status: 400 });
+    const signatures = signature
+      ? [{ signature, err: null }]
+      : await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, { limit: 250, commitment: 'confirmed' }]);
     let synced = 0;
 
     for (const entry of signatures) {
