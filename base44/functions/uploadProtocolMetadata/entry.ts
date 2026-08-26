@@ -9,14 +9,44 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));
-    const handle = String(body.handle || '').trim().replace(/^@+/, '').toLowerCase();
-    if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle' }, { status: 400 });
-
     const storedKeypair = secrets.get('IRYS_UPLOADER_PRIVATE_KEY').trim();
     const keypair = storedKeypair.startsWith('[') ? bs58.encode(Uint8Array.from(JSON.parse(storedKeypair))) : storedKeypair;
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).mainnet();
     const irysGateway = 'https://gateway.irys.xyz';
+
+    if (body.kind === 'collection') {
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
+      const artwork = buildHandleCardSvg('solhandle');
+      const imageReceipt = await uploader.upload(artwork, {
+        tags: [
+          { name: 'Content-Type', value: 'image/svg+xml' },
+          { name: 'App-Name', value: 'SolHandle' },
+          { name: 'Network', value: 'Solana Mainnet-beta' }
+        ]
+      });
+      const image = `${irysGateway}/${imageReceipt.id}`;
+      const metadata = {
+        name: 'SolHandle',
+        symbol: 'SOLHANDLE',
+        description: 'The official SolHandle collection for human-readable identity on Solana Mainnet-beta.',
+        image,
+        attributes: [{ trait_type: 'Network', value: 'Solana Mainnet-beta' }],
+        properties: { category: 'image', creators: [] }
+      };
+      const metadataReceipt = await uploader.upload(JSON.stringify(metadata), {
+        tags: [
+          { name: 'Content-Type', value: 'application/json' },
+          { name: 'App-Name', value: 'SolHandle' },
+          { name: 'Network', value: 'Solana Mainnet-beta' }
+        ]
+      });
+      return Response.json({ uri: `${irysGateway}/${metadataReceipt.id}`, image, transactionId: metadataReceipt.id, metadata });
+    }
+
+    const handle = String(body.handle || '').trim().replace(/^@+/, '').toLowerCase();
+    if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle' }, { status: 400 });
 
     // Use the generated PNG URL; fall back to a deterministic Irys-hosted SVG.
     let imageUrl = String(body.image_url || '');
