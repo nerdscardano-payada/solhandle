@@ -15,6 +15,7 @@ export default async function(req: Request): Promise<Response> {
     if (!verified) {
       const hostname = `_solhandle.${domain}`;
       const resolverUrls = [
+        `https://dns.adguard-dns.com/resolve?name=${hostname}&type=TXT`,
         `https://cloudflare-dns.com/dns-query?name=${hostname}&type=TXT&ct=application/dns-json`,
         `https://dns.google/resolve?name=${hostname}&type=TXT&cd=1`
       ];
