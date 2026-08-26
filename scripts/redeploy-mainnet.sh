@@ -24,25 +24,65 @@ for command in cargo solana solana-keygen node perl awk; do
   command -v "$command" >/dev/null || { echo "Missing required command: $command" >&2; exit 1; }
 done
 [[ -f "$AUTHORITY" ]] || { echo "Mainnet authority keypair not found: $AUTHORITY" >&2; exit 1; }
-[[ ! -e "$PROGRAM_KEYPAIR" ]] || { echo "Refusing to overwrite an existing program keypair: $PROGRAM_KEYPAIR" >&2; exit 1; }
 mkdir -p "$(dirname "$PROGRAM_KEYPAIR")"
 
 echo "=> Pre-flight checks"
-GENESIS_HASH="$(solana genesis-hash --url "$RPC_URL")"
+GENESIS_HASH="$(solana genesis-hash --url "$RPC_URL" 2>/dev/null)" || { echo "ERROR: RPC validation failed; URL remains hidden." >&2; exit 1; }
 [[ "$GENESIS_HASH" == "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d" ]] || { echo "ERROR: RPC is not Solana Mainnet-beta (genesis $GENESIS_HASH)." >&2; exit 1; }
-solana config set --url "$RPC_URL" --keypair "$AUTHORITY" >/dev/null
 AUTHORITY_ADDRESS="$(solana address -k "$AUTHORITY")"
 echo "Authority: $AUTHORITY_ADDRESS"
-echo "Balance: $(solana balance "$AUTHORITY_ADDRESS" --url "$RPC_URL")"
+BALANCE_SOL="$(solana balance "$AUTHORITY_ADDRESS" --url "$RPC_URL" | awk '{print $1}')"
+echo "Balance: $BALANCE_SOL SOL"
+awk -v balance="$BALANCE_SOL" 'BEGIN { if (balance < 9) exit 1 }' || { echo "ERROR: authority requires at least 9 SOL before deployment." >&2; exit 1; }
 [[ -n "${SOLHANDLE_COLLECTION_URI:-}" ]] || { echo "ERROR: set SOLHANDLE_COLLECTION_URI (Irys mainnet collection metadata URI)" >&2; exit 1; }
 [[ -n "${SOLHANDLE_TREASURY:-}" ]] || { echo "ERROR: set SOLHANDLE_TREASURY (mainnet treasury wallet address)" >&2; exit 1; }
 [[ -n "${SOLHANDLE_REWARDS_VAULT:-}" ]] || { echo "ERROR: set SOLHANDLE_REWARDS_VAULT (mainnet rewards wallet address)" >&2; exit 1; }
 
-echo "=> Generating mainnet program keypair"
-solana-keygen new --no-bip39-passphrase --silent --outfile "$PROGRAM_KEYPAIR"
+AUTHORITY_ADDRESS="$AUTHORITY_ADDRESS" node --input-type=module <<'NODE'
+import { PublicKey } from "@solana/web3.js";
+const authority = new PublicKey(process.env.AUTHORITY_ADDRESS);
+const treasury = new PublicKey(process.env.SOLHANDLE_TREASURY);
+const rewards = new PublicKey(process.env.SOLHANDLE_REWARDS_VAULT);
+if (new Set([authority.toBase58(), treasury.toBase58(), rewards.toBase58()]).size !== 3) {
+  throw new Error("Authority, treasury, and rewards vault must be three distinct wallets.");
+}
+const uri = new URL(process.env.SOLHANDLE_COLLECTION_URI);
+if (uri.protocol !== "https:") throw new Error("Collection URI must use HTTPS.");
+const response = await fetch(uri);
+if (!response.ok) throw new Error(`Collection metadata is unavailable (${response.status}).`);
+const metadata = await response.json();
+if (metadata.name !== "SolHandle" || metadata.symbol !== "SOLHANDLE" || !metadata.image) {
+  throw new Error("Collection metadata does not match SolHandle or has no image.");
+}
+console.log("Collection metadata: verified");
+NODE
+
+if [[ -f "$PROGRAM_KEYPAIR" ]]; then
+  echo "=> Reusing existing mainnet program keypair"
+else
+  echo "=> Generating mainnet program keypair"
+  solana-keygen new --no-bip39-passphrase --silent --outfile "$PROGRAM_KEYPAIR"
+fi
 PROGRAM_ID="$(solana address -k "$PROGRAM_KEYPAIR")"
-echo "Deploying SolHandle V2 to MAINNET-BETA: $PROGRAM_ID"
 COLLECTION_ID="$(PROGRAM_ID="$PROGRAM_ID" node --input-type=module -e 'import { PublicKey } from "@solana/web3.js"; console.log(PublicKey.findProgramAddressSync([Buffer.from("collection")], new PublicKey(process.env.PROGRAM_ID))[0].toBase58())')"
+if solana program show "$PROGRAM_ID" --url "$RPC_URL" >/dev/null 2>&1; then
+  echo "ERROR: program $PROGRAM_ID is already deployed; refusing to redeploy." >&2
+  exit 1
+fi
+
+echo ""
+echo "FINAL MAINNET DEPLOYMENT SUMMARY"
+echo "Authority:  $AUTHORITY_ADDRESS"
+echo "Program:    $PROGRAM_ID"
+echo "Collection: $COLLECTION_ID"
+echo "Treasury:   $SOLHANDLE_TREASURY"
+echo "Rewards:    $SOLHANDLE_REWARDS_VAULT"
+echo "Metadata:   $SOLHANDLE_COLLECTION_URI"
+echo "Budget gate: authority has $BALANCE_SOL SOL (minimum 9 SOL)"
+read -r -p "Type DEPLOY MAINNET to continue: " CONFIRMATION
+[[ "$CONFIRMATION" == "DEPLOY MAINNET" ]] || { echo "Deployment cancelled without spending SOL."; exit 1; }
+
+echo "Deploying SolHandle V2 to MAINNET-BETA: $PROGRAM_ID"
 
 echo "=> Writing Mainnet program and collection IDs into every runtime"
 PROGRAM_ID="$PROGRAM_ID" perl -0pi -e 's/(declare_id!\(")[^"]+/$1 . $ENV{PROGRAM_ID}/e' programs/solhandle/src/lib.rs
