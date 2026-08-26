@@ -1,16 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { base44 } from "@/api/base44Client";
 import OfficialClaimVerification from "@/components/solhandle/OfficialClaimVerification";
 import ClaimWizardProgress from "@/components/solhandle/ClaimWizardProgress";
 
 const emptyForm = { organization: "", contact_name: "", contact_email: "", proof_url: "", recipient_wallet: "", statement: "" };
-export default function OfficialClaimDialog({ open, onOpenChange, handle, restriction }) {
+export default function OfficialClaimDialog({ open, onOpenChange, handle, restriction, resumeRequestId }) {
   const [form, setForm] = useState(emptyForm); const [claim, setClaim] = useState(null); const [step, setStep] = useState(1); const [sending, setSending] = useState(false); const [error, setError] = useState("");
+  const storageKey = `solhandle_official_claim_${handle}`;
+  useEffect(() => {
+    if (!open || claim) return;
+    const requestId = resumeRequestId || localStorage.getItem(storageKey);
+    if (!requestId) return;
+    setSending(true); setError("");
+    base44.functions.invoke("startOfficialClaim", { resume_request_id: requestId }).then((response) => {
+      const restored = response.data;
+      setClaim({ ...restored, recipientWallet: restored.recipientWallet });
+      setStep(restored.status === "verified" ? 4 : restored.status === "domain_verified" ? 3 : 2);
+      localStorage.setItem(storageKey, restored.requestId);
+    }).catch((caught) => {
+      localStorage.removeItem(storageKey);
+      setError(caught.response?.data?.error || caught.message || "Your request could not be restored.");
+    }).finally(() => setSending(false));
+  }, [open, claim, resumeRequestId, storageKey]);
   const update = (field) => (event) => setForm((current) => ({ ...current, [field]: event.target.value }));
   const submit = async (event) => {
     event.preventDefault(); setSending(true); setError("");
-    try { const response = await base44.functions.invoke("startOfficialClaim", { ...form, handle, reserved_for: restriction?.reservedFor || "" }); setClaim({ ...response.data, handle, recipientWallet: form.recipient_wallet }); setStep(2); }
+    try { const response = await base44.functions.invoke("startOfficialClaim", { ...form, handle, reserved_for: restriction?.reservedFor || "" }); localStorage.setItem(storageKey, response.data.requestId); setClaim({ ...response.data, handle, recipientWallet: form.recipient_wallet }); setStep(2); }
     catch (caught) { setError(caught.response?.data?.error || caught.message || "Your request could not be started."); }
     finally { setSending(false); }
   };

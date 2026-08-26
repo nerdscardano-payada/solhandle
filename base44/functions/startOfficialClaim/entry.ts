@@ -1,11 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import bs58 from 'npm:bs58@5.0.0';
-import { normalizeHandle, claimMessage } from '../../shared/officialClaim.ts';
+import { normalizeHandle, claimMessage, findClaim } from '../../shared/officialClaim.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));
+    if (body.resume_request_id) {
+      const record = await findClaim(base44.asServiceRole.entities.OfficialClaimRequest, body.resume_request_id);
+      if (!record || ['rejected', 'minted'].includes(record.status)) return Response.json({ error: 'Claim request not found.' }, { status: 404 });
+      return Response.json({ requestId: record.id, handle: record.handle, domain: record.official_domain, challenge: record.challenge, expiresAt: record.challenge_expires_at, recipientWallet: record.recipient_wallet, message: claimMessage(record), highRisk: Boolean(record.high_risk), status: record.status });
+    }
     const handle = normalizeHandle(body.handle);
     const required = ['organization', 'contact_name', 'contact_email', 'proof_url', 'recipient_wallet', 'statement'];
     if (!/^[a-z0-9]{1,20}$/.test(handle) || required.some((field) => !String(body[field] || '').trim())) return Response.json({ error: 'Complete every claim field.' }, { status: 400 });
