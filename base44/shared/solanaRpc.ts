@@ -6,7 +6,25 @@ function readU32(bytes: Uint8Array, offset: number) { return bytes[offset] | (by
 function readU64(bytes: Uint8Array, offset: number) { let value = 0n; for (let index = 0; index < 8; index += 1) value |= BigInt(bytes[offset + index]) << BigInt(index * 8); return Number(value); }
 function encodeBase58(bytes: Uint8Array) { const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; let value = 0n; for (const byte of bytes) value = (value << 8n) + BigInt(byte); let result = ""; while (value > 0n) { result = alphabet[Number(value % 58n)] + result; value /= 58n; } for (const byte of bytes) { if (byte === 0) result = "1" + result; else break; } return result || "1"; }
 
-export async function rpc(rpcUrl: string, method: string, params: unknown[] = []) { const response = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) }); const payload = await response.json(); if (!response.ok || payload.error) throw new Error(payload.error?.message || "Solana RPC request failed."); return payload.result; }
+export async function rpc(rpcUrl: string, method: string, params: unknown[] = []) {
+  const maxAttempts = 5;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const response = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) });
+    const text = await response.text();
+    let payload = null;
+    try { payload = text ? JSON.parse(text) : null; } catch {}
+    const rateLimited = response.status === 429 || payload?.error?.code === 429;
+    if (rateLimited && attempt < maxAttempts - 1) {
+      const retryAfter = Number(response.headers.get("retry-after"));
+      const delayMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 1000 * (2 ** attempt);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      continue;
+    }
+    if (!response.ok || payload?.error || !payload) throw new Error(payload?.error?.message || text || `Solana RPC request failed with HTTP ${response.status}.`);
+    return payload.result;
+  }
+  throw new Error("Solana RPC rate limit persisted after retries.");
+}
 export function parseHandleRecord(encoded: string) { const bytes = base64Bytes(encoded); const length = readU32(bytes, 8); const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); const assetOffset = 12 + length; return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)) }; }
 export function parseMintEvent(encoded: string) { const bytes = base64Bytes(encoded); const length = readU32(bytes, 8); const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); const assetOffset = 12 + length; return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)), owner: encodeBase58(bytes.slice(assetOffset + 32, assetOffset + 64)), priceLamports: readU64(bytes, assetOffset + 64) }; }
 export async function getAssetOwner(rpcUrl: string, assetAddress: string, fallbackOwner = "") { try { const asset = await rpc(rpcUrl, "getAsset", [assetAddress]); return asset?.ownership?.owner || fallbackOwner; } catch { return fallbackOwner; } }
