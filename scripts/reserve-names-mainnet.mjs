@@ -20,12 +20,22 @@ const stringBytes = (value) => { const text = encoder.encode(value); const size 
 const discriminator = createHash("sha256").update("global:set_name_restriction").digest().subarray(0, 8);
 const results = [];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const delayMs = Number(process.env.RESTRICTION_DELAY_MS || 5000);
+const delayMs = Number(process.env.RESTRICTION_DELAY_MS || 8000);
 const maxAttempts = Number(process.env.RESTRICTION_MAX_ATTEMPTS || 6);
+const accountExists = async (address) => {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return Boolean(await connection.getAccountInfo(address, "confirmed"));
+    } catch (error) {
+      if (attempt === maxAttempts) throw error;
+      await sleep(Math.min(delayMs * attempt, 30000));
+    }
+  }
+};
 for (const [index, item] of names.entries()) {
   const [restriction] = PublicKey.findProgramAddressSync([Buffer.from("restriction"), encoder.encode(item.handle)], programId);
   const type = item.type === 0 ? "RESERVED" : "PROTECTED";
-  if (await connection.getAccountInfo(restriction, "confirmed")) {
+  if (await accountExists(restriction)) {
     console.error(`[${index + 1}/${names.length}] @${item.handle} already exists; skipped.`);
     results.push({ handle: item.handle, type, restriction: restriction.toBase58(), status: "existing" });
     await sleep(delayMs);
@@ -39,7 +49,7 @@ for (const [index, item] of names.entries()) {
       signature = await sendAndConfirmTransaction(connection, new Transaction().add(instruction), [authority], { commitment: "confirmed" });
       break;
     } catch (error) {
-      if (await connection.getAccountInfo(restriction, "confirmed").catch(() => null)) {
+      if (await accountExists(restriction).catch(() => false)) {
         signature = error.signature || null;
         break;
       }
