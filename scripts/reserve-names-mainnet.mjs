@@ -10,7 +10,10 @@ if (!programIdText || !authorityPath) throw new Error("SOLHANDLE_PROGRAM_ID and 
 const rpcUrl = process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
 const defaults = { reserved: DEFAULT_RESERVED_NAMES, protected: DEFAULT_PROTECTED_NAMES };
 const parse = (value, type) => String(value).split(",").map((entry) => { const [rawHandle, reservedFor] = entry.trim().split("|"); const handle = rawHandle.trim().replace(/^@+/, "").toLowerCase(); return { handle, reservedFor: reservedFor || (type === 0 ? handle : "Trademark / Brand"), type }; }).filter((item) => item.handle);
-const names = [...parse(process.env.RESERVED_NAMES || defaults.reserved, 0), ...parse(process.env.PROTECTED_NAMES || defaults.protected, 1)];
+const allNames = [...parse(process.env.RESERVED_NAMES || defaults.reserved, 0), ...parse(process.env.PROTECTED_NAMES || defaults.protected, 1)];
+const onlyHandle = String(process.env.ONLY_HANDLE || "").trim().replace(/^@+/, "").toLowerCase();
+const names = onlyHandle ? allNames.filter((item) => item.handle === onlyHandle) : allNames;
+if (onlyHandle && names.length === 0) throw new Error(`Unknown restriction handle: @${onlyHandle}`);
 const programId = new PublicKey(programIdText);
 const authority = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(authorityPath, "utf8"))));
 const connection = new Connection(rpcUrl, "confirmed");
