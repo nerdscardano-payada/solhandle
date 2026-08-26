@@ -22,11 +22,21 @@ const typeContent = {
   infrastructure: { surface: "RPC method + indexed enrichment", ui: "Return address, handle, verification source, protocol version and freshness metadata.", code: 'const result = await resolveHandle("@ansem");\nreturn { ...result, network: "mainnet-beta", authoritative: false };', tests: "Chain parity, transfer freshness, collection spoofing, cache invalidation and deterministic errors." },
 };
 
+const codeLocations = {
+  wallet: "the function that handles the Send recipient field, immediately after reading what the user typed",
+  explorer: "the search submit handler, before your app decides which wallet page to open",
+  marketplace: "the owner or seller data loader, after receiving the wallet address and before rendering the label",
+  payments: "the payment form submit handler, before creating the Solana Pay URL or transfer instruction",
+  application: "the profile or recipient data loader, before rendering a wallet identity",
+  infrastructure: "the server-side resolver method, before returning the API or enrichment response",
+};
+
 export function getWizardSteps(integration) {
   const flow = typeContent[integration.type];
+  const location = codeLocations[integration.type];
   return [
-    { title: `Define the ${integration.name} surface`, eyebrow: "PRODUCT SCOPE", body: productNotes[integration.slug], detail: `Recommended surface: ${flow.surface}.` },
-    { title: "Add Mainnet resolution", eyebrow: "RESOLVER", body: "Resolve through the official Mainnet deployment and verify the HandleRecord, Core Asset collection and current owner.", code: flow.code },
+    { title: "Prepare your project", eyebrow: "START HERE", body: `Yes—this is the first technical step. Find ${location}. That existing function is where SolHandle will be added.`, where: `Project area: ${flow.surface}.`, why: "SolHandle extends your existing address flow; it does not replace wallet connection, signing or transaction creation.", code: "npm install @solhandle/sdk\n\n// Available when the official Mainnet SDK is released" },
+    { title: "Add Mainnet resolution", eyebrow: "PASTE INTO YOUR FLOW", body: `Import resolveHandle, then paste this logic inside ${location}. In the example, input means the text the user entered in your existing field.`, where: `Put it in: ${location}.`, why: "If the text starts with @, the resolver returns the current verified NFT owner. A normal base58 address passes through unchanged.", code: `import { resolveHandle } from "@solhandle/sdk";\n\n${flow.code}` },
     { title: "Design the native experience", eyebrow: "INTERFACE", body: flow.ui, detail: `Include: ${integration.capabilities.join(" · ")}.` },
     { title: "Apply security rules", eyebrow: "SAFETY", body: "Never send funds to the literal @handle. For native SOL, continue only when the current owner is a safe wallet destination; always expose the final address." },
     { title: `Verify ${integration.name}`, eyebrow: "TEST SUITE", body: flow.tests, detail: "Passing locally does not award a badge; results must be reproduced against the live Mainnet protocol." },
