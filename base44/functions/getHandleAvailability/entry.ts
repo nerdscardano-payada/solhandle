@@ -19,10 +19,10 @@ export default async function(req: Request): Promise<Response> {
     const record = indexed[0];
     const currentOwner = chainRecord ? await getAssetOwner(rpcUrl, chainRecord.assetAddress, record?.current_owner_cached || '') : record?.current_owner_cached || null;
     if (record && chainRecord && (record.current_owner_cached !== currentOwner || record.last_chain_sync === null)) await base44.asServiceRole.entities.HandleIndex.update(record.id, { current_owner_cached: currentOwner, last_chain_sync: new Date().toISOString() });
-    const claimed = Boolean(chainRecord || record);
+    const claimed = Boolean(chainRecord);
     const activeRestriction = restriction?.active ? restriction : null;
     const status = claimed ? 'CLAIMED' : activeRestriction?.restrictionType || 'AVAILABLE';
     const priceLamports = overrides[0]?.price_lamports || prices[Math.min(handle.length, 5)];
-    return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || record?.asset_address || null, priceLamports, nameClass: premiumRows.length > 0 ? 'Premium' : 'Standard', restriction: activeRestriction });
+    return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || null, priceLamports, nameClass: premiumRows.length > 0 ? 'Premium' : 'Standard', restriction: activeRestriction });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
