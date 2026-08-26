@@ -12,7 +12,7 @@ if (typeof window !== "undefined") {
       uri: window.location.origin,
     },
     authorizationCache: createDefaultAuthorizationCache(),
-    chains: ["solana:devnet"],
+    chains: ["solana:mainnet"],
     chainSelector: createDefaultChainSelector(),
     onWalletNotFound: createDefaultWalletNotFoundHandler(),
   });

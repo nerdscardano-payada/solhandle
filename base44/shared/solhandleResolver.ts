@@ -3,7 +3,7 @@ import { rpc } from "./solanaRpc.ts";
 import { PROGRAM_ID, SEEDS } from "./solhandleProtocol.ts";
 
 export const MPL_CORE_ID = "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d";
-export const COLLECTION_ID = "3jiMQX6QJ4qZfKxmFahRinrQGLSog9Z86cymBcnjjV2b";
+export const COLLECTION_ID = "7XZzcbeFBxQA63n9avz44vnbpv34hDGYyHfCDmTdPBJP";
 const SYSTEM_PROGRAM_ID = "11111111111111111111111111111111";
 const encoder = new TextEncoder();
 
@@ -43,7 +43,7 @@ export async function resolveOnChain(rpcUrl: string, value: string) {
   const collectionVerified = record.handle === handle && record.asset === assetPda.toBase58() && asset.collection === COLLECTION_ID;
   if (!collectionVerified) throw new Error("Official collection verification failed.");
   const safety = await classifyNativeSolDestination(rpcUrl, asset.owner);
-  return { handle: `@${handle}`, address: asset.owner, status: "claimed", verified: true, collectionVerified, ...safety, handlePda: handlePda.toBase58(), assetAddress: assetPda.toBase58(), network: "devnet" };
+  return { handle: `@${handle}`, address: asset.owner, status: "claimed", verified: true, collectionVerified, ...safety, handlePda: handlePda.toBase58(), assetAddress: assetPda.toBase58(), network: "mainnet-beta" };
 }
 
 export async function reverseOnChain(rpcUrl: string, wallet: string) {
@@ -55,5 +55,5 @@ export async function reverseOnChain(rpcUrl: string, wallet: string) {
   const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); const primaryAsset = key(bytes.slice(12 + length, 44 + length));
   const resolved = await resolveOnChain(rpcUrl, handle);
   if (!resolved || resolved.address !== owner.toBase58() || resolved.assetAddress !== primaryAsset) return null;
-  return { address: owner.toBase58(), primaryHandle: `@${handle}`, verified: true, assetAddress: primaryAsset, primaryPda: primaryPda.toBase58(), network: "devnet" };
+  return { address: owner.toBase58(), primaryHandle: `@${handle}`, verified: true, assetAddress: primaryAsset, primaryPda: primaryPda.toBase58(), network: "mainnet-beta" };
 }

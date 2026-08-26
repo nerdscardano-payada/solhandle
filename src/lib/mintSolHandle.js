@@ -2,7 +2,7 @@ import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstructi
 import { decodeSolHandleConfig, PROGRAM_ID, PROTOCOL_VERSION, SEEDS } from "@/lib/solhandleProtocol";
 
 const MPL_CORE = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
-const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
 const encoder = new TextEncoder();
 const bytes = (...parts) => Uint8Array.from(parts.flatMap((part) => [...part]));
 const stringBytes = (value) => {
@@ -44,7 +44,7 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
   const recipient = new PublicKey(recipientWallet);
   const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
   const configInfo = await connection.getAccountInfo(config, "confirmed");
-  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Devnet.");
+  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Mainnet-beta.");
   const protocol = decodeSolHandleConfig(configInfo.data);
   if (!protocol.authority.equals(wallet)) throw new Error("The connected wallet is not the protocol authority.");
   const seed = encoder.encode(handle);
@@ -68,7 +68,7 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sendTransaction }) {
   const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
   const configInfo = await connection.getAccountInfo(config, "confirmed");
-  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Devnet.");
+  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Mainnet-beta.");
   const protocol = decodeSolHandleConfig(configInfo.data);
   if (protocol.protocolVersion !== PROTOCOL_VERSION) throw new Error(`Protocol version mismatch: website expects V${PROTOCOL_VERSION}.`);
   if (protocol.paused) throw new Error("SolHandle minting is currently paused.");

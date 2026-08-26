@@ -1,12 +1,12 @@
 import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
 
-export const PROGRAM_ID = new PublicKey("ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT");
-export const COLLECTION_ID = new PublicKey("3jiMQX6QJ4qZfKxmFahRinrQGLSog9Z86cymBcnjjV2b");
+export const PROGRAM_ID = new PublicKey("B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf");
+export const COLLECTION_ID = new PublicKey("7XZzcbeFBxQA63n9avz44vnbpv34hDGYyHfCDmTdPBJP");
 export const MPL_CORE_ID = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
-export const DEVNET_RPC = "https://api.devnet.solana.com";
+export const MAINNET_RPC = "https://api.mainnet-beta.solana.com";
 const encoder = new TextEncoder();
 const seed = value => encoder.encode(value);
-const connectionFor = options => options?.connection || new Connection(options?.rpcUrl || DEVNET_RPC, "confirmed");
+const connectionFor = options => options?.connection || new Connection(options?.rpcUrl || MAINNET_RPC, "confirmed");
 export const normalizeHandle = value => String(value || "").trim().replace(/^@+/, "").toLowerCase();
 export const validateHandle = value => /^[a-z0-9]{1,20}$/.test(normalizeHandle(value));
 export const getHandlePda = value => PublicKey.findProgramAddressSync([seed("handle"), seed(normalizeHandle(value))], PROGRAM_ID)[0];
@@ -31,7 +31,7 @@ export async function resolveHandle(value, options = {}) {
   const record = decodeRecord(recordInfo.data); const asset = decodeAsset(assetInfo.data);
   const collectionVerified = record.handle === handle && record.asset.equals(assetPda) && asset.collection?.equals(COLLECTION_ID);
   if (!collectionVerified) throw new Error("Official collection verification failed.");
-  return { handle: `@${handle}`, address: asset.owner.toBase58(), verified: true, collectionVerified: true, ...(await classifyDestination(connection, asset.owner)), handlePda: handlePda.toBase58(), assetAddress: assetPda.toBase58(), network: "devnet" };
+  return { handle: `@${handle}`, address: asset.owner.toBase58(), verified: true, collectionVerified: true, ...(await classifyDestination(connection, asset.owner)), handlePda: handlePda.toBase58(), assetAddress: assetPda.toBase58(), network: "mainnet-beta" };
 }
 export const getHandle = resolveHandle;
 export const verifySolHandle = async (value, options) => Boolean((await resolveHandle(value, options))?.verified);

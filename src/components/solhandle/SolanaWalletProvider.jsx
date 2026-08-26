@@ -5,7 +5,7 @@ import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adap
 import { BackpackWalletAdapter } from "@solana/wallet-adapter-backpack";
 import "@/lib/registerMobileWallet";
 
-const endpoint = "https://api.devnet.solana.com";
+const endpoint = "https://api.mainnet-beta.solana.com";
 
 export default function SolanaWalletProvider({ children }) {
   const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new BackpackWalletAdapter()], []);
