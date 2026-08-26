@@ -1,0 +1,7 @@
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { integrations, integrationTypes } from "@/lib/integrationCatalog";
+
+export default function IntegrationDirectory() {
+  return <section className="mt-14"><div><p className="text-xs font-semibold tracking-wider text-violet-300">INTEGRATION DIRECTORY</p><h2 className="mt-2 text-2xl font-semibold">Mainnet implementation guides</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">These are product-specific technical guides, not partnership announcements. Verification is shown only after a live Mainnet integration passes the protocol test suite.</p></div><div className="mt-7 space-y-9">{integrationTypes.map((type) => <div id={type.id} key={type.id} className="scroll-mt-6"><h3 className="mb-3 text-lg font-medium">{type.title}</h3><div className="grid gap-3 md:grid-cols-2">{integrations.filter((item) => item.type === type.id).map((item) => <Link key={item.slug} to={`/integrations/${item.slug}`} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-cyan-300/30"><div><p className="font-medium text-white">{item.name}</p><p className="mt-1 text-xs text-slate-500">Guide available · Not integration verified</p></div><ArrowUpRight className="h-4 w-4 text-cyan-300" /></Link>)}</div></div>)}</div></section>;
+}

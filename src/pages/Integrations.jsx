@@ -1,0 +1,7 @@
+import Header from "@/components/solhandle/Header";
+import IntegrationTypeGrid from "@/components/solhandle/IntegrationTypeGrid";
+import IntegrationDirectory from "@/components/solhandle/IntegrationDirectory";
+
+export default function Integrations() {
+  return <main className="min-h-screen bg-[#050811] text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="px-5 py-12 md:px-9"><p className="text-sm font-medium tracking-wider text-cyan-300">SOLHANDLE INTEGRATION CENTER</p><h1 className="mt-2 max-w-4xl text-4xl font-semibold md:text-5xl">Build human-readable identity into Solana products.</h1><p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-300">Choose a product type, follow a Mainnet-ready implementation path and prepare for technical verification against the live SolHandle protocol.</p><div className="mt-6 rounded-xl border border-cyan-300/20 bg-cyan-300/5 p-4 text-sm leading-relaxed text-cyan-100"><strong>Mainnet launch specification:</strong> the guides define the production integration contract. Live verification remains unavailable until the Mainnet program and official SDK release are active.</div><IntegrationTypeGrid/><IntegrationDirectory/></section></div></main>;
+}
