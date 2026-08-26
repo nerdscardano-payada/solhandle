@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Copy, ExternalLink, Wallet } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { base44 } from "@/api/base44Client";
@@ -10,6 +11,7 @@ import { lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
 export default function MintReadinessDialog({ open, onOpenChange, wallet, result }) {
   const { publicKey, sendTransaction } = useWallet();
+  const navigate = useNavigate();
   const [phase, setPhase] = useState("");
   const [signature, setSignature] = useState("");
   const [error, setError] = useState("");
@@ -28,6 +30,8 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
       const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, sendTransaction });
       setSignature(mintResult.signature);
       setPhase("confirmed");
+      const params = new URLSearchParams({ handle, signature: mintResult.signature, asset: mintResult.asset, wallet: publicKey.toBase58() });
+      navigate(`/mint-success?${params.toString()}`);
     } catch (caught) {
       setPhase("");
       setError(caught.response?.data?.error || caught.message || "Minting failed. Please try again.");

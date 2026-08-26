@@ -25,6 +25,7 @@ import Explore from '@/pages/Explore';
 import Developers from '@/pages/Developers';
 import Integrations from '@/pages/Integrations';
 import IntegrationGuide from '@/pages/IntegrationGuide';
+import MintSuccess from '@/pages/MintSuccess';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -70,7 +71,8 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/:handle" element={<HandlePage />} />
+        <Route path="/mint-success" element={<MintSuccess />} />
+        <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
