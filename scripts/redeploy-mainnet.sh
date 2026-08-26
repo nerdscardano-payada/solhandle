@@ -20,7 +20,7 @@ AUTHORITY="${SOLHANDLE_AUTHORITY:?SOLHANDLE_AUTHORITY (mainnet keypair) is requi
 PROGRAM_KEYPAIR="${SOLHANDLE_PROGRAM_KEYPAIR:-$ROOT_DIR/keys/solhandle-v1-mainnet-program.json}"
 RPC_URL="${SOLANA_RPC_URL:-https://api.mainnet-beta.solana.com}"
 
-for command in cargo solana solana-keygen node perl awk; do
+for command in cargo solana solana-keygen node perl awk curl; do
   command -v "$command" >/dev/null || { echo "Missing required command: $command" >&2; exit 1; }
 done
 [[ -f "$AUTHORITY" ]] || { echo "Mainnet authority keypair not found: $AUTHORITY" >&2; exit 1; }
@@ -38,7 +38,17 @@ awk -v balance="$BALANCE_SOL" 'BEGIN { if (balance < 9) exit 1 }' || { echo "ERR
 [[ -n "${SOLHANDLE_TREASURY:-}" ]] || { echo "ERROR: set SOLHANDLE_TREASURY (mainnet treasury wallet address)" >&2; exit 1; }
 [[ -n "${SOLHANDLE_REWARDS_VAULT:-}" ]] || { echo "ERROR: set SOLHANDLE_REWARDS_VAULT (mainnet rewards wallet address)" >&2; exit 1; }
 
-AUTHORITY_ADDRESS="$AUTHORITY_ADDRESS" node --input-type=module <<'NODE'
+METADATA_FILE="$(mktemp)"
+trap 'rm -f "$METADATA_FILE"' EXIT
+curl --ipv4 --fail --silent --show-error --location \
+  --retry 5 --retry-all-errors --connect-timeout 15 \
+  "$SOLHANDLE_COLLECTION_URI" --output "$METADATA_FILE" || {
+    echo "ERROR: collection metadata could not be downloaded after retries." >&2
+    exit 1
+  }
+
+AUTHORITY_ADDRESS="$AUTHORITY_ADDRESS" METADATA_FILE="$METADATA_FILE" node --input-type=module <<'NODE'
+import { readFileSync } from "node:fs";
 import { PublicKey } from "@solana/web3.js";
 const authority = new PublicKey(process.env.AUTHORITY_ADDRESS);
 const treasury = new PublicKey(process.env.SOLHANDLE_TREASURY);
@@ -48,9 +58,7 @@ if (new Set([authority.toBase58(), treasury.toBase58(), rewards.toBase58()]).siz
 }
 const uri = new URL(process.env.SOLHANDLE_COLLECTION_URI);
 if (uri.protocol !== "https:") throw new Error("Collection URI must use HTTPS.");
-const response = await fetch(uri);
-if (!response.ok) throw new Error(`Collection metadata is unavailable (${response.status}).`);
-const metadata = await response.json();
+const metadata = JSON.parse(readFileSync(process.env.METADATA_FILE, "utf8"));
 if (metadata.name !== "SolHandle" || metadata.symbol !== "SOLHANDLE" || !metadata.image) {
   throw new Error("Collection metadata does not match SolHandle or has no image.");
 }
