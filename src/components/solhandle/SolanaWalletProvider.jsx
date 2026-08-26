@@ -8,7 +8,6 @@ import "@/lib/registerMobileWallet";
 const endpoint = "https://api.devnet.solana.com";
 
 export default function SolanaWalletProvider({ children }) {
-  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
-  const wallets = useMemo(() => isAndroid ? [] : [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new BackpackWalletAdapter()], [isAndroid]);
+  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new BackpackWalletAdapter()], []);
   return <ConnectionProvider endpoint={endpoint}><WalletProvider wallets={wallets} autoConnect><WalletModalProvider>{children}</WalletModalProvider></WalletProvider></ConnectionProvider>;
 }
