@@ -13,7 +13,18 @@ export default async function(req: Request): Promise<Response> {
     let verified = false;
     try { const response = await fetch(`https://${domain}/.well-known/solhandle-verification.txt`, { redirect: 'follow' }); verified = response.ok && (await response.text()).includes(request.challenge); } catch {}
     if (!verified) {
-      try { const response = await fetch(`https://dns.google/resolve?name=_solhandle.${domain}&type=TXT`, { headers: { Accept: 'application/dns-json' } }); const data = await response.json(); verified = Boolean(data.Answer?.some((answer) => String(answer.data || '').replaceAll('"', '').includes(request.challenge))); } catch {}
+      const cacheBust = Date.now();
+      const resolverUrls = [
+        `https://dns.google/resolve?name=_solhandle.${domain}&type=TXT&cd=1&_=${cacheBust}`,
+        `https://cloudflare-dns.com/dns-query?name=_solhandle.${domain}&type=TXT&_=${cacheBust}`
+      ];
+      const results = await Promise.allSettled(resolverUrls.map(async (url) => {
+        const response = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/dns-json', 'Cache-Control': 'no-cache' } });
+        if (!response.ok) return false;
+        const data = await response.json();
+        return Boolean(data.Answer?.some((answer) => String(answer.data || '').replaceAll('"', '').includes(request.challenge)));
+      }));
+      verified = results.some((result) => result.status === 'fulfilled' && result.value === true);
     }
     if (!verified) return Response.json({ verified: false, error: 'Challenge not found on the configured official domain.' }, { status: 422 });
     const domainVerifiedAt = request.domain_verified_at || new Date().toISOString();
