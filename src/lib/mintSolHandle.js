@@ -66,13 +66,10 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
   return { signature: submitted.data.signature, asset: asset.toBase58() };
 }
 
-export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sendTransaction }) {
-  const [config] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.config)], PROGRAM_ID);
-  const configInfo = await connection.getAccountInfo(config, "confirmed");
-  if (!configInfo || !configInfo.owner.equals(PROGRAM_ID)) throw new Error("SolHandle V2 is not initialized on Solana Mainnet-beta.");
-  const protocol = decodeSolHandleConfig(configInfo.data);
-  if (protocol.protocolVersion !== PROTOCOL_VERSION) throw new Error(`Protocol version mismatch: website expects V${PROTOCOL_VERSION}.`);
-  if (protocol.paused) throw new Error("SolHandle minting is currently paused.");
+export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, signTransaction }) {
+  const prepared = await base44.functions.invoke("solanaMintTransaction", { action: "prepare" });
+  const protocol = prepared.data;
+  const config = new PublicKey(protocol.config);
   const seed = encoder.encode(handle);
   const [record] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.handle), seed], PROGRAM_ID);
   const [asset] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.asset), seed], PROGRAM_ID);
@@ -85,13 +82,15 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sen
       { pubkey: wallet, isSigner: true, isWritable: true }, { pubkey: config, isSigner: false, isWritable: true },
       { pubkey: record, isSigner: false, isWritable: true }, { pubkey: asset, isSigner: false, isWritable: true },
       { pubkey: restriction, isSigner: false, isWritable: false }, { pubkey: price, isSigner: false, isWritable: false },
-      { pubkey: protocol.collection, isSigner: false, isWritable: true }, { pubkey: protocol.treasury, isSigner: false, isWritable: true },
+      { pubkey: new PublicKey(protocol.collection), isSigner: false, isWritable: true }, { pubkey: new PublicKey(protocol.treasury), isSigner: false, isWritable: true },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, { pubkey: MPL_CORE, isSigner: false, isWritable: false }
     ],
     data: bytes(hash.slice(0, 8), stringBytes(handle), stringBytes(uri), u64Bytes(maxPriceLamports))
   });
-  const { blockhash } = await connection.getLatestBlockhash("confirmed");
-  const signature = await sendTransaction(new Transaction({ feePayer: wallet, recentBlockhash: blockhash }).add(instruction), connection);
-  await connection.confirmTransaction(signature, "confirmed");
-  return { signature, asset: asset.toBase58() };
+  if (!signTransaction) throw new Error("This wallet cannot sign Solana transactions.");
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
+  const signed = await signTransaction(transaction);
+  const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
+  const submitted = await base44.functions.invoke("solanaMintTransaction", { action: "submit", transaction_base64: transactionBase64 });
+  return { signature: submitted.data.signature, asset: asset.toBase58() };
 }

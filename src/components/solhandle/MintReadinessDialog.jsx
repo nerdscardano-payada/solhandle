@@ -10,7 +10,7 @@ import MintProgress from "@/components/solhandle/MintProgress";
 import { lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
 export default function MintReadinessDialog({ open, onOpenChange, wallet, result }) {
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, signTransaction } = useWallet();
   const navigate = useNavigate();
   const [phase, setPhase] = useState("");
   const [signature, setSignature] = useState("");
@@ -27,7 +27,7 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
       const { file_url } = await base44.integrations.Core.UploadFile({ file: png });
       const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle, image_url: file_url });
       setPhase("wallet");
-      const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, sendTransaction });
+      const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction });
       setSignature(mintResult.signature);
       setPhase("confirmed");
       await base44.functions.invoke("syncSolHandleIndex", { signature: mintResult.signature }).catch(() => null);
