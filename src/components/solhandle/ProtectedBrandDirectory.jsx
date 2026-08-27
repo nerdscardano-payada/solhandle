@@ -11,10 +11,15 @@ export default function ProtectedBrandDirectory() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([base44.entities.ProtectedName.filter({ status: "active" }, "handle", 500), base44.entities.OfficialClaimPolicy.filter({ active: true }, "handle", 500)]).then(([names, policies]) => {
+    Promise.all([
+      base44.entities.ProtectedName.filter({ status: "active" }, "handle", 500),
+      base44.entities.OfficialClaimPolicy.filter({ active: true }, "handle", 500),
+      base44.entities.HandleIndex.filter({ status: "active" }, "handle", 500)
+    ]).then(([names, policies, mintedHandles]) => {
       const merged = new Map();
       names.forEach((item) => merged.set(item.handle.toLowerCase(), { ...item, handle: item.handle.toLowerCase(), restrictionType: item.restriction_type || (item.category === "brand" ? "PROTECTED" : "RESERVED") }));
       policies.forEach((item) => { const key = item.handle.toLowerCase(); merged.set(key, { ...merged.get(key), handle: key, domain: item.official_domain, policy: true }); });
+      mintedHandles.forEach((item) => { const key = item.handle.toLowerCase(); if (merged.has(key)) merged.set(key, { ...merged.get(key), minted: true, asset: item.asset_address }); });
       const priority = (brand) => brand.handle === "solana" ? 0 : brand.handle === "sol" ? 1 : brand.restrictionType === "RESERVED" ? 2 : 3;
       const sorted = [...merged.values()].sort((a, b) => priority(a) - priority(b) || a.handle.localeCompare(b.handle));
       if (active) { setBrands(sorted); setState("ready"); }
