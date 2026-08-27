@@ -43,9 +43,9 @@ export default async function(req: Request): Promise<Response> {
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const raw = Uint8Array.from(atob(body.transaction_base64), (character) => character.charCodeAt(0));
       const transaction = Transaction.from(raw);
-      const memoPrograms = new Set(["MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo"]);
+      const safeWalletPrograms = new Set(["MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo", "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"]);
       const protocolInstructions = transaction.instructions.filter((instruction) => instruction.programId.equals(program));
-      const unsupportedInstructions = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId) && !memoPrograms.has(instruction.programId.toBase58()));
+      const unsupportedInstructions = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId) && !safeWalletPrograms.has(instruction.programId.toBase58()));
       if (protocolInstructions.length !== 1 || unsupportedInstructions.length > 0) {
         const programIds = unsupportedInstructions.map((instruction) => instruction.programId.toBase58());
         const detail = protocolInstructions.length !== 1 ? `Expected one SolHandle instruction, found ${protocolInstructions.length}.` : `Unsupported instruction programs: ${programIds.join(", ")}.`;
