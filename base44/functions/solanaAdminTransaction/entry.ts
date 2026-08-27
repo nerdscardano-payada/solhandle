@@ -1,5 +1,5 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.44";
-import { PublicKey, Transaction } from "npm:@solana/web3.js@1.98.4";
+import { ComputeBudgetProgram, PublicKey, Transaction } from "npm:@solana/web3.js@1.98.4";
 import { secrets } from "base44:runtime";
 import { rpc } from "../../shared/solanaRpc.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
@@ -43,7 +43,9 @@ export default async function(req: Request): Promise<Response> {
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const raw = Uint8Array.from(atob(body.transaction_base64), (character) => character.charCodeAt(0));
       const transaction = Transaction.from(raw);
-      if (transaction.instructions.length !== 1 || !transaction.instructions[0].programId.equals(program)) return Response.json({ error: "Only SolHandle protocol transactions are allowed." }, { status: 400 });
+      const protocolInstructions = transaction.instructions.filter((instruction) => instruction.programId.equals(program));
+      const unsupportedInstructions = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId));
+      if (protocolInstructions.length !== 1 || unsupportedInstructions.length > 0) return Response.json({ error: "The signed transaction contains unsupported instructions." }, { status: 400 });
       const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);
       for (let attempt = 0; attempt < 25; attempt += 1) {
         const statuses = await rpc(rpcUrl, "getSignatureStatuses", [[signature], { searchTransactionHistory: true }]);
