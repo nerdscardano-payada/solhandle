@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
-import { getAssetOwner, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
+import { getAssetOwner, getProtocolConfig, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -50,7 +50,20 @@ export default async function(req: Request): Promise<Response> {
       synced += 1;
     }
 
-    return Response.json({ scanned: signatures.length, synced, lastSync: new Date().toISOString() });
+    const protocol = await getProtocolConfig(rpcUrl);
+    const syncedAt = new Date().toISOString();
+    const statusRecord = {
+      paused: protocol.paused, total_minted: protocol.totalMinted, collection: protocol.collection,
+      treasury: protocol.treasury, rewards_vault: protocol.rewardsVault,
+      price_1_char: protocol.pricesLamports[0], price_2_char: protocol.pricesLamports[1],
+      price_3_char: protocol.pricesLamports[2], price_4_char: protocol.pricesLamports[3],
+      price_5_plus: protocol.pricesLamports[4], last_sync: syncedAt
+    };
+    const statuses = await base44.asServiceRole.entities.ProtocolStatus.list('-last_sync', 1);
+    if (statuses[0]) await base44.asServiceRole.entities.ProtocolStatus.update(statuses[0].id, statusRecord);
+    else await base44.asServiceRole.entities.ProtocolStatus.create(statusRecord);
+
+    return Response.json({ scanned: signatures.length, synced, protocol: { paused: protocol.paused, totalMinted: protocol.totalMinted }, lastSync: syncedAt });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
