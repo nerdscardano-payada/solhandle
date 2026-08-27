@@ -5,7 +5,7 @@ import Header from "@/components/solhandle/Header";
 import ExploreFilters from "@/components/solhandle/ExploreFilters";
 import ExploreHandleCard from "@/components/solhandle/ExploreHandleCard";
 
-const tabs = [["all", "All"], ["recent", "Recently Claimed"], ["premium", "Premium"], ["short", "Short Handles"]];
+const tabs = [["all", "All"], ["sale", "For Sale"], ["recent", "Recently Claimed"], ["premium", "Premium"], ["short", "Short Handles"]];
 const initialFilters = { rarity: "", characterType: "", sort: "newest" };
 
 export default function Explore() {

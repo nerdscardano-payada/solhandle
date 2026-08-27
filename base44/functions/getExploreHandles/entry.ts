@@ -17,7 +17,11 @@ export default async function(req: Request): Promise<Response> {
     if (input.length) query.length = input.length === '5+' ? { $gte: 5 } : Number(input.length);
     if (input.characterType) query.character_type = input.characterType;
     const sort = input.sort === 'oldest' ? 'minted_at' : input.sort === 'shortest' ? 'length' : '-minted_at';
-    const records = await base44.asServiceRole.entities.HandleIndex.filter(query, sort, 49, (page - 1) * 48);
+    const listings = await base44.asServiceRole.entities.MarketplaceListing.filter({ status: 'ACTIVE', marketplace: 'Magic Eden' }, 'price', 200);
+    const listingByAsset = new Map(listings.map((listing) => [listing.asset_address, listing]));
+    const records = input.tab === 'sale'
+      ? (await base44.asServiceRole.entities.HandleIndex.filter(query, sort, 200)).filter((record) => listingByAsset.has(record.asset_address)).slice((page - 1) * 48, page * 48 + 1)
+      : await base44.asServiceRole.entities.HandleIndex.filter(query, sort, 49, (page - 1) * 48);
     return Response.json({
       handles: records.slice(0, 48).map((record) => ({
         handle: record.handle,
@@ -27,7 +31,13 @@ export default async function(req: Request): Promise<Response> {
         nameClass: record.name_class || 'Standard',
         length: record.length || record.handle.length,
         characterType: record.character_type || characterTypeFor(record.handle),
-        mintedAt: record.minted_at
+        mintedAt: record.minted_at,
+        listing: listingByAsset.has(record.asset_address) ? {
+          price: listingByAsset.get(record.asset_address).price,
+          currency: listingByAsset.get(record.asset_address).currency,
+          url: listingByAsset.get(record.asset_address).listing_url,
+          marketplace: listingByAsset.get(record.asset_address).marketplace
+        } : null
       })),
       page,
       hasMore: records.length > 48

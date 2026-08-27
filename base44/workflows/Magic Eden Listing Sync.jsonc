@@ -1,0 +1,45 @@
+{
+  "description": "Synchroniseert actieve Magic Eden-aanbiedingen met SolHandle.",
+  "name": "Magic Eden Listing Sync",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "magic_eden_listing_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_listings": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncMagicEdenListings",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Synchroniseer Magic Eden",
+            "description": "Controleer actieve aanbiedingen"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/5 * * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Brussels",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

@@ -61,6 +61,7 @@ export default function HandlePage() {
             <Detail label="Rarity tier" value={rarityFor(handle.length)} accent="text-violet-300" />
             <Detail label="Name class" value={data?.nameClass || "Standard"} />
             <Detail label="Asset address" value={data?.assetAddress ? shortenAddress(data.assetAddress) : "—"} />
+            {data?.listing && <div className="flex items-center justify-between gap-4 border-t border-white/10 py-3"><span className="text-sm text-slate-500">For sale</span><a href={data.listing.url} target="_blank" rel="noreferrer" className="text-right text-sm font-semibold text-amber-300">{data.listing.price} {data.listing.currency} on Magic Eden ↗</a></div>}
             <Detail label="Protected" value={data?.protected ? "Yes" : "No"} accent={data?.protected ? "text-amber-300" : undefined} />
             <Detail label="Collection" value="SOLHANDLE Core Collection" />
             <Detail label="Handle length" value={`${handle.length} characters`} />
