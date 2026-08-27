@@ -6,7 +6,7 @@ export default function Footer() {
     <Image src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/3ccebb01d_image.png" alt="Abstract cyan and violet Solana waves" className="pointer-events-none absolute inset-0 h-full w-full opacity-65" fittingType="fill"/>
     <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#030615]/75 via-[#030615]/45 to-[#030615]/80"/>
     <div className="relative z-10 mx-auto grid max-w-7xl gap-8 md:grid-cols-[1.4fr_1fr_1fr]">
-      <div><p className="text-base font-semibold text-white">SolHandle</p><p className="mt-3 max-w-sm leading-relaxed">NFT-native identity infrastructure for Solana. Pre-launch product; no handles are currently offered for sale.</p></div>
+      <div><p className="text-base font-semibold text-white">SolHandle</p><p className="mt-3 max-w-sm leading-relaxed">NFT-native identity infrastructure for Solana, live on Mainnet Beta. Claim, own and use your unique on-chain handle.</p></div>
       <nav><p className="mb-3 font-medium text-white">Explore</p><div className="space-y-2"><Link to="/docs" className="block hover:text-cyan-200">Documentation</Link><Link to="/developers" className="block hover:text-cyan-200">Developers</Link><Link to="/integrations" className="block hover:text-cyan-200">Integration Center</Link><Link to="/faq" className="block hover:text-cyan-200">FAQ</Link><Link to="/contact" className="block hover:text-cyan-200">Contact</Link></div></nav>
       <nav><p className="mb-3 font-medium text-white">Legal</p><div className="space-y-2"><Link to="/legal" className="block hover:text-cyan-200">Legal notice & disclaimer</Link><Link to="/privacy" className="block hover:text-cyan-200">Privacy policy</Link></div></nav>
     </div>
