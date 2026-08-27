@@ -43,9 +43,14 @@ export default async function(req: Request): Promise<Response> {
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const raw = Uint8Array.from(atob(body.transaction_base64), (character) => character.charCodeAt(0));
       const transaction = Transaction.from(raw);
+      const memoPrograms = new Set(["MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo"]);
       const protocolInstructions = transaction.instructions.filter((instruction) => instruction.programId.equals(program));
-      const unsupportedInstructions = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId));
-      if (protocolInstructions.length !== 1 || unsupportedInstructions.length > 0) return Response.json({ error: "The signed transaction contains unsupported instructions." }, { status: 400 });
+      const unsupportedInstructions = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId) && !memoPrograms.has(instruction.programId.toBase58()));
+      if (protocolInstructions.length !== 1 || unsupportedInstructions.length > 0) {
+        const programIds = unsupportedInstructions.map((instruction) => instruction.programId.toBase58());
+        const detail = protocolInstructions.length !== 1 ? `Expected one SolHandle instruction, found ${protocolInstructions.length}.` : `Unsupported instruction programs: ${programIds.join(", ")}.`;
+        return Response.json({ error: detail }, { status: 400 });
+      }
       const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);
       for (let attempt = 0; attempt < 25; attempt += 1) {
         const statuses = await rpc(rpcUrl, "getSignatureStatuses", [[signature], { searchTransactionHistory: true }]);
