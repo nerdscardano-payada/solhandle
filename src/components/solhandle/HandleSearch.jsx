@@ -18,7 +18,29 @@ export default function HandleSearch({ wallet }) {
       .then((res) => { if (res.data?.handle) setInput((current) => current || res.data.handle); })
       .catch(() => null);
   }, [pendingClaim]);
-  useEffect(() => { const timer = setTimeout(async () => { const invalid = validateHandle(handle); if (invalid) return setResult({ state:"invalid", message:invalid }); setResult({state:"checking"}); try { const res = await base44.functions.invoke("getHandleAvailability", { handle }); setResult(res.data); } catch { setResult({ handle, display:`@${handle}`, available:false, status:"UNAVAILABLE", state:"unavailable" }); } }, 280); return () => clearTimeout(timer); }, [handle]);
+  useEffect(() => {
+    const invalid = validateHandle(handle);
+    if (invalid) {
+      setResult({ state: "invalid", message: invalid });
+      return;
+    }
+
+    let active = true;
+    setResult({ state: "checking", handle });
+    const timer = setTimeout(async () => {
+      try {
+        const res = await base44.functions.invoke("getHandleAvailability", { handle });
+        if (active && res.data?.handle === handle) setResult(res.data);
+      } catch {
+        if (active) setResult({ handle, display: `@${handle}`, available: false, status: "UNAVAILABLE", state: "unavailable" });
+      }
+    }, 280);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [handle]);
   useEffect(() => {
     if (!pendingClaim || !wallet || !result?.available || result.handle !== pendingClaim) return;
     setShowClaim(true);
