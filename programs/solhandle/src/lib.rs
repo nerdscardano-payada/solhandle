@@ -12,7 +12,7 @@ const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 const MAX_RESERVED_FOR_LENGTH: usize = 80;
 
-declare_id!("ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT");
+declare_id!("B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf");
 
 #[program]
 pub mod solhandle {

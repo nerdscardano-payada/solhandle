@@ -12,7 +12,7 @@ solhandle = "ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
 solhandle = "ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
 
 [programs.mainnet]
-solhandle = "ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT"
+solhandle = "B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf"
 
 [provider]
 cluster = "Devnet"
