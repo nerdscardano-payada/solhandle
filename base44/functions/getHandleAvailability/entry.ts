@@ -4,11 +4,16 @@ import { findHandleOnChain, getAssetOwner, getNameRestriction, getProtocolConfig
 import { calculateHandlePrice, normalizeHandle } from '../../shared/handlePricing.ts';
 
 function calculateHandleScore(handle: string) {
-  const lengthScore = Math.max(52, 100 - Math.max(0, handle.length - 1) * 4);
-  const characterBonus = /^[a-z]+$/.test(handle) ? 2 : /^\d+$/.test(handle) ? 1 : 0;
-  const uniquenessBonus = new Set(handle).size === handle.length ? 2 : 0;
-  const repetitionPenalty = /(.)\1\1/.test(handle) ? 4 : 0;
-  return Math.min(100, Math.max(0, lengthScore + characterBonus + uniquenessBonus - repetitionPenalty));
+  const lengthPoints = [0, 12, 14, 16, 14, 12, 10, 8, 6, 5, 4];
+  const lettersOnly = /^[a-z]+$/.test(handle);
+  const numbersOnly = /^\d+$/.test(handle);
+  const characterPoints = lettersOnly ? 4 : numbersOnly ? -2 : -5;
+  const uniqueRatio = new Set(handle).size / handle.length;
+  const uniquenessPoints = uniqueRatio >= 0.8 ? 4 : uniqueRatio >= 0.5 ? 1 : -4;
+  const pronounceablePoints = lettersOnly && /[aeiouy]/.test(handle) && /[bcdfghjklmnpqrstvwxz]/.test(handle) ? 6 : 0;
+  const repetitionPenalty = /(.)\1\1/.test(handle) ? 8 : 0;
+  const score = 48 + (lengthPoints[Math.min(handle.length, 10)] || 3) + characterPoints + uniquenessPoints + pronounceablePoints - repetitionPenalty;
+  return Math.min(82, Math.max(35, score));
 }
 
 export default async function(req: Request): Promise<Response> {
