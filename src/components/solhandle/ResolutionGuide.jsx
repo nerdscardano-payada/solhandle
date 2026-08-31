@@ -6,7 +6,7 @@ const audiences = [
 ];
 
 const steps = [
-  "Choose direct Mainnet on-chain resolution, the SDK source, or the REST convenience endpoint.",
+  "Install solhandle-sdk and @solana/web3.js, then create a confirmed Connection using your production Mainnet RPC endpoint.",
   "Replace @ansem in sample code with an existing SolHandle. Use @solhandle for a live officially claimed Mainnet proof.",
   "Require a valid HandleRecord, the deterministic asset, the official collection, and the current NFT owner.",
   "For native SOL, continue only when safeForNativeSol is true; send to the returned address, never to the literal @handle.",
