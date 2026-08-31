@@ -39,9 +39,14 @@ export default async function(req: Request): Promise<Response> {
     if (body.action === "submit") {
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const transaction = Transaction.from(decodeBase64(body.transaction_base64));
+      const walletPrograms = new Set([
+        "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+        "Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo",
+        "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"
+      ]);
       const protocolInstructions = transaction.instructions.filter((instruction) => instruction.programId.equals(program));
-      const unsupported = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId));
-      if (protocolInstructions.length !== 1 || unsupported.length > 0) return Response.json({ error: "Only one SolHandle mint instruction is allowed." }, { status: 400 });
+      const unsupported = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(ComputeBudgetProgram.programId) && !walletPrograms.has(instruction.programId.toBase58()));
+      if (protocolInstructions.length !== 1 || unsupported.length > 0) return Response.json({ error: "Only one SolHandle mint instruction with approved wallet verification is allowed." }, { status: 400 });
 
       const instruction = protocolInstructions[0];
       const expectedDiscriminator = await mintDiscriminator();
