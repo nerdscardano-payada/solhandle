@@ -12,10 +12,10 @@ export default function HandleShareActions({ handle, isPremium = false, location
   };
   const buttonClass = prominent
     ? "inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 px-5 py-3 font-semibold text-white"
-    : "inline-flex items-center gap-1 text-cyan-200";
+    : "inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-300";
 
   return (
-    <div className={`flex flex-wrap items-center ${prominent ? "justify-center gap-3" : "gap-4"}`}>
+    <div className={`flex flex-wrap items-center ${prominent ? "justify-center gap-3" : "gap-3"}`}>
       <button type="button" onClick={share} className={buttonClass} aria-label={`Share @${handle} on X`}>
         <span aria-hidden="true">𝕏</span> Share on X
       </button>

@@ -60,6 +60,7 @@ export default function HandlePage() {
           <span className={`mt-3 inline-block rounded-full px-3 py-1 text-sm ${invalid ? "bg-red-400/10 text-red-300" : available ? "bg-emerald-400/10 text-emerald-300" : "bg-cyan-400/10 text-cyan-300"}`}>
             {invalid ? "Invalid handle" : available ? "Available to mint" : data?.status === "RESERVED" ? "Reserved for official claim" : data?.status === "PROTECTED" ? "Protected brand name" : "Official SolHandle ✓"}
           </span>
+          {!invalid && data && <div className="mt-3 flex justify-center"><HandleShareActions handle={handle} isPremium={data?.nameClass === "Premium"} location="handle_detail" /></div>}
 
           <div className="mx-auto mt-8 max-w-xl">
             <HandleCard handle={handle} display={`@${handle || "—"}`} />
@@ -84,7 +85,6 @@ export default function HandlePage() {
           </div>
 
           {available && <Link to={`/?claim=${handle}`} className="mt-8 inline-flex rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-5 py-3 font-semibold text-slate-950">Mint @{handle}</Link>}
-          {!invalid && data && <div className="mt-5"><HandleShareActions handle={handle} isPremium={data?.nameClass === "Premium"} location="handle_detail" prominent /></div>}
           <SimilarHandles handle={handle}/>
           <Link to="/" className="mt-8 inline-block text-cyan-200">Search another handle</Link>
         </section>
