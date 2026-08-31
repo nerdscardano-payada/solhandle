@@ -2,6 +2,15 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
 import { findHandleOnChain, getAssetOwner, getNameRestriction, getProtocolConfig } from '../../shared/solanaRpc.ts';
 import { calculateHandlePrice, normalizeHandle } from '../../shared/handlePricing.ts';
+
+function calculateHandleScore(handle: string) {
+  const lengthScore = Math.max(52, 100 - Math.max(0, handle.length - 1) * 4);
+  const characterBonus = /^[a-z]+$/.test(handle) ? 2 : /^\d+$/.test(handle) ? 1 : 0;
+  const uniquenessBonus = new Set(handle).size === handle.length ? 2 : 0;
+  const repetitionPenalty = /(.)\1\1/.test(handle) ? 4 : 0;
+  return Math.min(100, Math.max(0, lengthScore + characterBonus + uniquenessBonus - repetitionPenalty));
+}
+
 export default async function(req: Request): Promise<Response> {
   try {
     const { handle: rawHandle } = await req.json();
@@ -25,6 +34,6 @@ export default async function(req: Request): Promise<Response> {
     const activeRestriction = restriction?.active ? restriction : null;
     const status = claimed ? 'CLAIMED' : activeRestriction?.restrictionType || 'AVAILABLE';
     const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0);
-    return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || null, priceLamports: pricing.finalPriceLamports, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, premium: pricing.isPremium, nameClass: pricing.isPremium ? 'Premium' : 'Standard', categories: discoveryRows[0]?.categories || ['identity'], tags: discoveryRows[0]?.tags || ['personal', 'solana'], handleScore: discoveryRows[0]?.handle_score || null, restriction: activeRestriction, listing: listings[0] ? { price: listings[0].price, currency: listings[0].currency, url: listings[0].listing_url, marketplace: listings[0].marketplace } : null });
+    return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || null, priceLamports: pricing.finalPriceLamports, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, premium: pricing.isPremium, nameClass: pricing.isPremium ? 'Premium' : 'Standard', categories: discoveryRows[0]?.categories || ['identity'], tags: discoveryRows[0]?.tags || ['personal', 'solana'], handleScore: discoveryRows[0]?.handle_score ?? calculateHandleScore(handle), restriction: activeRestriction, listing: listings[0] ? { price: listings[0].price, currency: listings[0].currency, url: listings[0].listing_url, marketplace: listings[0].marketplace } : null });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
