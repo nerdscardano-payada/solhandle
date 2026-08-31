@@ -110,4 +110,4 @@ npm test
 npm run pack:check
 ```
 
-Before publishing, confirm that the `solhandle-sdk` package name is available and choose an open-source license. The package remains `UNLICENSED` until that decision is made.
+SolHandle SDK is released under the MIT License. See `LICENSE` for the full terms.
