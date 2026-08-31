@@ -4,15 +4,16 @@ import { findHandleOnChain, getAssetOwner, getNameRestriction, getProtocolConfig
 import { calculateHandlePrice, normalizeHandle } from '../../shared/handlePricing.ts';
 
 function calculateHandleScore(handle: string) {
-  const lengthPoints = [0, 12, 14, 16, 14, 12, 10, 8, 6, 5, 4];
+  const lengthPoints = [0, 24, 14, 16, 14, 12, 10, 8, 6, 5, 4];
   const lettersOnly = /^[a-z]+$/.test(handle);
   const numbersOnly = /^\d+$/.test(handle);
   const characterPoints = lettersOnly ? 4 : numbersOnly ? 4 : -5;
   const uniqueRatio = new Set(handle).size / handle.length;
-  const uniquenessPoints = uniqueRatio >= 0.8 ? 4 : uniqueRatio >= 0.5 ? 1 : -4;
+  const uniquenessPoints = numbersOnly && handle.length <= 3 ? 4 : uniqueRatio >= 0.8 ? 4 : uniqueRatio >= 0.5 ? 1 : -4;
   const pronounceablePoints = lettersOnly && /[aeiouy]/.test(handle) && /[bcdfghjklmnpqrstvwxz]/.test(handle) ? 6 : 0;
-  const repetitionPenalty = /(.)\1\1/.test(handle) ? 8 : 0;
-  const score = 48 + (lengthPoints[Math.min(handle.length, 10)] || 3) + characterPoints + uniquenessPoints + pronounceablePoints - repetitionPenalty;
+  const numericPatternPoints = numbersOnly ? handle.length === 2 ? 6 : handle.length === 3 ? 8 : 0 : 0;
+  const repetitionPenalty = !numbersOnly && /(.)\1\1/.test(handle) ? 8 : 0;
+  const score = 48 + (lengthPoints[Math.min(handle.length, 10)] || 3) + characterPoints + uniquenessPoints + pronounceablePoints + numericPatternPoints - repetitionPenalty;
   return Math.min(82, Math.max(35, score));
 }
 
