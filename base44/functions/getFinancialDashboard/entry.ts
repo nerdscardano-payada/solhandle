@@ -35,8 +35,9 @@ export default async function(req: Request): Promise<Response> {
     const [treasuryLamports, rewardsLamports] = await Promise.all([balanceFor(config?.treasury), balanceFor(config?.rewards_vault)]);
     const premium = transactions.filter((row) => row.premium_status); const premiumSoldLifetime = new Set(allTransactions.filter((row) => row.premium_status).map((row) => row.handle)).size;
     const lengths = [
-      { label: "2-character", test: (n) => n === 2 }, { label: "3-character", test: (n) => n === 3 },
-      { label: "4-character", test: (n) => n === 4 }, { label: "5+ character", test: (n) => n >= 5 }
+      { label: "1-character", test: (n) => n === 1 }, { label: "2-character", test: (n) => n === 2 },
+      { label: "3-character", test: (n) => n === 3 }, { label: "4-character", test: (n) => n === 4 },
+      { label: "5+ character", test: (n) => n >= 5 }
     ].map((group) => { const rows = transactions.filter((row) => group.test(row.character_length)); return { label: group.label, mints: rows.length, revenueLamports: sum(rows, "base_price_lamports") }; });
     return Response.json({
       transactions, currentSolEur, treasuryLamports, rewardsLamports,
