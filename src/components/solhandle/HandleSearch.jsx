@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Clock3, LoaderCircle, Search, ShieldAlert, Wallet } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import invokeWithRetry from "@/lib/invokeWithRetry";
 import useMintLaunch from "@/hooks/useMintLaunch";
 import { lamportsToSol, normalizeHandle, validateHandle } from "@/lib/solhandle";
 import MintBackground from "@/components/solhandle/MintBackground";
@@ -16,7 +16,7 @@ export default function HandleSearch({ wallet }) {
   const launch = useMintLaunch();
   useEffect(() => {
     if (pendingClaim) return;
-    base44.functions.invoke("getRandomAvailablePremium", {})
+    invokeWithRetry("getRandomAvailablePremium", {})
       .then((res) => { if (res.data?.handle) setInput((current) => current || res.data.handle); })
       .catch(() => null);
   }, [pendingClaim]);
@@ -31,7 +31,7 @@ export default function HandleSearch({ wallet }) {
     setResult({ state: "checking", handle });
     const timer = setTimeout(async () => {
       try {
-        const res = await base44.functions.invoke("getHandleAvailability", { handle });
+        const res = await invokeWithRetry("getHandleAvailability", { handle });
         if (active && res.data?.handle === handle) setResult(res.data);
       } catch {
         if (active) setResult({ handle, display: `@${handle}`, available: false, status: "UNAVAILABLE", state: "unavailable" });
