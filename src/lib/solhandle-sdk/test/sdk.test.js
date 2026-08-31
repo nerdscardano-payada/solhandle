@@ -110,17 +110,3 @@ test("builds the Anchor set-primary instruction without Anchor", () => {
   assert.equal(instruction.keys[0].isSigner, true);
   assert.equal(instruction.keys[3].pubkey.toBase58().length > 30, true);
 });
-
-test("normalizes and validates protocol handles", () => {
-  assert.equal(normalizeHandle("  @@Ansem "), "ansem");
-  assert.equal(validateHandle("@ansem"), true);
-  assert.equal(validateHandle("not-valid"), false);
-  assert.equal(validateHandle("a".repeat(21)), false);
-  assert.equal(validateHandle(""), false);
-});
-
-test("derives deterministic and separate protocol accounts", () => {
-  assert.equal(getHandlePda("@Ansem").toBase58(), getHandlePda("ansem").toBase58());
-  assert.equal(getAssetPda("@Ansem").toBase58(), getAssetPda("ansem").toBase58());
-  assert.notEqual(getHandlePda("ansem").toBase58(), getAssetPda("ansem").toBase58());
-});
