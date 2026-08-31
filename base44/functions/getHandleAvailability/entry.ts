@@ -7,7 +7,7 @@ function calculateHandleScore(handle: string) {
   const lengthPoints = [0, 12, 14, 16, 14, 12, 10, 8, 6, 5, 4];
   const lettersOnly = /^[a-z]+$/.test(handle);
   const numbersOnly = /^\d+$/.test(handle);
-  const characterPoints = lettersOnly ? 4 : numbersOnly ? -2 : -5;
+  const characterPoints = lettersOnly ? 4 : numbersOnly ? 4 : -5;
   const uniqueRatio = new Set(handle).size / handle.length;
   const uniquenessPoints = uniqueRatio >= 0.8 ? 4 : uniqueRatio >= 0.5 ? 1 : -4;
   const pronounceablePoints = lettersOnly && /[aeiouy]/.test(handle) && /[bcdfghjklmnpqrstvwxz]/.test(handle) ? 6 : 0;
