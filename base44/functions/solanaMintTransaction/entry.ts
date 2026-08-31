@@ -5,6 +5,9 @@ import { rpc, getProtocolConfig } from "../../shared/solanaRpc.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
 import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricing.ts";
 
+const PUBLIC_MINT_LAUNCH_AT = Date.parse("2026-09-04T13:00:00Z");
+const mintIsLocked = () => Date.now() < PUBLIC_MINT_LAUNCH_AT;
+
 function decodeBase64(value) {
   return Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
 }
@@ -52,6 +55,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     if (body.action === "prepare") {
+      if (mintIsLocked()) return Response.json({ error: "Public minting opens September 4, 2026 at 15:00 Belgium time." }, { status: 423 });
       const handle = normalizeHandle(body.handle);
       if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
       const [protocol, premiumRows, latest] = await Promise.all([
@@ -103,6 +107,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     if (body.action === "submit") {
+      if (mintIsLocked()) return Response.json({ error: "Public minting opens September 4, 2026 at 15:00 Belgium time." }, { status: 423 });
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const transaction = Transaction.from(decodeBase64(body.transaction_base64));
       const walletPrograms = new Set([
