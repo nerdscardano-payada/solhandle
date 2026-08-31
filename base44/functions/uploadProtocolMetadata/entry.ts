@@ -84,6 +84,7 @@ export default async function(req: Request): Promise<Response> {
         { trait_type: 'Length', value: String(length) },
         { trait_type: 'Rarity', value: rarity },
         { trait_type: 'Name Class', value: nameClass },
+        { trait_type: 'Premium', value: nameClass === 'Premium' ? 'Yes' : 'No' },
         { trait_type: 'Character Type', value: characterType },
         { trait_type: 'Network', value: 'Solana Mainnet-beta' }
       ],

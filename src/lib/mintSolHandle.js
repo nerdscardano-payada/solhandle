@@ -1,6 +1,6 @@
 import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 import { base44 } from "@/api/base44Client";
-import { decodeSolHandleConfig, PROGRAM_ID, PROTOCOL_VERSION, SEEDS } from "@/lib/solhandleProtocol";
+import { PROGRAM_ID, SEEDS } from "@/lib/solhandleProtocol";
 
 const MPL_CORE = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
 const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
@@ -67,7 +67,7 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
 }
 
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, signTransaction }) {
-  const prepared = await base44.functions.invoke("solanaMintTransaction", { action: "prepare" });
+  const prepared = await base44.functions.invoke("solanaMintTransaction", { action: "prepare", handle });
   const protocol = prepared.data;
   const config = new PublicKey(protocol.config);
   const seed = encoder.encode(handle);
@@ -88,7 +88,10 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
     data: bytes(hash.slice(0, 8), stringBytes(handle), stringBytes(uri), u64Bytes(maxPriceLamports))
   });
   if (!signTransaction) throw new Error("This wallet cannot sign Solana transactions.");
-  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
+  if (Number(maxPriceLamports) !== Number(protocol.finalPriceLamports)) throw new Error("The handle price changed. Please review the updated price.");
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash });
+  if (protocol.premiumSurchargeLamports > 0) transaction.add(SystemProgram.transfer({ fromPubkey: wallet, toPubkey: new PublicKey(protocol.treasury), lamports: protocol.premiumSurchargeLamports }));
+  transaction.add(instruction);
   const signed = await signTransaction(transaction);
   const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
   const submitted = await base44.functions.invoke("solanaMintTransaction", { action: "submit", transaction_base64: transactionBase64 });
