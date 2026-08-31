@@ -11,7 +11,12 @@ export default function HandleSearch({ wallet }) {
   const urlParams = new URLSearchParams(window.location.search);
   const pendingClaim = normalizeHandle(urlParams.get("claim") || "");
   const resumeClaimId = urlParams.get("official_claim") || "";
-  const [input, setInput] = useState(pendingClaim || "ansem"); const [result, setResult] = useState(null); const [showClaim, setShowClaim] = useState(false); const [showOfficialClaim, setShowOfficialClaim] = useState(false); const handle = normalizeHandle(input);
+  const [input, setInput] = useState(pendingClaim || ""); const [result, setResult] = useState(null); const [showClaim, setShowClaim] = useState(false); const [showOfficialClaim, setShowOfficialClaim] = useState(false); const handle = normalizeHandle(input);
+  useEffect(() => {
+    if (pendingClaim) return;
+    base44.functions.invoke("getRandomAvailablePremium", {})
+      .then((res) => { if (res.data?.handle) setInput((current) => current || res.data.handle); });
+  }, [pendingClaim]);
   useEffect(() => { const timer = setTimeout(async () => { const invalid = validateHandle(handle); if (invalid) return setResult({ state:"invalid", message:invalid }); setResult({state:"checking"}); try { const res = await base44.functions.invoke("getHandleAvailability", { handle }); setResult(res.data); } catch { setResult({ handle, display:`@${handle}`, available:false, status:"UNAVAILABLE", state:"unavailable" }); } }, 280); return () => clearTimeout(timer); }, [handle]);
   useEffect(() => {
     if (!pendingClaim || !wallet || !result?.available || result.handle !== pendingClaim) return;
