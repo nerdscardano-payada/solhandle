@@ -55,7 +55,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     if (body.action === "prepare") {
-      if (mintIsLocked()) return Response.json({ error: "Public minting opens September 4, 2026 at 15:00 Belgium time." }, { status: 423 });
+      if (mintIsLocked()) return Response.json({ error: "Public minting is not open yet." }, { status: 423 });
       const handle = normalizeHandle(body.handle);
       if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
       const [protocol, premiumRows, latest] = await Promise.all([
@@ -107,7 +107,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     if (body.action === "submit") {
-      if (mintIsLocked()) return Response.json({ error: "Public minting opens September 4, 2026 at 15:00 Belgium time." }, { status: 423 });
+      if (mintIsLocked()) return Response.json({ error: "Public minting is not open yet." }, { status: 423 });
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const transaction = Transaction.from(decodeBase64(body.transaction_base64));
       const walletPrograms = new Set([

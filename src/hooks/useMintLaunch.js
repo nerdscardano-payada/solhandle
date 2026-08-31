@@ -15,6 +15,7 @@ export default function useMintLaunch() {
   const totalSeconds = Math.floor(remainingMs / 1000);
   return {
     isLive: remainingMs === 0,
+    launchLabel: new Intl.DateTimeFormat(undefined, { dateStyle: "long", timeStyle: "short" }).format(MINT_LAUNCH_AT),
     days: Math.floor(totalSeconds / 86400),
     hours: Math.floor((totalSeconds % 86400) / 3600),
     minutes: Math.floor((totalSeconds % 3600) / 60),
