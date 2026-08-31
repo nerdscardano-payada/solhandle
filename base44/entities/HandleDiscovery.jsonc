@@ -1,0 +1,37 @@
+{
+  "name": "HandleDiscovery",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "handle_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "handle",
+    "categories",
+    "tags",
+    "handle_score",
+    "active"
+  ]
+}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Header from "@/components/solhandle/Header";
 import HandleCard from "@/components/solhandle/HandleCard";
+import SimilarHandles from "@/components/solhandle/SimilarHandles";
 import { normalizeHandle, validateHandle, lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
 function rarityFor(length) {
@@ -60,6 +61,9 @@ export default function HandlePage() {
             <Detail label="Mint price" value={priceLamports ? `${lamportsToSol(priceLamports)} SOL` : "—"} />
             <Detail label="Rarity tier" value={rarityFor(handle.length)} accent="text-violet-300" />
             <Detail label="Name class" value={data?.nameClass || "Standard"} />
+            {data?.handleScore && <Detail label="Handle Score" value={`${data.handleScore} / 100`} accent="text-cyan-300" />}
+            {data?.categories?.length > 0 && <Detail label="Categories" value={data.categories.join(" · ")} />}
+            {data?.tags?.length > 0 && <Detail label="Tags" value={data.tags.join(" · ")} />}
             <Detail label="Asset address" value={data?.assetAddress ? shortenAddress(data.assetAddress) : "—"} />
             {data?.listing && <div className="flex items-center justify-between gap-4 border-t border-white/10 py-3"><span className="text-sm text-slate-500">For sale</span><a href={data.listing.url} target="_blank" rel="noreferrer" className="text-right text-sm font-semibold text-amber-300">{data.listing.price} {data.listing.currency} on Magic Eden ↗</a></div>}
             <Detail label="Protected" value={data?.protected ? "Yes" : "No"} accent={data?.protected ? "text-amber-300" : undefined} />
@@ -67,6 +71,8 @@ export default function HandlePage() {
             <Detail label="Handle length" value={`${handle.length} characters`} />
           </div>
 
+          {available && <Link to={`/?claim=${handle}`} className="mt-8 inline-flex rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-5 py-3 font-semibold text-slate-950">Mint @{handle}</Link>}
+          <SimilarHandles handle={handle}/>
           <Link to="/" className="mt-8 inline-block text-cyan-200">Search another handle</Link>
         </section>
       </div>

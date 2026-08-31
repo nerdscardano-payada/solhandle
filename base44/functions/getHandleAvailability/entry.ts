@@ -9,9 +9,10 @@ export default async function(req: Request): Promise<Response> {
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ handle, available: false, status: 'INVALID' }, { status: 400 });
     const base44 = createClientFromRequest(req);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    const [indexed, premiumRows, chainRecord, restriction, protocol] = await Promise.all([
+    const [indexed, premiumRows, discoveryRows, chainRecord, restriction, protocol] = await Promise.all([
       base44.asServiceRole.entities.HandleIndex.filter({ handle }, '-updated_date', 1),
       base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1),
+      base44.asServiceRole.entities.HandleDiscovery.filter({ handle, active: true }, '-updated_date', 1),
       findHandleOnChain(rpcUrl, handle),
       getNameRestriction(rpcUrl, handle),
       getProtocolConfig(rpcUrl)
@@ -24,6 +25,6 @@ export default async function(req: Request): Promise<Response> {
     const activeRestriction = restriction?.active ? restriction : null;
     const status = claimed ? 'CLAIMED' : activeRestriction?.restrictionType || 'AVAILABLE';
     const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0);
-    return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || null, priceLamports: pricing.finalPriceLamports, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, premium: pricing.isPremium, nameClass: pricing.isPremium ? 'Premium' : 'Standard', restriction: activeRestriction, listing: listings[0] ? { price: listings[0].price, currency: listings[0].currency, url: listings[0].listing_url, marketplace: listings[0].marketplace } : null });
+    return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || null, priceLamports: pricing.finalPriceLamports, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, premium: pricing.isPremium, nameClass: pricing.isPremium ? 'Premium' : 'Standard', categories: discoveryRows[0]?.categories || ['identity'], tags: discoveryRows[0]?.tags || ['personal', 'solana'], handleScore: discoveryRows[0]?.handle_score || null, restriction: activeRestriction, listing: listings[0] ? { price: listings[0].price, currency: listings[0].currency, url: listings[0].listing_url, marketplace: listings[0].marketplace } : null });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
