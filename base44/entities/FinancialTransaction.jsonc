@@ -1,0 +1,143 @@
+{
+  "name": "FinancialTransaction",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string"
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": [
+        "sale",
+        "correction"
+      ]
+    },
+    "handle": {
+      "type": "string"
+    },
+    "buyer_wallet": {
+      "type": "string"
+    },
+    "transaction_signature": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "block_slot": {
+      "type": "number"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "character_length": {
+      "type": "number"
+    },
+    "premium_status": {
+      "type": "boolean"
+    },
+    "base_price_lamports": {
+      "type": "number"
+    },
+    "premium_surcharge_lamports": {
+      "type": "number"
+    },
+    "total_paid_lamports": {
+      "type": "number"
+    },
+    "sol_eur_rate": {
+      "type": "number"
+    },
+    "total_value_eur": {
+      "type": "number"
+    },
+    "mint_source": {
+      "type": "string"
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "partner_commission_percentage": {
+      "type": "number"
+    },
+    "partner_fee_lamports": {
+      "type": "number"
+    },
+    "net_solhandle_lamports": {
+      "type": "number"
+    },
+    "treasury_address": {
+      "type": "string"
+    },
+    "rewards_vault_address": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "corrected"
+      ]
+    }
+  },
+  "required": [
+    "transaction_id",
+    "transaction_type",
+    "handle",
+    "buyer_wallet",
+    "transaction_signature",
+    "timestamp",
+    "character_length",
+    "premium_status",
+    "base_price_lamports",
+    "premium_surcharge_lamports",
+    "total_paid_lamports",
+    "sol_eur_rate",
+    "total_value_eur",
+    "mint_source",
+    "partner_fee_lamports",
+    "net_solhandle_lamports",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "$and": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.status": {
+            "$ne": "completed"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$and": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.status": {
+            "$ne": "completed"
+          }
+        }
+      ]
+    }
+  }
+}

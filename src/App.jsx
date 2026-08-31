@@ -26,6 +26,7 @@ import Developers from '@/pages/Developers';
 import Integrations from '@/pages/Integrations';
 import IntegrationGuide from '@/pages/IntegrationGuide';
 import MintSuccess from '@/pages/MintSuccess';
+import Financials from '@/pages/Financials';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/faq" element={<Faq />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/financials" element={<Financials />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

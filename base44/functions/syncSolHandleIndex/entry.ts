@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
 import { getAssetOwner, getProtocolConfig, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
+import { getHistoricalSolEur } from '../../shared/solEur.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -13,6 +14,7 @@ export default async function(req: Request): Promise<Response> {
       ? [{ signature, err: null }]
       : await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, { limit: 250, commitment: 'confirmed' }]);
     let synced = 0;
+    const protocol = await getProtocolConfig(rpcUrl);
 
     for (const entry of signatures) {
       if (entry.err) continue;
@@ -28,6 +30,8 @@ export default async function(req: Request): Promise<Response> {
         base44.asServiceRole.entities.PremiumHandle.filter({ handle: mint.handle }, '-updated_date', 1)
       ]);
       const length = mint.handle.length;
+      const blockTimestamp = transaction.blockTime || Math.floor(Date.now() / 1000);
+      const mintedAt = new Date(blockTimestamp * 1000).toISOString();
       const record = {
         handle: mint.handle,
         display_handle: `@${mint.handle}`,
@@ -38,7 +42,7 @@ export default async function(req: Request): Promise<Response> {
         mint_price_lamports: mint.priceLamports,
         mint_signature: entry.signature,
         mint_slot: transaction.slot,
-        minted_at: new Date((transaction.blockTime || Math.floor(Date.now() / 1000)) * 1000).toISOString(),
+        minted_at: mintedAt,
         last_chain_sync: new Date().toISOString(),
         rarity: length === 1 ? 'LEGENDARY' : length === 2 ? 'ULTRA_RARE' : length === 3 ? 'RARE' : length === 4 ? 'UNCOMMON' : 'STANDARD',
         name_class: premiumRows.length ? 'Premium' : 'Standard',
@@ -47,10 +51,34 @@ export default async function(req: Request): Promise<Response> {
       };
       if (existing[0]) await base44.asServiceRole.entities.HandleIndex.update(existing[0].id, record);
       else await base44.asServiceRole.entities.HandleIndex.create(record);
+
+      if (mint.priceLamports > 0) {
+        const financial = await base44.asServiceRole.entities.FinancialTransaction.filter({ transaction_signature: entry.signature }, '-timestamp', 1);
+        if (!financial[0]) {
+          const accountKeys = transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey);
+          const treasuryIndex = accountKeys.indexOf(protocol.treasury);
+          if (treasuryIndex < 0) throw new Error(`Treasury was not included in confirmed mint ${entry.signature}.`);
+          const receivedLamports = transaction.meta.postBalances[treasuryIndex] - transaction.meta.preBalances[treasuryIndex];
+          const premiumSurchargeLamports = premiumRows.length ? 1_000_000_000 : 0;
+          const expectedLamports = mint.priceLamports + premiumSurchargeLamports;
+          if (receivedLamports !== expectedLamports) throw new Error(`Confirmed treasury receipt does not match pricing for @${mint.handle}.`);
+          const solEurRate = await getHistoricalSolEur(blockTimestamp);
+          await base44.asServiceRole.entities.FinancialTransaction.create({
+            transaction_id: entry.signature, transaction_type: 'sale', handle: mint.handle, buyer_wallet: mint.owner,
+            transaction_signature: entry.signature, asset_address: mint.assetAddress, block_slot: transaction.slot, timestamp: mintedAt,
+            character_length: length, premium_status: premiumRows.length > 0, base_price_lamports: mint.priceLamports,
+            premium_surcharge_lamports: premiumSurchargeLamports, total_paid_lamports: receivedLamports,
+            sol_eur_rate: solEurRate, total_value_eur: receivedLamports / 1_000_000_000 * solEurRate,
+            mint_source: 'direct', partner_id: '', partner_commission_percentage: 0, partner_fee_lamports: 0,
+            net_solhandle_lamports: receivedLamports, treasury_address: protocol.treasury,
+            rewards_vault_address: protocol.rewardsVault, status: 'completed'
+          });
+        }
+      }
       synced += 1;
     }
 
-    const protocol = await getProtocolConfig(rpcUrl);
+
     const syncedAt = new Date().toISOString();
     const statusRecord = {
       paused: protocol.paused, total_minted: protocol.totalMinted, collection: protocol.collection,
