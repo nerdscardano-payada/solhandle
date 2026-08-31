@@ -4,6 +4,8 @@ import { base44 } from "@/api/base44Client";
 import Header from "@/components/solhandle/Header";
 import HandleCard from "@/components/solhandle/HandleCard";
 import SimilarHandles from "@/components/solhandle/SimilarHandles";
+import HandleShareActions from "@/components/solhandle/HandleShareActions";
+import { setHandleShareMetadata } from "@/lib/shareSolHandle";
 import { normalizeHandle, validateHandle, lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
 function rarityFor(length) {
@@ -31,6 +33,16 @@ export default function HandlePage() {
     base44.functions.invoke("getHandleAvailability", { handle })
       .then(res => setData(res.data))
       .catch(() => setData({ state: "invalid" }));
+  }, [handle]);
+
+  useEffect(() => {
+    if (!handle || validateHandle(handle)) return;
+    return setHandleShareMetadata(handle, data?.nameClass === "Premium");
+  }, [handle, data?.nameClass]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("utm_source") === "x") base44.analytics.track({ eventName: "shared_handle_visit", properties: { handle, source: "x" } });
   }, [handle]);
 
   const invalid = data?.status === "INVALID";
@@ -72,6 +84,7 @@ export default function HandlePage() {
           </div>
 
           {available && <Link to={`/?claim=${handle}`} className="mt-8 inline-flex rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-5 py-3 font-semibold text-slate-950">Mint @{handle}</Link>}
+          {!invalid && data && <div className="mt-5"><HandleShareActions handle={handle} isPremium={data?.nameClass === "Premium"} location="handle_detail" prominent /></div>}
           <SimilarHandles handle={handle}/>
           <Link to="/" className="mt-8 inline-block text-cyan-200">Search another handle</Link>
         </section>

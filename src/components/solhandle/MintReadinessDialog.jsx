@@ -31,7 +31,7 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
       setSignature(mintResult.signature);
       setPhase("confirmed");
       await base44.functions.invoke("syncSolHandleIndex", { signature: mintResult.signature }).catch(() => null);
-      const params = new URLSearchParams({ handle, signature: mintResult.signature, asset: mintResult.asset, wallet: publicKey.toBase58() });
+      const params = new URLSearchParams({ handle, signature: mintResult.signature, asset: mintResult.asset, wallet: publicKey.toBase58(), premium: String(Boolean(result?.premium)) });
       navigate(`/mint-success?${params.toString()}`);
     } catch (caught) {
       setPhase("");
