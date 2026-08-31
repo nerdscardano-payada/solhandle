@@ -1,9 +1,8 @@
-import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 import { base44 } from "@/api/base44Client";
 import { PROGRAM_ID, SEEDS } from "@/lib/solhandleProtocol";
 
 const MPL_CORE = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
-const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
 const encoder = new TextEncoder();
 const bytes = (...parts) => Uint8Array.from(parts.flatMap((part) => [...part]));
 const stringBytes = (value) => {
@@ -20,7 +19,9 @@ const u64Bytes = (value) => {
 const seedBytes = (seed) => encoder.encode(seed);
 const instructionHash = async (name) => new Uint8Array(await crypto.subtle.digest("SHA-256", encoder.encode(`global:${name}`)));
 
-export async function setPrimarySolHandle({ handle, wallet, sendTransaction }) {
+export async function setPrimarySolHandle({ handle, wallet, signTransaction }) {
+  const prepared = await base44.functions.invoke("solanaMintTransaction", { action: "prepare_primary", handle });
+  const protocol = prepared.data;
   const seed = encoder.encode(handle);
   const [record] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.handle), seed], PROGRAM_ID);
   const [asset] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.asset), seed], PROGRAM_ID);
@@ -35,10 +36,12 @@ export async function setPrimarySolHandle({ handle, wallet, sendTransaction }) {
     ],
     data: bytes(hash.slice(0, 8), stringBytes(handle))
   });
-  const { blockhash } = await connection.getLatestBlockhash("confirmed");
-  const signature = await sendTransaction(new Transaction({ feePayer: wallet, recentBlockhash: blockhash }).add(instruction), connection);
-  await connection.confirmTransaction(signature, "confirmed");
-  return { signature };
+  if (!signTransaction) throw new Error("This wallet cannot sign Solana transactions.");
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
+  const signed = await signTransaction(transaction);
+  const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
+  const submitted = await base44.functions.invoke("solanaMintTransaction", { action: "submit_primary", transaction_base64: transactionBase64 });
+  return { signature: submitted.data.signature };
 }
 
 export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, wallet, signTransaction }) {

@@ -9,8 +9,8 @@ function decodeBase64(value) {
   return Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
 }
 
-async function mintDiscriminator() {
-  const input = new TextEncoder().encode("global:mint_handle");
+async function instructionDiscriminator(name) {
+  const input = new TextEncoder().encode(`global:${name}`);
   return new Uint8Array(await crypto.subtle.digest("SHA-256", input)).slice(0, 8);
 }
 
@@ -44,6 +44,13 @@ export default async function(req: Request): Promise<Response> {
     const program = new PublicKey(PROGRAM_ID);
     const [config] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.config)], program);
 
+    if (body.action === "prepare_primary") {
+      const handle = normalizeHandle(body.handle);
+      if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
+      const latest = await rpc(rpcUrl, "getLatestBlockhash", [{ commitment: "confirmed" }]);
+      return Response.json({ blockhash: latest.value.blockhash, lastValidBlockHeight: latest.value.lastValidBlockHeight });
+    }
+
     if (body.action === "prepare") {
       const handle = normalizeHandle(body.handle);
       if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
@@ -67,6 +74,34 @@ export default async function(req: Request): Promise<Response> {
       });
     }
 
+    if (body.action === "submit_primary") {
+      if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
+      const transaction = Transaction.from(decodeBase64(body.transaction_base64));
+      const instruction = transaction.instructions.find((item) => item.programId.equals(program));
+      const allowedPrograms = new Set([program.toBase58(), ComputeBudgetProgram.programId.toBase58(), "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo", "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"]);
+      if (!instruction || transaction.instructions.filter((item) => item.programId.equals(program)).length !== 1 || transaction.instructions.some((item) => !allowedPrograms.has(item.programId.toBase58()))) return Response.json({ error: "Only one Set Primary instruction is allowed." }, { status: 400 });
+      const expected = await instructionDiscriminator("set_primary_handle");
+      if (!equalBytes(instruction.data.slice(0, 8), expected) || !transaction.feePayer || instruction.keys[0]?.pubkey.toBase58() !== transaction.feePayer.toBase58() || !instruction.keys[0]?.isSigner) return Response.json({ error: "Invalid Set Primary transaction." }, { status: 400 });
+      const handleLength = readU32(instruction.data, 8);
+      const handle = normalizeHandle(new TextDecoder().decode(instruction.data.slice(12, 12 + handleLength)));
+      if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
+      const seed = new TextEncoder().encode(handle);
+      const [record] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.handle), seed], program);
+      const [asset] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.asset), seed], program);
+      const [primary] = PublicKey.findProgramAddressSync([new TextEncoder().encode(SEEDS.primary), transaction.feePayer.toBytes()], program);
+      const expectedKeys = [transaction.feePayer, record, asset, primary, SystemProgram.programId];
+      if (instruction.keys.length !== expectedKeys.length || instruction.keys.some((key, index) => !key.pubkey.equals(expectedKeys[index]))) return Response.json({ error: "Invalid Set Primary accounts." }, { status: 400 });
+      const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);
+      for (let attempt = 0; attempt < 25; attempt += 1) {
+        const statuses = await rpc(rpcUrl, "getSignatureStatuses", [[signature], { searchTransactionHistory: true }]);
+        const status = statuses?.value?.[0];
+        if (status?.err) throw new Error(`Solana transaction failed: ${JSON.stringify(status.err)}`);
+        if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") return Response.json({ signature });
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      throw new Error("Transaction confirmation timed out. Check Solana Explorer before retrying.");
+    }
+
     if (body.action === "submit") {
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const transaction = Transaction.from(decodeBase64(body.transaction_base64));
@@ -81,7 +116,7 @@ export default async function(req: Request): Promise<Response> {
       if (protocolInstructions.length !== 1 || unsupported.length > 0) return Response.json({ error: "Only one SolHandle mint instruction with approved wallet verification is allowed." }, { status: 400 });
 
       const instruction = protocolInstructions[0];
-      const expectedDiscriminator = await mintDiscriminator();
+      const expectedDiscriminator = await instructionDiscriminator("mint_handle");
       if (!equalBytes(instruction.data.slice(0, 8), expectedDiscriminator)) return Response.json({ error: "Only public handle mint transactions are allowed." }, { status: 400 });
       if (!transaction.feePayer || instruction.keys[0]?.pubkey.toBase58() !== transaction.feePayer.toBase58() || !instruction.keys[0]?.isSigner) return Response.json({ error: "The connected wallet must be the mint payer." }, { status: 400 });
       if (instruction.keys[1]?.pubkey.toBase58() !== config.toBase58()) return Response.json({ error: "Invalid protocol configuration account." }, { status: 400 });

@@ -4,7 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { setPrimarySolHandle } from "@/lib/mintSolHandle";
 
 export default function SetPrimaryButton({ handle, onSuccess }) {
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, signTransaction } = useWallet();
   const [setting, setSetting] = useState(false);
   const [error, setError] = useState("");
 
@@ -13,7 +13,7 @@ export default function SetPrimaryButton({ handle, onSuccess }) {
     setSetting(true);
     setError("");
     try {
-      await setPrimarySolHandle({ handle, wallet: publicKey, sendTransaction });
+      await setPrimarySolHandle({ handle, wallet: publicKey, signTransaction });
       onSuccess(handle);
       window.dispatchEvent(new CustomEvent("solhandle:primary-set", { detail: handle }));
     } catch (caught) {
