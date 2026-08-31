@@ -1,75 +1,113 @@
-# @solhandle/sdk
+# SolHandle
 
-Official read-only Mainnet Beta SDK for resolving and verifying SolHandle identities directly against Solana.
+Human-readable wallet identities for Solana.
 
-## Trust model
+`@ansem → current verified Core Asset owner`
 
-Solana is the source of truth. The SDK derives deterministic protocol accounts, verifies the SolHandle program owner, verifies the Metaplex Core asset, and requires membership of the official SolHandle collection before returning an identity.
-
-- Program: `B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf`
-- Collection: `7XZzcbeFBxQA63n9avz44vnbpv34hDGYyHfCDmTdPBJP`
-- Network: `mainnet-beta`
-
-## Install
+## Quick start
 
 ```bash
 npm install @solhandle/sdk @solana/web3.js
 ```
-
-## Resolve a handle
-
-```js
-import { resolveHandle } from "@solhandle/sdk";
-
-const identity = await resolveHandle("@ansem", {
-  rpcUrl: "https://your-mainnet-rpc.example",
-});
-
-if (identity?.verified) {
-  console.log(identity.address);
-}
-```
-
-Applications sending native SOL must also require `safeForNativeSol === true`. A verified handle may resolve to a valid NFT owner that is not a safe native-SOL destination.
-
-## Use an existing connection
 
 ```js
 import { Connection } from "@solana/web3.js";
 import { resolveHandle } from "@solhandle/sdk";
 
 const connection = new Connection("https://your-mainnet-rpc.example", "confirmed");
-const identity = await resolveHandle("ansem", { connection });
+const result = await resolveHandle(connection, "@ansem");
+
+if (result) console.log(result.address.toBase58());
 ```
 
-## Reverse resolution
+Solana is the source of truth. Resolution does not call SolHandle, Base44, an indexer, or a private API.
+
+## Mainnet constants
+
+- Program: `B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf`
+- Official Core Collection: `7XZzcbeFBxQA63n9avz44vnbpv34hDGYyHfCDmTdPBJP`
+- Protocol version: `2`
+- Network: `mainnet-beta`
+
+These values are immutable exports in the package. Production integrations should provide a dedicated RPC endpoint.
+
+## Deployed protocol compatibility
+
+The Partner SDK package is version `1.0.0`, while the deployed on-chain protocol is version `2`. The live protocol uses lowercase `a-z` and `0-9`, 1–20 characters, with direct canonical-name PDA seeds. Hash-based seeds, underscores, 32-character names, and version fields inside every record would require a new on-chain protocol deployment and are intentionally not simulated by this SDK.
+
+## Public API
+
+- `isSolHandle(input)`
+- `normalizeHandle(input)` / `validateHandle(input)`
+- `deriveHandlePda(handle)` / `getHandlePda(handle)`
+- `resolveHandle(connection, handle)`
+- `reverseResolve(connection, wallet)` / `getPrimaryHandle(...)`
+- `getHandle(connection, handle)`
+- `verifyOwnership(connection, handle, wallet)`
+- `buildSetPrimaryInstruction(handle, wallet)`
+- `resolveRecipient(input, options)`
+- `isHandleAvailable(handle, options)`
+- `getHandlesByOwner(wallet, options)`
+
+The earlier `resolveHandle(handle, { connection })` calling style remains supported.
+
+## Verification performed
+
+A successful result is returned only after verifying:
+
+1. canonical handle syntax and deterministic HandleRecord PDA;
+2. HandleRecord ownership by the official SolHandle program;
+3. supported Config protocol version;
+4. registry canonical name and linked deterministic asset;
+5. asset ownership by Metaplex Core;
+6. membership in the official SolHandle collection;
+7. the current owner read directly from the Core Asset account.
+
+If the Core Asset has been burned while its permanent registry remains, resolution throws `HANDLE_RETIRED`. Reverse resolution re-runs forward verification and returns `null` when the wallet no longer owns the asset.
+
+## Recipient flow
 
 ```js
-import { reverseResolve } from "@solhandle/sdk";
-
-const primary = await reverseResolve("WALLET_ADDRESS", {
-  rpcUrl: "https://your-mainnet-rpc.example",
-});
+const recipient = await resolveRecipient(input, { connection });
+if (!recipient) throw new Error("Handle not found");
+if (recipient.kind === "solhandle" && !recipient.safeForNativeSol) {
+  throw new Error("Unsafe native SOL destination");
+}
+const destination = recipient.address;
 ```
 
-Reverse resolution is accepted only when the primary record still resolves to an official asset currently owned by that wallet.
+Always show the final base58 destination before confirmation and refresh resolution immediately before constructing a payment transaction.
 
-## API
+## Deterministic errors
 
-- `normalizeHandle(value)`
-- `validateHandle(value)`
-- `resolveHandle(handle, options)` / `getHandle(handle, options)`
-- `verifySolHandle(handle, options)`
-- `isHandleAvailable(handle, options)`
-- `reverseResolve(wallet, options)` / `getPrimaryHandle(wallet, options)`
-- `getHandlesByOwner(wallet, options)`
-- `getHandlePda(handle)`, `getAssetPda(handle)`, `getPrimaryHandlePda(wallet)`
+`SolHandleError.code` can be:
 
-`options` accepts an existing `connection`, or an `rpcUrl` and optional commitment. Production integrations should provide a dedicated Mainnet RPC URL rather than relying on the public default endpoint.
+- `INVALID_HANDLE`
+- `HANDLE_RETIRED`
+- `UNSUPPORTED_PROTOCOL_VERSION`
+- `INVALID_REGISTRY_ACCOUNT`
+- `INVALID_COLLECTION`
+- `ASSET_NOT_FOUND`
+- `OWNERSHIP_INVALID`
+- `PRIMARY_HANDLE_STALE`
+- `RPC_ERROR`
 
-## Before first publication
+## Set primary without Anchor
 
-1. Confirm ownership of the npm scope `@solhandle`.
-2. Choose and add the intended open-source license; the package remains `UNLICENSED` until that decision is made.
-3. Run `npm test` and `npm run pack:check` from this directory.
-4. Authenticate with npm and publish with `npm publish`.
+```js
+const instruction = buildSetPrimaryInstruction("@ansem", walletPublicKey);
+transaction.add(instruction);
+```
+
+The package depends only on `@solana/web3.js`; Anchor and Metaplex client packages are not required.
+
+## Release checks
+
+From this package directory:
+
+```bash
+npm test
+npm run pack:check
+```
+
+Before publishing, confirm ownership of the `@solhandle` npm scope and choose an open-source license. The package remains `UNLICENSED` until that decision is made.
