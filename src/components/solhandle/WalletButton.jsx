@@ -51,5 +51,5 @@ export default function WalletButton({ onConnected }) {
     }
   }, [wallets, selectedWallet, publicKey, connecting, select, connect, setVisible]);
 
-  return <><button onClick={() => openWallets()} className="inline-flex items-center gap-2 rounded-lg border border-cyan-300/70 bg-slate-950/70 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_18px_rgba(79,222,255,.12)] transition hover:border-violet-400"><Wallet className="h-4 w-4 text-emerald-300" />{connecting ? "Connecting" : primaryHandle || (address ? shortenAddress(address) : "Connect Wallet")}</button><MobileWalletChooser open={mobileChooserOpen} onOpenChange={setMobileChooserOpen} targetUrl={walletTarget || window.location.href} /></>;
+  return <><button onClick={() => openWallets()} className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-300/70 bg-slate-950/70 px-2.5 py-1.5 text-xs font-semibold text-white shadow-[0_0_18px_rgba(79,222,255,.12)] transition hover:border-violet-400 sm:gap-2 sm:px-4 sm:py-2 sm:text-sm"><Wallet className="h-3.5 w-3.5 text-emerald-300 sm:h-4 sm:w-4" />{connecting ? "Connecting" : primaryHandle || (address ? shortenAddress(address) : "Connect Wallet")}</button><MobileWalletChooser open={mobileChooserOpen} onOpenChange={setMobileChooserOpen} targetUrl={walletTarget || window.location.href} /></>;
 }
