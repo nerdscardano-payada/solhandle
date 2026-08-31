@@ -1,5 +1,5 @@
 {
-  "name": "@solhandle/sdk",
+  "name": "solhandle-sdk",
   "version": "1.0.0",
   "description": "Official Mainnet Beta SDK for resolving and verifying SolHandle identities on Solana.",
   "type": "module",

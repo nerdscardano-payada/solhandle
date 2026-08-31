@@ -7,12 +7,12 @@ Human-readable wallet identities for Solana.
 ## Quick start
 
 ```bash
-npm install @solhandle/sdk @solana/web3.js
+npm install solhandle-sdk @solana/web3.js
 ```
 
 ```js
 import { Connection } from "@solana/web3.js";
-import { resolveHandle } from "@solhandle/sdk";
+import { resolveHandle } from "solhandle-sdk";
 
 const connection = new Connection("https://your-mainnet-rpc.example", "confirmed");
 const result = await resolveHandle(connection, "@ansem");
@@ -110,4 +110,4 @@ npm test
 npm run pack:check
 ```
 
-Before publishing, confirm ownership of the `@solhandle` npm scope and choose an open-source license. The package remains `UNLICENSED` until that decision is made.
+Before publishing, confirm that the `solhandle-sdk` package name is available and choose an open-source license. The package remains `UNLICENSED` until that decision is made.

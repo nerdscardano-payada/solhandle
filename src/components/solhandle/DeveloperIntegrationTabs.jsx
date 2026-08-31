@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const content = {
-  sdk: { title: "SDK source · Mainnet ready", note: "The Mainnet resolver module is working in this app. @ansem is an integration example—use an existing Mainnet handle for a live result. Publication as @solhandle/sdk on npm is still pending.", code: 'const result = await resolveHandle("@ansem");\nif (!result.safeForNativeSol) throw new Error("Unsafe recipient");\nconsole.log(result.address);' },
+  sdk: { title: "SDK source · Mainnet ready", note: "The Mainnet resolver module is working in this app. @ansem is an integration example—use an existing Mainnet handle for a live result. Publication as solhandle-sdk on npm is still pending.", code: 'const result = await resolveHandle("@ansem");\nif (!result.safeForNativeSol) throw new Error("Unsafe recipient");\nconsole.log(result.address);' },
   api: { title: "REST convenience layer · Mainnet", note: "Forward and reverse resolution use the Mainnet protocol. Reverse lookup returns a handle only when the wallet still owns its verified Primary Handle asset. API responses are convenient, but Solana remains authoritative.", code: 'POST /functions/resolveSolHandle\n{ "handle": "@solhandle" }\n\nPOST /functions/reverseResolveSolHandle\n{ "address": "7xQu...R20q" }' },
   chain: { title: "Direct Mainnet on-chain · Working", note: "No SolHandle website or database is required. Read the deterministic HandleRecord and official Core Asset directly from a Mainnet RPC node.", code: 'handle PDA: ["handle", normalizedHandle]\nasset PDA: ["asset", normalizedHandle]\nprimary PDA: ["primary", wallet]\n\nProgram: B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf\nCollection: 7XZzcbeFBxQA63n9avz44vnbpv34hDGYyHfCDmTdPBJP' }
 };
