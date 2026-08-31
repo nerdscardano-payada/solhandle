@@ -45,11 +45,12 @@ export default async function(req: Request): Promise<Response> {
     const isExactSolIdentity = handle === 'sol' || handle === 'solana';
     const isProtectedBrand = protectedRows.length > 0;
     const solIdentityBonus = handle.includes('sol') ? 15 : 0;
+    const solNumberBonus = /^sol\d+$/.test(handle) ? 15 : 0;
     const handleScore = isExactSolIdentity
       ? 100
       : isProtectedBrand
         ? 90
-        : Math.min(100, baseHandleScore + (pricing.isPremium ? 5 : 0) + solIdentityBonus);
+        : Math.min(100, baseHandleScore + (pricing.isPremium ? 5 : 0) + solIdentityBonus + solNumberBonus);
     return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress: chainRecord?.assetAddress || null, priceLamports: pricing.finalPriceLamports, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, premium: pricing.isPremium, nameClass: pricing.isPremium ? 'Premium' : 'Standard', categories: discoveryRows[0]?.categories || ['identity'], tags: discoveryRows[0]?.tags || ['personal', 'solana'], handleScore, restriction: activeRestriction, listing: listings[0] ? { price: listings[0].price, currency: listings[0].currency, url: listings[0].listing_url, marketplace: listings[0].marketplace } : null });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
