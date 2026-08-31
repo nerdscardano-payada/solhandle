@@ -10,6 +10,6 @@ export default function Footer() {
       <nav><p className="mb-3 font-medium text-white">Explore</p><div className="space-y-2"><Link to="/docs" className="block hover:text-cyan-200">Documentation</Link><Link to="/developers" className="block hover:text-cyan-200">Developers</Link><Link to="/integrations" className="block hover:text-cyan-200">Integration Center</Link><Link to="/faq" className="block hover:text-cyan-200">FAQ</Link><Link to="/contact" className="block hover:text-cyan-200">Contact</Link></div></nav>
       <nav><p className="mb-3 font-medium text-white">Legal</p><div className="space-y-2"><Link to="/legal" className="block hover:text-cyan-200">Legal notice & disclaimer</Link><Link to="/privacy" className="block hover:text-cyan-200">Privacy policy</Link></div></nav>
     </div>
-    <div className="relative z-10 mx-auto mt-8 flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-5 text-xs sm:flex-row sm:justify-between"><span>© 2026 SolHandle. Pre-launch.</span><Link to="/contact" className="hover:text-cyan-200">Contact</Link></div>
+    <div className="relative z-10 mx-auto mt-8 flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-5 text-xs sm:flex-row sm:justify-between"><span>© 2026 SolHandle. Pre-launch.</span><div className="flex gap-4"><a href="https://x.com/Solhandle" target="_blank" rel="noreferrer" className="hover:text-cyan-200">X</a><Link to="/contact" className="hover:text-cyan-200">Contact</Link></div></div>
   </footer>;
 }
