@@ -5,6 +5,7 @@ import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricin
 import { PROGRAM_ID, rpc } from "../../shared/solanaRpc.ts";
 import { getCachedProtocolConfig } from "../../shared/protocolConfigCache.ts";
 import { SEEDS } from "../../shared/solhandleProtocol.ts";
+import { getFallbackSuggestions, uniqueSuggestionRows } from "../../shared/handleSuggestionPool.ts";
 
 const overlap = (left = [], right = []) => left.filter((value) => right.includes(value)).length;
 const scoreCandidate = (source, candidate) => overlap(source?.categories, candidate.categories) * 30 + Math.min(30, overlap(source?.tags, candidate.tags) * 10) + (Math.abs((source?.handle || "").length - candidate.handle.length) <= 1 ? 5 : 0) + (source?.handle?.[0] === candidate.handle[0] ? 4 : 0) + Number(candidate.handle_score || 0) * 0.15;
@@ -16,9 +17,10 @@ export default async function(req: Request): Promise<Response> {
     const handle = normalizeHandle(body.handle);
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
     const base44 = createClientFromRequest(req);
-    const rows = await base44.asServiceRole.entities.HandleDiscovery.filter({ active: true }, "-handle_score", 500);
+    const discoveryRows = await base44.asServiceRole.entities.HandleDiscovery.filter({ active: true }, "-handle_score", 500);
+    const rows = uniqueSuggestionRows([...discoveryRows, ...getFallbackSuggestions()]);
     const source = rows.find((row) => row.handle === handle) || { handle, categories: ["identity"], tags: ["personal", "solana"] };
-    const candidates = rows.filter((row) => row.handle !== handle && /^[a-z0-9]{1,20}$/.test(row.handle)).sort((a, b) => scoreCandidate(source, b) - scoreCandidate(source, a)).slice(0, 45);
+    const candidates = rows.filter((row) => row.handle !== handle).sort((a, b) => scoreCandidate(source, b) - scoreCandidate(source, a)).slice(0, 45);
     const rpcUrl = secrets.get("SOLANA_RPC_URL");
     const [protocol, premiumRows] = await Promise.all([getCachedProtocolConfig(base44, rpcUrl), base44.asServiceRole.entities.PremiumHandle.list("-created_date", 5000)]);
     const program = new PublicKey(PROGRAM_ID); const encoder = new TextEncoder();
@@ -31,9 +33,13 @@ export default async function(req: Request): Promise<Response> {
     const accountData = accounts.length ? await rpc(rpcUrl, "getMultipleAccounts", [accounts, { encoding: "base64", commitment: "confirmed" }]) : { value: [] };
     console.info("getHandleRecommendations RPC calls", { rpcCalls: accounts.length ? 1 : 0, candidatesChecked: candidates.length });
     const premium = new Set(premiumRows.map((row) => row.handle));
-    const recommendations = candidates.filter((candidate, index) => !accountData.value[index * 2] && !restrictionIsActive(accountData.value[index * 2 + 1])).slice(0, 6).map((candidate) => {
+    const available = candidates.filter((candidate, index) => !accountData.value[index * 2] && !restrictionIsActive(accountData.value[index * 2 + 1]));
+    const standard = available.filter((candidate) => !premium.has(candidate.handle)).slice(0, 4);
+    const premiumSuggestions = available.filter((candidate) => premium.has(candidate.handle)).slice(0, 2);
+    const selected = [...standard, ...premiumSuggestions];
+    const recommendations = [...selected, ...available.filter((candidate) => !selected.includes(candidate))].slice(0, 6).map((candidate) => {
       const pricing = calculateHandlePrice(candidate.handle, protocol.pricesLamports, premium.has(candidate.handle));
-      return { handle: candidate.handle, available: true, premium: pricing.isPremium, priceLamports: pricing.finalPriceLamports, categories: candidate.categories, tags: candidate.tags, recommendationScore: Math.round(scoreCandidate(source, candidate)) };
+      return { handle: candidate.handle, available: true, premium: pricing.isPremium, priceLamports: pricing.finalPriceLamports, categories: candidate.categories || ["identity"], tags: candidate.tags || ["personal"], recommendationScore: Math.round(scoreCandidate(source, candidate)) };
     });
     return Response.json({ handle, categories: source.categories, tags: source.tags, recommendations });
   } catch (error) { return Response.json({ error: error.message || "Unable to load recommendations." }, { status: 500 }); }
