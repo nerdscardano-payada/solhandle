@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
-import { getAssetOwner, getProtocolConfig, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
+import { getAssetOwner, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
+import { getCachedProtocolConfig } from '../../shared/protocolConfigCache.ts';
 import { getHistoricalSolEur } from '../../shared/solEur.ts';
 
 export default async function(req: Request): Promise<Response> {
@@ -14,7 +15,7 @@ export default async function(req: Request): Promise<Response> {
       ? [{ signature, err: null }]
       : await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, { limit: 250, commitment: 'confirmed' }]);
     let synced = 0;
-    const protocol = await getProtocolConfig(rpcUrl);
+    const protocol = await getCachedProtocolConfig(base44, rpcUrl);
 
     for (const entry of signatures) {
       if (entry.err) continue;

@@ -5,6 +5,9 @@
     "paused": {
       "type": "boolean"
     },
+    "authority": {
+      "type": "string"
+    },
     "total_minted": {
       "type": "number"
     },
@@ -33,6 +36,10 @@
       "type": "number"
     },
     "last_sync": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "config_cached_at": {
       "type": "string",
       "format": "date-time"
     }

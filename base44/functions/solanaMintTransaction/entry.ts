@@ -1,7 +1,8 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.44";
 import { ComputeBudgetProgram, PublicKey, SystemProgram, Transaction } from "npm:@solana/web3.js@1.98.4";
 import { secrets } from "base44:runtime";
-import { rpc, getProtocolConfig } from "../../shared/solanaRpc.ts";
+import { rpc } from "../../shared/solanaRpc.ts";
+import { getCachedProtocolConfig } from "../../shared/protocolConfigCache.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
 import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricing.ts";
 
@@ -59,7 +60,7 @@ export default async function(req: Request): Promise<Response> {
       const handle = normalizeHandle(body.handle);
       if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
       const [protocol, premiumRows, latest] = await Promise.all([
-        getProtocolConfig(rpcUrl),
+        getCachedProtocolConfig(base44, rpcUrl),
         base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1),
         rpc(rpcUrl, "getLatestBlockhash", [{ commitment: "confirmed" }])
       ]);
@@ -129,7 +130,7 @@ export default async function(req: Request): Promise<Response> {
       const mintData = parseMintData(instruction.data);
       if (!/^[a-z0-9]{1,20}$/.test(mintData.handle)) return Response.json({ error: "Invalid mint handle." }, { status: 400 });
       const [protocol, premiumRows] = await Promise.all([
-        getProtocolConfig(rpcUrl),
+        getCachedProtocolConfig(base44, rpcUrl),
         base44.asServiceRole.entities.PremiumHandle.filter({ handle: mintData.handle }, '-updated_date', 1)
       ]);
       const pricing = calculateHandlePrice(mintData.handle, protocol.pricesLamports, premiumRows.length > 0);
