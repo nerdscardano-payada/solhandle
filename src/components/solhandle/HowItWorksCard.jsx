@@ -9,7 +9,7 @@ const steps = [
 ];
 
 export default function HowItWorksCard() {
-  return <section className="card-glow md:col-span-6">
+  return <section className="card-glow md:col-span-12 lg:col-span-6">
     <h3 className="text-sm font-semibold uppercase tracking-wider text-white">How it works</h3>
     <div className="relative mt-5 grid grid-cols-2 gap-5 sm:grid-cols-4">
       <div className="absolute left-[12%] right-[12%] top-5 hidden h-px bg-gradient-to-r from-cyan-300/30 via-violet-400/50 to-emerald-300/30 sm:block" />

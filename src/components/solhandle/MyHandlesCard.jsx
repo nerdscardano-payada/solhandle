@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { formatMintDate, shortenWallet } from "@/lib/protocolDisplay";
 
 export default function MyHandlesCard({ wallet, state, handles }) {
-  return <section className="card-glow flex flex-col md:col-span-3">
+  return <section className="card-glow flex flex-col md:col-span-6 lg:col-span-3">
     <div className="flex items-center justify-between"><h3 className="text-sm font-semibold uppercase tracking-wider">My Handles</h3><Link to="/my-handles" className="text-xs text-cyan-300">View all</Link></div>
     <div className="min-h-40 flex-1">
       {!wallet && <p className="mt-5 text-sm text-slate-400">Connect your wallet to view your handles.</p>}
