@@ -9,7 +9,14 @@ function encodeBase58(bytes: Uint8Array) { const alphabet = "123456789ABCDEFGHJK
 export async function rpc(rpcUrl: string, method: string, params: unknown = []) {
   const maxAttempts = 2;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    const response = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json", "User-Agent": "SolHandle/1.0" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    let response;
+    try {
+      response = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json", "User-Agent": "SolHandle/1.0" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }), signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
+    }
     const text = await response.text();
     let payload = null;
     try { payload = text ? JSON.parse(text) : null; } catch {}

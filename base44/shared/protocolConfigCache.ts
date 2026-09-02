@@ -5,8 +5,8 @@ import { parseProtocolConfigAccount, rpc } from "./solanaRpc.ts";
 const TTL_MS = 5 * 60 * 1000;
 let memoryCache = null;
 
-function fromRow(row) {
-  if (!row?.config_cached_at || Date.now() - Date.parse(row.config_cached_at) > TTL_MS) return null;
+function fromRow(row, allowStale = false) {
+  if (!row?.config_cached_at || (!allowStale && Date.now() - Date.parse(row.config_cached_at) > TTL_MS)) return null;
   const pricesLamports = [row.price_1_char, row.price_2_char, row.price_3_char, row.price_4_char, row.price_5_plus];
   if (!row.collection || !row.treasury || !row.rewards_vault || pricesLamports.some((value) => typeof value !== "number")) return null;
   return { authority: row.authority || "", collection: row.collection, treasury: row.treasury, rewardsVault: row.rewards_vault, pricesLamports, totalMinted: row.total_minted || 0, paused: Boolean(row.paused) };
@@ -18,6 +18,11 @@ export async function readProtocolConfigCache(base44) {
   const protocol = fromRow(rows[0]);
   if (protocol) memoryCache = { protocol, cachedAt: Date.parse(rows[0].config_cached_at) };
   return protocol;
+}
+
+export async function readLatestProtocolConfigCache(base44) {
+  const rows = await base44.asServiceRole.entities.ProtocolStatus.list("-config_cached_at", 1);
+  return fromRow(rows[0], true);
 }
 
 export async function cacheProtocolConfigAccount(base44, account) {

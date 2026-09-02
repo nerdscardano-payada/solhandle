@@ -42,5 +42,8 @@ export default async function(req: Request): Promise<Response> {
       return { handle: candidate.handle, available: true, premium: pricing.isPremium, priceLamports: pricing.finalPriceLamports, categories: candidate.categories || ["identity"], tags: candidate.tags || ["personal"], recommendationScore: Math.round(scoreCandidate(source, candidate)) };
     });
     return Response.json({ handle, categories: source.categories, tags: source.tags, recommendations });
-  } catch (error) { return Response.json({ error: error.message || "Unable to load recommendations." }, { status: 500 }); }
+  } catch (error) {
+    console.error("getHandleRecommendations failed", error?.stack || error?.message || String(error));
+    return Response.json({ error: error?.message || "Unable to load recommendations." }, { status: 500 });
+  }
 }
