@@ -12,10 +12,16 @@ export default async function(req: Request): Promise<Response> {
     const body = await req.json().catch(() => ({}));
     const signature = typeof body.signature === 'string' ? body.signature.trim() : '';
     if (signature && !/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature)) return Response.json({ error: 'Invalid transaction signature.' }, { status: 400 });
+    const statuses = await base44.asServiceRole.entities.ProtocolStatus.list('-last_sync', 1);
+    const lastScannedSignature = statuses[0]?.last_scanned_signature || '';
     stage = 'loading_signatures';
     const signatures = signature
       ? [{ signature, err: null }]
-      : await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, { limit: 250, commitment: 'confirmed' }]);
+      : await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, {
+          limit: 250,
+          commitment: 'confirmed',
+          ...(lastScannedSignature ? { until: lastScannedSignature } : {})
+        }]);
     let synced = 0;
     stage = 'loading_protocol';
     const protocol = await readLatestProtocolConfigCache(base44);
@@ -94,10 +100,10 @@ export default async function(req: Request): Promise<Response> {
       treasury: protocol.treasury, rewards_vault: protocol.rewardsVault,
       price_1_char: protocol.pricesLamports[0], price_2_char: protocol.pricesLamports[1],
       price_3_char: protocol.pricesLamports[2], price_4_char: protocol.pricesLamports[3],
-      price_5_plus: protocol.pricesLamports[4], last_sync: syncedAt
+      price_5_plus: protocol.pricesLamports[4], last_sync: syncedAt,
+      ...(!signature && signatures[0]?.signature ? { last_scanned_signature: signatures[0].signature } : {})
     };
     stage = 'saving_protocol_status';
-    const statuses = await base44.asServiceRole.entities.ProtocolStatus.list('-last_sync', 1);
     if (statuses[0]) await base44.asServiceRole.entities.ProtocolStatus.update(statuses[0].id, statusRecord);
     else await base44.asServiceRole.entities.ProtocolStatus.create(statusRecord);
 

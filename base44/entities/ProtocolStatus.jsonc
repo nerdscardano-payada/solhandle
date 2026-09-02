@@ -42,6 +42,9 @@
     "config_cached_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "last_scanned_signature": {
+      "type": "string"
     }
   },
   "required": [

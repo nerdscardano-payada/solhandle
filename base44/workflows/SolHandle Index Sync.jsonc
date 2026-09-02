@@ -1,5 +1,5 @@
 {
-  "description": "Synchronise confirmed SolHandle mints from Devnet into the index.",
+  "description": "Synchronise confirmed SolHandle mints from Mainnet into the index.",
   "definition": {
     "document": {
       "dsl": "1.0.0",
@@ -18,7 +18,7 @@
           "then": "end",
           "x-base44": {
             "title": "Synchroniseer SolHandle-index",
-            "description": "Bevestigde Devnet-mints"
+            "description": "Bevestigde Mainnet-mints"
           }
         }
       }
