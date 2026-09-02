@@ -1,30 +1,37 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { secrets } from 'base44:runtime';
 import { getAssetOwner, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
-import { getCachedProtocolConfig } from '../../shared/protocolConfigCache.ts';
+import { readLatestProtocolConfigCache } from '../../shared/protocolConfigCache.ts';
 import { getHistoricalSolEur } from '../../shared/solEur.ts';
 
 export default async function(req: Request): Promise<Response> {
+  let stage = 'initialization';
   try {
     const base44 = createClientFromRequest(req);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const body = await req.json().catch(() => ({}));
     const signature = typeof body.signature === 'string' ? body.signature.trim() : '';
     if (signature && !/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature)) return Response.json({ error: 'Invalid transaction signature.' }, { status: 400 });
+    stage = 'loading_signatures';
     const signatures = signature
       ? [{ signature, err: null }]
       : await rpc(rpcUrl, 'getSignaturesForAddress', [PROGRAM_ID, { limit: 250, commitment: 'confirmed' }]);
     let synced = 0;
-    const protocol = await getCachedProtocolConfig(base44, rpcUrl);
+    stage = 'loading_protocol';
+    const protocol = await readLatestProtocolConfigCache(base44);
+    if (!protocol) throw new Error('Protocol configuration cache is unavailable.');
 
     for (const entry of signatures) {
       if (entry.err) continue;
+      stage = 'loading_transaction';
       const transaction = await rpc(rpcUrl, 'getTransaction', [entry.signature, { encoding: 'json', commitment: 'confirmed', maxSupportedTransactionVersion: 0 }]);
-      const dataLine = transaction?.meta?.logMessages?.find((line: string) => line.startsWith('Program data: '));
-      if (!dataLine) continue;
-      const mint = parseMintEvent(dataLine.replace('Program data: ', ''));
-      if (!/^[a-z0-9]{1,20}$/.test(mint.handle)) continue;
+      const mint = (transaction?.meta?.logMessages || [])
+        .filter((line: string) => line.startsWith('Program data: '))
+        .map((line: string) => parseMintEvent(line.replace('Program data: ', '')))
+        .find(Boolean);
+      if (!mint) continue;
 
+      stage = 'loading_asset_and_index';
       const owner = await getAssetOwner(rpcUrl, mint.assetAddress, mint.owner);
       const [existing, premiumRows] = await Promise.all([
         base44.asServiceRole.entities.HandleIndex.filter({ handle: mint.handle }, '-updated_date', 1),
@@ -50,6 +57,7 @@ export default async function(req: Request): Promise<Response> {
         length,
         character_type: /^\d+$/.test(mint.handle) ? 'NUMBERS' : /^[a-z]+$/.test(mint.handle) ? 'LETTERS' : 'ALPHANUMERIC',
       };
+      stage = 'saving_handle_index';
       if (existing[0]) await base44.asServiceRole.entities.HandleIndex.update(existing[0].id, record);
       else await base44.asServiceRole.entities.HandleIndex.create(record);
 
@@ -88,12 +96,14 @@ export default async function(req: Request): Promise<Response> {
       price_3_char: protocol.pricesLamports[2], price_4_char: protocol.pricesLamports[3],
       price_5_plus: protocol.pricesLamports[4], last_sync: syncedAt
     };
+    stage = 'saving_protocol_status';
     const statuses = await base44.asServiceRole.entities.ProtocolStatus.list('-last_sync', 1);
     if (statuses[0]) await base44.asServiceRole.entities.ProtocolStatus.update(statuses[0].id, statusRecord);
     else await base44.asServiceRole.entities.ProtocolStatus.create(statusRecord);
 
     return Response.json({ scanned: signatures.length, synced, protocol: { paused: protocol.paused, totalMinted: protocol.totalMinted }, lastSync: syncedAt });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('syncSolHandleIndex failed', error?.stack || error?.message || String(error));
+    return Response.json({ error: error?.message || 'Unable to synchronize the SolHandle index.', stage }, { status: 500 });
   }
 }

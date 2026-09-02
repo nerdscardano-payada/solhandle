@@ -47,7 +47,21 @@ export async function getProtocolConfig(rpcUrl: string) {
   const account = await rpc(rpcUrl, "getAccountInfo", [configPda.toBase58(), { encoding: "base64", commitment: "confirmed" }]);
   return parseProtocolConfigAccount(account?.value);
 }
-export function parseMintEvent(encoded: string) { const bytes = base64Bytes(encoded); const length = readU32(bytes, 8); const handle = new TextDecoder().decode(bytes.slice(12, 12 + length)); const assetOffset = 12 + length; return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)), owner: encodeBase58(bytes.slice(assetOffset + 32, assetOffset + 64)), priceLamports: readU64(bytes, assetOffset + 64) }; }
+export function parseMintEvent(encoded: string) {
+  try {
+    const bytes = base64Bytes(encoded);
+    const discriminator = [0x91, 0xd5, 0x97, 0xa2, 0x37, 0xd0, 0xe8, 0x4f];
+    if (bytes.length < 89 || !discriminator.every((byte, index) => bytes[index] === byte)) return null;
+    const length = readU32(bytes, 8);
+    const assetOffset = 12 + length;
+    if (length < 1 || length > 20 || bytes.length < assetOffset + 73) return null;
+    const handle = new TextDecoder().decode(bytes.slice(12, assetOffset));
+    if (!/^[a-z0-9]{1,20}$/.test(handle)) return null;
+    return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)), owner: encodeBase58(bytes.slice(assetOffset + 32, assetOffset + 64)), priceLamports: readU64(bytes, assetOffset + 64) };
+  } catch {
+    return null;
+  }
+}
 export async function getAssetOwner(rpcUrl: string, assetAddress: string, fallbackOwner = "") { try { const asset = await rpc(rpcUrl, "getAsset", [assetAddress]); return asset?.ownership?.owner || fallbackOwner; } catch { return fallbackOwner; } }
 export async function getAssetOwnersBatch(rpcUrl: string, records) {
   if (!records.length) return new Map();
