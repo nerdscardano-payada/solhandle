@@ -28,6 +28,7 @@ import IntegrationGuide from '@/pages/IntegrationGuide';
 import MintSuccess from '@/pages/MintSuccess';
 import Financials from '@/pages/Financials';
 import Roadmap from '@/pages/Roadmap';
+import ProtocolPaper from '@/pages/ProtocolPaper';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
         <Route path="/roadmap" element={<Roadmap />} />
+        <Route path="/protocol-paper" element={<ProtocolPaper />} />
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/explore" element={<Explore />} />
