@@ -27,6 +27,7 @@ import Integrations from '@/pages/Integrations';
 import IntegrationGuide from '@/pages/IntegrationGuide';
 import MintSuccess from '@/pages/MintSuccess';
 import Financials from '@/pages/Financials';
+import AdminReferrals from '@/pages/AdminReferrals';
 import Roadmap from '@/pages/Roadmap';
 import ProtocolPaper from '@/pages/ProtocolPaper';
 import Earn from '@/pages/Earn';
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/financials" element={<Financials />} />
+        <Route path="/admin/referrals" element={<AdminReferrals />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
