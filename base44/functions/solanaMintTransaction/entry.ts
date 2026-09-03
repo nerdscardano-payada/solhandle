@@ -5,6 +5,7 @@ import { rpc } from "../../shared/solanaRpc.ts";
 import { getCachedProtocolConfig } from "../../shared/protocolConfigCache.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
 import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricing.ts";
+import { createReferralMintIntent, lockReferralMintIntent } from "../../shared/referralEngine.ts";
 
 const PUBLIC_MINT_LAUNCH_AT = Date.parse("2026-09-04T13:00:00Z");
 const mintIsLocked = () => Date.now() < PUBLIC_MINT_LAUNCH_AT;
@@ -66,6 +67,7 @@ export default async function(req: Request): Promise<Response> {
       ]);
       if (protocol.paused) return Response.json({ error: "SolHandle minting is currently paused." }, { status: 409 });
       const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0);
+      const mintIntent = await createReferralMintIntent(base44, { buyerWallet: String(body.wallet || ""), handle, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, totalPriceLamports: pricing.finalPriceLamports, attributionId: String(body.attribution_id || "") });
       return Response.json({
         config: config.toBase58(),
         collection: protocol.collection,
@@ -74,6 +76,7 @@ export default async function(req: Request): Promise<Response> {
         premiumSurchargeLamports: pricing.premiumSurchargeLamports,
         finalPriceLamports: pricing.finalPriceLamports,
         premium: pricing.isPremium,
+        mintIntentId: mintIntent?.id || "",
         blockhash: latest.value.blockhash,
         lastValidBlockHeight: latest.value.lastValidBlockHeight
       });
@@ -145,12 +148,17 @@ export default async function(req: Request): Promise<Response> {
         return Response.json({ error: "Unexpected payment instruction for a Standard handle." }, { status: 400 });
       }
 
+      const mintIntent = await lockReferralMintIntent(base44, { mintIntentId: String(body.mint_intent_id || ""), buyerWallet: transaction.feePayer.toBase58(), handle: mintData.handle, totalPriceLamports: pricing.finalPriceLamports });
       const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);
+      if (mintIntent) await base44.asServiceRole.entities.MintIntent.update(mintIntent.id, { status: "TRANSACTION_SUBMITTED", transaction_signature: signature });
       for (let attempt = 0; attempt < 25; attempt += 1) {
         const statuses = await rpc(rpcUrl, "getSignatureStatuses", [[signature], { searchTransactionHistory: true }]);
         const status = statuses?.value?.[0];
         if (status?.err) throw new Error(`Solana transaction failed: ${JSON.stringify(status.err)}`);
-        if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") return Response.json({ signature });
+        if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") {
+          if (mintIntent) await base44.asServiceRole.entities.MintIntent.update(mintIntent.id, { status: "CONFIRMED", transaction_signature: signature });
+          return Response.json({ signature, mintIntentId: mintIntent?.id || "" });
+        }
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       throw new Error("Transaction confirmation timed out. Check Solana Explorer before retrying.");

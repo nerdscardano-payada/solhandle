@@ -1,0 +1,90 @@
+{
+  "name": "ReferralSettings",
+  "type": "object",
+  "properties": {
+    "referral_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "cookie_duration_days": {
+      "type": "number",
+      "default": 30
+    },
+    "minimum_payout_sol": {
+      "type": "number",
+      "default": 0.05
+    },
+    "auto_payout_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "premium_referral_eligible": {
+      "type": "boolean",
+      "default": true
+    },
+    "tier_1_percentage": {
+      "type": "number",
+      "default": 10
+    },
+    "tier_2_percentage": {
+      "type": "number",
+      "default": 12.5
+    },
+    "tier_3_percentage": {
+      "type": "number",
+      "default": 15
+    },
+    "tier_4_percentage": {
+      "type": "number",
+      "default": 20
+    },
+    "tier_2_start": {
+      "type": "number",
+      "default": 10
+    },
+    "tier_3_start": {
+      "type": "number",
+      "default": 50
+    },
+    "tier_4_start": {
+      "type": "number",
+      "default": 100
+    }
+  },
+  "required": [
+    "referral_enabled",
+    "cookie_duration_days",
+    "minimum_payout_sol",
+    "auto_payout_enabled",
+    "premium_referral_eligible",
+    "tier_1_percentage",
+    "tier_2_percentage",
+    "tier_3_percentage",
+    "tier_4_percentage",
+    "tier_2_start",
+    "tier_3_start",
+    "tier_4_start"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

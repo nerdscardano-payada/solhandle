@@ -3,6 +3,7 @@ import { secrets } from 'base44:runtime';
 import { getAssetOwner, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
 import { readLatestProtocolConfigCache } from '../../shared/protocolConfigCache.ts';
 import { getHistoricalSolEur } from '../../shared/solEur.ts';
+import { processConfirmedReferral } from '../../shared/referralEngine.ts';
 
 export default async function(req: Request): Promise<Response> {
   let stage = 'initialization';
@@ -90,6 +91,8 @@ export default async function(req: Request): Promise<Response> {
           });
         }
       }
+      const premiumSurchargeLamports = premiumRows.length ? 1_000_000_000 : 0;
+      await processConfirmedReferral(base44, { signature: entry.signature, handle: mint.handle, buyerWallet: mint.owner, grossAmountLamports: mint.priceLamports + premiumSurchargeLamports, netRevenueLamports: mint.priceLamports + premiumSurchargeLamports });
       synced += 1;
     }
 

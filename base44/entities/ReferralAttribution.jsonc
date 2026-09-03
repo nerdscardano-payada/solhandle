@@ -1,0 +1,70 @@
+{
+  "name": "ReferralAttribution",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "referral_code": {
+      "type": "string"
+    },
+    "browser_session_id": {
+      "type": "string"
+    },
+    "visitor_wallet_address": {
+      "type": "string"
+    },
+    "first_click_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_click_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "LOCKED",
+        "EXPIRED",
+        "BLOCKED"
+      ]
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "referral_code",
+    "browser_session_id",
+    "first_click_at",
+    "last_click_at",
+    "expires_at",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "ReferralClick",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "referral_code": {
+      "type": "string"
+    },
+    "browser_session_id": {
+      "type": "string"
+    },
+    "clicked_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "referral_code",
+    "browser_session_id",
+    "clicked_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

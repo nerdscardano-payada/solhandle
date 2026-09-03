@@ -1,0 +1,79 @@
+{
+  "name": "MintIntent",
+  "type": "object",
+  "properties": {
+    "buyer_wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "base_price_lamports": {
+      "type": "number"
+    },
+    "premium_surcharge_lamports": {
+      "type": "number"
+    },
+    "total_price_lamports": {
+      "type": "number"
+    },
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "referral_code": {
+      "type": "string"
+    },
+    "attribution_id": {
+      "type": "string"
+    },
+    "transaction_signature": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "PAYMENT_PENDING",
+        "TRANSACTION_SUBMITTED",
+        "CONFIRMED",
+        "FAILED",
+        "EXPIRED"
+      ]
+    }
+  },
+  "required": [
+    "buyer_wallet",
+    "handle",
+    "base_price_lamports",
+    "premium_surcharge_lamports",
+    "total_price_lamports",
+    "expires_at",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

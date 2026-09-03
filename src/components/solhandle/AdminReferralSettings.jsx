@@ -1,0 +1,16 @@
+import { useEffect, useState } from "react";
+import { base44 } from "@/api/base44Client";
+
+const fields = [["cookie_duration_days", "Attribution days"], ["tier_1_percentage", "Tier 1 %"], ["tier_2_percentage", "Tier 2 %"], ["tier_3_percentage", "Tier 3 %"], ["tier_4_percentage", "Tier 4 %"], ["tier_2_start", "Tier 2 starts"], ["tier_3_start", "Tier 3 starts"], ["tier_4_start", "Tier 4 starts"]];
+
+export default function AdminReferralSettings() {
+  const [settings, setSettings] = useState(null); const [saving, setSaving] = useState(false); const [message, setMessage] = useState("");
+  useEffect(() => { base44.functions.invoke("manageReferralSettings", { action: "get" }).then((res) => setSettings(res.data.settings)); }, []);
+  const save = async () => { setSaving(true); setMessage(""); try { const res = await base44.functions.invoke("manageReferralSettings", { action: "update", settings }); setSettings(res.data.settings); setMessage("Referral settings saved."); } catch (error) { setMessage(error.response?.data?.error || "Unable to save settings."); } finally { setSaving(false); } };
+  if (!settings) return <section className="card-glow mt-8 text-slate-400">Loading referral controls…</section>;
+  return <section className="card-glow mt-8"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">Share & Earn</p><h2 className="mt-1 text-2xl font-semibold text-white">Referral launch controls</h2><p className="mt-2 text-sm text-slate-400">The complete referral flow stays inactive until you enable it here.</p></div><label className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3"><input type="checkbox" checked={settings.referral_enabled} onChange={(event) => setSettings({ ...settings, referral_enabled: event.target.checked })} className="h-5 w-5 accent-cyan-300"/><span className={settings.referral_enabled ? "font-semibold text-emerald-300" : "font-semibold text-slate-300"}>{settings.referral_enabled ? "Production ON" : "Production OFF"}</span></label></div>
+    <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{fields.map(([key, label]) => <label key={key} className="text-xs text-slate-400">{label}<input type="number" min="0" step="0.1" value={settings[key]} onChange={(event) => setSettings({ ...settings, [key]: Number(event.target.value) })} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-white"/></label>)}</div>
+    <label className="mt-5 flex items-center gap-3 text-sm text-slate-300"><input type="checkbox" checked={settings.premium_referral_eligible} onChange={(event) => setSettings({ ...settings, premium_referral_eligible: event.target.checked })} className="h-4 w-4 accent-violet-300"/>Premium surcharge is referral-eligible</label>
+    <div className="mt-6 flex items-center gap-4"><button onClick={save} disabled={saving} className="rounded-lg bg-cyan-300 px-5 py-2.5 text-sm font-semibold text-slate-950 disabled:opacity-50">{saving ? "Saving…" : "Save settings"}</button>{message && <span className="text-sm text-slate-400">{message}</span>}</div>
+  </section>;
+}

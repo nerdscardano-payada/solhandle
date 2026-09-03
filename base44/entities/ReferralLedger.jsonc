@@ -1,0 +1,65 @@
+{
+  "name": "ReferralLedger",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "REFERRAL_REWARD",
+        "PAYOUT",
+        "ADJUSTMENT",
+        "REVERSAL",
+        "BONUS"
+      ]
+    },
+    "amount_lamports": {
+      "type": "number"
+    },
+    "conversion_id": {
+      "type": "string"
+    },
+    "payout_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "AVAILABLE",
+        "PAID",
+        "REVERSED"
+      ]
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "type",
+    "amount_lamports",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

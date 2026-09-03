@@ -1,0 +1,68 @@
+{
+  "name": "FraudFlag",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "conversion_id": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "SELF_REFERRAL",
+        "DUPLICATE_TRANSACTION",
+        "ABNORMAL_VOLUME",
+        "LINK_MANIPULATION",
+        "RELATED_WALLETS",
+        "MANUAL_REVIEW"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "CLEARED",
+        "BLOCKED"
+      ]
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "reason",
+    "severity",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

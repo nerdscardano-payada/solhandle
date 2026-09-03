@@ -1,0 +1,76 @@
+{
+  "name": "ReferralProfile",
+  "type": "object",
+  "properties": {
+    "wallet_address": {
+      "type": "string"
+    },
+    "referral_code": {
+      "type": "string"
+    },
+    "display_handle": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "PAUSED",
+        "SUSPENDED",
+        "BANNED"
+      ]
+    },
+    "show_on_leaderboard": {
+      "type": "boolean",
+      "default": true
+    },
+    "successful_referrals": {
+      "type": "number",
+      "default": 0
+    },
+    "total_earnings_lamports": {
+      "type": "number",
+      "default": 0
+    },
+    "pending_earnings_lamports": {
+      "type": "number",
+      "default": 0
+    },
+    "paid_earnings_lamports": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "wallet_address",
+    "referral_code",
+    "display_handle",
+    "status",
+    "successful_referrals",
+    "total_earnings_lamports",
+    "pending_earnings_lamports",
+    "paid_earnings_lamports"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

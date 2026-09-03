@@ -1,0 +1,78 @@
+{
+  "name": "ReferralConversion",
+  "type": "object",
+  "properties": {
+    "mint_intent_id": {
+      "type": "string"
+    },
+    "mint_transaction_signature": {
+      "type": "string"
+    },
+    "minted_handle": {
+      "type": "string"
+    },
+    "buyer_wallet": {
+      "type": "string"
+    },
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "gross_mint_amount_lamports": {
+      "type": "number"
+    },
+    "eligible_referral_revenue_lamports": {
+      "type": "number"
+    },
+    "reward_percentage_used": {
+      "type": "number"
+    },
+    "reward_amount_lamports": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "APPROVED",
+        "AVAILABLE",
+        "PAID",
+        "BLOCKED",
+        "REJECTED_SELF_REFERRAL"
+      ]
+    }
+  },
+  "required": [
+    "mint_intent_id",
+    "mint_transaction_signature",
+    "minted_handle",
+    "buyer_wallet",
+    "referral_profile_id",
+    "gross_mint_amount_lamports",
+    "eligible_referral_revenue_lamports",
+    "reward_percentage_used",
+    "reward_amount_lamports",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
