@@ -10,6 +10,9 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req); const body = await req.json().catch(() => ({})); const action = String(body.action || "get");
     const settings = await getReferralSettings(base44);
+    if (action === "program_info") {
+      return Response.json({ enabled: Boolean(settings?.referral_enabled), cookieDays: settings?.cookie_duration_days, minimumPayoutSol: settings?.minimum_payout_sol, holdHours: settings?.payout_hold_hours, premiumEligible: Boolean(settings?.premium_referral_eligible), tier1: settings?.tier_1_percentage, tier2: settings?.tier_2_percentage, tier3: settings?.tier_3_percentage, tier4: settings?.tier_4_percentage, tier2Start: settings?.tier_2_start, tier3Start: settings?.tier_3_start, tier4Start: settings?.tier_4_start });
+    }
     if (action === "leaderboard") {
       const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ status: "ACTIVE", show_on_leaderboard: true }, "-successful_referrals", 20);
       return Response.json({ enabled: Boolean(settings?.referral_enabled), leaders: profiles.map((p) => ({ handle: p.display_handle, referrals: p.successful_referrals })) });
