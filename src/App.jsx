@@ -29,6 +29,8 @@ import MintSuccess from '@/pages/MintSuccess';
 import Financials from '@/pages/Financials';
 import Roadmap from '@/pages/Roadmap';
 import ProtocolPaper from '@/pages/ProtocolPaper';
+import Earn from '@/pages/Earn';
+import ReferralTerms from '@/pages/ReferralTerms';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -63,6 +65,8 @@ const AuthenticatedApp = () => {
         <Route path="/developers" element={<Developers />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
+        <Route path="/earn" element={<Earn />} />
+        <Route path="/referral-terms" element={<ReferralTerms />} />
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/explore" element={<Explore />} />

@@ -1,0 +1,5 @@
+import { sol } from "@/lib/referralLevels";
+
+export default function ReferralHistory({ conversions = [] }) {
+  return <div className="mt-6 overflow-hidden rounded-xl border border-white/10"><div className="border-b border-white/10 px-4 py-3 font-semibold text-white">Conversion history</div>{conversions.length ? <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-white/5 text-slate-500"><tr><th className="p-3">Handle</th><th className="p-3">Date</th><th className="p-3">Sale</th><th className="p-3">Reward</th><th className="p-3">Status</th></tr></thead><tbody>{conversions.map((item) => <tr key={item.id} className="border-t border-white/5"><td className="p-3 text-cyan-200">@{item.handle}</td><td className="p-3 text-slate-400">{new Date(item.date).toLocaleDateString()}</td><td className="p-3">{sol(item.grossLamports)}</td><td className="p-3 text-emerald-300">{sol(item.rewardLamports)} · {item.percentage}%</td><td className="p-3 text-slate-300">{item.status}</td></tr>)}</tbody></table></div> : <p className="p-5 text-sm text-slate-500">Your confirmed referral mints will appear here.</p>}</div>;
+}

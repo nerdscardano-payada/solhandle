@@ -71,6 +71,7 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
 }
 
 export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, signTransaction }) {
+  base44.analytics.track({ eventName: "referral_mint_started", properties: { handle } });
   const prepared = await base44.functions.invoke("solanaMintTransaction", { action: "prepare", handle, wallet: wallet.toBase58(), attribution_id: getReferralAttributionId() });
   const protocol = prepared.data;
   const config = new PublicKey(protocol.config);
@@ -98,6 +99,8 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
   transaction.add(instruction);
   const signed = await signTransaction(transaction);
   const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
+  base44.analytics.track({ eventName: "referral_mint_submitted", properties: { handle } });
   const submitted = await base44.functions.invoke("solanaMintTransaction", { action: "submit", transaction_base64: transactionBase64, mint_intent_id: protocol.mintIntentId || "" });
+  base44.analytics.track({ eventName: "referral_mint_confirmed", properties: { handle } });
   return { signature: submitted.data.signature, asset: asset.toBase58(), mintIntentId: protocol.mintIntentId || "" };
 }

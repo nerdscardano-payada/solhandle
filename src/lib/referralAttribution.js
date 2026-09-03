@@ -17,6 +17,7 @@ export async function captureReferralAttribution() {
   if (response.data?.valid) {
     const value = JSON.stringify({ id: response.data.attributionId, code: response.data.referralCode, expiresAt: response.data.expiresAt });
     localStorage.setItem(STORAGE_KEY, value);
+    base44.analytics.track({ eventName: "referral_link_attributed", properties: { referral_code: response.data.referralCode } });
     document.cookie = `solhandle_ref=${encodeURIComponent(response.data.attributionId)}; expires=${new Date(response.data.expiresAt).toUTCString()}; path=/; SameSite=Lax; Secure`;
   }
   url.searchParams.delete("ref");

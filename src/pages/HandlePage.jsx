@@ -5,6 +5,7 @@ import Header from "@/components/solhandle/Header";
 import HandleCard from "@/components/solhandle/HandleCard";
 import SimilarHandles from "@/components/solhandle/SimilarHandles";
 import HandleShareActions from "@/components/solhandle/HandleShareActions";
+import AmbassadorBadge from "@/components/solhandle/AmbassadorBadge";
 import { setHandleShareMetadata } from "@/lib/shareSolHandle";
 import { normalizeHandle, validateHandle, lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
@@ -57,6 +58,7 @@ export default function HandlePage() {
         <Header />
         <section className="mx-auto max-w-3xl px-5 py-16 text-center">
           <h1 className="text-5xl font-semibold">@{handle || "—"}</h1>
+          <div><AmbassadorBadge handle={handle}/></div>
           <span className={`mt-3 inline-block rounded-full px-3 py-1 text-sm ${invalid ? "bg-red-400/10 text-red-300" : available ? "bg-emerald-400/10 text-emerald-300" : "bg-cyan-400/10 text-cyan-300"}`}>
             {invalid ? "Invalid handle" : available ? "Available to mint" : data?.status === "RESERVED" ? "Reserved for official claim" : data?.status === "PROTECTED" ? "Protected brand name" : "Official SolHandle ✓"}
           </span>

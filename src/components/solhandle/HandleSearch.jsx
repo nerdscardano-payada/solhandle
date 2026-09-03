@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Clock3, LoaderCircle, Search, ShieldAlert, Wallet } from "lucide-react";
 import invokeWithRetry from "@/lib/invokeWithRetry";
+import { base44 } from "@/api/base44Client";
 import useMintLaunch from "@/hooks/useMintLaunch";
 import { lamportsToSol, normalizeHandle, validateHandle } from "@/lib/solhandle";
 import MintBackground from "@/components/solhandle/MintBackground";
@@ -32,7 +33,7 @@ export default function HandleSearch({ wallet }) {
     const timer = setTimeout(async () => {
       try {
         const res = await invokeWithRetry("getHandleAvailability", { handle });
-        if (active && res.data?.handle === handle) setResult(res.data);
+        if (active && res.data?.handle === handle) { setResult(res.data); base44.analytics.track({ eventName: "referral_handle_searched", properties: { available: Boolean(res.data.available) } }); }
       } catch {
         if (active) setResult({ handle, display: `@${handle}`, available: false, status: "UNAVAILABLE", state: "unavailable" });
       }

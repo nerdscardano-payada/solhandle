@@ -4,13 +4,14 @@ import { getReferralSettings, reconcileReferralProfile } from "../../shared/refe
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req); const now = Date.now(); const settings = await getReferralSettings(base44);
-    const [created, pending, processing, approved] = await Promise.all([
+    const [created, pending, submitted, processing, approved] = await Promise.all([
       base44.asServiceRole.entities.MintIntent.filter({ status: "CREATED" }, "-expires_at", 500),
       base44.asServiceRole.entities.MintIntent.filter({ status: "PAYMENT_PENDING" }, "-expires_at", 500),
+      base44.asServiceRole.entities.MintIntent.filter({ status: "TRANSACTION_SUBMITTED" }, "-expires_at", 500),
       base44.asServiceRole.entities.MintIntent.filter({ status: "PROCESSING" }, "-processing_started_at", 500),
       base44.asServiceRole.entities.ReferralConversion.filter({ status: "APPROVED" }, "created_date", 500)
     ]);
-    const expired = [...created, ...pending].filter((i) => Date.parse(i.expires_at) <= now);
+    const expired = [...created, ...pending, ...submitted].filter((i) => Date.parse(i.expires_at) <= now);
     if (expired.length) await base44.asServiceRole.entities.MintIntent.bulkUpdate(expired.map((i) => ({ id: i.id, status: "EXPIRED" })));
     const stuck = processing.filter((i) => Date.parse(i.processing_started_at || i.updated_date) <= now - 15 * 60000);
     if (stuck.length) await base44.asServiceRole.entities.MintIntent.bulkUpdate(stuck.map((i) => ({ id: i.id, status: "CONFIRMED", processing_token: "" })));

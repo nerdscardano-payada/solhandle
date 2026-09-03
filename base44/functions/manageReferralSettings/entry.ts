@@ -1,6 +1,6 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.44";
 
-const numericFields = ["cookie_duration_days", "minimum_payout_sol", "tier_1_percentage", "tier_2_percentage", "tier_3_percentage", "tier_4_percentage", "tier_2_start", "tier_3_start", "tier_4_start"];
+const numericFields = ["cookie_duration_days", "minimum_payout_sol", "payout_hold_hours", "tier_1_percentage", "tier_2_percentage", "tier_3_percentage", "tier_4_percentage", "tier_2_start", "tier_3_start", "tier_4_start"];
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -16,7 +16,9 @@ export default async function(req: Request): Promise<Response> {
     const update = {
       referral_enabled: Boolean(body.settings?.referral_enabled),
       premium_referral_eligible: Boolean(body.settings?.premium_referral_eligible),
-      auto_payout_enabled: false
+      auto_payout_enabled: false,
+      payouts_paused: Boolean(body.settings?.payouts_paused),
+      payout_wallet_address: String(body.settings?.payout_wallet_address || "").trim()
     };
     for (const field of numericFields) {
       const value = Number(body.settings?.[field]);
@@ -25,6 +27,7 @@ export default async function(req: Request): Promise<Response> {
     }
     if (update.cookie_duration_days < 1 || update.cookie_duration_days > 365 || update.tier_1_percentage > 100 || update.tier_2_percentage > 100 || update.tier_3_percentage > 100 || update.tier_4_percentage > 100) return Response.json({ error: "Referral settings are outside allowed limits." }, { status: 400 });
     if (!(update.tier_2_start < update.tier_3_start && update.tier_3_start < update.tier_4_start)) return Response.json({ error: "Tier thresholds must increase." }, { status: 400 });
+    if (update.payout_wallet_address && !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(update.payout_wallet_address)) return Response.json({ error: "Invalid payout wallet address." }, { status: 400 });
     const settings = await base44.asServiceRole.entities.ReferralSettings.update(rows[0].id, update);
     return Response.json({ settings });
   } catch (error) {

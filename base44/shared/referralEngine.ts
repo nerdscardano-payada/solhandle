@@ -63,11 +63,15 @@ export async function lockReferralMintIntent(base44, input) {
 }
 
 export async function reconcileReferralProfile(base44, profile) {
-  const conversions = await base44.asServiceRole.entities.ReferralConversion.filter({ referral_profile_id: profile.id }, "-created_date", 500);
-  const approved = conversions.filter((item) => ["APPROVED", "AVAILABLE", "PAID"].includes(item.status));
-  const paid = approved.filter((item) => item.status === "PAID").reduce((sum, item) => sum + item.reward_amount_lamports, 0);
-  const total = approved.reduce((sum, item) => sum + item.reward_amount_lamports, 0);
-  await base44.asServiceRole.entities.ReferralProfile.update(profile.id, { successful_referrals: approved.length, total_earnings_lamports: total, pending_earnings_lamports: total - paid, paid_earnings_lamports: paid });
+  const [conversions, ledgers] = await Promise.all([
+    base44.asServiceRole.entities.ReferralConversion.filter({ referral_profile_id: profile.id }, "-created_date", 500),
+    base44.asServiceRole.entities.ReferralLedger.filter({ referral_profile_id: profile.id }, "-created_date", 500)
+  ]);
+  const successful = conversions.filter((item) => ["APPROVED", "AVAILABLE", "PAID"].includes(item.status)).length;
+  const active = ledgers.filter((item) => item.status !== "REVERSED");
+  const total = active.reduce((sum, item) => sum + item.amount_lamports, 0);
+  const paid = active.filter((item) => item.status === "PAID").reduce((sum, item) => sum + item.amount_lamports, 0);
+  await base44.asServiceRole.entities.ReferralProfile.update(profile.id, { successful_referrals: successful, total_earnings_lamports: total, pending_earnings_lamports: total - paid, paid_earnings_lamports: paid });
 }
 
 export async function processConfirmedReferral(base44, mint) {

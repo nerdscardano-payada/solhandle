@@ -1,0 +1,7 @@
+import { referralLevel, sol } from "@/lib/referralLevels";
+
+export default function ReferralStats({ profile, tiers = [] }) {
+  const count = profile.successful_referrals || 0; const level = referralLevel(count); const current = [...tiers].reverse().find((tier) => count >= tier.start) || tiers[0]; const next = tiers.find((tier) => tier.start > count); const progress = next ? Math.min(100, count / next.start * 100) : 100;
+  const stats = [["Lifetime earned", sol(profile.total_earnings_lamports)], ["Pending / available", sol(profile.pending_earnings_lamports)], ["Paid", sol(profile.paid_earnings_lamports)], ["Successful referrals", count]];
+  return <><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{stats.map(([label, value]) => <div key={label} className="rounded-xl border border-white/10 bg-slate-950/70 p-4"><span className="text-xs text-slate-500">{label}</span><strong className="mt-2 block text-xl text-white">{value}</strong></div>)}</div><div className="mt-4 rounded-xl border border-violet-400/20 bg-violet-400/5 p-4"><div className="flex justify-between text-sm"><span className="text-violet-200">{level.name} · Current reward {current?.percentage || 0}%</span><span className="text-slate-400">{next ? `${next.start} referrals → ${next.percentage}%` : "Top tier reached"}</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-violet-400" style={{ width: `${progress}%` }}/></div></div></>;
+}

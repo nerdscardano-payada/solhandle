@@ -23,7 +23,7 @@ export default function WalletButton({ onConnected }) {
   };
 
   useEffect(() => {
-    if (address) localStorage.setItem("solhandle_wallet", address);
+    if (address) { localStorage.setItem("solhandle_wallet", address); base44.analytics.track({ eventName: "referral_wallet_connected", properties: {} }); }
     else localStorage.removeItem("solhandle_wallet");
     onConnected?.(address);
   }, [address, onConnected]);

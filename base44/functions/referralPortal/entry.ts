@@ -14,6 +14,10 @@ export default async function(req: Request): Promise<Response> {
       const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ status: "ACTIVE", show_on_leaderboard: true }, "-successful_referrals", 20);
       return Response.json({ enabled: Boolean(settings?.referral_enabled), leaders: profiles.map((p) => ({ handle: p.display_handle, referrals: p.successful_referrals })) });
     }
+    if (action === "badge") {
+      const display = `@${String(body.handle || "").replace(/^@/, "").toLowerCase()}`; const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ display_handle: display, status: "ACTIVE" }, "-successful_referrals", 1);
+      return Response.json({ profile: profiles[0] ? { handle: profiles[0].display_handle, referrals: profiles[0].successful_referrals } : null });
+    }
     const wallet = String(body.wallet || ""); if (!safeWallet(wallet)) return Response.json({ error: "Valid wallet required." }, { status: 400 });
     let profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1); let profile = profiles[0] || null;
     if (action === "activate") {
