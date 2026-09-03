@@ -33,6 +33,13 @@
       "type": "string",
       "format": "date-time"
     },
+    "processing_token": {
+      "type": "string"
+    },
+    "processing_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
     "status": {
       "type": "string",
       "enum": [
@@ -40,6 +47,8 @@
         "PAYMENT_PENDING",
         "TRANSACTION_SUBMITTED",
         "CONFIRMED",
+        "PROCESSING",
+        "PROCESSED",
         "FAILED",
         "EXPIRED"
       ]

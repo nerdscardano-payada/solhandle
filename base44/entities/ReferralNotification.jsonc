@@ -1,0 +1,61 @@
+{
+  "name": "ReferralNotification",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "REWARD_EARNED",
+        "REWARD_AVAILABLE",
+        "PAYOUT_CONFIRMED",
+        "ACCOUNT_REVIEW"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "amount_lamports": {
+      "type": "number"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "type",
+    "title",
+    "message",
+    "amount_lamports",
+    "read"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

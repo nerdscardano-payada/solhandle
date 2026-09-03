@@ -1,0 +1,67 @@
+{
+  "name": "ReferralPayout",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "wallet_address": {
+      "type": "string"
+    },
+    "amount_lamports": {
+      "type": "number"
+    },
+    "transaction_signature": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "SUBMITTED",
+        "CONFIRMED",
+        "FAILED"
+      ]
+    },
+    "initiated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "failure_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "wallet_address",
+    "amount_lamports",
+    "status",
+    "initiated_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "ShareEvent",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "X",
+        "COPY"
+      ]
+    },
+    "shared_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "handle",
+    "platform",
+    "shared_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

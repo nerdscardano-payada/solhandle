@@ -18,6 +18,18 @@
       "type": "boolean",
       "default": false
     },
+    "payouts_paused": {
+      "type": "boolean",
+      "default": true
+    },
+    "payout_wallet_address": {
+      "type": "string",
+      "default": ""
+    },
+    "payout_hold_hours": {
+      "type": "number",
+      "default": 24
+    },
     "premium_referral_eligible": {
       "type": "boolean",
       "default": true
@@ -56,6 +68,9 @@
     "cookie_duration_days",
     "minimum_payout_sol",
     "auto_payout_enabled",
+    "payouts_paused",
+    "payout_wallet_address",
+    "payout_hold_hours",
     "premium_referral_eligible",
     "tier_1_percentage",
     "tier_2_percentage",
