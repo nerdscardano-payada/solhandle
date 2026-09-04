@@ -1,3 +1,5 @@
+import { PublicKey } from "npm:@solana/web3.js@1.98.4";
+
 const RESERVED_CODES = new Set(["admin", "api", "referral", "referrals", "earn", "dashboard", "login", "signup", "support", "terms", "privacy", "solhandle"]);
 
 export async function getReferralSettings(base44) {
@@ -29,7 +31,12 @@ export async function ensurePromoterProfile(base44, wallet, handle) {
 export async function createReferralMintIntent(base44, input) {
   const settings = await getReferralSettings(base44);
   if (!settings?.referral_enabled) return null;
-  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(input.buyerWallet)) throw new Error("A valid buyer wallet is required for the mint intent.");
+  const buyerWallet = String(input.buyerWallet || "").trim();
+  try {
+    if (new PublicKey(buyerWallet).toBase58() !== buyerWallet) throw new Error("Non-canonical wallet");
+  } catch {
+    throw new Error("A valid buyer wallet is required for the mint intent.");
+  }
   let attribution = null;
   let profile = null;
   if (input.attributionId) {
@@ -41,12 +48,12 @@ export async function createReferralMintIntent(base44, input) {
     }
   }
   const intent = await base44.asServiceRole.entities.MintIntent.create({
-    buyer_wallet: input.buyerWallet, handle: input.handle, base_price_lamports: input.basePriceLamports,
+    buyer_wallet: buyerWallet, handle: input.handle, base_price_lamports: input.basePriceLamports,
     premium_surcharge_lamports: input.premiumSurchargeLamports, total_price_lamports: input.totalPriceLamports,
     referral_profile_id: profile?.id || "", referral_code: profile?.referral_code || "", attribution_id: attribution?.id || "",
     transaction_signature: "", expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), status: "CREATED"
   });
-  if (attribution) await base44.asServiceRole.entities.ReferralAttribution.update(attribution.id, { visitor_wallet_address: input.buyerWallet });
+  if (attribution) await base44.asServiceRole.entities.ReferralAttribution.update(attribution.id, { visitor_wallet_address: buyerWallet });
   return intent;
 }
 
