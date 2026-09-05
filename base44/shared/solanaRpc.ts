@@ -51,10 +51,10 @@ export function parseMintEvent(encoded: string) {
   try {
     const bytes = base64Bytes(encoded);
     const discriminator = [0x91, 0xd5, 0x97, 0xa2, 0x37, 0xd0, 0xe8, 0x4f];
-    if (bytes.length < 89 || !discriminator.every((byte, index) => bytes[index] === byte)) return null;
+    if (bytes.length < 84 || !discriminator.every((byte, index) => bytes[index] === byte)) return null;
     const length = readU32(bytes, 8);
     const assetOffset = 12 + length;
-    if (length < 1 || length > 20 || bytes.length < assetOffset + 73) return null;
+    if (length < 1 || length > 20 || bytes.length < assetOffset + 72) return null;
     const handle = new TextDecoder().decode(bytes.slice(12, assetOffset));
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return null;
     return { handle, assetAddress: encodeBase58(bytes.slice(assetOffset, assetOffset + 32)), owner: encodeBase58(bytes.slice(assetOffset + 32, assetOffset + 64)), priceLamports: readU64(bytes, assetOffset + 64) };

@@ -75,9 +75,8 @@ export default async function(req: Request): Promise<Response> {
           const treasuryIndex = accountKeys.indexOf(protocol.treasury);
           if (treasuryIndex < 0) throw new Error(`Treasury was not included in confirmed mint ${entry.signature}.`);
           const receivedLamports = transaction.meta.postBalances[treasuryIndex] - transaction.meta.preBalances[treasuryIndex];
-          const premiumSurchargeLamports = premiumRows.length ? 1_000_000_000 : 0;
-          const expectedLamports = mint.priceLamports + premiumSurchargeLamports;
-          if (receivedLamports !== expectedLamports) throw new Error(`Confirmed treasury receipt does not match pricing for @${mint.handle}.`);
+          const premiumSurchargeLamports = receivedLamports - mint.priceLamports;
+          if (premiumSurchargeLamports < 0 || (!premiumRows.length && premiumSurchargeLamports !== 0)) throw new Error(`Confirmed treasury receipt does not match pricing for @${mint.handle}.`);
           const solEurRate = await getHistoricalSolEur(blockTimestamp);
           await base44.asServiceRole.entities.FinancialTransaction.create({
             transaction_id: entry.signature, transaction_type: 'sale', handle: mint.handle, buyer_wallet: mint.owner,
@@ -91,7 +90,9 @@ export default async function(req: Request): Promise<Response> {
           });
         }
       }
-      const premiumSurchargeLamports = premiumRows.length ? 1_000_000_000 : 0;
+      const premiumSurchargeLamports = premiumRows.length
+        ? Math.max(0, (transaction.meta.postBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)] - transaction.meta.preBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)]) - mint.priceLamports)
+        : 0;
       await processConfirmedReferral(base44, { signature: entry.signature, handle: mint.handle, buyerWallet: mint.owner, grossAmountLamports: mint.priceLamports + premiumSurchargeLamports, netRevenueLamports: mint.priceLamports + premiumSurchargeLamports });
       synced += 1;
     }
