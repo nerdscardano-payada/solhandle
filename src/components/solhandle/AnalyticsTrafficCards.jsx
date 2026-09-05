@@ -1,6 +1,6 @@
 export default function AnalyticsTrafficCards({ ga, protocol }) {
   const cards = [
-    ["GA active users", ga.activeUsers, ga.connected ? ga.property : "Connector unavailable"],
+    ["GA active users", ga.activeUsers, ga.connected ? ga.property : (ga.message || "Connector unavailable")],
     ["GA sessions", ga.sessions, "Last 30 days"],
     ["GA pageviews", ga.pageViews, "Last 30 days"],
     ["Protocol sessions", protocol.sessions, `${protocol.walletSessions} with wallet`]

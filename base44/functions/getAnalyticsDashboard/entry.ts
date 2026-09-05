@@ -11,13 +11,12 @@ export default async function(req) {
     if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
     if (user.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
-    const [pages, searches, funnel, profiles, conversions] = await Promise.all([
-      base44.asServiceRole.entities.PageView.filter({ timestamp: { $gte: since } }, "-timestamp", 500),
-      base44.asServiceRole.entities.SearchAnalytics.filter({ timestamp: { $gte: since } }, "-timestamp", 500),
-      base44.asServiceRole.entities.FunnelEvent.filter({ timestamp: { $gte: since } }, "-timestamp", 500),
-      base44.asServiceRole.entities.ReferralProfile.list("-created_date", 500),
-      base44.asServiceRole.entities.ReferralConversion.list("-created_date", 500)
-    ]);
+    const recent = (items) => items.filter((item) => Date.parse(item.timestamp || item.created_date) >= Date.parse(since));
+    const pages = recent(await base44.asServiceRole.entities.PageView.list("-timestamp", 500));
+    const searches = recent(await base44.asServiceRole.entities.SearchAnalytics.list("-timestamp", 500));
+    const funnel = recent(await base44.asServiceRole.entities.FunnelEvent.list("-timestamp", 500));
+    const profiles = await base44.asServiceRole.entities.ReferralProfile.list("-created_date", 500);
+    const conversions = await base44.asServiceRole.entities.ReferralConversion.list("-created_date", 500);
     const steps = ["SEARCH", "CLAIM_CLICK", "WALLET_CONNECTED", "MINT_STARTED", "MINT_CONFIRMED"];
     const funnelCounts = steps.map((step) => ({ step, count: new Set(funnel.filter((event) => event.step === step).map((event) => event.session_id)).size }));
     const profileCodes = Object.fromEntries(profiles.map((profile) => [profile.id, profile.referral_code]));
@@ -35,8 +34,8 @@ export default async function(req) {
         const report = await reportResponse.json();
         const rows = report.rows || [];
         ga = { connected: reportResponse.ok, property: property.displayName, activeUsers: Math.max(...rows.map((row) => metric(row, 0)), 0), sessions: rows.reduce((sum, row) => sum + metric(row, 1), 0), pageViews: rows.reduce((sum, row) => sum + metric(row, 2), 0), channels: rows.slice(0, 8).map((row) => ({ name: dimension(row, 0), country: dimension(row, 1), device: dimension(row, 2), users: metric(row, 0) })) };
-      }
-    } catch (_) {}
+      } else ga = { connected: false, message: "No GA4 property is accessible to the connected Google account." };
+    } catch (error) { ga = { connected: false, message: error.message }; }
     return Response.json({ ga, protocol: { pageViews: pages.length, sessions: new Set(pages.map((page) => page.session_id)).size, walletSessions: new Set(pages.filter((page) => page.wallet_connected).map((page) => page.session_id)).size, popularPages: topCounts(pages, "route"), popularSearches: topCounts(searches, "handle"), searches: searches.slice(0, 20), funnel: funnelCounts, referrals } });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

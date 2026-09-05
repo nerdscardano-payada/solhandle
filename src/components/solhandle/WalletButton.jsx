@@ -24,7 +24,7 @@ export default function WalletButton({ onConnected }) {
   };
 
   useEffect(() => {
-    if (address) { localStorage.setItem("solhandle_wallet", address); base44.analytics.track({ eventName: "referral_wallet_connected", properties: {} }); const pendingHandle = localStorage.getItem("solhandle_pending_handle") || ""; trackFunnel("WALLET_CONNECTED", pendingHandle); }
+    if (address) { localStorage.setItem("solhandle_wallet", address); base44.analytics.track({ eventName: "referral_wallet_connected", properties: {} }); const pendingHandle = localStorage.getItem("solhandle_pending_handle") || ""; const trackedKey = `solhandle_wallet_tracked_${address}`; if (!sessionStorage.getItem(trackedKey)) { sessionStorage.setItem(trackedKey, "1"); trackFunnel("WALLET_CONNECTED", pendingHandle); } }
     else localStorage.removeItem("solhandle_wallet");
     onConnected?.(address);
   }, [address, onConnected]);
