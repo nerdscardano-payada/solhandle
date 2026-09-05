@@ -18,9 +18,12 @@ const configInfo = await connection.getAccountInfo(config, "confirmed");
 if (!configInfo || !new PublicKey(configInfo.data.subarray(8, 40)).equals(authority.publicKey)) throw new Error("Wrong protocol authority.");
 
 const raw = readFileSync(inputPath, "utf8").trim();
+const csvLines = raw.split(/\r?\n/);
+const csvHeaders = (csvLines[0] || "").split(",").map((value) => value.trim().replace(/^"|"$/g, "").toLowerCase());
+const handleColumn = csvHeaders.indexOf("handle");
 const values = raw.startsWith("[")
   ? JSON.parse(raw).map((item) => typeof item === "string" ? item : item.handle)
-  : raw.split(/\r?\n/).slice(raw.toLowerCase().startsWith("handle") ? 1 : 0).map((line) => line.split(",")[0]);
+  : csvLines.slice(handleColumn >= 0 ? 1 : 0).map((line) => line.split(",")[handleColumn >= 0 ? handleColumn : 0]?.trim().replace(/^"|"$/g, ""));
 const handles = [...new Set(values.map((value) => String(value || "").trim().replace(/^@/, "").toLowerCase()).filter((value) => /^[a-z0-9]{1,20}$/.test(value)))];
 if (!handles.length) throw new Error("No valid premium handles found.");
 
