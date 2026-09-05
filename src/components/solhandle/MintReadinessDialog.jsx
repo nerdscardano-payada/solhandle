@@ -9,6 +9,7 @@ import { buildHandlePngBlob } from "@/lib/buildHandlePng";
 import MintProgress from "@/components/solhandle/MintProgress";
 import { lamportsToSol, shortenAddress } from "@/lib/solhandle";
 import useMintLaunch from "@/hooks/useMintLaunch";
+import { trackFunnel } from "@/lib/protocolAnalytics";
 
 export default function MintReadinessDialog({ open, onOpenChange, wallet, result }) {
   const { publicKey, signTransaction } = useWallet();
@@ -25,6 +26,7 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
     setError("");
     setSignature("");
     setPhase("metadata");
+    trackFunnel("MINT_STARTED", handle);
     try {
       const png = await buildHandlePngBlob(handle);
       const { file_url } = await base44.integrations.Core.UploadFile({ file: png });
@@ -33,6 +35,8 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
       const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction });
       setSignature(mintResult.signature);
       setPhase("confirmed");
+      trackFunnel("MINT_CONFIRMED", handle);
+      localStorage.removeItem("solhandle_pending_handle");
       await base44.functions.invoke("syncSolHandleIndex", { signature: mintResult.signature }).catch(() => null);
       const params = new URLSearchParams({ handle, signature: mintResult.signature, asset: mintResult.asset, wallet: publicKey.toBase58(), premium: String(Boolean(result?.premium)) });
       navigate(`/mint-success?${params.toString()}`);

@@ -1,24 +1,21 @@
 {
-  "name": "SearchAnalytics",
+  "name": "FunnelEvent",
   "type": "object",
   "properties": {
-    "handle": {
+    "session_id": {
       "type": "string"
     },
-    "available_at_search": {
-      "type": "boolean"
-    },
-    "status": {
+    "step": {
       "type": "string",
       "enum": [
-        "AVAILABLE",
-        "CLAIMED",
-        "RESERVED",
-        "PROTECTED",
-        "UNAVAILABLE"
+        "SEARCH",
+        "CLAIM_CLICK",
+        "WALLET_CONNECTED",
+        "MINT_STARTED",
+        "MINT_CONFIRMED"
       ]
     },
-    "session_hash": {
+    "handle": {
       "type": "string"
     },
     "referral_code": {
@@ -30,8 +27,9 @@
     }
   },
   "required": [
-    "handle",
-    "available_at_search"
+    "session_id",
+    "step",
+    "timestamp"
   ],
   "rls": {
     "read": {

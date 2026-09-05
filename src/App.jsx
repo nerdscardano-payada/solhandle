@@ -32,6 +32,8 @@ import Roadmap from '@/pages/Roadmap';
 import ProtocolPaper from '@/pages/ProtocolPaper';
 import Earn from '@/pages/Earn';
 import ReferralTerms from '@/pages/ReferralTerms';
+import AdminAnalytics from '@/pages/AdminAnalytics';
+import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -79,6 +81,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/financials" element={<Financials />} />
         <Route path="/admin/referrals" element={<AdminReferrals />} />
+        <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -100,6 +103,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ScrollToTop />
+          <ProtocolPageTracker />
           <AuthenticatedApp />
         </Router>
         <Toaster />

@@ -6,6 +6,7 @@ import { base44 } from "@/api/base44Client";
 import { shortenAddress } from "@/lib/solhandle";
 import MobileWalletChooser from "@/components/solhandle/MobileWalletChooser";
 import { currentWalletTarget, isMobileBrowser, isWalletBrowser } from "@/lib/mobileWalletLinks";
+import { trackFunnel } from "@/lib/protocolAnalytics";
 
 export default function WalletButton({ onConnected }) {
   const { publicKey, connecting, wallets, wallet: selectedWallet, select, connect } = useWallet();
@@ -23,7 +24,7 @@ export default function WalletButton({ onConnected }) {
   };
 
   useEffect(() => {
-    if (address) { localStorage.setItem("solhandle_wallet", address); base44.analytics.track({ eventName: "referral_wallet_connected", properties: {} }); }
+    if (address) { localStorage.setItem("solhandle_wallet", address); base44.analytics.track({ eventName: "referral_wallet_connected", properties: {} }); const pendingHandle = localStorage.getItem("solhandle_pending_handle") || ""; trackFunnel("WALLET_CONNECTED", pendingHandle); }
     else localStorage.removeItem("solhandle_wallet");
     onConnected?.(address);
   }, [address, onConnected]);

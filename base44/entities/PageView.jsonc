@@ -1,25 +1,18 @@
 {
-  "name": "SearchAnalytics",
+  "name": "PageView",
   "type": "object",
   "properties": {
-    "handle": {
+    "route": {
       "type": "string"
     },
-    "available_at_search": {
+    "referrer": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "wallet_connected": {
       "type": "boolean"
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "AVAILABLE",
-        "CLAIMED",
-        "RESERVED",
-        "PROTECTED",
-        "UNAVAILABLE"
-      ]
-    },
-    "session_hash": {
-      "type": "string"
     },
     "referral_code": {
       "type": "string"
@@ -30,8 +23,10 @@
     }
   },
   "required": [
-    "handle",
-    "available_at_search"
+    "route",
+    "session_id",
+    "wallet_connected",
+    "timestamp"
   ],
   "rls": {
     "read": {
