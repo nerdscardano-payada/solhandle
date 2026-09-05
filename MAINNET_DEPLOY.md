@@ -79,3 +79,31 @@ After the script succeeds:
 - Treasury, rewards, metadata and protected-name configuration are correct.
 
 Only after all checks pass should the authority remove the pause.
+
+## Rush upgrade (existing Mainnet program)
+
+Run only from native Linux or WSL2. Keep minting paused until the contract upgrade, all PremiumHandle records, backend and browser mint transaction format are migrated.
+
+```bash
+export SOLHANDLE_AUTHORITY="$HOME/.config/solana/solhandle-mainnet-authority.json"
+export SOLHANDLE_PROGRAM_KEYPAIR="$PWD/keys/solhandle-v1-mainnet-program.json"
+export SOLANA_RPC_URL="https://YOUR_PRIVATE_MAINNET_RPC"
+chmod +x scripts/upgrade-mainnet-rush.sh
+./scripts/upgrade-mainnet-rush.sh
+```
+
+Export the Base44 PremiumHandle entity as JSON or CSV, then run the resumable migration:
+
+```bash
+export PREMIUM_HANDLES_FILE="$PWD/premium-handles.csv"
+node scripts/migrate-premium-mainnet.mjs
+```
+
+After the app mint transaction format is updated and published, start the exact 72-hour campaign and unpause:
+
+```bash
+node scripts/set-rush-mainnet.mjs
+node scripts/set-mainnet-protocol-status.mjs active
+```
+
+The on-chain time window automatically restores normal length pricing and the normal 1 SOL Premium surcharge after 72 hours.
