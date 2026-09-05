@@ -5,6 +5,7 @@ import { rpc } from "../../shared/solanaRpc.ts";
 import { getCachedProtocolConfig } from "../../shared/protocolConfigCache.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
 import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricing.ts";
+import { getRushPricing } from "../../shared/rushPricing.ts";
 import { createReferralMintIntent, lockReferralMintIntent } from "../../shared/referralEngine.ts";
 
 const PUBLIC_MINT_LAUNCH_AT = Date.parse("2026-09-04T13:00:00Z");
@@ -60,13 +61,14 @@ export default async function(req: Request): Promise<Response> {
       if (mintIsLocked()) return Response.json({ error: "Public minting is not open yet." }, { status: 423 });
       const handle = normalizeHandle(body.handle);
       if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
-      const [protocol, premiumRows, latest] = await Promise.all([
+      const [protocol, premiumRows, latest, rush] = await Promise.all([
         getCachedProtocolConfig(base44, rpcUrl),
         base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1),
-        rpc(rpcUrl, "getLatestBlockhash", [{ commitment: "confirmed" }])
+        rpc(rpcUrl, "getLatestBlockhash", [{ commitment: "confirmed" }]),
+        getRushPricing(rpcUrl)
       ]);
       if (protocol.paused) return Response.json({ error: "SolHandle minting is currently paused." }, { status: 409 });
-      const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0);
+      const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0, rush);
       const mintIntent = await createReferralMintIntent(base44, { buyerWallet: String(body.wallet || ""), handle, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, totalPriceLamports: pricing.finalPriceLamports, attributionId: String(body.attribution_id || "") });
       return Response.json({
         config: config.toBase58(),
@@ -132,21 +134,15 @@ export default async function(req: Request): Promise<Response> {
 
       const mintData = parseMintData(instruction.data);
       if (!/^[a-z0-9]{1,20}$/.test(mintData.handle)) return Response.json({ error: "Invalid mint handle." }, { status: 400 });
-      const [protocol, premiumRows] = await Promise.all([
+      const [protocol, premiumRows, rush] = await Promise.all([
         getCachedProtocolConfig(base44, rpcUrl),
-        base44.asServiceRole.entities.PremiumHandle.filter({ handle: mintData.handle }, '-updated_date', 1)
+        base44.asServiceRole.entities.PremiumHandle.filter({ handle: mintData.handle }, '-updated_date', 1),
+        getRushPricing(rpcUrl)
       ]);
-      const pricing = calculateHandlePrice(mintData.handle, protocol.pricesLamports, premiumRows.length > 0);
+      const pricing = calculateHandlePrice(mintData.handle, protocol.pricesLamports, premiumRows.length > 0, rush);
       if (mintData.maxPriceLamports !== pricing.finalPriceLamports) return Response.json({ error: "The signed mint price does not match the official handle price." }, { status: 400 });
-      if (instruction.keys[6]?.pubkey.toBase58() !== protocol.collection || instruction.keys[7]?.pubkey.toBase58() !== protocol.treasury) return Response.json({ error: "Invalid collection or treasury account." }, { status: 400 });
-
-      if (pricing.isPremium) {
-        const transfer = systemInstructions[0];
-        const validTransfer = systemInstructions.length === 1 && readU32(transfer.data, 0) === 2 && readU64(transfer.data, 4) === pricing.premiumSurchargeLamports && transfer.keys[0]?.pubkey.toBase58() === transaction.feePayer.toBase58() && transfer.keys[1]?.pubkey.toBase58() === protocol.treasury;
-        if (!validTransfer) return Response.json({ error: "The required 1 SOL Premium surcharge is missing or invalid." }, { status: 400 });
-      } else if (systemInstructions.length > 0) {
-        return Response.json({ error: "Unexpected payment instruction for a Standard handle." }, { status: 400 });
-      }
+      if (instruction.keys[8]?.pubkey.toBase58() !== protocol.collection || instruction.keys[9]?.pubkey.toBase58() !== protocol.treasury) return Response.json({ error: "Invalid collection or treasury account." }, { status: 400 });
+      if (systemInstructions.length > 0) return Response.json({ error: "Unexpected external payment instruction." }, { status: 400 });
 
       const mintIntent = await lockReferralMintIntent(base44, { mintIntentId: String(body.mint_intent_id || ""), buyerWallet: transaction.feePayer.toBase58(), handle: mintData.handle, totalPriceLamports: pricing.finalPriceLamports });
       const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);

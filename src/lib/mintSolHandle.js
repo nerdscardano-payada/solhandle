@@ -80,6 +80,8 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
   const [asset] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.asset), seed], PROGRAM_ID);
   const [restriction] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.restriction), seed], PROGRAM_ID);
   const [price] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.price), seed], PROGRAM_ID);
+  const [rush] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.rush)], PROGRAM_ID);
+  const [premium] = PublicKey.findProgramAddressSync([seedBytes(SEEDS.premium), seed], PROGRAM_ID);
   const hash = await instructionHash("mint_handle");
   const instruction = new TransactionInstruction({
     programId: PROGRAM_ID,
@@ -87,6 +89,7 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
       { pubkey: wallet, isSigner: true, isWritable: true }, { pubkey: config, isSigner: false, isWritable: true },
       { pubkey: record, isSigner: false, isWritable: true }, { pubkey: asset, isSigner: false, isWritable: true },
       { pubkey: restriction, isSigner: false, isWritable: false }, { pubkey: price, isSigner: false, isWritable: false },
+      { pubkey: rush, isSigner: false, isWritable: false }, { pubkey: premium, isSigner: false, isWritable: false },
       { pubkey: new PublicKey(protocol.collection), isSigner: false, isWritable: true }, { pubkey: new PublicKey(protocol.treasury), isSigner: false, isWritable: true },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, { pubkey: MPL_CORE, isSigner: false, isWritable: false }
     ],
@@ -94,9 +97,7 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
   });
   if (!signTransaction) throw new Error("This wallet cannot sign Solana transactions.");
   if (Number(maxPriceLamports) !== Number(protocol.finalPriceLamports)) throw new Error("The handle price changed. Please review the updated price.");
-  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash });
-  if (protocol.premiumSurchargeLamports > 0) transaction.add(SystemProgram.transfer({ fromPubkey: wallet, toPubkey: new PublicKey(protocol.treasury), lamports: protocol.premiumSurchargeLamports }));
-  transaction.add(instruction);
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
   const signed = await signTransaction(transaction);
   const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
   base44.analytics.track({ eventName: "referral_mint_submitted", properties: { handle } });

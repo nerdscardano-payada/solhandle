@@ -5,6 +5,7 @@ import { deriveHandleAccountAddresses, getAssetOwner, parseHandleRecord, parseNa
 import { cacheProtocolConfigAccount, readLatestProtocolConfigCache, readProtocolConfigCache } from '../../shared/protocolConfigCache.ts';
 import { SEEDS } from '../../shared/solhandleProtocol.ts';
 import { calculateHandlePrice, normalizeHandle } from '../../shared/handlePricing.ts';
+import { getRushPricing } from '../../shared/rushPricing.ts';
 
 function calculateHandleScore(handle: string) {
   const lengthPoints = [0, 24, 14, 16, 14, 12, 10, 8, 6, 5, 4];
@@ -27,12 +28,13 @@ export default async function(req: Request): Promise<Response> {
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ handle, available: false, status: 'INVALID' }, { status: 400 });
     const base44 = createClientFromRequest(req);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    const [indexed, premiumRows, discoveryRows, protectedRows, cachedProtocol] = await Promise.all([
+    const [indexed, premiumRows, discoveryRows, protectedRows, cachedProtocol, rush] = await Promise.all([
       base44.asServiceRole.entities.HandleIndex.filter({ handle }, '-updated_date', 1),
       base44.asServiceRole.entities.PremiumHandle.filter({ handle }, '-updated_date', 1),
       base44.asServiceRole.entities.HandleDiscovery.filter({ handle, active: true }, '-updated_date', 1),
       base44.asServiceRole.entities.ProtectedName.filter({ handle, status: 'active' }, '-updated_date', 1),
-      readProtocolConfigCache(base44)
+      readProtocolConfigCache(base44),
+      getRushPricing(rpcUrl)
     ]);
     const derived = deriveHandleAccountAddresses(handle);
     const accountAddresses = [derived.record, derived.restriction];
@@ -63,7 +65,7 @@ export default async function(req: Request): Promise<Response> {
     const indexedRestriction = protectedRows[0] ? { active: true, restrictionType: protectedRows[0].restriction_type || 'PROTECTED', reservedFor: protectedRows[0].reserved_for || '' } : null;
     const activeRestriction = rpcVerified ? (restriction?.active ? restriction : null) : indexedRestriction;
     const status = claimed ? 'CLAIMED' : activeRestriction?.restrictionType || 'AVAILABLE';
-    const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0);
+    const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0, rush);
     const baseHandleScore = discoveryRows[0]?.handle_score ?? calculateHandleScore(handle);
     const isExactSolIdentity = handle === 'sol' || handle === 'solana';
     const isProtectedBrand = protectedRows.length > 0;
