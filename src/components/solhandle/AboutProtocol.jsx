@@ -1,0 +1,8 @@
+import { ArrowRight, Blocks, Database, SearchCheck } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const layers = [[Blocks, "Blockchain", "Ownership, uniqueness and protocol rules are enforced on Solana."], [SearchCheck, "Indexer", "Confirmed activity is indexed for fast discovery and resolution."], [Database, "Interface", "The app makes protocol data accessible without becoming the source of truth."]];
+
+export default function AboutProtocol() {
+  return <section className="px-5 py-16 md:px-9"><div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-emerald-300">Built for trust</p><h2 className="mt-3 text-3xl font-semibold text-white">The blockchain stays the source of truth.</h2><p className="mt-5 leading-relaxed text-slate-400">SolHandle combines transparent on-chain ownership with a fast indexing and application layer. The interface can evolve; your ownership does not depend on it.</p><Link to="/protocol-paper" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">Read the protocol paper <ArrowRight className="h-4 w-4"/></Link></div><div className="space-y-3">{layers.map(([Icon, title, body]) => <article key={title} className="flex gap-4 rounded-2xl border border-white/10 bg-slate-950/70 p-5"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-cyan-300/10 text-cyan-300"><Icon className="h-5 w-5"/></span><div><h3 className="font-semibold text-white">{title}</h3><p className="mt-1 text-sm leading-relaxed text-slate-400">{body}</p></div></article>)}</div></div></section>;
+}

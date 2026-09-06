@@ -33,6 +33,7 @@ import ProtocolPaper from '@/pages/ProtocolPaper';
 import Earn from '@/pages/Earn';
 import ReferralTerms from '@/pages/ReferralTerms';
 import AdminAnalytics from '@/pages/AdminAnalytics';
+import About from '@/pages/About';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
         <Route path="/legal" element={<Legal />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/faq" element={<Faq />} />
+        <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/financials" element={<Financials />} />
