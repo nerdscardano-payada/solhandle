@@ -4,6 +4,7 @@ import { secrets } from "base44:runtime";
 import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricing.ts";
 import { PROGRAM_ID, rpc } from "../../shared/solanaRpc.ts";
 import { getCachedProtocolConfig } from "../../shared/protocolConfigCache.ts";
+import { getRushPricing } from "../../shared/rushPricing.ts";
 import { SEEDS } from "../../shared/solhandleProtocol.ts";
 import { getFallbackSuggestions, uniqueSuggestionRows } from "../../shared/handleSuggestionPool.ts";
 
@@ -22,7 +23,7 @@ export default async function(req: Request): Promise<Response> {
     const source = rows.find((row) => row.handle === handle) || { handle, categories: ["identity"], tags: ["personal", "solana"] };
     const candidates = rows.filter((row) => row.handle !== handle).sort((a, b) => scoreCandidate(source, b) - scoreCandidate(source, a)).slice(0, 45);
     const rpcUrl = secrets.get("SOLANA_RPC_URL");
-    const [protocol, premiumRows] = await Promise.all([getCachedProtocolConfig(base44, rpcUrl), base44.asServiceRole.entities.PremiumHandle.list("-created_date", 5000)]);
+    const [protocol, premiumRows, rush] = await Promise.all([getCachedProtocolConfig(base44, rpcUrl), base44.asServiceRole.entities.PremiumHandle.list("-created_date", 5000), getRushPricing(rpcUrl)]);
     const program = new PublicKey(PROGRAM_ID); const encoder = new TextEncoder();
     const accounts = candidates.flatMap((candidate) => {
       const seed = encoder.encode(candidate.handle);
@@ -38,7 +39,7 @@ export default async function(req: Request): Promise<Response> {
     const premiumSuggestions = available.filter((candidate) => premium.has(candidate.handle)).slice(0, 2);
     const selected = [...standard, ...premiumSuggestions];
     const recommendations = [...selected, ...available.filter((candidate) => !selected.includes(candidate))].slice(0, 6).map((candidate) => {
-      const pricing = calculateHandlePrice(candidate.handle, protocol.pricesLamports, premium.has(candidate.handle));
+      const pricing = calculateHandlePrice(candidate.handle, protocol.pricesLamports, premium.has(candidate.handle), rush);
       return { handle: candidate.handle, available: true, premium: pricing.isPremium, priceLamports: pricing.finalPriceLamports, categories: candidate.categories || ["identity"], tags: candidate.tags || ["personal"], recommendationScore: Math.round(scoreCandidate(source, candidate)) };
     });
     return Response.json({ handle, categories: source.categories, tags: source.tags, recommendations });
