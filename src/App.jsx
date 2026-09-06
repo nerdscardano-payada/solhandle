@@ -34,6 +34,7 @@ import Earn from '@/pages/Earn';
 import ReferralTerms from '@/pages/ReferralTerms';
 import AdminAnalytics from '@/pages/AdminAnalytics';
 import About from '@/pages/About';
+import PremiumDirectory from '@/pages/PremiumDirectory';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/directory" element={<PremiumDirectory />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
         <Route path="/legal" element={<Legal />} />
         <Route path="/privacy" element={<Privacy />} />
