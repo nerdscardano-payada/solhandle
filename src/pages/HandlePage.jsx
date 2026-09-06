@@ -79,10 +79,9 @@ export default function HandlePage() {
             {data?.handleScore && <Detail label="Handle Score" value={`${data.handleScore} / 100`} accent="text-cyan-300" />}
             {data?.categories?.length > 0 && <Detail label="Categories" value={data.categories.join(" · ")} />}
             {data?.tags?.length > 0 && <Detail label="Tags" value={data.tags.join(" · ")} />}
-            <Detail label="Asset address" value={data?.assetAddress ? shortenAddress(data.assetAddress) : "—"} />
+            <Detail label="Metaplex Core asset" value={data?.assetAddress ? <a href={`https://explorer.solana.com/address/${data.assetAddress}`} target="_blank" rel="noreferrer" className="font-mono text-cyan-200 underline decoration-cyan-300/30 underline-offset-4 hover:text-cyan-100">{shortenAddress(data.assetAddress)} ↗</a> : "—"} />
             {data?.listing && <div className="flex items-center justify-between gap-4 border-t border-white/10 py-3"><span className="text-sm text-slate-500">For sale</span><a href={data.listing.url} target="_blank" rel="noreferrer" className="text-right text-sm font-semibold text-amber-300">{data.listing.price} {data.listing.currency} on Magic Eden ↗</a></div>}
-            <Detail label="Protected" value={data?.protected ? "Yes" : "No"} accent={data?.protected ? "text-amber-300" : undefined} />
-            <Detail label="Collection" value="SOLHANDLE Core Collection" />
+            <Detail label="Collection" value="Metaplex Core · SOLHANDLE Collection" />
             <Detail label="Handle length" value={`${handle.length} characters`} />
           </div>
 
