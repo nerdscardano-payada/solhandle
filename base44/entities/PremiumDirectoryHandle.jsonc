@@ -1,0 +1,42 @@
+{
+  "name": "PremiumDirectoryHandle",
+  "type": "object",
+  "properties": {
+    "Rank": {
+      "type": "number"
+    },
+    "Display": {
+      "type": "string"
+    },
+    "Handle": {
+      "type": "string"
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "S+",
+        "S",
+        "A",
+        "B"
+      ]
+    },
+    "Score": {
+      "type": "number"
+    },
+    "Category": {
+      "type": "string"
+    },
+    "Why it ranks": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "Rank",
+    "Display",
+    "Handle",
+    "Tier",
+    "Score",
+    "Category",
+    "Why it ranks"
+  ]
+}
