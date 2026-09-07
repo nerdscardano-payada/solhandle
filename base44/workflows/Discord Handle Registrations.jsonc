@@ -1,0 +1,42 @@
+{
+  "name": "Discord Handle Registrations",
+  "description": "Publishes each newly active SolHandle registration once in the official Discord community channel.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "HandleIndex",
+      "events": [
+        "create",
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"active\" and (.trigger.data.discord_announced_at // \"\") == \"\" and (.trigger.event_type == \"create\" or (.trigger.old_data.status // \"\") != \"active\") }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "discord_handle_registrations",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "publish_registration": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishDiscord",
+            "args": {
+              "type": "registration",
+              "handleIndexId": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Publiceer registratie",
+            "description": "Stuur nieuwe handle naar Discord"
+          }
+        }
+      }
+    ]
+  }
+}
