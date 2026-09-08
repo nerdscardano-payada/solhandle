@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
 export default function Footer() {
@@ -10,6 +11,6 @@ export default function Footer() {
       <nav><p className="mb-3 font-medium text-white">Explore</p><div className="space-y-2"><Link to="/docs" className="block hover:text-cyan-200">Documentation</Link><Link to="/developers" className="block hover:text-cyan-200">Developers</Link><Link to="/roadmap" className="block hover:text-cyan-200">Roadmap</Link><Link to="/integrations" className="block hover:text-cyan-200">Integration Center</Link><Link to="/faq" className="block hover:text-cyan-200">FAQ</Link><Link to="/contact" className="block hover:text-cyan-200">Contact</Link></div></nav>
       <nav><p className="mb-3 font-medium text-white">Legal</p><div className="space-y-2"><Link to="/legal" className="block hover:text-cyan-200">Legal notice & disclaimer</Link><Link to="/privacy" className="block hover:text-cyan-200">Privacy policy</Link><Link to="/referral-terms" className="block hover:text-cyan-200">Share & Earn Terms</Link></div></nav>
     </div>
-    <div className="relative z-10 mx-auto mt-8 flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-5 text-xs sm:flex-row sm:justify-between"><span>© 2026 SolHandle. Pre-launch.</span><div className="flex gap-4"><a href="https://x.com/Solhandle" target="_blank" rel="noreferrer" className="hover:text-cyan-200">X</a><a href="https://magiceden.io/marketplace/solhandle" target="_blank" rel="noreferrer" className="hover:text-cyan-200">Magic Eden</a><Link to="/contact" className="hover:text-cyan-200">Contact</Link></div></div>
+    <div className="relative z-10 mx-auto mt-8 flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-5 text-xs sm:flex-row sm:justify-between"><span>© 2026 SolHandle. Pre-launch.</span><div className="flex flex-wrap items-center gap-4"><a href="https://discord.gg/X4UHSTWuk" target="_blank" rel="noreferrer" aria-label="Join the SolHandle Discord" className="inline-flex items-center gap-1.5 font-semibold text-violet-200 hover:text-white"><MessageCircle className="h-4 w-4"/>Discord</a><a href="https://x.com/Solhandle" target="_blank" rel="noreferrer" className="hover:text-cyan-200">X</a><a href="https://magiceden.io/marketplace/solhandle" target="_blank" rel="noreferrer" className="hover:text-cyan-200">Magic Eden</a><Link to="/contact" className="hover:text-cyan-200">Contact</Link></div></div>
   </footer>;
 }
