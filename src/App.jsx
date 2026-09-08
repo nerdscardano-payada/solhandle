@@ -35,6 +35,7 @@ import ReferralTerms from '@/pages/ReferralTerms';
 import AdminAnalytics from '@/pages/AdminAnalytics';
 import About from '@/pages/About';
 import PremiumDirectory from '@/pages/PremiumDirectory';
+import DiscordVerify from '@/pages/DiscordVerify';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -91,6 +92,7 @@ const AuthenticatedApp = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/mint-success" element={<MintSuccess />} />
+        <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
