@@ -18,9 +18,8 @@ const configInfo = await connection.getAccountInfo(config, "confirmed");
 if (!configInfo || !new PublicKey(configInfo.data.subarray(8, 40)).equals(authority.publicKey)) throw new Error("Wrong protocol authority.");
 
 const now = Math.floor(Date.now() / 1000);
-const durationSeconds = 72 * 60 * 60;
 const startAt = now + 120;
-const endAt = startAt + durationSeconds;
+const endAt = Math.floor(Date.parse("2100-12-31T23:59:59Z") / 1000);
 const u64 = (value) => { const data = Buffer.alloc(8); data.writeBigUInt64LE(BigInt(value)); return data; };
 const i64 = (value) => { const data = Buffer.alloc(8); data.writeBigInt64LE(BigInt(value)); return data; };
 const discriminator = createHash("sha256").update("global:set_rush_config").digest().subarray(0, 8);
