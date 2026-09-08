@@ -3,7 +3,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { base44 } from "@/api/base44Client";
 
 export default function useDiscordVerification(token) {
-  const { connected, publicKey, signMessage } = useWallet();
+  const { connected, publicKey, signMessage, wallet } = useWallet();
   const [state, setState] = useState({ loading: false, error: "", handle: "" });
   const verify = async () => {
     if (!publicKey || !signMessage) return;
@@ -19,5 +19,5 @@ export default function useDiscordVerification(token) {
       setState({ loading: false, error: error.response?.data?.error || "Verification failed. Please try again.", handle: "" });
     }
   };
-  return { connected, verify, ...state };
+  return { connected, address: publicKey?.toBase58() || "", walletName: wallet?.adapter.name || "", verify, ...state };
 }
