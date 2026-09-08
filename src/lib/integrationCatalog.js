@@ -20,6 +20,12 @@ export const integrations = [
   { slug: "decaf", name: "Decaf", type: "payments", priority: 10, capabilities: ["Pay to @", "Merchant identity", "Recipient safety"] },
   { slug: "helius", name: "Helius", type: "infrastructure", priority: 11, capabilities: ["Resolver access", "Reverse lookup", "Data enrichment"] },
   { slug: "quicknode", name: "QuickNode", type: "infrastructure", priority: 12, capabilities: ["Resolver access", "RPC workflows", "Data enrichment"] },
+  { slug: "fuse", name: "Fuse", type: "wallet", priority: 13, capabilities: ["Send to @", "Member identity", "Recipient confirmation"] },
+  { slug: "birdeye", name: "Birdeye", type: "explorer", priority: 14, capabilities: ["Search @", "Wallet labels", "Address resolution"] },
+  { slug: "raydium", name: "Raydium", type: "application", priority: 15, capabilities: ["Wallet identity", "Recipient fields", "Address resolution"] },
+  { slug: "orca", name: "Orca", type: "application", priority: 16, capabilities: ["Wallet identity", "Recipient fields", "Address resolution"] },
+  { slug: "meteora", name: "Meteora", type: "application", priority: 17, capabilities: ["Wallet identity", "Position labels", "Address resolution"] },
+  { slug: "dexscreener", name: "DEX Screener", type: "explorer", priority: 18, capabilities: ["Search @", "Wallet labels", "Address resolution"] },
 ];
 
 export const typeById = Object.fromEntries(integrationTypes.map((item) => [item.id, item]));

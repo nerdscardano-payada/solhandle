@@ -11,6 +11,12 @@ const productNotes = {
   decaf: "Resolve consumer and merchant handles before payment construction and retain the destination address in confirmation and receipts.",
   helius: "Expose resolution and reverse-resolution enrichment while keeping direct Solana state authoritative over indexed responses.",
   quicknode: "Offer resolver methods or add-on enrichment with protocol-version, collection and freshness metadata in every response.",
+  fuse: "Add SolHandle resolution to Fuse recipient entry and member identity while preserving multisig approvals, policies and the final destination address.",
+  birdeye: "Make @handles searchable and show verified Primary Handles as wallet labels without replacing canonical wallet addresses or market data identifiers.",
+  raydium: "Use verified handles for wallet identity and recipient entry while leaving swaps, liquidity instructions and token routing unchanged.",
+  orca: "Add handle-based wallet identity and recipient resolution before transaction construction while preserving Orca’s existing swap and liquidity safeguards.",
+  meteora: "Label wallets and positions with verified Primary Handles and resolve recipient input before constructing any liquidity or claim transaction.",
+  dexscreener: "Support @handle search and verified wallet labels while preserving canonical token, pair and wallet addresses across market views.",
 };
 
 const typeContent = {
