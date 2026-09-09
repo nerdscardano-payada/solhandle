@@ -1,35 +1,40 @@
 {
-  "name": "LoungeModerationLog",
+  "name": "LoungeMember",
   "type": "object",
   "properties": {
-    "admin_wallet": {
+    "wallet_address": {
       "type": "string"
     },
-    "target_wallet": {
+    "display_handle": {
       "type": "string"
     },
-    "action": {
+    "role": {
       "type": "string",
       "enum": [
-        "delete",
-        "mute",
-        "unmute",
-        "ban",
-        "unban"
+        "holder",
+        "mod",
+        "admin"
       ]
     },
-    "reason": {
-      "type": "string"
+    "muted_until": {
+      "type": "string",
+      "format": "date-time"
     },
-    "message_id": {
-      "type": "string"
+    "banned": {
+      "type": "boolean",
+      "default": false
+    },
+    "joined_date": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
-    "admin_wallet",
-    "target_wallet",
-    "action",
-    "reason"
+    "wallet_address",
+    "display_handle",
+    "role",
+    "banned",
+    "joined_date"
   ],
   "rls": {
     "read": {
