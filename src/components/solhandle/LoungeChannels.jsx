@@ -1,0 +1,8 @@
+import { Hash, Megaphone } from "lucide-react";
+
+export default function LoungeChannels({ channels, messages, selectedId, onSelect }) {
+  return <aside className={`${selectedId ? "hidden md:block" : "block"} border-white/10 md:border-r`}><div className="border-b border-white/10 p-5"><p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">Holder Lounge</p><h1 className="mt-1 text-2xl font-semibold">Channels</h1></div>
+    <nav className="space-y-2 p-3">{channels.map((channel) => { const latest = messages.filter((item) => item.channel_id === channel.id).at(-1); const read = localStorage.getItem(`lounge_read_${channel.id}`); const unread = latest && (!read || new Date(latest.created_date) > new Date(read)); return <button key={channel.id} onClick={() => onSelect(channel.id)} className={`w-full rounded-xl border p-4 text-left transition ${selectedId === channel.id ? "border-cyan-300/40 bg-cyan-300/10" : "border-transparent bg-white/[.03] hover:border-white/10"}`}>
+      <div className="flex items-center gap-3">{channel.slug === "news" ? <Megaphone className="h-4 w-4 text-violet-300" /> : <Hash className="h-4 w-4 text-cyan-300" />}<span className="font-medium">{channel.name}</span>{unread && <span className="ml-auto h-2 w-2 rounded-full bg-cyan-300" />}</div>
+      <p className="mt-2 line-clamp-1 text-xs text-slate-500">{latest?.body || channel.description}</p></button>; })}</nav></aside>;
+}

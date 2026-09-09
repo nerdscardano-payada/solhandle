@@ -1,0 +1,59 @@
+{
+  "name": "LoungeSession",
+  "type": "object",
+  "properties": {
+    "token_hash": {
+      "type": "string"
+    },
+    "wallet_address": {
+      "type": "string"
+    },
+    "display_handle": {
+      "type": "string"
+    },
+    "rarity": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "holder",
+        "mod",
+        "admin"
+      ]
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "token_hash",
+    "wallet_address",
+    "display_handle",
+    "role",
+    "expires_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

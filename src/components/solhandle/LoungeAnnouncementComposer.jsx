@@ -1,0 +1,10 @@
+import { useState } from "react";
+import { ImagePlus, Send } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+
+export default function LoungeAnnouncementComposer({ onSend }) {
+  const [title, setTitle] = useState(""); const [body, setBody] = useState(""); const [imageUrl, setImageUrl] = useState(""); const [uploading, setUploading] = useState(false);
+  const upload = async (event) => { const file = event.target.files?.[0]; if (!file) return; setUploading(true); const result = await base44.integrations.Core.UploadFile({ file }); setImageUrl(result.file_url); setUploading(false); };
+  const submit = (event) => { event.preventDefault(); if (!title.trim() || !body.trim()) return; onSend({ title: title.trim(), body: body.trim(), imageUrl, isAnnouncement: true }); setTitle(""); setBody(""); setImageUrl(""); };
+  return <form onSubmit={submit} className="border-t border-violet-300/20 bg-violet-300/[.05] p-3"><div className="flex gap-2"><input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} placeholder="Announcement title" className="min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-950/70 px-3 py-2 text-sm outline-none"/><label className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-3 text-xs text-slate-300"><ImagePlus className="h-4 w-4" />{uploading ? "Uploading" : imageUrl ? "Added" : "Image"}<input type="file" accept="image/*" onChange={upload} className="hidden" /></label></div><div className="mt-2 flex gap-2"><textarea value={body} onChange={(e) => setBody(e.target.value)} maxLength={2000} rows={2} placeholder="Write an official update…" className="min-w-0 flex-1 resize-none rounded-lg border border-white/10 bg-slate-950/70 px-3 py-2 text-sm outline-none"/><button disabled={!title.trim() || !body.trim() || uploading} className="rounded-lg bg-violet-300 px-4 text-slate-950 disabled:opacity-40"><Send className="h-4 w-4" /></button></div></form>;
+}

@@ -1,0 +1,61 @@
+{
+  "name": "LoungeMember",
+  "type": "object",
+  "properties": {
+    "wallet_address": {
+      "type": "string"
+    },
+    "display_handle": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "holder",
+        "mod",
+        "admin"
+      ]
+    },
+    "muted_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "banned": {
+      "type": "boolean",
+      "default": false
+    },
+    "joined_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "wallet_address",
+    "display_handle",
+    "role",
+    "banned",
+    "joined_date"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
