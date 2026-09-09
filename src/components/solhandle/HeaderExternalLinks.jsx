@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
 
 export default function HeaderExternalLinks() {
-  return <div className="hidden items-center gap-3 sm:flex"><a href="https://x.com/Solhandle" target="_blank" rel="noreferrer" aria-label="SolHandle on X" className="text-xs font-semibold text-slate-400 transition hover:text-white">X</a><a href="https://magiceden.io/marketplace/solhandle" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 transition hover:text-cyan-200">Trade <ExternalLink className="h-3 w-3"/></a></div>;
+  return <div className="hidden items-center gap-3 sm:flex"><a href="https://x.com/Solhandle" target="_blank" rel="noreferrer" aria-label="SolHandle on X" className="text-xs font-semibold text-slate-400 transition hover:text-white">X</a><a href="https://magiceden.io/marketplace/solhandle" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 transition hover:text-cyan-200">Trade <ExternalLink className="h-3 w-3"/></a><a href="https://discord.gg/X4UHSTWuk" target="_blank" rel="noreferrer" aria-label="Join the SolHandle Discord" className="rounded-full border border-violet-400/30 bg-violet-400/10 px-2.5 py-1 text-xs font-semibold text-violet-200 transition hover:border-violet-300/60 hover:text-white">Discord</a></div>;
 }
