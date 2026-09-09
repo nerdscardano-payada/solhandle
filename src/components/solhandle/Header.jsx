@@ -7,7 +7,7 @@ import MoreMenu from "@/components/solhandle/MoreMenu";
 import HeaderExternalLinks from "@/components/solhandle/HeaderExternalLinks";
 import WalletButton from "@/components/solhandle/WalletButton";
 
-const links = [["Search", "/"], ["Directory", "/directory"], ["Explore", "/explore"], ["Lounge", "/lounge"], ["My Handles", "/my-handles"], ["Earn", "/earn"]];
+const links = [["Search", "/"], ["Market", "/market"], ["Directory", "/directory"], ["Explore", "/explore"], ["Lounge", "/lounge"], ["My Handles", "/my-handles"], ["Earn", "/earn"]];
 const developerLinks = [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Documentation", "/docs"]];
 const moreLinks = [["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]];
 

@@ -1,8 +1,8 @@
 use anchor_lang::{prelude::*, system_program};
 use mpl_core::{
     accounts::{BaseAssetV1, BaseCollectionV1},
-    instructions::{CreateCollectionV2CpiBuilder, CreateV2CpiBuilder},
-    types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, Royalties, RuleSet},
+    instructions::{AddPluginV1CpiBuilder, CreateCollectionV2CpiBuilder, CreateV2CpiBuilder, RemovePluginV1CpiBuilder, TransferV1CpiBuilder},
+    types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, PluginType, Royalties, RuleSet, TransferDelegate},
     ID as MPL_CORE_ID,
 };
 
@@ -92,6 +92,68 @@ pub mod solhandle {
         ctx.accounts.config.total_minted = ctx.accounts.config.total_minted.checked_add(1).ok_or(SolHandleError::MathOverflow)?;
         emit!(HandleMinted { handle: args.handle, asset: ctx.accounts.asset.key(), owner: ctx.accounts.recipient.key(), price_lamports: 0, official_claim: true }); Ok(())
     }
+
+    pub fn list_handle(ctx: Context<ListHandle>, price_lamports: u64, expires_at: i64) -> Result<()> {
+        require!(price_lamports > 0, SolHandleError::InvalidMarketplacePrice);
+        require!(expires_at == 0 || expires_at > Clock::get()?.unix_timestamp, SolHandleError::MarketplaceOrderExpired);
+        require_keys_eq!(ctx.accounts.asset.owner, ctx.accounts.seller.key(), SolHandleError::AssetNotOwnedBySigner);
+        AddPluginV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
+            .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
+            .payer(&ctx.accounts.seller.to_account_info()).authority(Some(&ctx.accounts.seller.to_account_info()))
+            .system_program(&ctx.accounts.system_program.to_account_info()).plugin(Plugin::TransferDelegate(TransferDelegate {}))
+            .init_authority(PluginAuthority::Address { address: ctx.accounts.listing.key() }).invoke()?;
+        ctx.accounts.listing.set_inner(MarketplaceListing { asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key(), price_lamports, expires_at, bump: ctx.bumps.listing });
+        emit!(HandleListed { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key(), price_lamports });
+        Ok(())
+    }
+
+    pub fn buy_handle(ctx: Context<BuyHandle>) -> Result<()> {
+        require!(ctx.accounts.listing.expires_at == 0 || ctx.accounts.listing.expires_at > Clock::get()?.unix_timestamp, SolHandleError::MarketplaceOrderExpired);
+        let price = ctx.accounts.listing.price_lamports; let royalty = marketplace_royalty(price)?; let seller_amount = price.checked_sub(royalty).ok_or(SolHandleError::MathOverflow)?;
+        system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.buyer.to_account_info(), to: ctx.accounts.seller.to_account_info() }), seller_amount)?;
+        system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.buyer.to_account_info(), to: ctx.accounts.rewards_vault.to_account_info() }), royalty)?;
+        let bump = [ctx.accounts.listing.bump]; let seeds: &[&[u8]] = &[b"listing", ctx.accounts.asset.key().as_ref(), &bump];
+        TransferV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info()).asset(&ctx.accounts.asset.to_account_info())
+            .collection(Some(&ctx.accounts.collection.to_account_info())).payer(&ctx.accounts.buyer.to_account_info())
+            .authority(Some(&ctx.accounts.listing.to_account_info())).new_owner(&ctx.accounts.buyer.to_account_info())
+            .system_program(Some(&ctx.accounts.system_program.to_account_info())).invoke_signed(&[seeds])?;
+        emit!(MarketplaceSale { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key(), buyer: ctx.accounts.buyer.key(), price_lamports: price, royalty_lamports: royalty }); Ok(())
+    }
+
+    pub fn delist_handle(ctx: Context<DelistHandle>) -> Result<()> {
+        RemovePluginV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info()).asset(&ctx.accounts.asset.to_account_info())
+            .collection(Some(&ctx.accounts.collection.to_account_info())).payer(&ctx.accounts.seller.to_account_info())
+            .authority(Some(&ctx.accounts.seller.to_account_info())).system_program(&ctx.accounts.system_program.to_account_info())
+            .plugin_type(PluginType::TransferDelegate).invoke()?;
+        emit!(HandleDelisted { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key() }); Ok(())
+    }
+
+    pub fn place_bid(ctx: Context<PlaceBid>, amount_lamports: u64, expires_at: i64) -> Result<()> {
+        require!(amount_lamports > 0, SolHandleError::InvalidMarketplacePrice);
+        require!(expires_at == 0 || expires_at > Clock::get()?.unix_timestamp, SolHandleError::MarketplaceOrderExpired);
+        system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.bidder.to_account_info(), to: ctx.accounts.bid.to_account_info() }), amount_lamports)?;
+        ctx.accounts.bid.set_inner(MarketplaceBid { asset: ctx.accounts.asset.key(), bidder: ctx.accounts.bidder.key(), amount_lamports, expires_at, bump: ctx.bumps.bid });
+        emit!(BidPlaced { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), bidder: ctx.accounts.bidder.key(), amount_lamports }); Ok(())
+    }
+
+    pub fn accept_bid(ctx: Context<AcceptBid>) -> Result<()> {
+        require_keys_eq!(ctx.accounts.asset.owner, ctx.accounts.seller.key(), SolHandleError::AssetNotOwnedBySigner);
+        require!(ctx.accounts.bid.expires_at == 0 || ctx.accounts.bid.expires_at > Clock::get()?.unix_timestamp, SolHandleError::MarketplaceOrderExpired);
+        let price = ctx.accounts.bid.amount_lamports; let royalty = marketplace_royalty(price)?; let seller_amount = price.checked_sub(royalty).ok_or(SolHandleError::MathOverflow)?;
+        **ctx.accounts.bid.to_account_info().try_borrow_mut_lamports()? -= price;
+        **ctx.accounts.seller.to_account_info().try_borrow_mut_lamports()? += seller_amount;
+        **ctx.accounts.rewards_vault.to_account_info().try_borrow_mut_lamports()? += royalty;
+        TransferV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info()).asset(&ctx.accounts.asset.to_account_info())
+            .collection(Some(&ctx.accounts.collection.to_account_info())).payer(&ctx.accounts.seller.to_account_info())
+            .authority(Some(&ctx.accounts.seller.to_account_info())).new_owner(&ctx.accounts.bidder.to_account_info())
+            .system_program(Some(&ctx.accounts.system_program.to_account_info())).invoke()?;
+        close_optional_listing(&ctx.accounts.listing, &ctx.accounts.seller)?;
+        emit!(MarketplaceSale { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key(), buyer: ctx.accounts.bidder.key(), price_lamports: price, royalty_lamports: royalty }); Ok(())
+    }
+
+    pub fn cancel_bid(ctx: Context<CancelBid>) -> Result<()> {
+        emit!(BidCancelled { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), bidder: ctx.accounts.bidder.key() }); Ok(())
+    }
 }
 
 fn create_handle_asset<'info>(mpl_core_program: &UncheckedAccount<'info>, asset: &UncheckedAccount<'info>, collection: &Account<'info, BaseCollectionV1>, config: &Account<'info, Config>, payer: &Signer<'info>, owner: &AccountInfo<'info>, system_program: &Program<'info, System>, handle: &String, uri: String, bump: u8) -> Result<()> {
@@ -109,6 +171,18 @@ fn create_handle_asset<'info>(mpl_core_program: &UncheckedAccount<'info>, asset:
         .name(format!("@{}", handle))
         .uri(uri)
         .invoke_signed(&[asset_seeds, config_seeds])?;
+    Ok(())
+}
+
+fn marketplace_royalty(price: u64) -> Result<u64> { price.checked_mul(REWARDS_BPS).ok_or(SolHandleError::MathOverflow)?.checked_div(BPS_DENOMINATOR).ok_or(SolHandleError::MathOverflow.into()) }
+fn close_optional_listing(listing: &UncheckedAccount, recipient: &Signer) -> Result<()> {
+    if listing.owner == &crate::ID && !listing.data_is_empty() {
+        let lamports = listing.to_account_info().lamports();
+        **recipient.to_account_info().try_borrow_mut_lamports()? += lamports;
+        **listing.to_account_info().try_borrow_mut_lamports()? = 0;
+        listing.to_account_info().assign(&system_program::ID);
+        listing.to_account_info().realloc(0, false)?;
+    }
     Ok(())
 }
 
@@ -138,6 +212,14 @@ fn create_handle_asset<'info>(mpl_core_program: &UncheckedAccount<'info>, asset:
 pub recipient: UncheckedAccount<'info>, #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, /// CHECK: Verified Metaplex Core program.
 #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
 
+#[derive(Accounts)] pub struct ListHandle<'info> { #[account(mut)] pub seller: Signer<'info>, #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut)] pub asset: Account<'info, BaseAssetV1>, #[account(init, payer = seller, space = 8 + MarketplaceListing::INIT_SPACE, seeds = [b"listing", asset.key().as_ref()], bump)] pub listing: Account<'info, MarketplaceListing>, #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
+#[derive(Accounts)] pub struct BuyHandle<'info> { #[account(mut)] pub buyer: Signer<'info>, #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut)] pub asset: Account<'info, BaseAssetV1>, #[account(mut, seeds = [b"listing", asset.key().as_ref()], bump = listing.bump, has_one = asset, has_one = seller, close = seller)] pub listing: Account<'info, MarketplaceListing>, #[account(mut)] pub seller: SystemAccount<'info>, #[account(mut, address = config.rewards_vault @ SolHandleError::WrongRewardsVault)] pub rewards_vault: SystemAccount<'info>, #[account(address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
+#[derive(Accounts)] pub struct DelistHandle<'info> { #[account(mut)] pub seller: Signer<'info>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut, constraint = asset.owner == seller.key() @ SolHandleError::AssetNotOwnedBySigner)] pub asset: Account<'info, BaseAssetV1>, #[account(mut, seeds = [b"listing", asset.key().as_ref()], bump = listing.bump, has_one = asset, has_one = seller, close = seller)] pub listing: Account<'info, MarketplaceListing>, #[account(mut)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
+#[derive(Accounts)] pub struct PlaceBid<'info> { #[account(mut)] pub bidder: Signer<'info>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, pub asset: Account<'info, BaseAssetV1>, #[account(init, payer = bidder, space = 8 + MarketplaceBid::INIT_SPACE, seeds = [b"bid", asset.key().as_ref(), bidder.key().as_ref()], bump)] pub bid: Account<'info, MarketplaceBid>, pub system_program: Program<'info, System> }
+#[derive(Accounts)] pub struct AcceptBid<'info> { #[account(mut)] pub seller: Signer<'info>, #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut)] pub asset: Account<'info, BaseAssetV1>, /// CHECK: May be absent when accepting a bid on an unlisted handle.
+#[account(mut, seeds = [b"listing", asset.key().as_ref()], bump)] pub listing: UncheckedAccount<'info>, #[account(mut, seeds = [b"bid", asset.key().as_ref(), bidder.key().as_ref()], bump = bid.bump, has_one = asset, has_one = bidder, close = bidder)] pub bid: Account<'info, MarketplaceBid>, #[account(mut)] pub bidder: SystemAccount<'info>, #[account(mut, address = config.rewards_vault @ SolHandleError::WrongRewardsVault)] pub rewards_vault: SystemAccount<'info>, #[account(address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
+#[derive(Accounts)] pub struct CancelBid<'info> { #[account(mut)] pub bidder: Signer<'info>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, pub asset: Account<'info, BaseAssetV1>, #[account(mut, seeds = [b"bid", asset.key().as_ref(), bidder.key().as_ref()], bump = bid.bump, has_one = asset, has_one = bidder, close = bidder)] pub bid: Account<'info, MarketplaceBid> }
+
 #[account] #[derive(InitSpace)] pub struct Config { pub authority: Pubkey, pub collection: Pubkey, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5], pub total_minted: u64, pub paused: bool, pub bump: u8, pub protocol_version: u8 }
 impl Config { fn price_for(&self, length: usize) -> u64 { self.prices_lamports[length.saturating_sub(1).min(4)] } }
 #[account] #[derive(InitSpace)] pub struct RushConfig { pub enabled: bool, pub start_at: i64, pub end_at: i64, pub standard_price_lamports: u64, pub short_discount_bps: u64, pub premium_surcharge_lamports: u64, pub bump: u8 }
@@ -147,6 +229,13 @@ impl Config { fn price_for(&self, length: usize) -> u64 { self.prices_lamports[l
 #[account] #[derive(InitSpace)] pub struct NameRestriction { pub restriction_type: RestrictionType, pub active: bool, #[max_len(80)] pub reserved_for: String, pub created_at: i64, pub bump: u8 }
 #[account] #[derive(InitSpace)] pub struct PriceOverride { pub price_lamports: u64, pub active: bool, pub bump: u8 }
 #[account] #[derive(InitSpace)] pub struct PrimaryHandle { #[max_len(20)] pub handle: String, pub asset: Pubkey, pub updated_at: i64, pub bump: u8 }
+#[account] #[derive(InitSpace)] pub struct MarketplaceListing { pub asset: Pubkey, pub seller: Pubkey, pub price_lamports: u64, pub expires_at: i64, pub bump: u8 }
+#[account] #[derive(InitSpace)] pub struct MarketplaceBid { pub asset: Pubkey, pub bidder: Pubkey, pub amount_lamports: u64, pub expires_at: i64, pub bump: u8 }
+#[event] pub struct HandleListed { pub handle: String, pub asset: Pubkey, pub seller: Pubkey, pub price_lamports: u64 }
+#[event] pub struct HandleDelisted { pub handle: String, pub asset: Pubkey, pub seller: Pubkey }
+#[event] pub struct BidPlaced { pub handle: String, pub asset: Pubkey, pub bidder: Pubkey, pub amount_lamports: u64 }
+#[event] pub struct BidCancelled { pub handle: String, pub asset: Pubkey, pub bidder: Pubkey }
+#[event] pub struct MarketplaceSale { pub handle: String, pub asset: Pubkey, pub seller: Pubkey, pub buyer: Pubkey, pub price_lamports: u64, pub royalty_lamports: u64 }
 #[event] pub struct HandleMinted { pub handle: String, pub asset: Pubkey, pub owner: Pubkey, pub price_lamports: u64, pub official_claim: bool }
 fn validate_handle(handle: &str) -> Result<()> { require!(!handle.is_empty() && handle.len() <= MAX_HANDLE_LENGTH, SolHandleError::InvalidHandle); require!(handle.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit()), SolHandleError::InvalidHandle); Ok(()) }
 fn is_active_restriction(account: &UncheckedAccount) -> Result<bool> { if account.owner != &crate::ID || account.data_is_empty() { return Ok(false); } let mut data: &[u8] = &account.try_borrow_data()?; Ok(NameRestriction::try_deserialize(&mut data)?.active) }
@@ -166,4 +255,4 @@ fn final_price_for_handle(normal_base_price: u64, length: usize, premium: bool, 
     }
     base_price.checked_add(premium_surcharge).ok_or(SolHandleError::MathOverflow.into())
 }
-#[error_code] pub enum SolHandleError { #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle, #[msg("Rush end time must be after its start time.")] InvalidRushWindow, #[msg("Rush pricing values are invalid.")] InvalidRushPricing, #[msg("The protocol is paused.")] ProtocolPaused, #[msg("The provided collection is not the SolHandle collection.")] WrongCollection, #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury, #[msg("A price must be set for every handle tier.")] InvalidPrice, #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination, #[msg("Metadata URI exceeds the supported size.")] UriTooLong, #[msg("Reservation recipient label exceeds the supported size.")] ReservedForTooLong, #[msg("Arithmetic overflow.")] MathOverflow, #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded, #[msg("This handle is restricted by the protocol.")] HandleRestricted, #[msg("The restriction is inactive.")] RestrictionInactive, #[msg("Protected handles can never be claimed.")] ProtectedHandleCannotBeClaimed, #[msg("The supplied asset does not match the handle record.")] WrongAsset, #[msg("Only the current NFT owner may set a primary handle.")] AssetNotOwnedBySigner, #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch }
+#[error_code] pub enum SolHandleError { #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle, #[msg("Rush end time must be after its start time.")] InvalidRushWindow, #[msg("Rush pricing values are invalid.")] InvalidRushPricing, #[msg("The protocol is paused.")] ProtocolPaused, #[msg("The provided collection is not the SolHandle collection.")] WrongCollection, #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury, #[msg("A price must be set for every handle tier.")] InvalidPrice, #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination, #[msg("Metadata URI exceeds the supported size.")] UriTooLong, #[msg("Reservation recipient label exceeds the supported size.")] ReservedForTooLong, #[msg("Arithmetic overflow.")] MathOverflow, #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded, #[msg("This handle is restricted by the protocol.")] HandleRestricted, #[msg("The restriction is inactive.")] RestrictionInactive, #[msg("Protected handles can never be claimed.")] ProtectedHandleCannotBeClaimed, #[msg("The supplied asset does not match the handle record.")] WrongAsset, #[msg("Only the current NFT owner may perform this action.")] AssetNotOwnedBySigner, #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch, #[msg("Marketplace price must be greater than zero.")] InvalidMarketplacePrice, #[msg("This marketplace order has expired.")] MarketplaceOrderExpired, #[msg("The rewards vault does not match protocol configuration.")] WrongRewardsVault }

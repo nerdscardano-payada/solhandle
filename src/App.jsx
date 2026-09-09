@@ -36,6 +36,7 @@ import AdminAnalytics from '@/pages/AdminAnalytics';
 import About from '@/pages/About';
 import PremiumDirectory from '@/pages/PremiumDirectory';
 import HolderLounge from '@/pages/HolderLounge';
+import Market from '@/pages/Market';
 import DiscordVerify from '@/pages/DiscordVerify';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
@@ -78,6 +79,7 @@ const AuthenticatedApp = () => {
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/directory" element={<PremiumDirectory />} />
+        <Route path="/market" element={<Market />} />
         <Route path="/lounge" element={<HolderLounge />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
         <Route path="/legal" element={<Legal />} />

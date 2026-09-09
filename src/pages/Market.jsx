@@ -1,0 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
+import Header from "@/components/solhandle/Header";
+import MarketplaceCard from "@/components/solhandle/MarketplaceCard";
+import { base44 } from "@/api/base44Client";
+
+export default function Market() {
+  const [listings, setListings] = useState([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(""); const [maxPrice, setMaxPrice] = useState("");
+  const load = () => { setLoading(true); base44.entities.NativeListing.filter({ status: "ACTIVE" }, "-created_at", 100).then(setListings).finally(() => setLoading(false)); };
+  useEffect(load, []);
+  const visible = useMemo(() => listings.filter((item) => item.handle.includes(search.toLowerCase().replace(/^@/, "")) && (!maxPrice || item.price_lamports <= Number(maxPrice) * 1_000_000_000)), [listings, search, maxPrice]);
+  return <main className="min-h-screen bg-[#050811] text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="px-5 py-10 md:px-9"><p className="text-sm text-cyan-300">On-chain trading</p><h1 className="mt-2 text-4xl font-semibold">SolHandle Market</h1><p className="mt-3 max-w-2xl text-slate-400">Buy and bid on official SolHandle Core assets. Every sale settles atomically in SOL with a 5% protocol royalty and no platform fee.</p><div className="mt-8 grid gap-3 rounded-2xl border border-white/10 bg-slate-950/70 p-4 sm:grid-cols-2"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search @handle" className="rounded-lg border border-white/10 bg-slate-900 px-4 py-3 text-sm outline-none focus:border-cyan-300/50"/><input value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} inputMode="decimal" placeholder="Maximum price in SOL" className="rounded-lg border border-white/10 bg-slate-900 px-4 py-3 text-sm outline-none focus:border-cyan-300/50"/></div>{loading ? <div className="card-glow mt-8 text-slate-400">Loading on-chain listings…</div> : visible.length ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{visible.map((listing) => <MarketplaceCard key={listing.id} listing={listing} onComplete={load}/>)}</div> : <div className="card-glow mt-8 text-slate-400">No active native listings match these filters.</div>}</section></div></main>;
+}

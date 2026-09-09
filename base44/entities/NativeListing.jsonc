@@ -1,0 +1,70 @@
+{
+  "name": "NativeListing",
+  "type": "object",
+  "properties": {
+    "asset_address": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "seller": {
+      "type": "string"
+    },
+    "price_lamports": {
+      "type": "number"
+    },
+    "listing_pda": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "CLOSED",
+        "CANCELLED"
+      ]
+    },
+    "transaction_signature": {
+      "type": "string"
+    },
+    "closed_signature": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "asset_address",
+    "handle",
+    "seller",
+    "price_lamports",
+    "listing_pda",
+    "status",
+    "created_at"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

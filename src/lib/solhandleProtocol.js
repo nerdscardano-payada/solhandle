@@ -11,7 +11,9 @@ export const SEEDS = {
   price: "price",
   rush: "rush",
   premium: "premium",
-};
+  listing: "listing",
+  bid: "bid",
+  };
 
 const publicKeyAt = (data, cursor) => new PublicKey(data.slice(cursor, cursor + 32));
 
