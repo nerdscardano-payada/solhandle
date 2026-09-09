@@ -16,8 +16,13 @@ export default async function(req: Request): Promise<Response> {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));
     if (!actions.has(body.action) || typeof body.transaction_base64 !== "string") return Response.json({ error: "A supported action and signed transaction are required." }, { status: 400 });
-    const raw = Uint8Array.from(atob(body.transaction_base64), (character) => character.charCodeAt(0));
-    const transaction = Transaction.from(raw);
+    let transaction;
+    try {
+      const raw = Uint8Array.from(atob(body.transaction_base64), (character) => character.charCodeAt(0));
+      transaction = Transaction.from(raw);
+    } catch {
+      return Response.json({ error: "Signed transaction is malformed." }, { status: 400 });
+    }
     const program = new PublicKey(PROGRAM_ID);
     const safe = new Set([ComputeBudgetProgram.programId.toBase58(), "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxMyWCqXgDLGmfcHr"]);
     const protocolInstructions = transaction.instructions.filter((item) => item.programId.equals(program));
@@ -26,13 +31,24 @@ export default async function(req: Request): Promise<Response> {
     const instruction = protocolInstructions[0];
     const expectedHash = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`global:${instructionNames[body.action]}`))).slice(0, 8);
     if (!sameBytes(Uint8Array.from(instruction.data).slice(0, 8), expectedHash)) return Response.json({ error: "Marketplace action does not match the signed instruction." }, { status: 400 });
-    const signedAmount = ["list", "bid"].includes(body.action) ? readU64(Uint8Array.from(instruction.data), 8) : Number(body.amount_lamports || 0);
-    if (["list", "bid"].includes(body.action) && signedAmount !== Number(body.amount_lamports)) return Response.json({ error: "Signed marketplace amount does not match the request." }, { status: 400 });
+    const signedAmount = ["list", "bid", "buy"].includes(body.action) ? readU64(Uint8Array.from(instruction.data), 8) : Number(body.amount_lamports || 0);
+    if (["list", "bid", "buy"].includes(body.action) && signedAmount !== Number(body.amount_lamports)) return Response.json({ error: "Signed marketplace amount does not match the request." }, { status: 400 });
     const signer = instruction.keys.find((key) => key.isSigner)?.pubkey.toBase58();
     if (!signer || signer !== address(body.wallet)) return Response.json({ error: "Connected wallet does not match the transaction signer." }, { status: 400 });
     const required = [body.asset, body.pda, ...(["buy", "accept_bid"].includes(body.action) ? [body.buyer, body.rewards_vault] : [])].filter(Boolean).map(address);
     const accounts = new Set(instruction.keys.map((key) => key.pubkey.toBase58()));
     if (required.some((key) => !accounts.has(key))) return Response.json({ error: "Marketplace transaction accounts do not match the request." }, { status: 400 });
+    let settledAmount = signedAmount;
+    if (body.action === "buy") {
+      const rows = await base44.asServiceRole.entities.NativeListing.filter({ listing_pda: address(body.pda), status: "ACTIVE" }, "-created_at", 1);
+      if (!rows[0] || rows[0].price_lamports > signedAmount) return Response.json({ error: "Listing price changed or listing is no longer active." }, { status: 409 });
+      settledAmount = rows[0].price_lamports;
+    }
+    if (body.action === "accept_bid") {
+      const rows = await base44.asServiceRole.entities.NativeBid.filter({ bid_pda: address(body.pda), status: "ACTIVE" }, "-created_at", 1);
+      if (!rows[0]) return Response.json({ error: "Bid is no longer active." }, { status: 409 });
+      settledAmount = rows[0].amount_lamports;
+    }
     const rpcUrl = secrets.get("SOLANA_RPC_URL");
     const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);
     let confirmed = null;
@@ -47,10 +63,10 @@ export default async function(req: Request): Promise<Response> {
     const now = new Date().toISOString();
     if (body.action === "list") {
       const previous = await base44.asServiceRole.entities.NativeListing.filter({ asset_address: body.asset, status: "ACTIVE" }, "-created_at", 1);
-      const record = { asset_address: address(body.asset), handle: body.handle, seller: signer, price_lamports: Number(body.amount_lamports), listing_pda: address(body.pda), status: "ACTIVE", transaction_signature: signature, created_at: now };
+      const record = { asset_address: address(body.asset), handle: body.handle, seller: signer, price_lamports: settledAmount, listing_pda: address(body.pda), status: "ACTIVE", transaction_signature: signature, created_at: now };
       if (previous[0]) await base44.asServiceRole.entities.NativeListing.update(previous[0].id, record); else await base44.asServiceRole.entities.NativeListing.create(record);
     }
-    if (body.action === "bid") await base44.asServiceRole.entities.NativeBid.create({ asset_address: address(body.asset), handle: body.handle, bidder: signer, amount_lamports: Number(body.amount_lamports), bid_pda: address(body.pda), status: "ACTIVE", transaction_signature: signature, created_at: now });
+    if (body.action === "bid") await base44.asServiceRole.entities.NativeBid.create({ asset_address: address(body.asset), handle: body.handle, bidder: signer, amount_lamports: settledAmount, bid_pda: address(body.pda), status: "ACTIVE", transaction_signature: signature, created_at: now });
     if (["buy", "delist", "accept_bid"].includes(body.action)) {
       const listings = await base44.asServiceRole.entities.NativeListing.filter({ asset_address: address(body.asset), status: "ACTIVE" }, "-created_at", 10);
       if (listings.length) await base44.asServiceRole.entities.NativeListing.bulkUpdate(listings.map((row) => ({ id: row.id, status: body.action === "delist" ? "CANCELLED" : "CLOSED", closed_signature: signature, closed_at: now })));
@@ -64,7 +80,7 @@ export default async function(req: Request): Promise<Response> {
       if (bids.length) await base44.asServiceRole.entities.NativeBid.bulkUpdate(bids.map((row) => ({ id: row.id, status: "CANCELLED", closed_signature: signature, closed_at: now })));
     }
     if (["buy", "accept_bid"].includes(body.action)) {
-      const amount = Number(body.amount_lamports); const royalty = Math.floor(amount * 500 / 10000); const rate = await getHistoricalSolEur(Math.floor(Date.now() / 1000));
+      const amount = settledAmount; const royalty = Math.floor(amount * 500 / 10000); const rate = await getHistoricalSolEur(Math.floor(Date.now() / 1000));
       const existing = await base44.asServiceRole.entities.FinancialTransaction.filter({ transaction_signature: signature }, "-timestamp", 1);
       if (!existing[0]) await base44.asServiceRole.entities.FinancialTransaction.create({ transaction_id: signature, transaction_type: "sale", handle: body.handle, buyer_wallet: address(body.buyer), transaction_signature: signature, asset_address: address(body.asset), block_slot: 0, timestamp: now, character_length: body.handle.length, premium_status: false, base_price_lamports: amount, premium_surcharge_lamports: 0, total_paid_lamports: amount, sol_eur_rate: rate, total_value_eur: amount / 1_000_000_000 * rate, mint_source: "native_marketplace", partner_id: "", partner_commission_percentage: 0, partner_fee_lamports: 0, net_solhandle_lamports: royalty, treasury_address: "", rewards_vault_address: address(body.rewards_vault), status: "completed" });
       await base44.asServiceRole.entities.HandleIndex.updateMany({ asset_address: address(body.asset) }, { $set: { current_owner_cached: address(body.buyer), last_chain_sync: now } });

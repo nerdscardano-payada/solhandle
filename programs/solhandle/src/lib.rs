@@ -107,9 +107,9 @@ pub mod solhandle {
         Ok(())
     }
 
-    pub fn buy_handle(ctx: Context<BuyHandle>) -> Result<()> {
+    pub fn buy_handle(ctx: Context<BuyHandle>, max_price_lamports: u64) -> Result<()> {
         require!(ctx.accounts.listing.expires_at == 0 || ctx.accounts.listing.expires_at > Clock::get()?.unix_timestamp, SolHandleError::MarketplaceOrderExpired);
-        let price = ctx.accounts.listing.price_lamports; let royalty = marketplace_royalty(price)?; let seller_amount = price.checked_sub(royalty).ok_or(SolHandleError::MathOverflow)?;
+        let price = ctx.accounts.listing.price_lamports; require!(price <= max_price_lamports, SolHandleError::PriceLimitExceeded); let royalty = marketplace_royalty(price)?; let seller_amount = price.checked_sub(royalty).ok_or(SolHandleError::MathOverflow)?;
         system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.buyer.to_account_info(), to: ctx.accounts.seller.to_account_info() }), seller_amount)?;
         system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.buyer.to_account_info(), to: ctx.accounts.rewards_vault.to_account_info() }), royalty)?;
         let bump = [ctx.accounts.listing.bump]; let asset_key = ctx.accounts.asset.key(); let seeds: &[&[u8]] = &[b"listing", asset_key.as_ref(), &bump];

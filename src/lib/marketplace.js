@@ -27,7 +27,7 @@ export async function executeMarketplaceAction({ action, handle, assetAddress, a
   const name = { list: "list_handle", buy: "buy_handle", delist: "delist_handle", bid: "place_bid", accept_bid: "accept_bid", cancel_bid: "cancel_bid" }[action];
   const discriminator = (await hash(name)).slice(0, 8); let keys; let args = new Uint8Array(); let pda = listing;
   if (action === "list") { keys = [[wallet,1,1],[config,0,0],[record,0,0],[asset,0,1],[listing,0,1],[collection,0,1],[SystemProgram.programId,0,0],[MPL_CORE,0,0]]; args = join(u64(amountLamports), u64(0)); }
-  if (action === "buy") keys = [[wallet,1,1],[config,0,0],[record,0,0],[asset,0,1],[listing,0,1],[sellerKey,0,1],[rewards,0,1],[collection,0,0],[SystemProgram.programId,0,0],[MPL_CORE,0,0]];
+  if (action === "buy") { keys = [[wallet,1,1],[config,0,0],[record,0,0],[asset,0,1],[listing,0,1],[sellerKey,0,1],[rewards,0,1],[collection,0,0],[SystemProgram.programId,0,0],[MPL_CORE,0,0]]; args = u64(amountLamports); }
   if (action === "delist") keys = [[wallet,1,1],[record,0,0],[asset,0,1],[listing,0,1],[collection,0,1],[SystemProgram.programId,0,0],[MPL_CORE,0,0]];
   if (action === "bid") { pda = bid; keys = [[wallet,1,1],[record,0,0],[asset,0,0],[bid,0,1],[SystemProgram.programId,0,0]]; args = join(u64(amountLamports), u64(0)); }
   if (action === "accept_bid") { pda = bid; keys = [[wallet,1,1],[config,0,0],[record,0,0],[asset,0,1],[listing,0,1],[bid,0,1],[bidderKey,0,1],[rewards,0,1],[collection,0,0],[SystemProgram.programId,0,0],[MPL_CORE,0,0]]; }
