@@ -76,10 +76,6 @@
     },
     "image_uri": {
       "type": "string"
-    },
-    "discord_announced_at": {
-      "type": "string",
-      "format": "date-time"
     }
   },
   "required": [

@@ -1,8 +1,0 @@
-{
-  "type": "discord",
-  "scopes": [
-    "identify",
-    "guilds",
-    "email"
-  ]
-}
