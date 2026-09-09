@@ -32,6 +32,10 @@ export async function executeMarketplaceAction({ action, handle, assetAddress, a
   if (action === "bid") { pda = bid; keys = [[wallet,1,1],[record,0,0],[asset,0,0],[bid,0,1],[SystemProgram.programId,0,0]]; args = join(u64(amountLamports), u64(0)); }
   if (action === "accept_bid") { pda = bid; keys = [[wallet,1,1],[config,0,0],[record,0,0],[asset,0,1],[listing,0,1],[bid,0,1],[bidderKey,0,1],[rewards,0,1],[collection,0,0],[SystemProgram.programId,0,0],[MPL_CORE,0,0]]; }
   if (action === "cancel_bid") { pda = bid; keys = [[wallet,1,1],[record,0,0],[asset,0,0],[bid,0,1]]; }
+  if (action === "delist") {
+    const openBids = await base44.entities.NativeBid.filter({ asset_address: asset.toBase58(), status: "ACTIVE" }, "-created_at", 20);
+    keys.push(...openBids.flatMap((offer) => [[new PublicKey(offer.bid_pda),0,1],[new PublicKey(offer.bidder),0,1]]));
+  }
   const instruction = new TransactionInstruction({ programId: PROGRAM_ID, keys: keys.map(([pubkey,isSigner,isWritable]) => ({ pubkey, isSigner: Boolean(isSigner), isWritable: Boolean(isWritable) })), data: join(discriminator, args) });
   const signed = await signTransaction(new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction));
   const transaction_base64 = btoa(String.fromCharCode(...signed.serialize()));

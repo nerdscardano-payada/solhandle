@@ -98,6 +98,24 @@ export default async function(req: Request): Promise<Response> {
     }
 
 
+    stage = 'reconciling_marketplace';
+    const [activeListings, activeBids] = await Promise.all([
+      base44.asServiceRole.entities.NativeListing.filter({ status: 'ACTIVE' }, '-created_at', 200),
+      base44.asServiceRole.entities.NativeBid.filter({ status: 'ACTIVE' }, '-created_at', 200)
+    ]);
+    const marketplaceRows = [...activeListings.map((row) => ({ ...row, kind: 'listing', pda: row.listing_pda })), ...activeBids.map((row) => ({ ...row, kind: 'bid', pda: row.bid_pda }))];
+    if (marketplaceRows.length) {
+      const accounts = await rpc(rpcUrl, 'getMultipleAccounts', [marketplaceRows.map((row) => row.pda), { encoding: 'base64', commitment: 'confirmed' }]);
+      const missing = marketplaceRows.filter((row, index) => !accounts?.value?.[index]);
+      const checkedAt = new Date().toISOString();
+      const listingUpdates = missing.filter((row) => row.kind === 'listing').map((row) => ({ id: row.id, status: 'CLOSED', closed_at: checkedAt }));
+      if (listingUpdates.length) await base44.asServiceRole.entities.NativeListing.bulkUpdate(listingUpdates);
+      for (const row of missing.filter((item) => item.kind === 'bid')) {
+        const owner = await getAssetOwner(rpcUrl, row.asset_address, '');
+        await base44.asServiceRole.entities.NativeBid.update(row.id, { status: owner === row.bidder ? 'ACCEPTED' : 'CANCELLED', closed_at: checkedAt });
+      }
+    }
+
     const syncedAt = new Date().toISOString();
     const statusRecord = {
       paused: protocol.paused, total_minted: protocol.totalMinted, collection: protocol.collection,

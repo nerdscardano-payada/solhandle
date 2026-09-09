@@ -112,7 +112,7 @@ pub mod solhandle {
         let price = ctx.accounts.listing.price_lamports; let royalty = marketplace_royalty(price)?; let seller_amount = price.checked_sub(royalty).ok_or(SolHandleError::MathOverflow)?;
         system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.buyer.to_account_info(), to: ctx.accounts.seller.to_account_info() }), seller_amount)?;
         system_program::transfer(CpiContext::new(ctx.accounts.system_program.to_account_info(), system_program::Transfer { from: ctx.accounts.buyer.to_account_info(), to: ctx.accounts.rewards_vault.to_account_info() }), royalty)?;
-        let bump = [ctx.accounts.listing.bump]; let seeds: &[&[u8]] = &[b"listing", ctx.accounts.asset.key().as_ref(), &bump];
+        let bump = [ctx.accounts.listing.bump]; let asset_key = ctx.accounts.asset.key(); let seeds: &[&[u8]] = &[b"listing", asset_key.as_ref(), &bump];
         TransferV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info()).asset(&ctx.accounts.asset.to_account_info())
             .collection(Some(&ctx.accounts.collection.to_account_info())).payer(&ctx.accounts.buyer.to_account_info())
             .authority(Some(&ctx.accounts.listing.to_account_info())).new_owner(&ctx.accounts.buyer.to_account_info())
@@ -125,6 +125,18 @@ pub mod solhandle {
             .collection(Some(&ctx.accounts.collection.to_account_info())).payer(&ctx.accounts.seller.to_account_info())
             .authority(Some(&ctx.accounts.seller.to_account_info())).system_program(&ctx.accounts.system_program.to_account_info())
             .plugin_type(PluginType::TransferDelegate).invoke()?;
+        require!(ctx.remaining_accounts.len() % 2 == 0, SolHandleError::InvalidBidAccounts);
+        for pair in ctx.remaining_accounts.chunks_exact(2) {
+            let bid_info = &pair[0]; let bidder_info = &pair[1];
+            require!(bid_info.owner == &crate::ID, SolHandleError::InvalidBidAccounts);
+            let mut data: &[u8] = &bid_info.try_borrow_data()?; let bid = MarketplaceBid::try_deserialize(&mut data)?; drop(data);
+            require_keys_eq!(bid.asset, ctx.accounts.asset.key(), SolHandleError::InvalidBidAccounts);
+            require_keys_eq!(bid.bidder, bidder_info.key(), SolHandleError::InvalidBidAccounts);
+            let (expected, _) = Pubkey::find_program_address(&[b"bid", bid.asset.as_ref(), bid.bidder.as_ref()], &crate::ID);
+            require_keys_eq!(expected, bid_info.key(), SolHandleError::InvalidBidAccounts);
+            let refund = bid_info.lamports(); **bidder_info.try_borrow_mut_lamports()? += refund;
+            bid_info.realloc(0, false)?; bid_info.assign(&system_program::ID); **bid_info.try_borrow_mut_lamports()? = 0;
+        }
         emit!(HandleDelisted { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key() }); Ok(())
     }
 
@@ -179,9 +191,9 @@ fn close_optional_listing(listing: &UncheckedAccount, recipient: &Signer) -> Res
     if listing.owner == &crate::ID && !listing.data_is_empty() {
         let lamports = listing.to_account_info().lamports();
         **recipient.to_account_info().try_borrow_mut_lamports()? += lamports;
-        **listing.to_account_info().try_borrow_mut_lamports()? = 0;
-        listing.to_account_info().assign(&system_program::ID);
         listing.to_account_info().realloc(0, false)?;
+        listing.to_account_info().assign(&system_program::ID);
+        **listing.to_account_info().try_borrow_mut_lamports()? = 0;
     }
     Ok(())
 }
@@ -255,4 +267,4 @@ fn final_price_for_handle(normal_base_price: u64, length: usize, premium: bool, 
     }
     base_price.checked_add(premium_surcharge).ok_or(SolHandleError::MathOverflow.into())
 }
-#[error_code] pub enum SolHandleError { #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle, #[msg("Rush end time must be after its start time.")] InvalidRushWindow, #[msg("Rush pricing values are invalid.")] InvalidRushPricing, #[msg("The protocol is paused.")] ProtocolPaused, #[msg("The provided collection is not the SolHandle collection.")] WrongCollection, #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury, #[msg("A price must be set for every handle tier.")] InvalidPrice, #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination, #[msg("Metadata URI exceeds the supported size.")] UriTooLong, #[msg("Reservation recipient label exceeds the supported size.")] ReservedForTooLong, #[msg("Arithmetic overflow.")] MathOverflow, #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded, #[msg("This handle is restricted by the protocol.")] HandleRestricted, #[msg("The restriction is inactive.")] RestrictionInactive, #[msg("Protected handles can never be claimed.")] ProtectedHandleCannotBeClaimed, #[msg("The supplied asset does not match the handle record.")] WrongAsset, #[msg("Only the current NFT owner may perform this action.")] AssetNotOwnedBySigner, #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch, #[msg("Marketplace price must be greater than zero.")] InvalidMarketplacePrice, #[msg("This marketplace order has expired.")] MarketplaceOrderExpired, #[msg("The rewards vault does not match protocol configuration.")] WrongRewardsVault }
+#[error_code] pub enum SolHandleError { #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle, #[msg("Rush end time must be after its start time.")] InvalidRushWindow, #[msg("Rush pricing values are invalid.")] InvalidRushPricing, #[msg("The protocol is paused.")] ProtocolPaused, #[msg("The provided collection is not the SolHandle collection.")] WrongCollection, #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury, #[msg("A price must be set for every handle tier.")] InvalidPrice, #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination, #[msg("Metadata URI exceeds the supported size.")] UriTooLong, #[msg("Reservation recipient label exceeds the supported size.")] ReservedForTooLong, #[msg("Arithmetic overflow.")] MathOverflow, #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded, #[msg("This handle is restricted by the protocol.")] HandleRestricted, #[msg("The restriction is inactive.")] RestrictionInactive, #[msg("Protected handles can never be claimed.")] ProtectedHandleCannotBeClaimed, #[msg("The supplied asset does not match the handle record.")] WrongAsset, #[msg("Only the current NFT owner may perform this action.")] AssetNotOwnedBySigner, #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch, #[msg("Marketplace price must be greater than zero.")] InvalidMarketplacePrice, #[msg("This marketplace order has expired.")] MarketplaceOrderExpired, #[msg("The rewards vault does not match protocol configuration.")] WrongRewardsVault, #[msg("Bid refund accounts are invalid.")] InvalidBidAccounts }

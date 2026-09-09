@@ -6,7 +6,10 @@ import { PROGRAM_ID } from "../../shared/solhandleProtocol.ts";
 import { getHistoricalSolEur } from "../../shared/solEur.ts";
 
 const actions = new Set(["list", "buy", "delist", "bid", "accept_bid", "cancel_bid"]);
+const instructionNames = { list: "list_handle", buy: "buy_handle", delist: "delist_handle", bid: "place_bid", accept_bid: "accept_bid", cancel_bid: "cancel_bid" };
 const address = (value) => new PublicKey(value).toBase58();
+const sameBytes = (left, right) => left.length === right.length && left.every((byte, index) => byte === right[index]);
+const readU64 = (bytes, offset) => { let value = 0n; for (let index = 0; index < 8; index += 1) value |= BigInt(bytes[offset + index]) << BigInt(index * 8); return Number(value); };
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -21,9 +24,13 @@ export default async function(req: Request): Promise<Response> {
     const unsupported = transaction.instructions.filter((item) => !item.programId.equals(program) && !safe.has(item.programId.toBase58()));
     if (protocolInstructions.length !== 1 || unsupported.length) return Response.json({ error: "Transaction contains unsupported instructions." }, { status: 400 });
     const instruction = protocolInstructions[0];
+    const expectedHash = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`global:${instructionNames[body.action]}`))).slice(0, 8);
+    if (!sameBytes(Uint8Array.from(instruction.data).slice(0, 8), expectedHash)) return Response.json({ error: "Marketplace action does not match the signed instruction." }, { status: 400 });
+    const signedAmount = ["list", "bid"].includes(body.action) ? readU64(Uint8Array.from(instruction.data), 8) : Number(body.amount_lamports || 0);
+    if (["list", "bid"].includes(body.action) && signedAmount !== Number(body.amount_lamports)) return Response.json({ error: "Signed marketplace amount does not match the request." }, { status: 400 });
     const signer = instruction.keys.find((key) => key.isSigner)?.pubkey.toBase58();
     if (!signer || signer !== address(body.wallet)) return Response.json({ error: "Connected wallet does not match the transaction signer." }, { status: 400 });
-    const required = [body.asset, body.pda].filter(Boolean).map(address);
+    const required = [body.asset, body.pda, ...(["buy", "accept_bid"].includes(body.action) ? [body.buyer, body.rewards_vault] : [])].filter(Boolean).map(address);
     const accounts = new Set(instruction.keys.map((key) => key.pubkey.toBase58()));
     if (required.some((key) => !accounts.has(key))) return Response.json({ error: "Marketplace transaction accounts do not match the request." }, { status: 400 });
     const rpcUrl = secrets.get("SOLANA_RPC_URL");
@@ -51,6 +58,10 @@ export default async function(req: Request): Promise<Response> {
     if (["accept_bid", "cancel_bid"].includes(body.action)) {
       const bids = await base44.asServiceRole.entities.NativeBid.filter({ bid_pda: address(body.pda), status: "ACTIVE" }, "-created_at", 1);
       if (bids[0]) await base44.asServiceRole.entities.NativeBid.update(bids[0].id, { status: body.action === "accept_bid" ? "ACCEPTED" : "CANCELLED", closed_signature: signature, closed_at: now });
+    }
+    if (body.action === "delist") {
+      const bids = await base44.asServiceRole.entities.NativeBid.filter({ asset_address: address(body.asset), status: "ACTIVE" }, "-created_at", 20);
+      if (bids.length) await base44.asServiceRole.entities.NativeBid.bulkUpdate(bids.map((row) => ({ id: row.id, status: "CANCELLED", closed_signature: signature, closed_at: now })));
     }
     if (["buy", "accept_bid"].includes(body.action)) {
       const amount = Number(body.amount_lamports); const royalty = Math.floor(amount * 500 / 10000); const rate = await getHistoricalSolEur(Math.floor(Date.now() / 1000));
