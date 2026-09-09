@@ -2,6 +2,7 @@ import { createClientFromRequest } from "npm:@base44/sdk@0.8.46";
 import { secrets } from "base44:runtime";
 
 const short = (value = "") => value ? `${value.slice(0, 4)}…${value.slice(-4)}` : "Unknown";
+const formatRarity = (value = "STANDARD") => value.toLowerCase().replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -13,7 +14,7 @@ export default async function(req: Request): Promise<Response> {
       if (!handleRecord || handleRecord.status !== "active") return Response.json({ error: "Active handle not found." }, { status: 404 });
       if (handleRecord.discord_announced_at) return Response.json({ ok: true, skipped: true });
       const explorerUrl = handleRecord.asset_address ? `https://explorer.solana.com/address/${handleRecord.asset_address}` : undefined;
-      payload = { username: "SolHandle", embeds: [{ title: `${handleRecord.display_handle} is now on-chain`, description: "A new SolHandle has been minted on Solana Mainnet.", color: 3973375, fields: [{ name: "Owner", value: short(handleRecord.current_owner_cached || handleRecord.original_minter), inline: true }, { name: "Class", value: handleRecord.name_class || "Standard", inline: true }], url: explorerUrl, timestamp: handleRecord.minted_at || new Date().toISOString() }] };
+      payload = { username: "SolHandle", embeds: [{ title: `${handleRecord.display_handle} is now on-chain`, description: "A new SolHandle has been minted on Solana Mainnet.", color: 3973375, fields: [{ name: "Owner", value: short(handleRecord.current_owner_cached || handleRecord.original_minter), inline: true }, { name: "Rarity", value: formatRarity(handleRecord.rarity), inline: true }], url: explorerUrl, timestamp: handleRecord.minted_at || new Date().toISOString() }] };
     } else if (body.type === "developer") {
       webhookUrl = secrets.get("DISCORD_DEVELOPER_WEBHOOK_URL") || ""; const user = await base44.auth.me();
       if (!user || user.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
