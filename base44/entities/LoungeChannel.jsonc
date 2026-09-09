@@ -1,0 +1,70 @@
+{
+  "name": "LoungeChannel",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "order": {
+      "type": "number"
+    },
+    "read_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "holder",
+          "mod",
+          "admin"
+        ]
+      }
+    },
+    "write_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "holder",
+          "mod",
+          "admin"
+        ]
+      }
+    }
+  },
+  "required": [
+    "slug",
+    "name",
+    "description",
+    "order",
+    "read_roles",
+    "write_roles"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
