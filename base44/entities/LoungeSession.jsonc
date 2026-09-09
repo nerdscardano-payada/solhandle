@@ -1,8 +1,8 @@
 {
-  "name": "LoungeMessage",
+  "name": "LoungeSession",
   "type": "object",
   "properties": {
-    "channel_id": {
+    "token_hash": {
       "type": "string"
     },
     "wallet_address": {
@@ -14,30 +14,25 @@
     "rarity": {
       "type": "string"
     },
-    "title": {
-      "type": "string"
+    "role": {
+      "type": "string",
+      "enum": [
+        "holder",
+        "mod",
+        "admin"
+      ]
     },
-    "body": {
-      "type": "string"
-    },
-    "image_url": {
-      "type": "string"
-    },
-    "is_announcement": {
-      "type": "boolean",
-      "default": false
-    },
-    "parent_id": {
-      "type": "string"
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
-    "channel_id",
+    "token_hash",
     "wallet_address",
     "display_handle",
-    "rarity",
-    "body",
-    "is_announcement"
+    "role",
+    "expires_at"
   ],
   "rls": {
     "read": {
