@@ -3,6 +3,11 @@ import UpcomingProjectCard from "@/components/solhandle/UpcomingProjectCard";
 
 const projects = [
   {
+    phase: "Phase 06", title: "Integrations & SDK adoption", status: "In progress", accent: "emerald", path: "/integrations", cta: "Open Integration Center",
+    summary: "Turn the completed developer foundation into verified adoption across the Solana ecosystem.",
+    items: ["Integration Center is ready for partners", "Public SolHandle SDK and resolver tools are ready to use", "Active outreach to wallets, explorers, payment tools and networks", "Validate each integration against Mainnet security requirements"]
+  },
+  {
     phase: "Phase 07", title: "Native Marketplace V1", status: "Up next", accent: "cyan", path: "/upcoming/marketplace",
     summary: "Create an on-chain economy for SolHandle identities before introducing the ecosystem token.",
     items: ["Fixed-price Buy Now and escrow-backed offers", "Wallet-signed, non-custodial settlement", "0% marketplace fee and 5% SolHandle protocol royalty", "Measure listings, volume, traders and royalty revenue"]
@@ -22,8 +27,8 @@ export default function UpcomingProjects() {
       <div className="relative mx-auto max-w-6xl">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">What comes next</p>
         <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">Upcoming projects</h1>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-300">Marketplace first. Measured utility second. Every phase strengthens SolHandle as Solana's non-custodial identity layer.</p>
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">{projects.map((project) => <UpcomingProjectCard key={project.phase} {...project} />)}</div>
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-300">Integration adoption now. Marketplace growth next. Measured token utility after that. Every phase strengthens SolHandle as Solana's non-custodial identity layer.</p>
+        <div className="mt-12 grid gap-6 lg:grid-cols-3">{projects.map((project) => <UpcomingProjectCard key={project.phase} {...project} />)}</div>
       </div>
     </section>
   </main>;
