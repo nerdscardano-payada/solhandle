@@ -34,5 +34,17 @@ export const roadmapMilestones = [
     summary: "The developer foundation is live; verified native adoption is the next growth phase.",
     completed: ["Public solhandle-sdk package under the MIT License", "Developer Center, integration guides and resolver examples", "Forward and reverse resolution infrastructure"],
     upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model"]
+  },
+  {
+    number: "07", status: "upcoming", title: "Native marketplace rollout",
+    summary: "Establish real on-chain demand and secondary-market activity before introducing a token.",
+    completed: ["Escrowless fixed-price sale architecture", "Escrow-backed offer design", "On-chain 5% SolHandle protocol royalty model"],
+    upcoming: ["Launch Buy Now, listing and offer flows", "Synchronize ownership and market activity from chain state", "Measure listings, sales volume, active traders and protocol royalty revenue"]
+  },
+  {
+    number: "08", status: "upcoming", title: "Token utility & community ownership",
+    summary: "A token will only be considered after the marketplace proves demand and useful benefits can be available from day one.",
+    completed: ["Marketplace-first launch principle", "Utility and governance direction defined", "Handle ownership positioned as the foundation of token access"],
+    upcoming: ["Design utility using measured marketplace and community activity", "Define sustainable token economics, governance and reward rules", "Select a professional launch route only when live utility and security are ready"]
   }
 ];
