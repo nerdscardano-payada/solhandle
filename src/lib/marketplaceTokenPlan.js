@@ -23,7 +23,7 @@ export const marketplaceTokenPlan = {
   utility: {
     principles: [
       "Burn $HANDLE for marketplace visibility, boosts or consumable upgrades",
-      "Lock $HANDLE for durable access, referral or marketplace benefits",
+      "Lock $HANDLE for durable access, referral benefits and reduced protocol royalties for eligible holders",
       "Keep handle resolution completely independent from $HANDLE",
       "Avoid APY-led speculative staking",
       "Do not hardcode token-based fee or royalty tiers before marketplace liquidity supports them"

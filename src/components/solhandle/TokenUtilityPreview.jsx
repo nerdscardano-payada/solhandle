@@ -3,7 +3,7 @@ import { Flame, LockKeyhole, ShieldCheck, Vote, Users, BadgePercent } from "luci
 const utility = [
   { icon: Flame, title: "Burn to boost", text: "Spend and permanently burn $HANDLE for featured listings, stronger marketplace visibility and consumable profile upgrades." },
   { icon: LockKeyhole, title: "Lock to unlock", text: "Lock $HANDLE instead of chasing APY to unlock durable access levels and future marketplace or referral advantages." },
-  { icon: BadgePercent, title: "Earned benefits", text: "Marketplace and referral multipliers can be introduced progressively, based on real liquidity and protocol activity—not speculation." },
+  { icon: BadgePercent, title: "Lower protocol royalties", text: "Eligible $HANDLE holders who lock tokens can unlock reduced protocol royalties on secondary marketplace activity, phased in as liquidity grows." },
   { icon: Vote, title: "Community governance", text: "Give committed participants a voice in ecosystem priorities, integrations, grants and future utility proposals." },
   { icon: Users, title: "Community access", text: "Unlock holder experiences, private community spaces, launch participation and ecosystem recognition." },
   { icon: ShieldCheck, title: "Identity stays open", text: "Claiming, owning and resolving a SolHandle remains independent from $HANDLE. The token enhances the economy, never the identity layer." }
