@@ -38,6 +38,8 @@ import PremiumDirectory from '@/pages/PremiumDirectory';
 import Market from '@/pages/Market';
 import DiscordVerify from '@/pages/DiscordVerify';
 import UpcomingProjects from '@/pages/UpcomingProjects';
+import MarketplacePreview from '@/pages/MarketplacePreview';
+import TokenLaunchPreview from '@/pages/TokenLaunchPreview';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -73,6 +75,8 @@ const AuthenticatedApp = () => {
         <Route path="/developers" element={<Developers />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
+        <Route path="/upcoming/marketplace" element={<MarketplacePreview />} />
+        <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
         <Route path="/earn" element={<Earn />} />
         <Route path="/referral-terms" element={<ReferralTerms />} />

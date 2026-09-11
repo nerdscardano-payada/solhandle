@@ -3,12 +3,12 @@ import UpcomingProjectCard from "@/components/solhandle/UpcomingProjectCard";
 
 const projects = [
   {
-    phase: "Phase 07", title: "Native Marketplace V1", status: "Up next", accent: "cyan",
+    phase: "Phase 07", title: "Native Marketplace V1", status: "Up next", accent: "cyan", path: "/upcoming/marketplace",
     summary: "Create an on-chain economy for SolHandle identities before introducing the ecosystem token.",
     items: ["Fixed-price Buy Now and escrow-backed offers", "Wallet-signed, non-custodial settlement", "0% marketplace fee and 5% SolHandle protocol royalty", "Measure listings, volume, traders and royalty revenue"]
   },
   {
-    phase: "Phase 08", title: "$HANDLE via Meteora DBC", status: "After marketplace", accent: "violet",
+    phase: "Phase 08", title: "$HANDLE via Meteora DBC", status: "After marketplace", accent: "violet", path: "/upcoming/token-launch",
     summary: "Launch useful community ownership through a branded SolHandle experience powered by a direct Meteora Dynamic Bonding Curve.",
     items: ["Burn-to-boost and lock-to-benefit utility", "Handle resolution remains fully token-independent", "Bonding curve graduates liquidity into a Meteora DAMM pool", "Tokenomics, vesting, security and legal/MiCA review before launch"]
   }
