@@ -43,8 +43,8 @@ export const roadmapMilestones = [
   },
   {
     number: "08", status: "upcoming", title: "Token utility & community ownership",
-    summary: "A token will only be considered after the marketplace proves demand and useful benefits can be available from day one.",
-    completed: ["Marketplace-first launch principle", "Utility and governance direction defined", "Handle ownership positioned as the foundation of token access"],
-    upcoming: ["Design utility using measured marketplace and community activity", "Define sustainable token economics, governance and reward rules", "Select a professional launch route only when live utility and security are ready"]
+    summary: "After the marketplace proves demand, $HANDLE will launch through a direct Meteora DBC configuration with useful benefits available from day one.",
+    completed: ["Marketplace-first launch principle", "Burn-to-boost and lock-to-benefit utility direction", "Direct Meteora DBC selected with a branded SolHandle launch experience"],
+    upcoming: ["Design tokenomics from measured marketplace and community activity", "Complete security, vesting and legal/MiCA review", "Launch the bonding curve on SolHandle and graduate liquidity into a Meteora DAMM pool"]
   }
 ];
