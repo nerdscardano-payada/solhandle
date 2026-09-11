@@ -11,8 +11,8 @@ export default function TokenLaunchPreview() {
         <div className="mt-8 grid grid-cols-3 gap-3"><div className="card-glow"><p className="text-xs text-slate-500">Price</p><b>0.0042 SOL</b></div><div className="card-glow"><p className="text-xs text-slate-500">Raised</p><b>256 SOL</b></div><div className="card-glow"><p className="text-xs text-slate-500">Stage</p><b>Bonding</b></div></div>
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5"><p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Launch sequence</p><div className="mt-3 flex flex-wrap items-center gap-2 text-sm"><span className="text-violet-200">DBC launch</span><span className="text-slate-600">→</span><span className="text-slate-300">Price discovery</span><span className="text-slate-600">→</span><span className="text-cyan-200">Meteora DAMM liquidity</span></div></div>
       </div><TokenTradeDemo /></div>
-      <div className="mt-12"><h2 className="mb-5 text-2xl font-semibold">Utility from day one</h2><TokenUtilityPreview /></div>
-      <p className="mt-8 text-sm text-slate-500">Final supply, curve parameters, allocations and dates remain subject to tokenomics, security and legal/MiCA review.</p>
+      <div className="mt-12"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">Designed for participation, not passive yield</p><h2 className="mb-5 mt-2 text-2xl font-semibold">Utility from day one</h2><TokenUtilityPreview /></div>
+      <p className="mt-8 text-sm leading-relaxed text-slate-500">Benefits will be phased in from measured marketplace activity and sustainable liquidity. No token-based fee or royalty tiers are fixed yet; final supply, curve parameters, allocations and dates remain subject to tokenomics, security and legal/MiCA review.</p>
     </div>
   </section></main>;
 }
