@@ -24,10 +24,10 @@ export const roadmapMilestones = [
     next: "Keep chain state authoritative while monitoring index and RPC reliability."
   },
   {
-    number: "05", status: "current", title: "Security review, audit & launch",
-    summary: "Launch controls are active while the final production-readiness work is completed.",
-    completed: ["Global public-mint time lock", "Server-side transaction and official-price validation", "Admin, financial and protocol monitoring tools"],
-    upcoming: ["Complete independent audit readiness and final security review", "Repair remaining legacy metadata where required", "Run final Mainnet launch checks and open public minting"]
+    number: "05", status: "completed", title: "Production security & Mainnet launch",
+    summary: "SolHandle launched on Solana Mainnet with its public minting and production safeguards active.",
+    completed: ["Public minting opened on Solana Mainnet", "Server-side transaction and official-price validation", "Admin, financial and protocol monitoring tools"],
+    next: "Continue security monitoring, improve RPC resilience and repair legacy metadata where required."
   },
   {
     number: "06", status: "upcoming", title: "Partners, SDK & developer ecosystem",
