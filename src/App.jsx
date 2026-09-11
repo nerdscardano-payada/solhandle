@@ -37,6 +37,7 @@ import About from '@/pages/About';
 import PremiumDirectory from '@/pages/PremiumDirectory';
 import Market from '@/pages/Market';
 import DiscordVerify from '@/pages/DiscordVerify';
+import UpcomingProjects from '@/pages/UpcomingProjects';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
         <Route path="/roadmap" element={<Roadmap />} />
+        <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
         <Route path="/earn" element={<Earn />} />
         <Route path="/referral-terms" element={<ReferralTerms />} />
