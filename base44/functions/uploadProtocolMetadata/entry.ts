@@ -78,7 +78,7 @@ export default async function(req: Request): Promise<Response> {
       symbol: 'SOLHANDLE',
       description: `The official SolHandle identity NFT for @${handle} on Solana Mainnet-beta.`,
       image: imageUrl,
-      external_url: `https://sol-handle-core.base44.app/${handle}`,
+      external_url: `https://solhandle.io/${handle}`,
       attributes: [
         { trait_type: 'Handle', value: `@${handle}` },
         { trait_type: 'Length', value: String(length) },
