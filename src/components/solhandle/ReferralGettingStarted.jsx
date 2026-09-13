@@ -3,7 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 
 const steps = [
   ["Mint your own SolHandle", "Search for an available handle and complete a confirmed mainnet mint. You need at least one SolHandle before you can join."],
-  ["Connect the owner wallet", "Return to the Earn page and connect the same Solana wallet that owns your minted handle."],
+  ["Connect the owner wallet", "Go to the Earn page or My Handles and connect the same Solana wallet that owns your minted handle."],
   ["Choose your public identity", "Select one of your owned handles. SolHandle verifies its current NFT ownership on-chain."],
   ["Generate your referral link", "After verification, your personal referral link appears immediately in your Ambassador Dashboard."],
   ["Share and refer", "Share the link. Visitors can browse freely and must complete an eligible mint within the 30-day attribution window."],
