@@ -23,7 +23,8 @@ export default async function(req: Request): Promise<Response> {
     let profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1); let profile = profiles[0] || null;
     if (action === "activate") {
       if (!settings?.referral_enabled) return Response.json({ error: "Referral program is disabled." }, { status: 409 }); const handle = String(body.handle || "").replace(/^@/, "").toLowerCase();
-      if (handle) { const rows = await base44.asServiceRole.entities.HandleIndex.filter({ handle, status: "active" }, "-minted_at", 1); if (!rows[0]?.asset_address) return Response.json({ error: "Active handle not found." }, { status: 404 }); const owner = await getAssetOwner(secrets.get("SOLANA_RPC_URL"), rows[0].asset_address, rows[0].current_owner_cached); if (owner !== wallet) return Response.json({ error: "Wallet does not own this handle." }, { status: 403 }); }
+      if (!handle) return Response.json({ error: "Mint and select a SolHandle before activating your referral link." }, { status: 400 });
+      const rows = await base44.asServiceRole.entities.HandleIndex.filter({ handle, status: "active" }, "-minted_at", 1); if (!rows[0]?.asset_address) return Response.json({ error: "Active handle not found." }, { status: 404 }); const owner = await getAssetOwner(secrets.get("SOLANA_RPC_URL"), rows[0].asset_address, rows[0].current_owner_cached); if (owner !== wallet) return Response.json({ error: "Wallet does not own this handle." }, { status: 403 });
       profile = await ensurePromoterProfile(base44, wallet, handle);
     }
     if (action === "share" && profile) { await base44.asServiceRole.entities.ShareEvent.create({ referral_profile_id: profile.id, handle: String(body.handle || profile.display_handle).replace(/^@/, "").toLowerCase(), platform: body.platform === "X" ? "X" : "COPY", shared_at: new Date().toISOString() }); return Response.json({ tracked: true }); }
