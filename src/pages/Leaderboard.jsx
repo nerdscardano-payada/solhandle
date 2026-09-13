@@ -1,0 +1,6 @@
+import Header from "@/components/solhandle/Header";
+import ReferralLeaderboard from "@/components/solhandle/ReferralLeaderboard";
+
+export default function Leaderboard() {
+  return <main className="min-h-screen bg-[#050811] text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="px-5 py-14 md:px-9"><div className="mx-auto max-w-4xl"><p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Founding Ambassador Program</p><h1 className="mt-3 text-4xl font-semibold sm:text-5xl">Ambassador Leaderboard</h1><p className="mt-4 max-w-2xl text-slate-400">Bekijk welke ambassadors de meeste bevestigde SolHandle-mints en rewards hebben gegenereerd.</p><div className="mt-10"><ReferralLeaderboard/></div></div></section></div></main>;
+}

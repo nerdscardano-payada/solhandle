@@ -31,6 +31,7 @@ import AdminReferrals from '@/pages/AdminReferrals';
 import Roadmap from '@/pages/Roadmap';
 import ProtocolPaper from '@/pages/ProtocolPaper';
 import Earn from '@/pages/Earn';
+import Leaderboard from '@/pages/Leaderboard';
 import ReferralTerms from '@/pages/ReferralTerms';
 import AdminAnalytics from '@/pages/AdminAnalytics';
 import About from '@/pages/About';
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
         <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
         <Route path="/earn" element={<Earn />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/referral-terms" element={<ReferralTerms />} />
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
