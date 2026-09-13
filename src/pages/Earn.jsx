@@ -7,7 +7,7 @@ import ReferralRewardExamples from "@/components/solhandle/ReferralRewardExample
 import ReferralActivity from "@/components/solhandle/ReferralActivity";
 import { base44 } from "@/api/base44Client";
 
-const campaignStats = [["20%", "Commission per confirmed mint"], ["0.10 SOL", "Minimum payout"], ["24 hours", "Verification period"]];
+const campaignStats = [["20%", "Commission per confirmed mint"], ["0.15 SOL", "Minimum payout"], ["24 hours", "Verification period"]];
 
 export default function Earn() {
   const [wallet, setWallet] = useState(() => localStorage.getItem("solhandle_wallet") || ""); const [handles, setHandles] = useState([]);
