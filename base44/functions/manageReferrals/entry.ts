@@ -18,11 +18,11 @@ export default async function(req: Request): Promise<Response> {
     if (action === "create_payout") {
       const settings = await getReferralSettings(base44); if (settings?.payouts_paused || !settings?.payout_wallet_address) return Response.json({ error: "Configure and unpause the manual payout wallet first." }, { status: 409 });
       const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ id: String(body.profile_id) }, "-created_date", 1); const profile = profiles[0]; if (!profile) return Response.json({ error: "Profile not found." }, { status: 404 });
-      const ledgers = await base44.asServiceRole.entities.ReferralLedger.filter({ referral_profile_id: profile.id, status: "AVAILABLE", payout_id: "" }, "created_date", 500); const amount = ledgers.reduce((s, l) => s + l.amount_lamports, 0);
-      if (amount < Number(settings.minimum_payout_sol) * 1e9) return Response.json({ error: "Available balance is below the payout minimum." }, { status: 409 });
-      const payout = await base44.asServiceRole.entities.ReferralPayout.create({ referral_profile_id: profile.id, wallet_address: profile.wallet_address, amount_lamports: amount, transaction_signature: "", status: "CREATED", initiated_at: new Date().toISOString(), confirmed_at: "", failure_reason: "" });
-      await base44.asServiceRole.entities.ReferralLedger.bulkUpdate(ledgers.map((l) => ({ id: l.id, payout_id: payout.id })));
-      return Response.json({ payout, instruction: { from: settings.payout_wallet_address, to: profile.wallet_address, amountLamports: amount } });
+      const requested = await base44.asServiceRole.entities.ReferralPayout.filter({ referral_profile_id: profile.id, status: "REQUESTED" }, "-initiated_at", 1);
+      let payout = requested[0]; let ledgers;
+      if (payout) { ledgers = await base44.asServiceRole.entities.ReferralLedger.filter({ referral_profile_id: profile.id, status: "AVAILABLE", payout_id: payout.id }, "created_date", 500); payout = await base44.asServiceRole.entities.ReferralPayout.update(payout.id, { status: "CREATED" }); }
+      else { ledgers = await base44.asServiceRole.entities.ReferralLedger.filter({ referral_profile_id: profile.id, status: "AVAILABLE", payout_id: "" }, "created_date", 500); const amount = ledgers.reduce((s, l) => s + l.amount_lamports, 0); if (amount < Number(settings.minimum_payout_sol) * 1e9) return Response.json({ error: "Available balance is below the payout minimum." }, { status: 409 }); payout = await base44.asServiceRole.entities.ReferralPayout.create({ referral_profile_id: profile.id, wallet_address: profile.wallet_address, amount_lamports: amount, transaction_signature: "", status: "CREATED", initiated_at: new Date().toISOString(), confirmed_at: "", failure_reason: "" }); await base44.asServiceRole.entities.ReferralLedger.bulkUpdate(ledgers.map((l) => ({ id: l.id, payout_id: payout.id }))); }
+      return Response.json({ payout, instruction: { from: settings.payout_wallet_address, to: profile.wallet_address, amountLamports: payout.amount_lamports } });
     }
     if (action === "confirm_payout") {
       const signature = String(body.signature || ""); if (!/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature)) return Response.json({ error: "Invalid signature." }, { status: 400 }); const settings = await getReferralSettings(base44);

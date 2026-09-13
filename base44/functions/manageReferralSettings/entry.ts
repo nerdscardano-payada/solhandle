@@ -1,6 +1,6 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.44";
 
-const numericFields = ["cookie_duration_days", "minimum_payout_sol", "payout_hold_hours", "tier_1_percentage", "tier_2_percentage", "tier_3_percentage", "tier_4_percentage", "tier_2_start", "tier_3_start", "tier_4_start"];
+const numericFields = ["cookie_duration_days", "minimum_payout_sol", "payout_hold_hours", "commission_percentage", "tier_1_percentage", "tier_2_percentage", "tier_3_percentage", "tier_4_percentage", "tier_2_start", "tier_3_start", "tier_4_start"];
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -15,6 +15,10 @@ export default async function(req: Request): Promise<Response> {
     if (body.action !== "update") return Response.json({ error: "Unsupported action." }, { status: 400 });
     const update = {
       referral_enabled: Boolean(body.settings?.referral_enabled),
+      campaign_enabled: Boolean(body.settings?.campaign_enabled),
+      campaign_name: String(body.settings?.campaign_name || "Founding Ambassador Program").trim(),
+      campaign_start_date: String(body.settings?.campaign_start_date || ""),
+      campaign_end_date: String(body.settings?.campaign_end_date || ""),
       premium_referral_eligible: Boolean(body.settings?.premium_referral_eligible),
       auto_payout_enabled: false,
       payouts_paused: Boolean(body.settings?.payouts_paused),
@@ -25,7 +29,9 @@ export default async function(req: Request): Promise<Response> {
       if (!Number.isFinite(value) || value < 0) return Response.json({ error: `Invalid ${field}.` }, { status: 400 });
       update[field] = value;
     }
-    if (update.cookie_duration_days < 1 || update.cookie_duration_days > 365 || update.tier_1_percentage > 100 || update.tier_2_percentage > 100 || update.tier_3_percentage > 100 || update.tier_4_percentage > 100) return Response.json({ error: "Referral settings are outside allowed limits." }, { status: 400 });
+    if (update.cookie_duration_days < 1 || update.cookie_duration_days > 365 || update.commission_percentage > 100 || update.tier_1_percentage > 100 || update.tier_2_percentage > 100 || update.tier_3_percentage > 100 || update.tier_4_percentage > 100) return Response.json({ error: "Referral settings are outside allowed limits." }, { status: 400 });
+    if (update.campaign_start_date && !Number.isFinite(Date.parse(update.campaign_start_date))) return Response.json({ error: "Invalid campaign start date." }, { status: 400 });
+    if (update.campaign_end_date && !Number.isFinite(Date.parse(update.campaign_end_date))) return Response.json({ error: "Invalid campaign end date." }, { status: 400 });
     if (!(update.tier_2_start < update.tier_3_start && update.tier_3_start < update.tier_4_start)) return Response.json({ error: "Tier thresholds must increase." }, { status: 400 });
     if (update.payout_wallet_address && !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(update.payout_wallet_address)) return Response.json({ error: "Invalid payout wallet address." }, { status: 400 });
     const settings = await base44.asServiceRole.entities.ReferralSettings.update(rows[0].id, update);

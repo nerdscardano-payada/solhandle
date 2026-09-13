@@ -6,13 +6,33 @@
       "type": "boolean",
       "default": false
     },
+    "campaign_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "campaign_name": {
+      "type": "string",
+      "default": "Founding Ambassador Program"
+    },
+    "commission_percentage": {
+      "type": "number",
+      "default": 20
+    },
+    "campaign_start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "campaign_end_date": {
+      "type": "string",
+      "format": "date-time"
+    },
     "cookie_duration_days": {
       "type": "number",
       "default": 30
     },
     "minimum_payout_sol": {
       "type": "number",
-      "default": 0.05
+      "default": 0.1
     },
     "auto_payout_enabled": {
       "type": "boolean",

@@ -1,46 +1,37 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.46";
 import { secrets } from "base44:runtime";
-import { ensurePromoterProfile, getReferralSettings } from "../../shared/referralEngine.ts";
+import { activeCommissionPercentage, ensurePromoterProfile, getReferralSettings } from "../../shared/referralEngine.ts";
 import { getAssetOwner } from "../../shared/solanaRpc.ts";
 
 const safeWallet = (value) => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(String(value || ""));
-const publicSettings = (s) => s ? ({ enabled: s.referral_enabled, minimumPayoutSol: s.minimum_payout_sol, tiers: [{ start: 1, percentage: s.tier_1_percentage }, { start: s.tier_2_start, percentage: s.tier_2_percentage }, { start: s.tier_3_start, percentage: s.tier_3_percentage }, { start: s.tier_4_start, percentage: s.tier_4_percentage }] }) : null;
+const publicSettings = (s) => s ? ({ enabled: s.referral_enabled, campaignName: s.campaign_name || "Founding Ambassador Program", commissionPercentage: activeCommissionPercentage(s), minimumPayoutSol: s.minimum_payout_sol, holdHours: s.payout_hold_hours, cookieDays: s.cookie_duration_days, premiumEligible: Boolean(s.premium_referral_eligible) }) : null;
 
 export default async function(req: Request): Promise<Response> {
   try {
-    const base44 = createClientFromRequest(req); const body = await req.json().catch(() => ({})); const action = String(body.action || "get");
-    const settings = await getReferralSettings(base44);
-    if (action === "program_info") {
-      return Response.json({ enabled: Boolean(settings?.referral_enabled), cookieDays: settings?.cookie_duration_days, minimumPayoutSol: settings?.minimum_payout_sol, holdHours: settings?.payout_hold_hours, premiumEligible: Boolean(settings?.premium_referral_eligible), tier1: settings?.tier_1_percentage, tier2: settings?.tier_2_percentage, tier3: settings?.tier_3_percentage, tier4: settings?.tier_4_percentage, tier2Start: settings?.tier_2_start, tier3Start: settings?.tier_3_start, tier4Start: settings?.tier_4_start });
+    const base44 = createClientFromRequest(req); const body = await req.json().catch(() => ({})); const action = String(body.action || "get"); const settings = await getReferralSettings(base44);
+    if (action === "program_info") return Response.json(publicSettings(settings));
+    if (action === "leaderboard" || action === "activity") {
+      const conversions = await base44.asServiceRole.entities.ReferralConversion.list("-created_date", 500); const valid = conversions.filter((c) => !["REJECTED_SELF_REFERRAL", "BLOCKED"].includes(c.status));
+      const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ status: "ACTIVE", show_on_leaderboard: true }, "-successful_referrals", 100); const identities = new Map(profiles.map((p) => [p.id, p.display_handle]));
+      if (action === "activity") return Response.json({ items: valid.slice(0, 6).map((c) => ({ id: c.id, ambassador: identities.get(c.referral_profile_id) || "Ambassador", handle: c.minted_handle, rewardLamports: c.reward_amount_lamports, premium: c.gross_mint_amount_lamports >= 5e8 })) });
+      const cutoff = body.period === "24h" ? Date.now() - 86400000 : body.period === "7d" ? Date.now() - 604800000 : 0; const totals = new Map();
+      for (const c of valid.filter((row) => Date.parse(row.created_date) >= cutoff)) { const row = totals.get(c.referral_profile_id) || { referrals: 0, earnedLamports: 0 }; row.referrals += 1; row.earnedLamports += c.reward_amount_lamports; totals.set(c.referral_profile_id, row); }
+      return Response.json({ enabled: Boolean(settings?.referral_enabled), leaders: [...totals].map(([id, row]) => ({ handle: identities.get(id) || "Ambassador", ...row })).sort((a, b) => b.referrals - a.referrals || b.earnedLamports - a.earnedLamports).slice(0, 20) });
     }
-    if (action === "leaderboard") {
-      const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ status: "ACTIVE", show_on_leaderboard: true }, "-successful_referrals", 20);
-      return Response.json({ enabled: Boolean(settings?.referral_enabled), leaders: profiles.map((p) => ({ handle: p.display_handle, referrals: p.successful_referrals })) });
-    }
-    if (action === "badge") {
-      const display = `@${String(body.handle || "").replace(/^@/, "").toLowerCase()}`; const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ display_handle: display, status: "ACTIVE" }, "-successful_referrals", 1);
-      return Response.json({ profile: profiles[0] ? { handle: profiles[0].display_handle, referrals: profiles[0].successful_referrals } : null });
-    }
+    if (action === "badge") { const display = `@${String(body.handle || "").replace(/^@/, "").toLowerCase()}`; const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ display_handle: display, status: "ACTIVE" }, "-successful_referrals", 1); return Response.json({ profile: profiles[0] ? { handle: profiles[0].display_handle, referrals: profiles[0].successful_referrals } : null }); }
     const wallet = String(body.wallet || ""); if (!safeWallet(wallet)) return Response.json({ error: "Valid wallet required." }, { status: 400 });
     let profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1); let profile = profiles[0] || null;
     if (action === "activate") {
-      if (!settings?.referral_enabled) return Response.json({ error: "Referral program is disabled." }, { status: 409 });
-      const handle = String(body.handle || "").replace(/^@/, "").toLowerCase(); const rows = await base44.asServiceRole.entities.HandleIndex.filter({ handle, status: "active" }, "-minted_at", 1);
-      if (!rows[0]?.asset_address) return Response.json({ error: "Active handle not found." }, { status: 404 });
-      const owner = await getAssetOwner(secrets.get("SOLANA_RPC_URL"), rows[0].asset_address, rows[0].current_owner_cached);
-      if (owner !== wallet) return Response.json({ error: "Wallet does not own this handle." }, { status: 403 });
+      if (!settings?.referral_enabled) return Response.json({ error: "Referral program is disabled." }, { status: 409 }); const handle = String(body.handle || "").replace(/^@/, "").toLowerCase();
+      if (handle) { const rows = await base44.asServiceRole.entities.HandleIndex.filter({ handle, status: "active" }, "-minted_at", 1); if (!rows[0]?.asset_address) return Response.json({ error: "Active handle not found." }, { status: 404 }); const owner = await getAssetOwner(secrets.get("SOLANA_RPC_URL"), rows[0].asset_address, rows[0].current_owner_cached); if (owner !== wallet) return Response.json({ error: "Wallet does not own this handle." }, { status: 403 }); }
       profile = await ensurePromoterProfile(base44, wallet, handle);
     }
-    if (action === "share" && profile) {
-      await base44.asServiceRole.entities.ShareEvent.create({ referral_profile_id: profile.id, handle: String(body.handle || "").replace(/^@/, "").toLowerCase(), platform: body.platform === "X" ? "X" : "COPY", shared_at: new Date().toISOString() });
-      return Response.json({ tracked: true });
-    }
+    if (action === "share" && profile) { await base44.asServiceRole.entities.ShareEvent.create({ referral_profile_id: profile.id, handle: String(body.handle || profile.display_handle).replace(/^@/, "").toLowerCase(), platform: body.platform === "X" ? "X" : "COPY", shared_at: new Date().toISOString() }); return Response.json({ tracked: true }); }
     if (!profile) return Response.json({ settings: publicSettings(settings), profile: null, conversions: [], payouts: [], notifications: [] });
-    const [conversions, payouts, notifications] = await Promise.all([
-      base44.asServiceRole.entities.ReferralConversion.filter({ referral_profile_id: profile.id }, "-created_date", 100),
-      base44.asServiceRole.entities.ReferralPayout.filter({ referral_profile_id: profile.id }, "-initiated_at", 50),
-      base44.asServiceRole.entities.ReferralNotification.filter({ referral_profile_id: profile.id }, "-created_date", 20)
-    ]);
-    return Response.json({ settings: publicSettings(settings), profile, conversions: conversions.map((c) => ({ id: c.id, handle: c.minted_handle, grossLamports: c.gross_mint_amount_lamports, rewardLamports: c.reward_amount_lamports, percentage: c.reward_percentage_used, status: c.status, date: c.created_date })), payouts: payouts.map((p) => ({ amountLamports: p.amount_lamports, status: p.status, signature: p.transaction_signature, date: p.initiated_at })), notifications });
+    const [conversions, payouts, notifications, ledgers, clicks] = await Promise.all([base44.asServiceRole.entities.ReferralConversion.filter({ referral_profile_id: profile.id }, "-created_date", 100), base44.asServiceRole.entities.ReferralPayout.filter({ referral_profile_id: profile.id }, "-initiated_at", 50), base44.asServiceRole.entities.ReferralNotification.filter({ referral_profile_id: profile.id }, "-created_date", 20), base44.asServiceRole.entities.ReferralLedger.filter({ referral_profile_id: profile.id }, "-created_date", 500), base44.asServiceRole.entities.ReferralClick.filter({ referral_profile_id: profile.id }, "-clicked_at", 500)]);
+    const active = ledgers.filter((l) => l.status !== "REVERSED"); const pending = active.filter((l) => l.status === "PENDING").reduce((s, l) => s + l.amount_lamports, 0); const available = active.filter((l) => l.status === "AVAILABLE" && !l.payout_id).reduce((s, l) => s + l.amount_lamports, 0); const paid = active.filter((l) => l.status === "PAID").reduce((s, l) => s + l.amount_lamports, 0); const total = active.reduce((s, l) => s + l.amount_lamports, 0);
+    if (action === "request_payout") { if (settings?.payouts_paused) return Response.json({ error: "Payout requests are temporarily paused." }, { status: 409 }); if (available < Number(settings.minimum_payout_sol) * 1e9) return Response.json({ error: "Available balance is below the payout minimum." }, { status: 409 }); const payable = active.filter((l) => l.status === "AVAILABLE" && !l.payout_id); const payout = await base44.asServiceRole.entities.ReferralPayout.create({ referral_profile_id: profile.id, wallet_address: profile.wallet_address, amount_lamports: available, transaction_signature: "", status: "REQUESTED", initiated_at: new Date().toISOString(), confirmed_at: "", failure_reason: "" }); await base44.asServiceRole.entities.ReferralLedger.bulkUpdate(payable.map((l) => ({ id: l.id, payout_id: payout.id }))); return Response.json({ requested: true, amountSol: available / 1e9 }); }
+    const successful = conversions.filter((c) => !["REJECTED_SELF_REFERRAL", "BLOCKED"].includes(c.status)).length; const enriched = { ...profile, total_earnings_lamports: total, pending_earnings_lamports: pending, available_earnings_lamports: available, paid_earnings_lamports: paid, conversion_rate: clicks.length ? successful / clicks.length * 100 : 0 };
+    return Response.json({ settings: publicSettings(settings), profile: enriched, conversions: conversions.map((c) => ({ id: c.id, handle: c.minted_handle, grossLamports: c.gross_mint_amount_lamports, rewardLamports: c.reward_amount_lamports, percentage: c.reward_percentage_used, status: c.status, date: c.created_date })), payouts: payouts.map((p) => ({ amountLamports: p.amount_lamports, status: p.status, signature: p.transaction_signature, date: p.initiated_at })), notifications });
   } catch (error) { return Response.json({ error: error.message || "Unable to load Share & Earn." }, { status: 500 }); }
 }

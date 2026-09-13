@@ -7,22 +7,24 @@ export async function getReferralSettings(base44) {
   return rows[0] || null;
 }
 
-function tierPercentage(settings, ordinal) {
-  if (ordinal >= settings.tier_4_start) return settings.tier_4_percentage;
-  if (ordinal >= settings.tier_3_start) return settings.tier_3_percentage;
-  if (ordinal >= settings.tier_2_start) return settings.tier_2_percentage;
-  return settings.tier_1_percentage;
+export function activeCommissionPercentage(settings, at = new Date()) {
+  const starts = settings?.campaign_start_date ? Date.parse(settings.campaign_start_date) : 0;
+  const ends = settings?.campaign_end_date ? Date.parse(settings.campaign_end_date) : Infinity;
+  const active = settings?.campaign_enabled !== false && at.getTime() >= starts && at.getTime() <= ends;
+  return active ? Number(settings?.commission_percentage ?? 20) : Number(settings?.tier_1_percentage ?? 10);
 }
 
-export async function ensurePromoterProfile(base44, wallet, handle) {
+export async function ensurePromoterProfile(base44, wallet, handle = "") {
   const existingWallet = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1);
   if (existingWallet[0]) return existingWallet[0];
-  const cleanHandle = String(handle || "").toLowerCase();
-  const preferred = RESERVED_CODES.has(cleanHandle) ? "" : cleanHandle;
+  const cleanHandle = String(handle || "").replace(/^@/, "").toLowerCase();
+  const preferred = cleanHandle && !RESERVED_CODES.has(cleanHandle) ? cleanHandle : "";
   const existingCode = preferred ? await base44.asServiceRole.entities.ReferralProfile.filter({ referral_code: preferred }, "-created_date", 1) : [];
-  const referralCode = existingCode[0] ? `${cleanHandle}-${wallet.slice(0, 6).toLowerCase()}` : preferred || `ref-${wallet.slice(0, 10).toLowerCase()}`;
+  const walletCode = `${wallet.slice(0, 6)}-${wallet.slice(-4)}`.toLowerCase();
+  const referralCode = preferred && !existingCode[0] ? preferred : walletCode;
+  const display = preferred ? `@${preferred}` : `${wallet.slice(0, 4)}…${wallet.slice(-4)}`;
   return await base44.asServiceRole.entities.ReferralProfile.create({
-    wallet_address: wallet, referral_code: referralCode, display_handle: `@${cleanHandle}`, status: "ACTIVE",
+    wallet_address: wallet, referral_code: referralCode, display_handle: display, status: "ACTIVE",
     show_on_leaderboard: true, successful_referrals: 0, total_earnings_lamports: 0,
     pending_earnings_lamports: 0, paid_earnings_lamports: 0
   });
@@ -84,7 +86,6 @@ export async function reconcileReferralProfile(base44, profile) {
 export async function processConfirmedReferral(base44, mint) {
   const settings = await getReferralSettings(base44);
   if (!settings?.referral_enabled) return { credited: false, reason: "disabled" };
-  await ensurePromoterProfile(base44, mint.buyerWallet, mint.handle);
   const intents = await base44.asServiceRole.entities.MintIntent.filter({ transaction_signature: mint.signature }, "-created_date", 1);
   const intent = intents[0];
   if (!intent?.referral_profile_id) return { credited: false, reason: "no_referral" };
@@ -98,8 +99,8 @@ export async function processConfirmedReferral(base44, mint) {
   const profile = profiles[0];
   if (!profile || profile.status !== "ACTIVE") { await base44.asServiceRole.entities.MintIntent.update(intent.id, { status: "PROCESSED", processing_token: "" }); return { credited: false, reason: "inactive_profile" }; }
   const eligible = Math.min(mint.netRevenueLamports, intent.base_price_lamports + (settings.premium_referral_eligible ? intent.premium_surcharge_lamports : 0));
-  const percentage = tierPercentage(settings, profile.successful_referrals + 1); const selfReferral = profile.wallet_address === mint.buyerWallet;
-  const conversion = await base44.asServiceRole.entities.ReferralConversion.create({ mint_intent_id: intent.id, mint_transaction_signature: mint.signature, minted_handle: mint.handle, buyer_wallet: mint.buyerWallet, referral_profile_id: profile.id, gross_mint_amount_lamports: mint.grossAmountLamports, eligible_referral_revenue_lamports: eligible, reward_percentage_used: percentage, reward_amount_lamports: selfReferral ? 0 : Math.floor(eligible * percentage / 100), status: selfReferral ? "REJECTED_SELF_REFERRAL" : "APPROVED" });
+  const percentage = activeCommissionPercentage(settings); const selfReferral = profile.wallet_address === mint.buyerWallet;
+  const conversion = await base44.asServiceRole.entities.ReferralConversion.create({ mint_intent_id: intent.id, mint_transaction_signature: mint.signature, minted_handle: mint.handle, buyer_wallet: mint.buyerWallet, referral_profile_id: profile.id, gross_mint_amount_lamports: mint.grossAmountLamports, eligible_referral_revenue_lamports: eligible, reward_percentage_used: percentage, reward_amount_lamports: selfReferral ? 0 : Math.floor(eligible * percentage / 100), status: selfReferral ? "REJECTED_SELF_REFERRAL" : "PENDING" });
   if (selfReferral) {
     await base44.asServiceRole.entities.FraudFlag.create({ referral_profile_id: profile.id, conversion_id: conversion.id, reason: "SELF_REFERRAL", severity: "HIGH", status: "BLOCKED" });
   } else {

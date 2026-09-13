@@ -17,6 +17,7 @@
     "status": {
       "type": "string",
       "enum": [
+        "REQUESTED",
         "CREATED",
         "SUBMITTED",
         "CONFIRMED",

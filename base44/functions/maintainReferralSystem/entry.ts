@@ -9,7 +9,7 @@ export default async function(req: Request): Promise<Response> {
       base44.asServiceRole.entities.MintIntent.filter({ status: "PAYMENT_PENDING" }, "-expires_at", 500),
       base44.asServiceRole.entities.MintIntent.filter({ status: "TRANSACTION_SUBMITTED" }, "-expires_at", 500),
       base44.asServiceRole.entities.MintIntent.filter({ status: "PROCESSING" }, "-processing_started_at", 500),
-      base44.asServiceRole.entities.ReferralConversion.filter({ status: "APPROVED" }, "created_date", 500)
+      base44.asServiceRole.entities.ReferralConversion.filter({ status: { $in: ["PENDING", "APPROVED"] } }, "created_date", 500)
     ]);
     const expired = [...created, ...pending, ...submitted].filter((i) => Date.parse(i.expires_at) <= now);
     if (expired.length) await base44.asServiceRole.entities.MintIntent.bulkUpdate(expired.map((i) => ({ id: i.id, status: "EXPIRED" })));
