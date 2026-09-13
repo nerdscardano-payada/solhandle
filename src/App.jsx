@@ -40,6 +40,7 @@ import DiscordVerify from '@/pages/DiscordVerify';
 import UpcomingProjects from '@/pages/UpcomingProjects';
 import MarketplacePreview from '@/pages/MarketplacePreview';
 import TokenLaunchPreview from '@/pages/TokenLaunchPreview';
+import Promo from '@/pages/Promo';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
         <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/upcoming/marketplace" element={<MarketplacePreview />} />
         <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
+        <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
         <Route path="/earn" element={<Earn />} />
         <Route path="/referral-terms" element={<ReferralTerms />} />
