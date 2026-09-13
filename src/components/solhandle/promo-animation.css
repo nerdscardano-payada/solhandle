@@ -10,16 +10,16 @@
 .promo-scene { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; padding: 6%; }
 .promo-logo { width: min(38vw, 470px); aspect-ratio: 1; filter: drop-shadow(0 0 35px rgba(34,211,238,.22)); }
 .promo-intro { animation: promoIntro 20s ease both; }
-.promo-search { justify-content: space-between; gap: 6%; animation: promoSearch 20s ease both; }
+.promo-search { justify-content: center; animation: promoSearch 20s ease both; }
 .promo-copy { width: 42%; }
 .promo-copy span, .promo-own span { color: #8ff7e8; font-size: clamp(.55rem, 1vw, .9rem); font-weight: 700; letter-spacing: .18em; }
 .promo-copy h1, .promo-own h2 { margin-top: 4%; font-size: clamp(2rem, 5.3vw, 5.2rem); font-weight: 700; line-height: .95; letter-spacing: -.045em; }
 .promo-copy b, .promo-own b { color: transparent; background: linear-gradient(90deg, #66e6c3, #55d8ee, #a875ff); background-clip: text; }
 .promo-copy p, .promo-own p, .promo-outro p { margin-top: 6%; color: #a7b2c5; font-size: clamp(.75rem, 1.5vw, 1.35rem); }
-.promo-search-card { width: 51%; height: 84%; border: 1px solid rgba(103,232,249,.38); border-radius: 2vw; overflow: hidden; background: #050916; box-shadow: 0 0 55px rgba(34,211,238,.14); animation: promoFloat 4s ease-in-out infinite; }
-.promo-own { gap: 8%; animation: promoOwn 20s ease both; }
-.promo-own > div:last-child { width: 42%; }
-.promo-orbit { width: 38%; aspect-ratio: 1; border: 1px solid rgba(103,232,249,.3); border-radius: 2.4vw; padding: 1%; background: rgba(2,6,18,.72); box-shadow: 0 0 70px rgba(139,92,246,.18); }
+.promo-home-card { width: 92%; height: 88%; border: 1px solid rgba(103,232,249,.38); border-radius: 1.2vw; overflow: hidden; background: #050916; box-shadow: 0 0 70px rgba(34,211,238,.14); animation: promoFloat 4s ease-in-out infinite; }
+.promo-own { gap: 5%; animation: promoOwn 20s ease both; }
+.promo-own > div:last-child { width: 30%; }
+.promo-gallery-card { width: 63%; aspect-ratio: 16 / 10; border: 1px solid rgba(103,232,249,.3); border-radius: 1.2vw; overflow: hidden; background: rgba(2,6,18,.72); box-shadow: 0 0 70px rgba(139,92,246,.18); }
 .promo-outro { flex-direction: column; animation: promoOutro 20s ease both; }
 .promo-outro .promo-logo { width: min(34vw, 420px); }
 .promo-outro p { margin-top: -1%; color: #cbd5e1; letter-spacing: .08em; }
@@ -30,4 +30,4 @@
 @keyframes promoOwn { 0%,54% { opacity:0; transform:scale(.96) } 61%,79% { opacity:1; transform:scale(1) } 85%,100% { opacity:0; transform:scale(1.03) } }
 @keyframes promoOutro { 0%,79% { opacity:0; transform:scale(.92) } 86%,100% { opacity:1; transform:scale(1) } }
 @keyframes promoFloat { 50% { transform:translateY(-1.5%) } }
-@media (max-width: 640px) { .promo-stage { aspect-ratio: 9 / 16; } .promo-search, .promo-own { flex-direction:column; justify-content:center; } .promo-copy, .promo-own > div:last-child { width:90%; text-align:center; } .promo-search-card { width:92%; height:49%; border-radius:1.25rem; } .promo-orbit { width:72%; border-radius:1.5rem; } .promo-logo { width:78vw; } }
+@media (max-width: 640px) { .promo-stage { aspect-ratio: 9 / 16; } .promo-search, .promo-own { flex-direction:column; justify-content:center; } .promo-copy, .promo-own > div:last-child { width:90%; text-align:center; } .promo-home-card { width:96%; height:38%; border-radius:1rem; } .promo-gallery-card { width:96%; border-radius:1rem; } .promo-logo { width:78vw; } }
