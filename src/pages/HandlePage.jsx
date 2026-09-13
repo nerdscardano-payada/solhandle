@@ -6,7 +6,6 @@ import HandleCard from "@/components/solhandle/HandleCard";
 import SimilarHandles from "@/components/solhandle/SimilarHandles";
 import HandleShareActions from "@/components/solhandle/HandleShareActions";
 import AmbassadorBadge from "@/components/solhandle/AmbassadorBadge";
-import HandleMarketplacePanel from "@/components/solhandle/HandleMarketplacePanel";
 import { setHandleShareMetadata } from "@/lib/shareSolHandle";
 import { normalizeHandle, validateHandle, lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
@@ -86,7 +85,6 @@ export default function HandlePage() {
             <Detail label="Handle length" value={`${handle.length} characters`} />
           </div>
 
-          {!available && data?.assetAddress && <HandleMarketplacePanel handle={handle} asset={data.assetAddress} owner={owner} />}
           {available && <Link to={`/?claim=${handle}`} className="mt-8 inline-flex rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-5 py-3 font-semibold text-slate-950">Mint @{handle}</Link>}
           <SimilarHandles handle={handle}/>
           <Link to="/" className="mt-8 inline-block text-cyan-200">Search another handle</Link>
