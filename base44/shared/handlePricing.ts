@@ -1,4 +1,4 @@
-export const PREMIUM_SURCHARGE_LAMPORTS = 1_000_000_000;
+export const PREMIUM_SURCHARGE_LAMPORTS = 100_000_000;
 
 export function normalizeHandle(value: unknown) {
   return String(value || '').trim().replace(/^@+/, '').toLowerCase();

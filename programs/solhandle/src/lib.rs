@@ -8,8 +8,8 @@ use mpl_core::{
 
 const REWARDS_BPS: u64 = 500;
 const BPS_DENOMINATOR: u64 = 10_000;
-const NORMAL_PREMIUM_SURCHARGE_LAMPORTS: u64 = 1_000_000_000;
-const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [3_000_000_000, 2_000_000_000, 1_000_000_000, 500_000_000, 100_000_000];
+const NORMAL_PREMIUM_SURCHARGE_LAMPORTS: u64 = 100_000_000;
+const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [300_000_000, 200_000_000, 100_000_000, 50_000_000, 10_000_000];
 const MAX_HANDLE_LENGTH: usize = 20;
 const MAX_URI_LENGTH: usize = 200;
 const MAX_RESERVED_FOR_LENGTH: usize = 80;
@@ -35,6 +35,12 @@ pub mod solhandle {
     }
 
     pub fn set_paused(ctx: Context<UpdateConfig>, paused: bool) -> Result<()> { ctx.accounts.config.paused = paused; Ok(()) }
+
+    pub fn set_prices(ctx: Context<UpdateConfig>, prices_lamports: [u64; 5]) -> Result<()> {
+        require!(prices_lamports.iter().all(|price| *price > 0), SolHandleError::InvalidPrice);
+        ctx.accounts.config.prices_lamports = prices_lamports;
+        Ok(())
+    }
 
     pub fn set_rush_config(ctx: Context<SetRushConfig>, args: RushConfigArgs) -> Result<()> {
         require!(args.end_at > args.start_at, SolHandleError::InvalidRushWindow);

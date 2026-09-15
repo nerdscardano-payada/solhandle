@@ -106,4 +106,22 @@ node scripts/set-rush-mainnet.mjs
 node scripts/set-mainnet-protocol-status.mjs active
 ```
 
-The on-chain time window automatically restores normal length pricing and the normal 1 SOL Premium surcharge after 72 hours.
+The on-chain time window automatically restores the configured length pricing and normal Premium surcharge when it expires.
+
+## Permanent adoption pricing upgrade
+
+This upgrade installs authority-controlled tier pricing, sets `0.30 / 0.20 / 0.10 / 0.05 / 0.01 SOL`, changes the Premium surcharge to `+0.10 SOL`, and disables any active Rush override. Minting stays paused after verification.
+
+```bash
+export SOLHANDLE_AUTHORITY="$HOME/.config/solana/solhandle-mainnet-authority.json"
+export SOLHANDLE_PROGRAM_KEYPAIR="$PWD/keys/solhandle-v1-mainnet-program.json"
+export SOLANA_RPC_URL="https://YOUR_PRIVATE_MAINNET_RPC"
+chmod +x scripts/upgrade-mainnet-pricing.sh
+./scripts/upgrade-mainnet-pricing.sh
+```
+
+Publish the updated app and confirm quotes for all five lengths and a Premium handle. Only then resume minting:
+
+```bash
+node scripts/set-mainnet-protocol-status.mjs active
+``
