@@ -1,7 +1,8 @@
 use anchor_lang::{prelude::*, system_program};
 use mpl_core::{
     accounts::{BaseAssetV1, BaseCollectionV1},
-    instructions::{AddPluginV1CpiBuilder, CreateCollectionV2CpiBuilder, CreateV2CpiBuilder, RemovePluginV1CpiBuilder, TransferV1CpiBuilder},
+    fetch_plugin,
+    instructions::{AddPluginV1CpiBuilder, ApprovePluginAuthorityV1CpiBuilder, CreateCollectionV2CpiBuilder, CreateV2CpiBuilder, RemovePluginV1CpiBuilder, TransferV1CpiBuilder},
     types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, PluginType, Royalties, RuleSet, TransferDelegate},
     ID as MPL_CORE_ID,
 };
@@ -103,11 +104,23 @@ pub mod solhandle {
         require!(price_lamports > 0, SolHandleError::InvalidMarketplacePrice);
         require!(expires_at == 0 || expires_at > Clock::get()?.unix_timestamp, SolHandleError::MarketplaceOrderExpired);
         require_keys_eq!(ctx.accounts.asset.owner, ctx.accounts.seller.key(), SolHandleError::AssetNotOwnedBySigner);
-        AddPluginV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
-            .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
-            .payer(&ctx.accounts.seller.to_account_info()).authority(Some(&ctx.accounts.seller.to_account_info()))
-            .system_program(&ctx.accounts.system_program.to_account_info()).plugin(Plugin::TransferDelegate(TransferDelegate {}))
-            .init_authority(PluginAuthority::Address { address: ctx.accounts.listing.key() }).invoke()?;
+        let transfer_delegate_exists = fetch_plugin::<BaseAssetV1, TransferDelegate>(
+            &ctx.accounts.asset.to_account_info(),
+            PluginType::TransferDelegate,
+        ).is_ok();
+        if transfer_delegate_exists {
+            ApprovePluginAuthorityV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
+                .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
+                .payer(&ctx.accounts.seller.to_account_info()).authority(Some(&ctx.accounts.seller.to_account_info()))
+                .system_program(&ctx.accounts.system_program.to_account_info()).plugin_type(PluginType::TransferDelegate)
+                .new_authority(PluginAuthority::Address { address: ctx.accounts.listing.key() }).invoke()?;
+        } else {
+            AddPluginV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
+                .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
+                .payer(&ctx.accounts.seller.to_account_info()).authority(Some(&ctx.accounts.seller.to_account_info()))
+                .system_program(&ctx.accounts.system_program.to_account_info()).plugin(Plugin::TransferDelegate(TransferDelegate {}))
+                .init_authority(PluginAuthority::Address { address: ctx.accounts.listing.key() }).invoke()?;
+        }
         ctx.accounts.listing.set_inner(MarketplaceListing { asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key(), price_lamports, expires_at, bump: ctx.bumps.listing });
         emit!(HandleListed { handle: ctx.accounts.handle_record.handle.clone(), asset: ctx.accounts.asset.key(), seller: ctx.accounts.seller.key(), price_lamports });
         Ok(())
