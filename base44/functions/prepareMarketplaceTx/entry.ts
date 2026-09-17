@@ -22,6 +22,11 @@ export default async function(req: Request): Promise<Response> {
       if (!transaction.feePayer?.equals(wallet)) return Response.json({ error: "Connected wallet does not match the transaction fee payer." }, { status: 400 });
       const simulation = await rpc(secrets.get("SOLANA_RPC_URL"), "simulateTransaction", [body.transaction_base64, { encoding: "base64", sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed" }]);
       if (simulation?.value?.err) {
+        const rentError = simulation.value.err?.InsufficientFundsForRent;
+        if (rentError && Number.isInteger(rentError.account_index)) {
+          const account = transaction.compileMessage().accountKeys[rentError.account_index]?.toBase58();
+          return Response.json({ error: `Insufficient SOL for the rent-exempt marketplace account${account ? ` (${account})` : ""}. Listing requires account-storage rent in addition to the network fee; keep at least 0.005 SOL freely available in the connected wallet.` }, { status: 422 });
+        }
         const logs = simulation.value.logs || [];
         const detail = [...logs].reverse().find((line) => line.includes("Error Message:") || line.includes("insufficient lamports") || line.includes("custom program error"));
         return Response.json({ error: detail ? `Transaction simulation failed: ${detail.replace("Program log: ", "")}` : `Transaction simulation failed: ${JSON.stringify(simulation.value.err)}` }, { status: 422 });
