@@ -10,7 +10,7 @@ import HeaderExternalLinks from "@/components/solhandle/HeaderExternalLinks";
 import WalletButton from "@/components/solhandle/WalletButton";
 
 const discoverLinks = [["Search handles", "/"], ["Premium Directory", "/directory"], ["Explore handles", "/explore"]];
-const links = [["My Handles", "/my-handles"], ["Market", "/market"], ["Earn", "/earn"]];
+const links = [["My Handles", "/my-handles"], ["Earn", "/earn"]];
 const upcomingLinks = [["Upcoming overview", "/upcoming"], ["Integrations & SDK", "/integrations"], ["$HANDLE Token Launch", "/upcoming/token-launch"]];
 const developerLinks = [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Documentation", "/docs"]];
 const moreLinks = [["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]];

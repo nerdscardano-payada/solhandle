@@ -6,7 +6,6 @@ import HandleCard from "@/components/solhandle/HandleCard";
 import SimilarHandles from "@/components/solhandle/SimilarHandles";
 import HandleShareActions from "@/components/solhandle/HandleShareActions";
 import AmbassadorBadge from "@/components/solhandle/AmbassadorBadge";
-import HandleMarketplacePanel from "@/components/solhandle/HandleMarketplacePanel";
 import { setHandleShareMetadata } from "@/lib/shareSolHandle";
 import { normalizeHandle, validateHandle, lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
@@ -81,12 +80,10 @@ export default function HandlePage() {
             {data?.categories?.length > 0 && <Detail label="Categories" value={data.categories.join(" · ")} />}
             {data?.tags?.length > 0 && <Detail label="Tags" value={data.tags.join(" · ")} />}
             <Detail label="Metaplex Core asset" value={data?.assetAddress ? <a href={`https://explorer.solana.com/address/${data.assetAddress}`} target="_blank" rel="noreferrer" className="font-mono text-cyan-200 underline decoration-cyan-300/30 underline-offset-4 hover:text-cyan-100">{shortenAddress(data.assetAddress)} ↗</a> : "—"} />
-            {data?.listing && <div className="flex items-center justify-between gap-4 border-t border-white/10 py-3"><span className="text-sm text-slate-500">For sale</span><a href={data.listing.url} target="_blank" rel="noreferrer" className="text-right text-sm font-semibold text-amber-300">{data.listing.price} {data.listing.currency} on Magic Eden ↗</a></div>}
             <Detail label="Collection" value="Metaplex Core · SOLHANDLE Collection" />
             <Detail label="Handle length" value={`${handle.length} characters`} />
           </div>
 
-          {!available && data?.status === "CLAIMED" && <HandleMarketplacePanel handle={handle} asset={data?.assetAddress} owner={owner} />}
           {available && <Link to={`/?claim=${handle}`} className="mt-8 inline-flex rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-5 py-3 font-semibold text-slate-950">Mint @{handle}</Link>}
           <SimilarHandles handle={handle}/>
           <Link to="/" className="mt-8 inline-block text-cyan-200">Search another handle</Link>

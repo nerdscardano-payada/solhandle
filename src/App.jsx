@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -36,10 +36,8 @@ import ReferralTerms from '@/pages/ReferralTerms';
 import AdminAnalytics from '@/pages/AdminAnalytics';
 import About from '@/pages/About';
 import PremiumDirectory from '@/pages/PremiumDirectory';
-import Market from '@/pages/Market';
 import DiscordVerify from '@/pages/DiscordVerify';
 import UpcomingProjects from '@/pages/UpcomingProjects';
-import MarketplacePreview from '@/pages/MarketplacePreview';
 import TokenLaunchPreview from '@/pages/TokenLaunchPreview';
 import Promo from '@/pages/Promo';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
@@ -77,7 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/developers" element={<Developers />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
-        <Route path="/upcoming/marketplace" element={<MarketplacePreview />} />
+        <Route path="/upcoming/marketplace" element={<Navigate to="/" replace />} />
         <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
         <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
@@ -88,7 +86,7 @@ const AuthenticatedApp = () => {
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/directory" element={<PremiumDirectory />} />
-        <Route path="/market" element={<Market />} />
+        <Route path="/market" element={<Navigate to="/" replace />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
         <Route path="/legal" element={<Legal />} />
         <Route path="/privacy" element={<Privacy />} />
