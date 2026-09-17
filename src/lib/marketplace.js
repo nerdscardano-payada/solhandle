@@ -37,7 +37,10 @@ export async function executeMarketplaceAction({ action, handle, assetAddress, a
     keys.push(...openBids.flatMap((offer) => [[new PublicKey(offer.bid_pda),0,1],[new PublicKey(offer.bidder),0,1]]));
   }
   const instruction = new TransactionInstruction({ programId: PROGRAM_ID, keys: keys.map(([pubkey,isSigner,isWritable]) => ({ pubkey, isSigner: Boolean(isSigner), isWritable: Boolean(isWritable) })), data: join(discriminator, args) });
-  const signed = await signTransaction(new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction));
+  const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
+  const unsignedBase64 = btoa(String.fromCharCode(...transaction.serialize({ requireAllSignatures: false, verifySignatures: false })));
+  await base44.functions.invoke("prepareMarketplaceTx", { action, wallet: wallet.toBase58(), handle, transaction_base64: unsignedBase64 });
+  const signed = await signTransaction(transaction);
   const transaction_base64 = btoa(String.fromCharCode(...signed.serialize()));
   const submitted = await base44.functions.invoke("submitMarketplaceTx", { action, transaction_base64, wallet: wallet.toBase58(), handle, asset: asset.toBase58(), pda: pda.toBase58(), amount_lamports: amountLamports, seller: sellerKey.toBase58(), bidder: bidderKey.toBase58(), buyer: action === "accept_bid" ? bidderKey.toBase58() : wallet.toBase58(), rewards_vault: rewards.toBase58() });
   return submitted.data;
