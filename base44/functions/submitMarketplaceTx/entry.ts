@@ -24,7 +24,7 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ error: "Signed transaction is malformed." }, { status: 400 });
     }
     const program = new PublicKey(PROGRAM_ID);
-    const safe = new Set([ComputeBudgetProgram.programId.toBase58(), "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxMyWCqXgDLGmfcHr"]);
+    const safe = new Set([ComputeBudgetProgram.programId.toBase58(), "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxMyWCqXgDLGmfcHr", "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"]);
     const protocolInstructions = transaction.instructions.filter((item) => item.programId.equals(program));
     const unsupported = transaction.instructions.filter((item) => !item.programId.equals(program) && !safe.has(item.programId.toBase58()));
     if (protocolInstructions.length !== 1 || unsupported.length) {
