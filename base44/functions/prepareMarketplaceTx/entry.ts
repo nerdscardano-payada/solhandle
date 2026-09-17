@@ -26,12 +26,29 @@ export default async function(req: Request): Promise<Response> {
         if (rentError && Number.isInteger(rentError.account_index)) {
           const accountKey = transaction.compileMessage().accountKeys[rentError.account_index];
           const account = accountKey?.toBase58();
-          const listLabels = ["seller wallet", "protocol config", "handle record", "handle NFT asset", "marketplace listing PDA", "official collection", "system program", "Metaplex Core program"];
+          const labels = {
+            list: ["seller wallet", "protocol config", "handle record", "handle NFT asset", "marketplace listing PDA", "official collection", "system program", "Metaplex Core program"],
+            buy: ["buyer wallet", "protocol config", "handle record", "handle NFT asset", "marketplace listing PDA", "seller wallet", "protocol rewards vault", "official collection", "system program", "Metaplex Core program"],
+            delist: ["seller wallet", "handle record", "handle NFT asset", "marketplace listing PDA", "official collection", "system program", "Metaplex Core program"],
+            bid: ["bidder wallet", "handle record", "handle NFT asset", "marketplace bid PDA", "system program"],
+            accept_bid: ["seller wallet", "protocol config", "handle record", "handle NFT asset", "marketplace listing PDA", "marketplace bid PDA", "bidder wallet", "protocol rewards vault", "official collection", "system program", "Metaplex Core program"],
+            cancel_bid: ["bidder wallet", "handle record", "handle NFT asset", "marketplace bid PDA"]
+          };
           const instructionIndex = accountKey ? transaction.instructions[0].keys.findIndex((key) => key.pubkey.equals(accountKey)) : -1;
-          const accountLabel = body.action === "list" && instructionIndex >= 0 ? listLabels[instructionIndex] : "marketplace account";
-          const balance = await rpc(secrets.get("SOLANA_RPC_URL"), "getBalance", [wallet.toBase58(), { commitment: "confirmed" }]);
+          const accountLabel = instructionIndex >= 0 ? labels[body.action]?.[instructionIndex] || "marketplace account" : "marketplace account";
+          const rpcUrl = secrets.get("SOLANA_RPC_URL");
+          const [balance, affectedBalance, minimumRent] = await Promise.all([
+            rpc(rpcUrl, "getBalance", [wallet.toBase58(), { commitment: "confirmed" }]),
+            account ? rpc(rpcUrl, "getBalance", [account, { commitment: "confirmed" }]) : Promise.resolve({ value: 0 }),
+            rpc(rpcUrl, "getMinimumBalanceForRentExemption", [0, { commitment: "confirmed" }])
+          ]);
           const walletSol = (Number(balance?.value || 0) / 1_000_000_000).toFixed(6);
-          return Response.json({ error: `Rent-exemption failed for the ${accountLabel}${account ? ` (${account})` : ""}. RPC confirms the connected wallet holds ${walletSol} SOL, so this is not necessarily a low-wallet-balance error.` }, { status: 422 });
+          if (accountLabel === "protocol rewards vault") {
+            const vaultSol = (Number(affectedBalance?.value || 0) / 1_000_000_000).toFixed(6);
+            const minimumSol = (Number(minimumRent || 0) / 1_000_000_000).toFixed(6);
+            return Response.json({ error: `The protocol rewards vault (${account}) holds ${vaultSol} SOL and must be funded once to at least ${minimumSol} SOL before it can receive the marketplace royalty. Your connected wallet balance of ${walletSol} SOL is sufficient.` }, { status: 422 });
+          }
+          return Response.json({ error: `Rent-exemption failed for the ${accountLabel}${account ? ` (${account})` : ""}. RPC confirms the connected wallet holds ${walletSol} SOL, so this is not a low-wallet-balance error.` }, { status: 422 });
         }
         const logs = simulation.value.logs || [];
         const detail = [...logs].reverse().find((line) => line.includes("Error Message:") || line.includes("insufficient lamports") || line.includes("custom program error"));
