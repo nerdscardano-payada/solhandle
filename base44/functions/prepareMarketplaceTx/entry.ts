@@ -24,8 +24,14 @@ export default async function(req: Request): Promise<Response> {
       if (simulation?.value?.err) {
         const rentError = simulation.value.err?.InsufficientFundsForRent;
         if (rentError && Number.isInteger(rentError.account_index)) {
-          const account = transaction.compileMessage().accountKeys[rentError.account_index]?.toBase58();
-          return Response.json({ error: `Insufficient SOL for the rent-exempt marketplace account${account ? ` (${account})` : ""}. Listing requires account-storage rent in addition to the network fee; keep at least 0.005 SOL freely available in the connected wallet.` }, { status: 422 });
+          const accountKey = transaction.compileMessage().accountKeys[rentError.account_index];
+          const account = accountKey?.toBase58();
+          const listLabels = ["seller wallet", "protocol config", "handle record", "handle NFT asset", "marketplace listing PDA", "official collection", "system program", "Metaplex Core program"];
+          const instructionIndex = accountKey ? transaction.instructions[0].keys.findIndex((key) => key.pubkey.equals(accountKey)) : -1;
+          const accountLabel = body.action === "list" && instructionIndex >= 0 ? listLabels[instructionIndex] : "marketplace account";
+          const balance = await rpc(secrets.get("SOLANA_RPC_URL"), "getBalance", [wallet.toBase58(), { commitment: "confirmed" }]);
+          const walletSol = (Number(balance?.value || 0) / 1_000_000_000).toFixed(6);
+          return Response.json({ error: `Rent-exemption failed for the ${accountLabel}${account ? ` (${account})` : ""}. RPC confirms the connected wallet holds ${walletSol} SOL, so this is not necessarily a low-wallet-balance error.` }, { status: 422 });
         }
         const logs = simulation.value.logs || [];
         const detail = [...logs].reverse().find((line) => line.includes("Error Message:") || line.includes("insufficient lamports") || line.includes("custom program error"));
