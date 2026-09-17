@@ -27,7 +27,10 @@ export default async function(req: Request): Promise<Response> {
     const safe = new Set([ComputeBudgetProgram.programId.toBase58(), "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "Memo1UhkJRfHyvLMcVucJwxMyWCqXgDLGmfcHr"]);
     const protocolInstructions = transaction.instructions.filter((item) => item.programId.equals(program));
     const unsupported = transaction.instructions.filter((item) => !item.programId.equals(program) && !safe.has(item.programId.toBase58()));
-    if (protocolInstructions.length !== 1 || unsupported.length) return Response.json({ error: "Transaction contains unsupported instructions." }, { status: 400 });
+    if (protocolInstructions.length !== 1 || unsupported.length) {
+      const unsupportedPrograms = [...new Set(unsupported.map((item) => item.programId.toBase58()))];
+      return Response.json({ error: unsupportedPrograms.length ? `Transaction contains unsupported instructions from: ${unsupportedPrograms.join(", ")}.` : `Transaction must contain exactly one SolHandle marketplace instruction (found ${protocolInstructions.length}).` }, { status: 400 });
+    }
     const instruction = protocolInstructions[0];
     const expectedHash = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`global:${instructionNames[body.action]}`))).slice(0, 8);
     if (!sameBytes(Uint8Array.from(instruction.data).slice(0, 8), expectedHash)) return Response.json({ error: "Marketplace action does not match the signed instruction." }, { status: 400 });
