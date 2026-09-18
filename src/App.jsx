@@ -39,6 +39,7 @@ import PremiumDirectory from '@/pages/PremiumDirectory';
 import DiscordVerify from '@/pages/DiscordVerify';
 import UpcomingProjects from '@/pages/UpcomingProjects';
 import TokenLaunchPreview from '@/pages/TokenLaunchPreview';
+import Market from '@/pages/Market';
 import Promo from '@/pages/Promo';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
@@ -75,7 +76,7 @@ const AuthenticatedApp = () => {
         <Route path="/developers" element={<Developers />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
-        <Route path="/upcoming/marketplace" element={<Navigate to="/" replace />} />
+        <Route path="/upcoming/marketplace" element={<Market />} />
         <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
         <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
@@ -86,7 +87,7 @@ const AuthenticatedApp = () => {
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/directory" element={<PremiumDirectory />} />
-        <Route path="/market" element={<Navigate to="/" replace />} />
+        <Route path="/market" element={<Market />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
         <Route path="/legal" element={<Legal />} />
         <Route path="/privacy" element={<Privacy />} />
