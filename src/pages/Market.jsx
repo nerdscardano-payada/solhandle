@@ -6,7 +6,7 @@ import PurchaseConfirmation from "@/components/solhandle/PurchaseConfirmation";
 import { base44 } from "@/api/base44Client";
 
 export default function Market() {
-  const [listings, setListings] = useState([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(""); const [maxPrice, setMaxPrice] = useState(""); const [rarity, setRarity] = useState("");
+  const [listings, setListings] = useState([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(() => new URLSearchParams(window.location.search).get("handle") || ""); const [maxPrice, setMaxPrice] = useState(""); const [rarity, setRarity] = useState("");
   const [wallet, setWallet] = useState(() => localStorage.getItem("solhandle_wallet") || "");
   const [purchase, setPurchase] = useState(null);
   const load = () => { setLoading(true); base44.entities.NativeListing.filter({ status: "ACTIVE" }, "-created_at", 100).then(setListings).finally(() => setLoading(false)); };
