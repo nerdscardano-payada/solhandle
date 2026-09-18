@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 export default function PurchaseConfirmation({ purchase, onDismiss }) {
   if (!purchase) return null;
   return (
-    <div role="status" className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-400/10 p-5 shadow-lg shadow-emerald-950/20">
+    <div role="status" className="fixed right-5 top-24 z-50 w-[calc(100%-2.5rem)] max-w-sm rounded-xl border border-white/15 bg-[#191e27] p-4 shadow-2xl shadow-black/60">
       <div className="flex items-start gap-3">
         <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-emerald-300" />
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-emerald-100">Purchase confirmed</p>
+          <p className="font-semibold text-white">Purchase confirmed</p>
           <p className="mt-1 text-sm text-slate-300">@{purchase.handle} is now in your wallet and has been removed from the market.</p>
           <div className="mt-4 flex flex-wrap gap-3 text-sm font-medium">
             <Link to="/my-handles" className="rounded-lg bg-emerald-300 px-3 py-2 text-slate-950">View My Handles</Link>
