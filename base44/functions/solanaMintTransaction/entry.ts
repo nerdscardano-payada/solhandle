@@ -69,7 +69,17 @@ export default async function(req: Request): Promise<Response> {
       ]);
       if (protocol.paused) return Response.json({ error: "SolHandle minting is currently paused." }, { status: 409 });
       const pricing = calculateHandlePrice(handle, protocol.pricesLamports, premiumRows.length > 0, rush);
-      const mintIntent = await createReferralMintIntent(base44, { buyerWallet: String(body.wallet || ""), handle, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, totalPriceLamports: pricing.finalPriceLamports, attributionId: String(body.attribution_id || "") });
+      let wallet;
+      try { wallet = new PublicKey(String(body.wallet || "")); }
+      catch { return Response.json({ error: "Connect a valid Solana wallet before minting." }, { status: 400 }); }
+      const balance = await rpc(rpcUrl, "getBalance", [wallet.toBase58(), { commitment: "confirmed" }]);
+      const balanceLamports = Number(balance?.value || 0);
+      if (balanceLamports < pricing.finalPriceLamports) {
+        const availableSol = (balanceLamports / 1_000_000_000).toFixed(6);
+        const requiredSol = (pricing.finalPriceLamports / 1_000_000_000).toFixed(2);
+        return Response.json({ error: `This wallet has ${availableSol} SOL. Minting @${handle} requires at least ${requiredSol} SOL, plus a small amount for network and account fees.` }, { status: 422 });
+      }
+      const mintIntent = await createReferralMintIntent(base44, { buyerWallet: wallet.toBase58(), handle, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, totalPriceLamports: pricing.finalPriceLamports, attributionId: String(body.attribution_id || "") });
       return Response.json({
         config: config.toBase58(),
         collection: protocol.collection,
