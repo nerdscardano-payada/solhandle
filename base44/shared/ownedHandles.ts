@@ -10,5 +10,5 @@ export async function getOwnedActiveHandles(base44, rpcUrl, wallet) {
   if (updates.length) await base44.asServiceRole.entities.HandleIndex.bulkUpdate(updates);
   return records
     .filter((record) => owners.get(record.asset_address) === wallet)
-    .map((record) => ({ handle: record.handle, display: record.display_handle || `@${record.handle}`, asset: record.asset_address, mintedAt: record.minted_at, verifiedAt, rarity: record.rarity, nameClass: record.name_class }));
+    .map((record) => ({ handle: record.handle, display: record.display_handle || `@${record.handle}`, asset: record.asset_address, imageUri: record.image_uri || "", mintedAt: record.minted_at, verifiedAt, rarity: record.rarity, nameClass: record.name_class }));
 }

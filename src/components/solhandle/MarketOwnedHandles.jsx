@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import PortfolioMarketplaceAction from "@/components/solhandle/PortfolioMarketplaceAction";
+import { Image } from "@/components/ui/image";
 
 export default function MarketOwnedHandles({ wallet, onListingChange }) {
   const [handles, setHandles] = useState([]);
@@ -24,7 +25,7 @@ export default function MarketOwnedHandles({ wallet, onListingChange }) {
       : loading ? <p className="mt-4 rounded-lg border border-white/10 bg-black/20 px-4 py-5 text-sm text-slate-400">Verifying your handles on Solana…</p>
       : !handles.length ? <p className="mt-4 rounded-lg border border-white/10 bg-black/20 px-4 py-5 text-sm text-slate-400">No verified SolHandles were found for this wallet.</p>
       : <div className="mt-3 flex gap-3 overflow-x-auto pb-1">{handles.map((item) => <article key={item.asset || item.handle} className="min-w-56 flex-1 rounded-xl border border-white/10 bg-gradient-to-br from-slate-700 via-slate-300 to-slate-700 p-3 shadow-lg shadow-black/30">
-          <div className="rounded-lg border border-white/30 bg-white/50 px-3 py-5 text-slate-950 shadow-inner"><p className="truncate text-xl font-bold">{item.display || `@${item.handle}`}</p><p className="mt-1 text-[11px] font-semibold text-slate-700">● Verified Core Asset</p></div>
+          {item.imageUri ? <Image src={item.imageUri} alt={`${item.display || `@${item.handle}`} SolHandle NFT`} className="aspect-[16/10] w-full rounded-lg border border-white/20 bg-slate-950" fittingType="fit"/> : <div className="rounded-lg border border-white/30 bg-white/50 px-3 py-5 text-slate-950 shadow-inner"><p className="truncate text-xl font-bold">{item.display || `@${item.handle}`}</p><p className="mt-1 text-[11px] font-semibold text-slate-700">● Verified Core Asset</p></div>}
           <div className="mt-3"><PortfolioMarketplaceAction item={item} wallet={wallet} onComplete={onListingChange} /></div>
         </article>)}</div>}
   </section>;
