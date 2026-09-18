@@ -54,6 +54,12 @@ export default async function(req: Request): Promise<Response> {
           return Response.json({ error: `Rent-exemption failed for the ${accountLabel}${account ? ` (${account})` : ""}. RPC confirms the connected wallet holds ${walletSol} SOL, so this is not a low-wallet-balance error.` }, { status: 422 });
         }
         const logs = simulation.value.logs || [];
+        const systemBalanceFailure = logs.some((line) => line.includes("custom program error: 0x1"));
+        if (systemBalanceFailure && (body.action === "list" || body.action === "bid")) {
+          const balance = await rpc(rpcUrl, "getBalance", [wallet.toBase58(), { commitment: "confirmed" }]);
+          const walletSol = (Number(balance?.value || 0) / 1_000_000_000).toFixed(6);
+          return Response.json({ error: `Your wallet holds ${walletSol} SOL. Solana rejected this ${body.action === "list" ? "listing" : "bid"} because there is not enough available SOL for the required account rent and network fee. Add a small amount of SOL and try again.` }, { status: 422 });
+        }
         const detail = [...logs].reverse().find((line) => line.includes("Error Message:") || line.includes("insufficient lamports") || line.includes("custom program error"));
         return Response.json({ error: detail ? `Transaction simulation failed: ${detail.replace("Program log: ", "")}` : `Transaction simulation failed: ${JSON.stringify(simulation.value.err)}` }, { status: 422 });
       }
