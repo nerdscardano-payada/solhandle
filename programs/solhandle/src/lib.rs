@@ -2,7 +2,7 @@ use anchor_lang::{prelude::*, system_program};
 use mpl_core::{
     accounts::{BaseAssetV1, BaseCollectionV1},
     fetch_plugin,
-    instructions::{AddPluginV1CpiBuilder, ApprovePluginAuthorityV1CpiBuilder, CreateCollectionV2CpiBuilder, CreateV2CpiBuilder, RemovePluginV1CpiBuilder, TransferV1CpiBuilder},
+    instructions::{AddPluginV1CpiBuilder, ApprovePluginAuthorityV1CpiBuilder, CreateCollectionV2CpiBuilder, CreateV2CpiBuilder, RemovePluginV1CpiBuilder, RevokePluginAuthorityV1CpiBuilder, TransferV1CpiBuilder},
     types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, PluginType, Royalties, RuleSet, TransferDelegate},
     ID as MPL_CORE_ID,
 };
@@ -109,6 +109,10 @@ pub mod solhandle {
             PluginType::TransferDelegate,
         ).is_ok();
         if transfer_delegate_exists {
+            RevokePluginAuthorityV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
+                .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
+                .payer(&ctx.accounts.seller.to_account_info()).authority(Some(&ctx.accounts.seller.to_account_info()))
+                .system_program(&ctx.accounts.system_program.to_account_info()).plugin_type(PluginType::TransferDelegate).invoke()?;
             ApprovePluginAuthorityV1CpiBuilder::new(&ctx.accounts.mpl_core_program.to_account_info())
                 .asset(&ctx.accounts.asset.to_account_info()).collection(Some(&ctx.accounts.collection.to_account_info()))
                 .payer(&ctx.accounts.seller.to_account_info()).authority(Some(&ctx.accounts.seller.to_account_info()))
