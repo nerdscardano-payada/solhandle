@@ -20,7 +20,10 @@ export default async function(req: Request): Promise<Response> {
       const protocolInstructions = transaction.instructions.filter((item) => item.programId.equals(program));
       if (protocolInstructions.length !== 1 || transaction.instructions.length !== 1) return Response.json({ error: "Marketplace preflight rejected an unexpected transaction." }, { status: 400 });
       if (!transaction.feePayer?.equals(wallet)) return Response.json({ error: "Connected wallet does not match the transaction fee payer." }, { status: 400 });
-      const simulation = await rpc(secrets.get("SOLANA_RPC_URL"), "simulateTransaction", [body.transaction_base64, { encoding: "base64", sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed" }]);
+      const rpcUrl = secrets.get("SOLANA_RPC_URL");
+      const walletAccount = await rpc(rpcUrl, "getAccountInfo", [wallet.toBase58(), { encoding: "base64", commitment: "confirmed" }]);
+      if (!walletAccount?.value) return Response.json({ error: "Your connected wallet has no SOL on Mainnet. Fund this wallet with a small amount of SOL for the listing account rent and network fee, then try again." }, { status: 422 });
+      const simulation = await rpc(rpcUrl, "simulateTransaction", [body.transaction_base64, { encoding: "base64", sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed" }]);
       if (simulation?.value?.err) {
         const rentError = simulation.value.err?.InsufficientFundsForRent;
         if (rentError && Number.isInteger(rentError.account_index)) {
