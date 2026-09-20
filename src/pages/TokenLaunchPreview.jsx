@@ -13,8 +13,8 @@ export default function TokenLaunchPreview() {
       </div>
       <TokenTradingDashboard />
       <TokenAllocation />
-      <div className="mt-12"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">Designed for participation, not passive yield</p><h2 className="mb-5 mt-2 text-2xl font-semibold">Utility from day one</h2><TokenUtilityPreview /></div>
-      <p className="mt-8 text-sm leading-relaxed text-slate-500">The token mint, launch date, market parameters, lock address and on-chain proof will be published before trading is enabled. Planned utility remains subject to security, sustainability and legal review.</p>
+      <div className="mt-12"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">Confirmed $HANDLE utility</p><h2 className="mb-2 mt-2 text-2xl font-semibold">Earn Network tiers from day one</h2><p className="mb-5 max-w-3xl text-sm leading-relaxed text-slate-400">Hold $HANDLE to qualify for a larger share of the revenue generated through your permanent referral network.</p><TokenUtilityPreview /></div>
+      <p className="mt-8 text-sm leading-relaxed text-slate-500">The token mint, launch date, market parameters, lock address and on-chain proof will be published before trading is enabled. Earn Network percentages apply only to verified, eligible revenue and remain subject to the published program terms.</p>
     </div>
   </section></main>;
 }

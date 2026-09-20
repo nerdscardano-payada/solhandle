@@ -1,14 +1,14 @@
-import { Flame, LockKeyhole, ShieldCheck, Vote, Users, BadgePercent } from "lucide-react";
+import { BadgePercent, Clock3, Coins, ShieldCheck } from "lucide-react";
 
-const utility = [
-  { icon: Flame, title: "Burn to boost", text: "Spend and permanently burn $HANDLE for featured listings, stronger marketplace visibility and consumable profile upgrades." },
-  { icon: LockKeyhole, title: "Lock to unlock", text: "Lock $HANDLE instead of chasing APY to unlock durable access levels and future marketplace or referral advantages." },
-  { icon: BadgePercent, title: "Lower protocol royalties", text: "Eligible $HANDLE holders who lock tokens can unlock reduced protocol royalties on secondary marketplace activity, phased in as liquidity grows." },
-  { icon: Vote, title: "Community governance", text: "Give committed participants a voice in ecosystem priorities, integrations, grants and future utility proposals." },
-  { icon: Users, title: "Community access", text: "Unlock holder experiences, private community spaces, launch participation and ecosystem recognition." },
-  { icon: ShieldCheck, title: "Identity stays open", text: "Claiming, owning and resolving a SolHandle remains independent from $HANDLE. The token enhances the economy, never the identity layer." }
+const tiers = [
+  { name: "Tier 1", tokens: "25,000", share: "20%" },
+  { name: "Tier 2", tokens: "100,000", share: "30%" },
+  { name: "Tier 3", tokens: "250,000", share: "40%" },
+  { name: "Tier 4", tokens: "1,000,000", share: "50%" },
 ];
 
 export default function TokenUtilityPreview() {
-  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{utility.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-white/10 bg-slate-950/60 p-5"><Icon className="h-5 w-5 text-violet-300" /><h3 className="mt-4 font-semibold text-white">{title}</h3><p className="mt-2 text-sm leading-relaxed text-slate-400">{text}</p></article>)}</div>;
+  return <div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{tiers.map((tier) => <article key={tier.name} className="rounded-2xl border border-violet-400/20 bg-slate-950/70 p-5"><div className="flex items-center justify-between"><span className="text-xs font-semibold uppercase tracking-wider text-violet-300">{tier.name}</span><BadgePercent className="h-4 w-4 text-cyan-300" /></div><p className="mt-5 text-2xl font-semibold text-white">{tier.share}</p><p className="mt-1 text-sm text-slate-400">Earn Network revenue share</p><div className="mt-4 border-t border-white/10 pt-3 text-xs text-slate-500"><span className="text-slate-300">{tier.tokens} $HANDLE</span> minimum</div></article>)}</div>
+    <div className="mt-4 grid gap-3 md:grid-cols-3"><div className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><Coins className="mt-0.5 h-5 w-5 shrink-0 text-cyan-300" /><div><p className="font-semibold text-white">Actual revenue received</p><p className="mt-1 text-sm text-slate-400">Shares are calculated from revenue the protocol actually receives, never from theoretical volume.</p></div></div><div className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><Clock3 className="mt-0.5 h-5 w-5 shrink-0 text-violet-300" /><div><p className="font-semibold text-white">24-hour qualification</p><p className="mt-1 text-sm text-slate-400">A higher balance must remain qualified for 24 hours before its upgraded tier activates.</p></div></div><div className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" /><div><p className="font-semibold text-white">Identity stays open</p><p className="mt-1 text-sm text-slate-400">Owning and resolving a SolHandle never requires $HANDLE; tokens only determine Earn Network participation.</p></div></div></div>
+  </div>;
 }
