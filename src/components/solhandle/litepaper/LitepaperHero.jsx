@@ -1,0 +1,5 @@
+import { Download, Network } from "lucide-react";
+
+export default function LitepaperHero({ paper, onDownload }) {
+  return <section className="relative overflow-hidden border-b border-white/10 px-5 py-16 md:px-10"><div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-3xl"/><div className="relative mx-auto max-w-4xl text-center"><Network className="mx-auto h-9 w-9 text-cyan-300"/><p className="mt-5 text-xs font-semibold uppercase tracking-[0.25em] text-cyan-300">SolHandle Earn Network</p><h1 className="mt-3 text-4xl font-semibold sm:text-6xl">Earn Litepaper</h1><p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-slate-300">{paper.summary}</p><div className="mt-7 flex flex-wrap items-center justify-center gap-3"><button type="button" onClick={onDownload} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-400 px-6 py-3 font-semibold text-slate-950"><Download className="h-4 w-4"/>Download PDF</button><span className="rounded-lg border border-white/10 px-4 py-3 text-sm text-slate-400">Version {paper.version} · {paper.updated}</span></div></div></section>;
+}

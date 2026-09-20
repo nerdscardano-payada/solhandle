@@ -1,0 +1,5 @@
+import { ArrowRight } from "lucide-react";
+
+export default function LitepaperExamples({ examples }) {
+  return <section className="mt-14"><p className="text-xs font-semibold uppercase tracking-wider text-emerald-300">Easy calculations</p><h2 className="mt-2 text-3xl font-semibold">What could you earn?</h2><p className="mt-3 text-slate-400">These examples explain the formula. They are illustrations, not income promises.</p><div className="mt-5 grid gap-4 md:grid-cols-2">{examples.map((example) => <article key={example.title} className="rounded-2xl border border-white/10 bg-slate-950/70 p-6"><h3 className="text-lg font-semibold">{example.title}</h3><ul className="mt-4 space-y-2 text-sm text-slate-400">{example.facts.map((fact) => <li key={fact}>• {fact}</li>)}</ul><div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4"><ArrowRight className="h-5 w-5 text-emerald-300"/><b className="text-emerald-200">{example.result}</b></div></article>)}</div></section>;
+}

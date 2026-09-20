@@ -16,7 +16,7 @@ const discoverLinks = [["Search handles", "/"], ["Premium Directory", "/director
 const links = [["My Handles", "/my-handles"], ["Market", "/market"], ["Earn", "/earn"]];
 const upcomingLinks = [["Upcoming overview", "/upcoming"], ["Integrations & SDK", "/integrations"], ["$HANDLE Token Launch", "/upcoming/token-launch"]];
 const developerLinks = [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Documentation", "/docs"]];
-const moreLinks = [["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]];
+const moreLinks = [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]];
 
 export default function Header({ onConnected }) {
   const [menuOpen, setMenuOpen] = useState(false);
