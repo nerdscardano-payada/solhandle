@@ -39,6 +39,30 @@
     "paid_earnings_lamports": {
       "type": "number",
       "default": 0
+    },
+    "token_balance_cached": {
+      "type": "number",
+      "default": 0
+    },
+    "earning_tier_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "pending_tier_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "tier_qualified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tier_activates_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tier_checked_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [

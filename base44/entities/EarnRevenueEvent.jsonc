@@ -1,0 +1,102 @@
+{
+  "name": "EarnRevenueEvent",
+  "type": "object",
+  "properties": {
+    "referral_profile_id": {
+      "type": "string"
+    },
+    "origin_referral_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "MINT",
+        "SECONDARY_ROYALTY",
+        "CREATOR_FEE"
+      ]
+    },
+    "source_signature": {
+      "type": "string"
+    },
+    "referred_wallet": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "gross_activity_lamports": {
+      "type": "number"
+    },
+    "actual_received_lamports": {
+      "type": "number"
+    },
+    "share_percentage": {
+      "type": "number"
+    },
+    "earning_lamports": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PRELAUNCH",
+        "HELD",
+        "AVAILABLE",
+        "PAID",
+        "REVERSED"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "available_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payout_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "referral_profile_id",
+    "origin_referral_id",
+    "source",
+    "source_signature",
+    "referred_wallet",
+    "asset_address",
+    "handle",
+    "gross_activity_lamports",
+    "actual_received_lamports",
+    "share_percentage",
+    "earning_lamports",
+    "status",
+    "occurred_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

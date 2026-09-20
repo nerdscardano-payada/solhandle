@@ -9,6 +9,9 @@
       "type": "string",
       "enum": [
         "REFERRAL_REWARD",
+        "MINT_REWARD",
+        "SECONDARY_REWARD",
+        "CREATOR_FEE_REWARD",
         "PAYOUT",
         "ADJUSTMENT",
         "REVERSAL",
@@ -19,6 +22,9 @@
       "type": "number"
     },
     "conversion_id": {
+      "type": "string"
+    },
+    "revenue_event_id": {
       "type": "string"
     },
     "payout_id": {

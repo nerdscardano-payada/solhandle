@@ -1,4 +1,5 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
+import { lockMintOrigin } from "./earnNetwork.ts";
 
 const RESERVED_CODES = new Set(["admin", "api", "referral", "referrals", "earn", "dashboard", "login", "signup", "support", "terms", "privacy", "solhandle"]);
 
@@ -41,7 +42,11 @@ export async function createReferralMintIntent(base44, input) {
   }
   let attribution = null;
   let profile = null;
-  if (input.attributionId) {
+  const lockedOrigins = await base44.asServiceRole.entities.OriginReferral.filter({ referred_wallet: buyerWallet, status: "LOCKED" }, "locked_at", 1);
+  if (lockedOrigins[0]) {
+    const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ id: lockedOrigins[0].origin_profile_id }, "-created_date", 1);
+    if (profiles[0]?.status === "ACTIVE") profile = profiles[0];
+  } else if (input.attributionId) {
     const rows = await base44.asServiceRole.entities.ReferralAttribution.filter({ id: input.attributionId }, "-created_date", 1);
     const candidate = rows[0];
     if (candidate?.status === "ACTIVE" && Date.parse(candidate.expires_at) > Date.now()) {
@@ -95,22 +100,23 @@ export async function processConfirmedReferral(base44, mint) {
   if (claimedRows[0]?.processing_token !== token) return { credited: false, reason: "duplicate" };
   const existing = await base44.asServiceRole.entities.ReferralConversion.filter({ mint_transaction_signature: mint.signature }, "-created_date", 1);
   if (existing[0]) { await base44.asServiceRole.entities.MintIntent.update(intent.id, { status: "PROCESSED", processing_token: "" }); return { credited: false, reason: "duplicate" }; }
-  const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ id: intent.referral_profile_id }, "-created_date", 1);
-  const profile = profiles[0];
-  if (!profile || profile.status !== "ACTIVE") { await base44.asServiceRole.entities.MintIntent.update(intent.id, { status: "PROCESSED", processing_token: "" }); return { credited: false, reason: "inactive_profile" }; }
   const eligible = Math.min(mint.netRevenueLamports, intent.base_price_lamports + (settings.premium_referral_eligible ? intent.premium_surcharge_lamports : 0));
-  const percentage = activeCommissionPercentage(settings); const selfReferral = profile.wallet_address === mint.buyerWallet;
-  const conversion = await base44.asServiceRole.entities.ReferralConversion.create({ mint_intent_id: intent.id, mint_transaction_signature: mint.signature, minted_handle: mint.handle, buyer_wallet: mint.buyerWallet, referral_profile_id: profile.id, gross_mint_amount_lamports: mint.grossAmountLamports, eligible_referral_revenue_lamports: eligible, reward_percentage_used: percentage, reward_amount_lamports: selfReferral ? 0 : Math.floor(eligible * percentage / 100), status: selfReferral ? "REJECTED_SELF_REFERRAL" : "PENDING" });
-  if (selfReferral) {
-    await base44.asServiceRole.entities.FraudFlag.create({ referral_profile_id: profile.id, conversion_id: conversion.id, reason: "SELF_REFERRAL", severity: "HIGH", status: "BLOCKED" });
-  } else {
-    await base44.asServiceRole.entities.ReferralLedger.create({ referral_profile_id: profile.id, type: "REFERRAL_REWARD", amount_lamports: conversion.reward_amount_lamports, conversion_id: conversion.id, payout_id: "", status: "PENDING" });
-    await base44.asServiceRole.entities.ReferralNotification.create({ referral_profile_id: profile.id, type: "REWARD_EARNED", title: "You earned SOL", message: `Someone claimed @${mint.handle} through your referral link.`, amount_lamports: conversion.reward_amount_lamports, read: false });
-    const recent = await base44.asServiceRole.entities.ReferralConversion.filter({ referral_profile_id: profile.id }, "-created_date", 25); const fiveMinutesAgo = Date.now() - 300000;
-    if (recent.filter((c) => Date.parse(c.created_date) >= fiveMinutesAgo).length >= 10) await base44.asServiceRole.entities.FraudFlag.create({ referral_profile_id: profile.id, conversion_id: conversion.id, reason: "ABNORMAL_VOLUME", severity: "HIGH", status: "OPEN" });
-    if (recent.filter((c) => c.buyer_wallet === mint.buyerWallet).length >= 5) await base44.asServiceRole.entities.FraudFlag.create({ referral_profile_id: profile.id, conversion_id: conversion.id, reason: "RELATED_WALLETS", severity: "MEDIUM", status: "OPEN" });
-    await reconcileReferralProfile(base44, profile);
+  const result = await lockMintOrigin(base44, settings, { referralProfileId: intent.referral_profile_id, signature: mint.signature, handle: mint.handle, assetAddress: mint.assetAddress, referredWallet: mint.buyerWallet, grossActivityLamports: mint.grossAmountLamports, actualReceivedLamports: eligible, occurredAt: mint.occurredAt }, mint.rpcUrl);
+  if (!result.origin) {
+    await base44.asServiceRole.entities.MintIntent.update(intent.id, { status: "PROCESSED", processing_token: "" });
+    return { credited: false, reason: result.reason || "origin_not_locked" };
+  }
+  const conversion = await base44.asServiceRole.entities.ReferralConversion.create({
+    mint_intent_id: intent.id, mint_transaction_signature: mint.signature, minted_handle: mint.handle,
+    buyer_wallet: mint.buyerWallet, referral_profile_id: result.origin.origin_profile_id, origin_referral_id: result.origin.id,
+    gross_mint_amount_lamports: mint.grossAmountLamports, eligible_referral_revenue_lamports: eligible,
+    reward_percentage_used: result.percentage || 0, reward_amount_lamports: result.earningLamports || 0,
+    status: result.mode === "LIVE" ? "PENDING" : "PRELAUNCH"
+  });
+  if (result.earningLamports > 0) {
+    await base44.asServiceRole.entities.ReferralNotification.create({ referral_profile_id: result.origin.origin_profile_id, type: "REWARD_EARNED", title: "Your network earned SOL", message: `A confirmed mint of @${mint.handle} generated an Earn Network reward.`, amount_lamports: result.earningLamports, read: false });
+    await reconcileReferralProfile(base44, result.profile);
   }
   await base44.asServiceRole.entities.MintIntent.update(intent.id, { status: "PROCESSED", processing_token: "" });
-  return selfReferral ? { credited: false, reason: "self_referral" } : { credited: true, rewardLamports: conversion.reward_amount_lamports, percentage };
+  return { credited: result.earningLamports > 0, prelaunch: result.mode !== "LIVE", conversionId: conversion.id, rewardLamports: result.earningLamports || 0, percentage: result.percentage || 0 };
 }

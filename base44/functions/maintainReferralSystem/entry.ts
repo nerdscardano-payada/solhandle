@@ -11,6 +11,7 @@ export default async function(req: Request): Promise<Response> {
       base44.asServiceRole.entities.MintIntent.filter({ status: "PROCESSING" }, "-processing_started_at", 500),
       base44.asServiceRole.entities.ReferralConversion.filter({ status: { $in: ["PENDING", "APPROVED"] } }, "created_date", 500)
     ]);
+    const heldRevenue = await base44.asServiceRole.entities.EarnRevenueEvent.filter({ status: "HELD" }, "available_at", 500);
     const expired = [...created, ...pending, ...submitted].filter((i) => Date.parse(i.expires_at) <= now);
     if (expired.length) await base44.asServiceRole.entities.MintIntent.bulkUpdate(expired.map((i) => ({ id: i.id, status: "EXPIRED" })));
     const stuck = processing.filter((i) => Date.parse(i.processing_started_at || i.updated_date) <= now - 15 * 60000);
@@ -23,7 +24,14 @@ export default async function(req: Request): Promise<Response> {
       await base44.asServiceRole.entities.ReferralNotification.create({ referral_profile_id: conversion.referral_profile_id, type: "REWARD_AVAILABLE", title: "Reward available", message: `Your reward for @${conversion.minted_handle} is available for payout.`, amount_lamports: conversion.reward_amount_lamports, read: false });
       profileIds.add(conversion.referral_profile_id);
     }
+    const releasableRevenue = heldRevenue.filter((event) => Date.parse(event.available_at) <= now);
+    for (const event of releasableRevenue) {
+      await base44.asServiceRole.entities.EarnRevenueEvent.update(event.id, { status: "AVAILABLE" });
+      const ledgers = await base44.asServiceRole.entities.ReferralLedger.filter({ revenue_event_id: event.id, status: "PENDING" }, "-created_date", 1);
+      if (ledgers[0]) await base44.asServiceRole.entities.ReferralLedger.update(ledgers[0].id, { status: "AVAILABLE" });
+      profileIds.add(event.referral_profile_id);
+    }
     for (const id of profileIds) { const p = await base44.asServiceRole.entities.ReferralProfile.filter({ id }, "-created_date", 1); if (p[0]) await reconcileReferralProfile(base44, p[0]); }
-    return Response.json({ expired: expired.length, recovered: stuck.length, madeAvailable: available.length });
+    return Response.json({ expired: expired.length, recovered: stuck.length, madeAvailable: available.length, revenueMadeAvailable: releasableRevenue.length });
   } catch (error) { return Response.json({ error: error.message || "Referral maintenance failed." }, { status: 500 }); }
 }

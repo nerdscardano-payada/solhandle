@@ -1,0 +1,75 @@
+{
+  "name": "OriginReferral",
+  "type": "object",
+  "properties": {
+    "origin_profile_id": {
+      "type": "string"
+    },
+    "origin_handle": {
+      "type": "string"
+    },
+    "referred_wallet": {
+      "type": "string"
+    },
+    "referred_handle": {
+      "type": "string"
+    },
+    "referred_asset_address": {
+      "type": "string"
+    },
+    "mint_signature": {
+      "type": "string"
+    },
+    "mint_price_lamports": {
+      "type": "number"
+    },
+    "locked_tier_percentage": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "LOCKED",
+        "BLOCKED"
+      ]
+    },
+    "locked_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "origin_profile_id",
+    "origin_handle",
+    "referred_wallet",
+    "referred_handle",
+    "referred_asset_address",
+    "mint_signature",
+    "mint_price_lamports",
+    "locked_tier_percentage",
+    "status",
+    "locked_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

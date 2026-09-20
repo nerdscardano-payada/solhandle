@@ -93,7 +93,7 @@ export default async function(req: Request): Promise<Response> {
       const premiumSurchargeLamports = premiumRows.length
         ? Math.max(0, (transaction.meta.postBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)] - transaction.meta.preBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)]) - mint.priceLamports)
         : 0;
-      await processConfirmedReferral(base44, { signature: entry.signature, handle: mint.handle, buyerWallet: mint.owner, grossAmountLamports: mint.priceLamports + premiumSurchargeLamports, netRevenueLamports: mint.priceLamports + premiumSurchargeLamports });
+      await processConfirmedReferral(base44, { signature: entry.signature, handle: mint.handle, assetAddress: mint.assetAddress, buyerWallet: mint.owner, grossAmountLamports: mint.priceLamports + premiumSurchargeLamports, netRevenueLamports: mint.priceLamports + premiumSurchargeLamports, occurredAt: mintedAt, rpcUrl });
       synced += 1;
     }
 

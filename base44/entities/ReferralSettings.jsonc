@@ -12,7 +12,7 @@
     },
     "campaign_name": {
       "type": "string",
-      "default": "Founding Ambassador Program"
+      "default": "SolHandle Earn Network"
     },
     "commission_percentage": {
       "type": "number",
@@ -81,6 +81,63 @@
     "tier_4_start": {
       "type": "number",
       "default": 100
+    },
+    "earn_network_mode": {
+      "type": "string",
+      "enum": [
+        "PRELAUNCH",
+        "LIVE",
+        "PAUSED"
+      ],
+      "default": "PRELAUNCH"
+    },
+    "token_mint_address": {
+      "type": "string",
+      "default": ""
+    },
+    "tier_qualification_hours": {
+      "type": "number",
+      "default": 24
+    },
+    "token_tier_1_minimum": {
+      "type": "number",
+      "default": 25000
+    },
+    "token_tier_2_minimum": {
+      "type": "number",
+      "default": 100000
+    },
+    "token_tier_3_minimum": {
+      "type": "number",
+      "default": 250000
+    },
+    "token_tier_4_minimum": {
+      "type": "number",
+      "default": 1000000
+    },
+    "token_tier_1_percentage": {
+      "type": "number",
+      "default": 20
+    },
+    "token_tier_2_percentage": {
+      "type": "number",
+      "default": 30
+    },
+    "token_tier_3_percentage": {
+      "type": "number",
+      "default": 40
+    },
+    "token_tier_4_percentage": {
+      "type": "number",
+      "default": 50
+    },
+    "secondary_referrer_share_percentage": {
+      "type": "number",
+      "default": 50
+    },
+    "creator_fee_referrer_share_percentage": {
+      "type": "number",
+      "default": 50
     }
   },
   "required": [

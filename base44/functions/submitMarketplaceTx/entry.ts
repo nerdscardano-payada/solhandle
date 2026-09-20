@@ -4,6 +4,8 @@ import { secrets } from "base44:runtime";
 import { rpc } from "../../shared/solanaRpc.ts";
 import { PROGRAM_ID } from "../../shared/solhandleProtocol.ts";
 import { getHistoricalSolEur } from "../../shared/solEur.ts";
+import { getReferralSettings } from "../../shared/referralEngine.ts";
+import { recordOriginRevenue } from "../../shared/earnNetwork.ts";
 
 const actions = new Set(["list", "buy", "delist", "bid", "accept_bid", "cancel_bid"]);
 const instructionNames = { list: "list_handle", buy: "buy_handle", delist: "delist_handle", bid: "place_bid", accept_bid: "accept_bid", cancel_bid: "cancel_bid" };
@@ -83,9 +85,17 @@ export default async function(req: Request): Promise<Response> {
       if (bids.length) await base44.asServiceRole.entities.NativeBid.bulkUpdate(bids.map((row) => ({ id: row.id, status: "CANCELLED", closed_signature: signature, closed_at: now })));
     }
     if (["buy", "accept_bid"].includes(body.action)) {
-      const amount = settledAmount; const royalty = Math.floor(amount * 500 / 10000); const rate = await getHistoricalSolEur(Math.floor(Date.now() / 1000));
+      const amount = settledAmount; const rate = await getHistoricalSolEur(Math.floor(Date.now() / 1000));
+      const chainTransaction = await rpc(rpcUrl, "getTransaction", [signature, { encoding: "json", commitment: "confirmed", maxSupportedTransactionVersion: 0 }]);
+      const accountKeys = chainTransaction.transaction.message.accountKeys.map((key) => typeof key === "string" ? key : key.pubkey);
+      const rewardsVault = address(body.rewards_vault); const vaultIndex = accountKeys.indexOf(rewardsVault);
+      if (vaultIndex < 0) throw new Error("Confirmed marketplace transaction does not include the rewards vault.");
+      const royaltyReceived = Number(chainTransaction.meta.postBalances[vaultIndex]) - Number(chainTransaction.meta.preBalances[vaultIndex]);
+      if (royaltyReceived <= 0) throw new Error("No marketplace royalty was received by the protocol vault.");
       const existing = await base44.asServiceRole.entities.FinancialTransaction.filter({ transaction_signature: signature }, "-timestamp", 1);
-      if (!existing[0]) await base44.asServiceRole.entities.FinancialTransaction.create({ transaction_id: signature, transaction_type: "sale", handle: body.handle, buyer_wallet: address(body.buyer), transaction_signature: signature, asset_address: address(body.asset), block_slot: 0, timestamp: now, character_length: body.handle.length, premium_status: false, base_price_lamports: amount, premium_surcharge_lamports: 0, total_paid_lamports: amount, sol_eur_rate: rate, total_value_eur: amount / 1_000_000_000 * rate, mint_source: "native_marketplace", partner_id: "", partner_commission_percentage: 0, partner_fee_lamports: 0, net_solhandle_lamports: royalty, treasury_address: "", rewards_vault_address: address(body.rewards_vault), status: "completed" });
+      if (!existing[0]) await base44.asServiceRole.entities.FinancialTransaction.create({ transaction_id: signature, transaction_type: "sale", handle: body.handle, buyer_wallet: address(body.buyer), transaction_signature: signature, asset_address: address(body.asset), block_slot: chainTransaction.slot || 0, timestamp: now, character_length: body.handle.length, premium_status: false, base_price_lamports: amount, premium_surcharge_lamports: 0, total_paid_lamports: amount, sol_eur_rate: rate, total_value_eur: amount / 1_000_000_000 * rate, mint_source: "native_marketplace", partner_id: "", partner_commission_percentage: 0, partner_fee_lamports: 0, net_solhandle_lamports: royaltyReceived, treasury_address: "", rewards_vault_address: rewardsVault, status: "completed" });
+      const settings = await getReferralSettings(base44);
+      await recordOriginRevenue(base44, settings, { source: "SECONDARY_ROYALTY", signature, assetAddress: address(body.asset), referredWallet: address(body.buyer), handle: body.handle, grossActivityLamports: amount, actualReceivedLamports: royaltyReceived, occurredAt: now }, rpcUrl);
       await base44.asServiceRole.entities.HandleIndex.updateMany({ asset_address: address(body.asset) }, { $set: { current_owner_cached: address(body.buyer), last_chain_sync: now } });
     }
     return Response.json({ signature });
