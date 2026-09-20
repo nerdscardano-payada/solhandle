@@ -1,0 +1,7 @@
+import { BarChart3 } from "lucide-react";
+
+export default function TokenChartPanel({ market, status }) {
+  if (!market?.pairAddress) return <div className="flex min-h-[480px] items-center justify-center rounded-3xl border border-white/10 bg-slate-950/70 p-8 text-center"><div><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-400/10"><BarChart3 className="h-6 w-6 text-violet-300" /></div><h3 className="mt-5 text-xl font-semibold text-white">Live chart activates at launch</h3><p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-400">{status === "loading" ? "Looking for the verified DexScreener market…" : "Candles, volume and live trades appear here as soon as the official mint and pair are available."}</p><span className="mt-5 inline-flex rounded-full border border-white/10 px-3 py-1 text-xs text-slate-500">Powered by DexScreener</span></div></div>;
+  const src = `https://dexscreener.com/solana/${market.pairAddress}?embed=1&theme=dark&trades=1&info=0`;
+  return <div className="min-h-[480px] overflow-hidden rounded-3xl border border-white/10 bg-slate-950"><iframe title="$HANDLE live DexScreener chart and trades" src={src} className="h-[600px] w-full" allowFullScreen /></div>;
+}
