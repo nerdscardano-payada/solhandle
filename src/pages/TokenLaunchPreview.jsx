@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Header from "@/components/solhandle/Header";
 import DemoNotice from "@/components/solhandle/DemoNotice";
 import TokenTradingDashboard from "@/components/solhandle/TokenTradingDashboard";
@@ -13,7 +14,7 @@ export default function TokenLaunchPreview() {
       </div>
       <TokenTradingDashboard />
       <TokenAllocation />
-      <div className="mt-12"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">Confirmed $HANDLE utility</p><h2 className="mb-2 mt-2 text-2xl font-semibold">Earn Network tiers from day one</h2><p className="mb-5 max-w-3xl text-sm leading-relaxed text-slate-400">Hold $HANDLE to qualify for a larger share of the revenue generated through your permanent referral network.</p><TokenUtilityPreview /></div>
+      <div className="mt-12"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">Confirmed $HANDLE utility</p><div className="mt-2 flex flex-wrap items-end justify-between gap-4"><div><h2 className="text-2xl font-semibold">Earn Network tiers from day one</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">Hold $HANDLE to qualify for a larger share of the revenue generated through your permanent referral network.</p></div><Link to="/earn" className="rounded-xl bg-gradient-to-r from-violet-400 to-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950">Explore Earn Network</Link></div><div className="mt-5"><TokenUtilityPreview /></div></div>
       <p className="mt-8 text-sm leading-relaxed text-slate-500">The token mint, launch date, market parameters, lock address and on-chain proof will be published before trading is enabled. Earn Network percentages apply only to verified, eligible revenue and remain subject to the published program terms.</p>
     </div>
   </section></main>;
