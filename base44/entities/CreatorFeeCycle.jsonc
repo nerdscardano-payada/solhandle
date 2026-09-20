@@ -1,0 +1,141 @@
+{
+  "name": "CreatorFeeCycle",
+  "type": "object",
+  "properties": {
+    "claim_signature": {
+      "type": "string"
+    },
+    "receiver_wallet": {
+      "type": "string"
+    },
+    "cycle_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cycle_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "token_mints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "received_lamports": {
+      "type": "number"
+    },
+    "carry_in_lamports": {
+      "type": "number"
+    },
+    "pot_lamports": {
+      "type": "number"
+    },
+    "distributed_lamports": {
+      "type": "number"
+    },
+    "carry_out_lamports": {
+      "type": "number"
+    },
+    "total_referred_volume_lamports": {
+      "type": "number"
+    },
+    "cap_percentage": {
+      "type": "number"
+    },
+    "cap_lamports": {
+      "type": "number"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "PRELAUNCH",
+        "LIVE"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "CONFIRMED"
+      ]
+    },
+    "allocations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "referral_profile_id": {
+            "type": "string"
+          },
+          "display_handle": {
+            "type": "string"
+          },
+          "representative_wallet": {
+            "type": "string"
+          },
+          "referred_volume_lamports": {
+            "type": "number"
+          },
+          "raw_share_lamports": {
+            "type": "number"
+          },
+          "cap_lamports": {
+            "type": "number"
+          },
+          "final_lamports": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "referral_profile_id",
+          "display_handle",
+          "representative_wallet",
+          "referred_volume_lamports",
+          "raw_share_lamports",
+          "cap_lamports",
+          "final_lamports"
+        ]
+      }
+    }
+  },
+  "required": [
+    "claim_signature",
+    "receiver_wallet",
+    "cycle_start",
+    "cycle_end",
+    "token_mints",
+    "received_lamports",
+    "carry_in_lamports",
+    "pot_lamports",
+    "distributed_lamports",
+    "carry_out_lamports",
+    "total_referred_volume_lamports",
+    "cap_percentage",
+    "cap_lamports",
+    "mode",
+    "status",
+    "allocations"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -45,7 +45,7 @@ export async function refreshEarningTier(base44, profile, settings, rpcUrl) {
 }
 
 async function createEvent(base44, settings, origin, input, sharePercentage) {
-  const existing = await base44.asServiceRole.entities.EarnRevenueEvent.filter({ source: input.source, source_signature: input.signature }, "-created_date", 1);
+  const existing = await base44.asServiceRole.entities.EarnRevenueEvent.filter({ source: input.source, source_signature: input.signature, referral_profile_id: origin.origin_profile_id }, "-created_date", 1);
   if (existing[0]) return existing[0];
   const live = earnNetworkMode(settings) === "LIVE";
   const earning = live ? Math.floor(Number(input.actualReceivedLamports || 0) * sharePercentage / 100) : 0;
@@ -97,7 +97,7 @@ export async function recordOriginRevenue(base44, settings, input, rpcUrl) {
   if (!profiles[0]) return { credited: false, reason: "inactive_profile" };
   const tier = await refreshEarningTier(base44, profiles[0], settings, rpcUrl);
   const qualified = tier.percentage > 0;
-  const configuredShare = input.source === "SECONDARY_ROYALTY" ? Number(settings?.secondary_referrer_share_percentage ?? 50) : Number(settings?.creator_fee_referrer_share_percentage ?? 50);
+  const configuredShare = Number.isFinite(Number(input.sharePercentageOverride)) ? Number(input.sharePercentageOverride) : input.source === "SECONDARY_ROYALTY" ? Number(settings?.secondary_referrer_share_percentage ?? 50) : Number(settings?.creator_fee_referrer_share_percentage ?? 50);
   const event = await createEvent(base44, settings, origin, input, qualified ? configuredShare : 0);
   return { credited: event.earning_lamports > 0, event, origin, mode: earnNetworkMode(settings) };
 }

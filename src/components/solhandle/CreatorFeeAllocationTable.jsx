@@ -1,0 +1,10 @@
+const sol = (value) => `${(Number(value || 0) / 1e9).toFixed(4)} SOL`;
+
+export default function CreatorFeeAllocationTable({ cycle }) {
+  return <div className="mt-5 overflow-hidden rounded-xl border border-white/10">
+    <div className="grid gap-3 border-b border-white/10 bg-white/5 p-4 text-xs sm:grid-cols-4"><div><span className="text-slate-500">Received</span><p className="mt-1 text-white">{sol(cycle.received_lamports)}</p></div><div><span className="text-slate-500">Carry in</span><p className="mt-1 text-violet-200">{sol(cycle.carry_in_lamports)}</p></div><div><span className="text-slate-500">Distributed</span><p className="mt-1 text-cyan-200">{sol(cycle.distributed_lamports)}</p></div><div><span className="text-slate-500">Carry out</span><p className="mt-1 text-violet-200">{sol(cycle.carry_out_lamports)}</p></div></div>
+    <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-xs"><thead className="text-slate-500"><tr>{["Referrer", "Referred volume", "Raw share", "Cycle cap", "Final"].map((label) => <th key={label} className="px-4 py-3 font-medium">{label}</th>)}</tr></thead><tbody>{cycle.allocations.map((item) => <tr key={item.referral_profile_id} className="border-t border-white/5"><td className="px-4 py-3 text-white">@{item.display_handle}</td><td className="px-4 py-3 text-slate-300">{sol(item.referred_volume_lamports)}</td><td className="px-4 py-3 text-slate-300">{sol(item.raw_share_lamports)}</td><td className="px-4 py-3 text-slate-300">{sol(item.cap_lamports)}</td><td className="px-4 py-3 font-semibold text-cyan-200">{sol(item.final_lamports)}</td></tr>)}</tbody></table></div>
+    {!cycle.allocations.length && <p className="border-t border-white/5 p-4 text-sm text-slate-500">No referred swap volume was found; the full pot rolls forward.</p>}
+    <p className="border-t border-white/10 p-3 text-xs text-emerald-300">Balanced: distributions + carry equal the complete cycle pot. No allocation exceeds the {cycle.cap_percentage}% cap.</p>
+  </div>;
+}

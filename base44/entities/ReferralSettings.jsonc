@@ -138,6 +138,21 @@
     "creator_fee_referrer_share_percentage": {
       "type": "number",
       "default": 50
+    },
+    "creator_fee_referrer_cap_percentage": {
+      "type": "number",
+      "default": 30
+    },
+    "creator_fee_carry_lamports": {
+      "type": "number",
+      "default": 0
+    },
+    "creator_fee_cycle_token_mints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
     }
   },
   "required": [

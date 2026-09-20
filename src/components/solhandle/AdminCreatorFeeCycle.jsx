@@ -1,0 +1,16 @@
+import { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import CreatorFeeAllocationTable from "@/components/solhandle/CreatorFeeAllocationTable";
+
+const isoLocal = (date) => new Date(date).toISOString().slice(0, 16);
+export default function AdminCreatorFeeCycle({ onCarryChange }) {
+  const [form, setForm] = useState({ claim_signature: "", cycle_start: isoLocal(Date.now() - 5 * 86400000), cycle_end: isoLocal(Date.now()) });
+  const [preview, setPreview] = useState(null); const [loading, setLoading] = useState(""); const [message, setMessage] = useState("");
+  const run = async (action) => { setLoading(action); setMessage(""); try { const res = await base44.functions.invoke("processCreatorFeeCycle", { action, claim_signature: form.claim_signature.trim(), cycle_start: new Date(form.cycle_start).toISOString(), cycle_end: new Date(form.cycle_end).toISOString() }); setPreview(res.data.cycle); if (action === "confirm") { onCarryChange(res.data.cycle.carry_out_lamports); setMessage(res.data.duplicate ? "This claim was already confirmed; no duplicate rewards were created." : "Creator-fee cycle confirmed and recorded."); } } catch (error) { setMessage(error.response?.data?.error || "Creator-fee cycle could not be processed."); } finally { setLoading(""); } };
+  const update = (key, value) => { setForm({ ...form, [key]: value }); setPreview(null); };
+  return <section className="mt-6 rounded-xl border border-cyan-300/20 bg-slate-950/60 p-5"><p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">Manual claim · automatic distribution</p><h3 className="mt-1 text-lg font-semibold text-white">Process creator-fee cycle</h3><p className="mt-2 text-sm text-slate-400">Claim in Phantom first, then preview the verified on-chain allocation before confirming.</p>
+    <label className="mt-4 block text-xs text-slate-400">Claim transaction signature<input value={form.claim_signature} onChange={(e) => update("claim_signature", e.target.value)} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 font-mono text-xs text-white"/></label>
+    <div className="mt-3 grid gap-3 sm:grid-cols-2">{[["cycle_start", "Cycle start"], ["cycle_end", "Cycle end"]].map(([key, label]) => <label key={key} className="text-xs text-slate-400">{label}<input type="datetime-local" value={form[key]} onChange={(e) => update(key, e.target.value)} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-white"/></label>)}</div>
+    <div className="mt-4 flex flex-wrap gap-3"><button onClick={() => run("preview")} disabled={Boolean(loading) || !form.claim_signature.trim()} className="rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-200 disabled:opacity-40">{loading === "preview" ? "Scanning chain…" : "Preview distribution"}</button>{preview && <button onClick={() => run("confirm")} disabled={Boolean(loading) || preview.status === "CONFIRMED"} className="rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-4 py-2 text-sm font-semibold text-slate-950 disabled:opacity-40">{loading === "confirm" ? "Confirming…" : "Confirm cycle"}</button>}</div>
+    {message && <p className="mt-3 text-sm text-slate-300">{message}</p>}{preview && <CreatorFeeAllocationTable cycle={preview}/>}</section>;
+}

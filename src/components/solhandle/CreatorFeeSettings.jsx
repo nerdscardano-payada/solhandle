@@ -1,0 +1,9 @@
+export default function CreatorFeeSettings({ settings, onChange }) {
+  const set = (key, value) => onChange({ ...settings, [key]: value });
+  const mints = (settings.creator_fee_cycle_token_mints || []).join("\n");
+  return <div className="mt-5 rounded-xl border border-cyan-300/20 bg-cyan-300/5 p-4">
+    <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">Creator-fee distribution</p><p className="mt-1 text-xs text-slate-500">Model 3 · pro-rata volume with a per-cycle cap</p></div><span className="rounded-full border border-violet-300/20 bg-violet-300/10 px-3 py-1 text-xs text-violet-200">Carry {(Number(settings.creator_fee_carry_lamports || 0) / 1e9).toFixed(4)} SOL</span></div>
+    <div className="mt-4 grid gap-3 sm:grid-cols-2"><label className="text-xs text-slate-400">Maximum per referrer (%)<input type="number" min="1" max="100" value={settings.creator_fee_referrer_cap_percentage ?? 30} onChange={(e) => set("creator_fee_referrer_cap_percentage", Number(e.target.value))} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-white"/></label><label className="text-xs text-slate-400">Protocol payout wallet<input value={settings.payout_wallet_address || ""} onChange={(e) => set("payout_wallet_address", e.target.value.trim())} placeholder="Wallet receiving the manual claim" className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-white"/></label></div>
+    <label className="mt-3 block text-xs text-slate-400">pump.fun token mints (one per line)<textarea rows={3} value={mints} onChange={(e) => set("creator_fee_cycle_token_mints", e.target.value.split(/\s|,/).map((value) => value.trim()).filter(Boolean))} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 font-mono text-xs text-white"/></label>
+  </div>;
+}
