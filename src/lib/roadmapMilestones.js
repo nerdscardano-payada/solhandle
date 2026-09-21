@@ -36,15 +36,21 @@ export const roadmapMilestones = [
     upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model"]
   },
   {
-    number: "07", status: "upcoming", title: "Native marketplace rollout",
-    summary: "Establish real on-chain demand and secondary-market activity before introducing a token.",
-    completed: ["Escrowless fixed-price sale architecture", "Escrow-backed offer design", "On-chain 5% SolHandle protocol royalty model"],
-    upcoming: ["Launch Buy Now, listing and offer flows", "Synchronize ownership and market activity from chain state", "Measure listings, sales volume, active traders and protocol royalty revenue"]
+    number: "07", status: "current", title: "Native marketplace rollout",
+    summary: "The non-custodial marketplace experience is built; final Mainnet program activation and end-to-end validation remain launch requirements.",
+    completed: ["Native listing, bidding and Buy Now interfaces", "Wallet-confirmed non-custodial transaction architecture", "Marketplace discovery and bid/sale notification interfaces"],
+    upcoming: ["Deploy the updated marketplace program to Mainnet", "Validate listing, purchase, bid acceptance and cancellation end to end", "Monitor ownership synchronization, sales and royalties actually received"]
   },
   {
-    number: "08", status: "upcoming", title: "Token utility & community ownership",
-    summary: "After the marketplace proves demand, $HANDLE will launch through a direct Meteora DBC configuration with useful benefits available from day one.",
-    completed: ["Marketplace-first launch principle", "Burn-to-boost and lock-to-benefit utility direction", "Direct Meteora DBC selected with a branded SolHandle launch experience"],
-    upcoming: ["Design tokenomics from measured marketplace and community activity", "Complete security, vesting and legal/MiCA review", "Launch the bonding curve on SolHandle and graduate liquidity into a Meteora DAMM pool"]
+    number: "08", status: "current", title: "$HANDLE community launch",
+    summary: "Preparing a pump.fun community launch with transparent allocation and verified trading routes. Token ownership is not required to use the identity protocol.",
+    completed: ["Launch plan: one billion $HANDLE, 99% community and 1% protocol allocation", "Six-month lock commitment defined for the ten million protocol tokens", "Launch dashboard with configurable CA, DexScreener data and Jupiter/pump.fun trading routes"],
+    upcoming: ["Create the official token through pump.fun", "Publish and verify the official CA and available trading routes", "Execute the six-month protocol allocation lock and publish proof"]
+  },
+  {
+    number: "09", status: "current", title: "Earn Network tiers & activation",
+    summary: "The Earn Network is being prepared for controlled activation. Pre-launch attribution does not create claimable earnings; Live mode requires the official token and completed launch checks.",
+    completed: ["Permanent origin-referral attribution infrastructure", "Mint-share tiers configured: 25,000 $HANDLE → 20%; 100,000 → 30%; 250,000 → 40%; 1,000,000 → 50%", "24-hour tier-upgrade qualification and actual-received revenue accounting implemented"],
+    upcoming: ["Configure the official $HANDLE mint and verify balance checks for every tier", "Validate 24-hour qualification, revenue allocation and payout safeguards", "Activate Live mode and eligible reward claims after verification"]
   }
 ];
