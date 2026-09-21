@@ -36,10 +36,10 @@ export const roadmapMilestones = [
     upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model"]
   },
   {
-    number: "07", status: "current", title: "Native marketplace rollout",
-    summary: "The non-custodial marketplace experience is built; final Mainnet program activation and end-to-end validation remain launch requirements.",
+    number: "07", status: "completed", title: "Native marketplace live",
+    summary: "The non-custodial native marketplace is live, with active handle listings and recorded bidding activity.",
     completed: ["Native listing, bidding and Buy Now interfaces", "Wallet-confirmed non-custodial transaction architecture", "Marketplace discovery and bid/sale notification interfaces"],
-    upcoming: ["Deploy the updated marketplace program to Mainnet", "Validate listing, purchase, bid acceptance and cancellation end to end", "Monitor ownership synchronization, sales and royalties actually received"]
+    next: "Continue monitoring ownership synchronization, transaction reliability, sales and royalties actually received, with ongoing marketplace improvements."
   },
   {
     number: "08", status: "current", title: "$HANDLE community launch",
