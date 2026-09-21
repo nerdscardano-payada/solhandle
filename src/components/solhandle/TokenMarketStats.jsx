@@ -1,10 +1,15 @@
 const compact = (value, currency = true) => value == null ? "—" : `${currency ? "$" : ""}${Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 2 }).format(Number(value))}`;
+const solPrice = (value) => {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "—";
+  return number.toFixed(12).replace(/0+$/, "").replace(/\.$/, "") || "0";
+};
 
 export default function TokenMarketStats({ market }) {
   const change = Number(market?.priceChange?.h24 || 0);
   const stats = [
     ["Price USD", market?.priceUsd ? `$${Number(market.priceUsd).toPrecision(5)}` : "—"],
-    ["Price SOL", market?.priceNative ? Number(market.priceNative).toPrecision(5) : "—"],
+    ["Price SOL", market?.priceNative ? solPrice(market.priceNative) : "—"],
     ["Market cap", compact(market?.marketCap)],
     ["Liquidity", compact(market?.liquidity?.usd)],
     ["24h volume", compact(market?.volume?.h24)],
