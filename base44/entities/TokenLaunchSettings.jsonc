@@ -1,0 +1,30 @@
+{
+  "name": "TokenLaunchSettings",
+  "type": "object",
+  "properties": {
+    "token_mint_address": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "token_mint_address"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
