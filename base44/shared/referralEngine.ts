@@ -1,8 +1,6 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
 import { lockMintOrigin } from "./earnNetwork.ts";
 
-const RESERVED_CODES = new Set(["admin", "api", "referral", "referrals", "earn", "dashboard", "login", "signup", "support", "terms", "privacy", "solhandle"]);
-
 export async function getReferralSettings(base44) {
   const rows = await base44.asServiceRole.entities.ReferralSettings.list("-updated_date", 1);
   return rows[0] || null;
@@ -16,16 +14,21 @@ export function activeCommissionPercentage(settings, at = new Date()) {
 }
 
 export async function ensurePromoterProfile(base44, wallet, handle = "") {
-  const existingWallet = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1);
-  if (existingWallet[0]) return existingWallet[0];
   const cleanHandle = String(handle || "").replace(/^@/, "").toLowerCase();
-  const preferred = cleanHandle && !RESERVED_CODES.has(cleanHandle) ? cleanHandle : "";
-  const existingCode = preferred ? await base44.asServiceRole.entities.ReferralProfile.filter({ referral_code: preferred }, "-created_date", 1) : [];
-  const walletCode = `${wallet.slice(0, 6)}-${wallet.slice(-4)}`.toLowerCase();
-  const referralCode = preferred && !existingCode[0] ? preferred : walletCode;
-  const display = preferred ? `@${preferred}` : `${wallet.slice(0, 4)}…${wallet.slice(-4)}`;
+  if (!cleanHandle) throw new Error("Choose a SolHandle for your referral link.");
+  const existingWallet = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1);
+  if (existingWallet[0]) {
+    const profile = existingWallet[0];
+    if (!String(profile.display_handle || "").startsWith("@")) {
+      await base44.asServiceRole.entities.ReferralProfile.update(profile.id, { referral_code: cleanHandle, display_handle: `@${cleanHandle}` });
+      return { ...profile, referral_code: cleanHandle, display_handle: `@${cleanHandle}` };
+    }
+    return profile;
+  }
+  const existingCode = await base44.asServiceRole.entities.ReferralProfile.filter({ referral_code: cleanHandle }, "-created_date", 1);
+  if (existingCode[0]) throw new Error("This handle already has a referral profile.");
   return await base44.asServiceRole.entities.ReferralProfile.create({
-    wallet_address: wallet, referral_code: referralCode, display_handle: display, status: "ACTIVE",
+    wallet_address: wallet, referral_code: cleanHandle, display_handle: `@${cleanHandle}`, status: "ACTIVE",
     show_on_leaderboard: true, successful_referrals: 0, total_earnings_lamports: 0,
     pending_earnings_lamports: 0, paid_earnings_lamports: 0
   });
