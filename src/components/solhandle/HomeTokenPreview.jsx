@@ -1,18 +1,14 @@
-import { ArrowRight, CircleDashed, Rocket } from "lucide-react";
+import { ArrowRight, CircleDashed } from "lucide-react";
 import { Link } from "react-router-dom";
 import useTokenLaunchSettings from "@/hooks/useTokenLaunchSettings";
 
-const stats = [["Total supply", "1B"], ["Community", "99%"], ["Earn tiers", "20–50%"]];
-
 export default function HomeTokenPreview() {
   const { tokenMint } = useTokenLaunchSettings();
-  return <section className="overflow-hidden rounded-3xl border border-violet-400/20 bg-slate-950/70 shadow-2xl shadow-violet-950/20">
-    <div className="grid lg:grid-cols-[1.15fr_.85fr]">
-      <div className="p-6 sm:p-8"><span className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs font-semibold text-amber-200"><CircleDashed className="h-3.5 w-3.5" />{tokenMint ? "Live" : "Pre-launch"}</span><p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">$HANDLE community token</p><h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">The community layer behind SolHandle.</h2><p className="mt-4 max-w-xl leading-relaxed text-slate-400">Discover the transparent pump.fun launch, follow the market and unlock higher Earn Network revenue-share tiers by holding $HANDLE.</p>
-        <div className="mt-6 grid grid-cols-3 gap-3">{stats.map(([label, value]) => <div key={label} className="rounded-xl border border-white/10 bg-white/5 p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-semibold text-white">{value}</p></div>)}</div>
-        <Link to="/upcoming/token-launch" className="mt-7 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-400 to-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950">{tokenMint ? "Trade $HANDLE now" : "Explore the trading terminal"} <ArrowRight className="h-4 w-4" /></Link>
-      </div>
-      <div className="border-t border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,.18),transparent_45%)] p-6 lg:border-l lg:border-t-0 sm:p-8"><div className="flex items-center justify-between"><div><p className="text-xs uppercase tracking-wider text-violet-300">Trading preview</p><h3 className="mt-1 text-xl font-semibold">$HANDLE / SOL</h3></div><span className="text-xs text-slate-500">pump.fun</span></div><div className="mt-6 grid grid-cols-2 rounded-xl bg-slate-900 p-1"><span className="rounded-lg bg-violet-400 py-2 text-center text-sm font-semibold text-slate-950">Buy</span><span className="py-2 text-center text-sm font-semibold text-slate-500">Sell</span></div><div className="mt-4 rounded-xl border border-white/10 bg-slate-900 px-4 py-3"><p className="text-xs text-slate-500">You pay (SOL)</p><p className="mt-1 text-2xl font-semibold text-slate-400">0.00</p></div><div className="mt-4 flex items-center justify-between rounded-xl bg-white/5 p-4 text-sm"><span className="text-slate-400">Market status</span><span className="font-semibold text-amber-200">{tokenMint ? "Trading live" : "Awaiting verified launch"}</span></div><div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-400/50 to-cyan-300/50 py-3 font-semibold text-slate-950"><Rocket className="h-4 w-4" />{tokenMint ? "Buy $HANDLE now" : "Trading opens at launch"}</div></div>
+  return <section className="relative overflow-hidden rounded-2xl border border-violet-400/20 bg-slate-950/70 p-5 shadow-xl shadow-black/20">
+    <div className="absolute -right-12 top-0 h-full w-40 bg-violet-500/10 blur-3xl"/>
+    <div className="relative flex h-full flex-col justify-between gap-5 sm:flex-row sm:items-center">
+      <div className="flex min-w-0 items-start gap-4"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-violet-300/25 bg-violet-300/10 text-violet-200"><CircleDashed className="h-5 w-5" /></span><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">$HANDLE community token · {tokenMint ? "Live" : "Pre-launch"}</p><h2 className="mt-1 text-lg font-semibold text-white">The community layer behind SolHandle.</h2><p className="mt-1 text-sm text-slate-400">Explore the launch, market and Earn Network tiers.</p></div></div>
+      <Link to="/upcoming/token-launch" className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-violet-200">{tokenMint ? "Trade now" : "Explore launch"} <ArrowRight className="h-4 w-4" /></Link>
     </div>
   </section>;
 }
