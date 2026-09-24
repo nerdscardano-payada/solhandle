@@ -7,6 +7,8 @@ import { rpc } from '../../shared/solanaRpc.ts';
 function bytes64(bytes) { return btoa(Array.from(bytes, b => String.fromCharCode(b)).join('')); }
 function decode64(value) { return Uint8Array.from(atob(value), c => c.charCodeAt(0)); }
 function fail(message, status = 400) { return Response.json({ error: message }, { status }); }
+const MEMO_PROGRAMS = new Set(['MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr', 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo']);
+const isAllowedProgram = id => id === SystemProgram.programId.toBase58() || id === ComputeBudgetProgram.programId.toBase58() || MEMO_PROGRAMS.has(id);
 async function saveConfirmed(base44, rpcUrl, signature, handle, sender, receiver, amount) {
   const previous = await base44.asServiceRole.entities.Payment.filter({ tx_signature: signature }, '-created_at', 1);
   if (previous.length) return previous[0];
@@ -50,7 +52,8 @@ export default async function(req: Request): Promise<Response> {
       if (tx.feePayer?.toBase58() !== sender) return fail('Your wallet switched accounts while signing. Reconnect the correct wallet and review again.');
       if (!tx.verifySignatures()) return fail('The wallet did not return a valid signature for this transfer. Reconnect your wallet and review again.');
       const transfers = tx.instructions.filter(ix => ix.programId.equals(SystemProgram.programId));
-      if (transfers.length !== 1 || tx.instructions.some(ix => !ix.programId.equals(SystemProgram.programId) && !ix.programId.equals(ComputeBudgetProgram.programId))) return fail('Your wallet changed the payment instructions. Review and sign again.');
+      const unexpectedPrograms = [...new Set(tx.instructions.map(ix => ix.programId.toBase58()).filter(id => !isAllowedProgram(id)))];
+      if (transfers.length !== 1 || unexpectedPrograms.length) return fail(`Your wallet added unsupported payment instructions (${transfers.length} transfers${unexpectedPrograms.length ? `; programs: ${unexpectedPrograms.join(', ')}` : ''}). No payment was sent.`, 422);
       const transfer = SystemInstruction.decodeTransfer(transfers[0]);
       const fee = await rpc(rpcUrl, 'getFeeForMessage', [bytes64(tx.serializeMessage()), { commitment: 'confirmed' }]);
       if (!Number.isFinite(Number(fee?.value)) || Number(fee.value) > 105000) return fail('The network fee changed too much. Review the payment again.');
@@ -69,7 +72,7 @@ export default async function(req: Request): Promise<Response> {
         const transfers = instructions.filter(ix => ix.program === 'system');
                  const ix = transfers[0];
                  const info = ix?.parsed?.info;
-                 if (transfers.length !== 1 || instructions.some(ix => ix.program !== 'system' && ix.programId !== ComputeBudgetProgram.programId.toBase58()) || ix.parsed?.type !== 'transfer' || !keys[0]?.signer || keys[0]?.pubkey !== sender || info?.source !== sender || info?.lamports !== amount) return fail('Transaction does not match this payment.', 403);
+                 if (transfers.length !== 1 || instructions.some(ix => !isAllowedProgram(ix.programId)) || ix.parsed?.type !== 'transfer' || !keys[0]?.signer || keys[0]?.pubkey !== sender || info?.source !== sender || info?.lamports !== amount) return fail('Transaction does not match this payment.', 403);
         const resolved = await resolveOnChain(rpcUrl, handle);
         if (!resolved || info.destination !== resolved.address) return fail('The handle owner changed before this payment could be recorded. Your transfer is on-chain; check Explorer.', 409);
         const payment = await saveConfirmed(base44, rpcUrl, signature, handle, sender, info.destination, amount);
