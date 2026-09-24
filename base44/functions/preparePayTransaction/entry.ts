@@ -8,7 +8,8 @@ function bytes64(bytes) { return btoa(Array.from(bytes, b => String.fromCharCode
 function decode64(value) { return Uint8Array.from(atob(value), c => c.charCodeAt(0)); }
 function fail(message, status = 400) { return Response.json({ error: message }, { status }); }
 const MEMO_PROGRAMS = new Set(['MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr', 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo']);
-const isAllowedProgram = id => id === SystemProgram.programId.toBase58() || id === ComputeBudgetProgram.programId.toBase58() || MEMO_PROGRAMS.has(id);
+const LIGHTHOUSE_PROGRAM = 'L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95';
+const isAllowedProgram = id => id === SystemProgram.programId.toBase58() || id === ComputeBudgetProgram.programId.toBase58() || id === LIGHTHOUSE_PROGRAM || MEMO_PROGRAMS.has(id);
 async function saveConfirmed(base44, rpcUrl, signature, handle, sender, receiver, amount) {
   const previous = await base44.asServiceRole.entities.Payment.filter({ tx_signature: signature }, '-created_at', 1);
   if (previous.length) return previous[0];
