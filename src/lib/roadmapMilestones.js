@@ -42,13 +42,19 @@ export const roadmapMilestones = [
     next: "Continue monitoring ownership synchronization, transaction reliability, sales and royalties actually received, with ongoing marketplace improvements."
   },
   {
-    number: "08", status: "current", title: "$HANDLE community launch",
+    number: "08", status: "completed", title: "SolHandle Pay — native SOL transfers",
+    summary: "A verified @handle can now be used to send native SOL directly to its current owner on Mainnet, without custody or a SolHandle payment fee.",
+    completed: ["On-chain recipient resolution and safe native-SOL destination checks", "Wallet-signed transfers with sender, amount and recipient validation", "Confirmed payment receipts and wallet-linked payment history"],
+    next: "Monitor wallet compatibility and transaction reliability while keeping the recipient address visible before approval."
+  },
+  {
+    number: "09", status: "current", title: "$HANDLE community launch",
     summary: "Preparing a pump.fun community launch with transparent allocation and verified trading routes. Token ownership is not required to use the identity protocol.",
     completed: ["Launch plan: one billion $HANDLE, 99% community and 1% protocol allocation", "Six-month lock commitment defined for the ten million protocol tokens", "Launch dashboard with configurable CA, DexScreener data and Jupiter/pump.fun trading routes"],
     upcoming: ["Create the official token through pump.fun", "Publish and verify the official CA and available trading routes", "Execute the six-month protocol allocation lock and publish proof"]
   },
   {
-    number: "09", status: "current", title: "Earn Network tiers & activation",
+    number: "10", status: "current", title: "Earn Network tiers & activation",
     summary: "The Earn Network is being prepared for controlled activation. Pre-launch attribution does not create claimable earnings; Live mode requires the official token and completed launch checks.",
     completed: ["Permanent origin-referral attribution infrastructure", "Mint-share tiers configured: 25,000 $HANDLE → 20%; 100,000 → 30%; 250,000 → 40%; 1,000,000 → 50%", "24-hour tier-upgrade qualification and actual-received revenue accounting implemented"],
     upcoming: ["Configure the official $HANDLE mint and verify balance checks for every tier", "Validate 24-hour qualification, revenue allocation and payout safeguards", "Activate Live mode and eligible reward claims after verification"]
