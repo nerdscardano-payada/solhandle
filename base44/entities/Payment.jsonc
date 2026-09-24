@@ -1,0 +1,71 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "receiver_wallet": {
+      "type": "string"
+    },
+    "sender_wallet": {
+      "type": "string"
+    },
+    "sender_primary_handle": {
+      "type": "string"
+    },
+    "amount_lamports": {
+      "type": "number"
+    },
+    "tx_signature": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "CONFIRMED",
+        "FAILED"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "handle",
+    "receiver_wallet",
+    "sender_wallet",
+    "amount_lamports",
+    "tx_signature",
+    "status",
+    "created_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

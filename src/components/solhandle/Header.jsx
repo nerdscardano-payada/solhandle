@@ -13,7 +13,7 @@ import useMarketplaceNotifications from "@/hooks/useMarketplaceNotifications";
 import useTokenLaunchSettings from "@/hooks/useTokenLaunchSettings";
 
 const discoverLinks = [["Search handles", "/"], ["Premium Directory", "/directory"], ["Explore handles", "/explore"]];
-const links = [["My Handles", "/my-handles"], ["Market", "/market"], ["Earn", "/earn"], ["$HANDLE Token", "/upcoming/token-launch"]];
+const links = [["My Handles", "/my-handles"], ["Pay", "/pay"], ["Market", "/market"], ["Earn", "/earn"], ["$HANDLE Token", "/upcoming/token-launch"]];
 const developerLinks = [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Documentation", "/docs"]];
 const moreLinks = [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]];
 
