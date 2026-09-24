@@ -18,8 +18,10 @@ export default function Pay() {
   const [loading, setLoading] = useState(''), [error, setError] = useState(''), [pending, setPending] = useState(null);
   const params = new URLSearchParams(location.search);
   const receiptId = params.get('receipt');
-  const requestId = params.get('request');
-  const legacyLink = !requestId && params.has('handle');
+  const requestValue = params.get('request');
+  const readableHandle = requestValue?.startsWith('@') ? requestValue.slice(1).toLowerCase() : null;
+  const requestId = params.get('link') || (/^[a-f0-9]{24}$/.test(requestValue || '') ? requestValue : null);
+  const legacyLink = !requestId && (params.has('handle') || params.has('request'));
   const [linkState, setLinkState] = useState(requestId ? 'loading' : 'none');
   const blockedLink = legacyLink || (requestId && linkState !== 'valid');
   useEffect(() => {
@@ -30,12 +32,13 @@ export default function Pay() {
     let alive = true; setLinkState('loading'); setError(''); setPreview(null); setQuote(null); setLoading('link');
     base44.functions.invoke('preparePayTransaction', { action: 'link_status', requestId }).then(res => {
       if (!alive) return;
+      if (readableHandle && readableHandle !== res.data.handle) { setLinkState('invalid'); setError('This payment link does not match its @handle. Request a new link.'); return; }
       setHandle(res.data.handle); setAmount(res.data.amount);
       setLinkState(res.data.valid ? 'valid' : 'invalid');
       if (!res.data.valid) setError('This @handle has changed ownership since this payment link was created. For your safety, this link can no longer be used.');
     }).catch(e => { if (alive) { setLinkState('invalid'); setError(message(e)); } }).finally(() => { if (alive) setLoading(''); });
     return () => { alive = false; };
-  }, [requestId, receiptId]);
+  }, [requestId, readableHandle, receiptId]);
   useEffect(() => {
     if (!receiptId || !publicKey) return;
     let alive = true; setLoading('receipt'); setError('');

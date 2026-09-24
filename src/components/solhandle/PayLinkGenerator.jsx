@@ -20,7 +20,7 @@ export default function PayLinkGenerator({ handles, wallet, primaryHandle, loadi
   const validAmount = !amount || (/^\d+(\.\d{1,9})?$/.test(amount) && Number(amount) > 0 && Number.isSafeInteger(Math.round(Number(amount) * 1e9)));
   const key = `${wallet}:${handle}:${amount}`;
   const requestId = created?.key === key ? created.id : '';
-  const url = requestId ? `${window.location.origin}/pay?request=${encodeURIComponent(requestId)}` : '';
+  const url = requestId ? `${window.location.origin}/pay?request=@${handle}&link=${encodeURIComponent(requestId)}` : '';
   const createLink = async () => {
     setCreating(true); setError(''); setCreated(null);
     try {
