@@ -30,7 +30,11 @@ export default async function(req: Request): Promise<Response> {
       if (!resolved.safeForNativeSol) return fail('This address cannot safely receive native SOL. Do not send.');
       if (resolved.address === sender) return fail('You cannot send SOL to your own wallet.');
       const latest = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'confirmed' }]);
-      const tx = new Transaction({ feePayer: new PublicKey(sender), recentBlockhash: latest.value.blockhash }).add(SystemProgram.transfer({ fromPubkey: new PublicKey(sender), toPubkey: new PublicKey(resolved.address), lamports: amount }));
+      const tx = new Transaction({ feePayer: new PublicKey(sender), recentBlockhash: latest.value.blockhash }).add(
+        ComputeBudgetProgram.setComputeUnitLimit({ units: 200000 }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 0 }),
+        SystemProgram.transfer({ fromPubkey: new PublicKey(sender), toPubkey: new PublicKey(resolved.address), lamports: amount })
+      );
       const fee = await rpc(rpcUrl, 'getFeeForMessage', [bytes64(tx.serializeMessage()), { commitment: 'confirmed' }]);
       const networkFeeEstimate = Number(fee?.value);
       if (!Number.isFinite(networkFeeEstimate)) return fail('Network fee unavailable. Try again.', 503);
