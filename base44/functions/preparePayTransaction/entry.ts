@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.49';
-import { PublicKey, SystemInstruction, SystemProgram, Transaction } from 'npm:@solana/web3.js@1.98.4';
+import { ComputeBudgetProgram, PublicKey, SystemInstruction, SystemProgram, Transaction } from 'npm:@solana/web3.js@1.98.4';
 import { secrets } from 'base44:runtime';
 import { resolveOnChain, reverseOnChain, normalizeHandle } from '../../shared/solhandleResolver.ts';
 import { rpc } from '../../shared/solanaRpc.ts';
@@ -43,9 +43,14 @@ export default async function(req: Request): Promise<Response> {
     if (body.action === 'submit') {
       if (typeof body.signedTransaction !== 'string' || body.signedTransaction.length > 3000) return fail('Signed transaction required.');
       const tx = Transaction.from(decode64(body.signedTransaction));
-      if (!tx.verifySignatures() || tx.instructions.length !== 1 || !tx.instructions[0].programId.equals(SystemProgram.programId) || tx.feePayer?.toBase58() !== sender) return fail('Invalid signed SOL transfer.');
-      const transfer = SystemInstruction.decodeTransfer(tx.instructions[0]);
-      if (transfer.fromPubkey.toBase58() !== sender || transfer.lamports !== amount) return fail('Signed amount or sender changed.');
+      if (tx.feePayer?.toBase58() !== sender) return fail('Your wallet switched accounts while signing. Reconnect the correct wallet and review again.');
+      if (!tx.verifySignatures()) return fail('The wallet did not return a valid signature for this transfer. Reconnect your wallet and review again.');
+      const transfers = tx.instructions.filter(ix => ix.programId.equals(SystemProgram.programId));
+      if (transfers.length !== 1 || tx.instructions.some(ix => !ix.programId.equals(SystemProgram.programId) && !ix.programId.equals(ComputeBudgetProgram.programId))) return fail('Your wallet changed the payment instructions. Review and sign again.');
+      const transfer = SystemInstruction.decodeTransfer(transfers[0]);
+      const fee = await rpc(rpcUrl, 'getFeeForMessage', [bytes64(tx.serializeMessage()), { commitment: 'confirmed' }]);
+      if (!Number.isFinite(Number(fee?.value)) || Number(fee.value) > 105000) return fail('The network fee changed too much. Review the payment again.');
+      if (transfer.fromPubkey.toBase58() !== sender || transfer.lamports !== BigInt(amount)) return fail('Signed amount or sender changed.');
       const resolved = await resolveOnChain(rpcUrl, handle);
       if (!resolved || !resolved.safeForNativeSol || transfer.toPubkey.toBase58() !== resolved.address) return fail('The handle owner or recipient changed. Review the payment again before signing.', 409);
       signature = await rpc(rpcUrl, 'sendTransaction', [body.signedTransaction, { encoding: 'base64', preflightCommitment: 'confirmed' }]);
@@ -57,9 +62,10 @@ export default async function(req: Request): Promise<Response> {
         if (details.meta?.err) return fail('Solana rejected the transaction. Check your wallet before retrying.', 422);
         const keys = details.transaction?.message?.accountKeys || [];
         const instructions = details.transaction?.message?.instructions || [];
-        const ix = instructions[0];
-        const info = ix?.parsed?.info;
-        if (instructions.length !== 1 || ix.program !== 'system' || ix.parsed?.type !== 'transfer' || !keys[0]?.signer || keys[0]?.pubkey !== sender || info?.source !== sender || info?.lamports !== amount) return fail('Transaction does not match this payment.', 403);
+        const transfers = instructions.filter(ix => ix.program === 'system');
+                 const ix = transfers[0];
+                 const info = ix?.parsed?.info;
+                 if (transfers.length !== 1 || instructions.some(ix => ix.program !== 'system' && ix.programId !== ComputeBudgetProgram.programId.toBase58()) || ix.parsed?.type !== 'transfer' || !keys[0]?.signer || keys[0]?.pubkey !== sender || info?.source !== sender || info?.lamports !== amount) return fail('Transaction does not match this payment.', 403);
         const resolved = await resolveOnChain(rpcUrl, handle);
         if (!resolved || info.destination !== resolved.address) return fail('The handle owner changed before this payment could be recorded. Your transfer is on-chain; check Explorer.', 409);
         const payment = await saveConfirmed(base44, rpcUrl, signature, handle, sender, info.destination, amount);
