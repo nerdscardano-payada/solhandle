@@ -1,0 +1,46 @@
+{
+  "name": "PayLink",
+  "type": "object",
+  "properties": {
+    "handle": {
+      "type": "string"
+    },
+    "recipient_wallet_at_creation": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requested_amount_sol": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "handle",
+    "recipient_wallet_at_creation",
+    "created_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
