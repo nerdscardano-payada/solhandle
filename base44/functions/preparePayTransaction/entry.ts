@@ -82,5 +82,8 @@ export default async function(req: Request): Promise<Response> {
       if (attempt < 17) await new Promise(resolve => setTimeout(resolve, 1000));
     }
     return Response.json({ signature, pending: true, error: 'Confirmation is taking longer than expected. Check Explorer before retrying.' }, { status: 202 });
-  } catch (error) { return Response.json({ error: error.message || 'Payment could not be completed.' }, { status: 500 }); }
+  } catch (error) {
+    if (/blockhash not found/i.test(error.message || '')) return fail('The transaction expired before it could be sent. No payment was sent. Review the payment again.', 409);
+    return Response.json({ error: error.message || 'Payment could not be completed.' }, { status: 500 });
+  }
 }
