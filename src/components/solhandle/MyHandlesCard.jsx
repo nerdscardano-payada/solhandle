@@ -10,7 +10,7 @@ export default function MyHandlesCard({ wallet, state, handles }) {
       {wallet && state === "loading" && <p className="mt-5 text-sm text-slate-400">Loading your handles…</p>}
       {wallet && state === "error" && <p className="mt-5 text-sm text-rose-300">Handles could not be loaded.</p>}
       {wallet && state === "ready" && !handles.length && <p className="mt-5 text-sm text-slate-400">No handles found in this wallet.</p>}
-      {handles.slice(0, 3).map((item, index) => <div className="mt-4 border-b border-white/5 pb-3 last:border-0" key={item.asset || item.handle}>
+      {handles.slice(0, 2).map((item, index) => <div className="mt-4 border-b border-white/5 pb-3 last:border-0" key={item.asset || item.handle}>
         <div className="flex items-center justify-between gap-3"><span className="text-lg font-semibold text-white">{item.display || `@${item.handle}`}</span>{item.isPrimary && <span className="rounded-md bg-emerald-400/10 px-2 py-1 text-[10px] font-medium text-emerald-300">Primary</span>}</div>
         <p className="mt-1 text-xs text-slate-500">{shortenWallet(wallet)}</p>
         {index === 0 && <div className="mt-3 grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wide text-slate-500"><span>Minted<b className="mt-1 block normal-case text-slate-300">{formatMintDate(item.mintedAt)}</b></span><span>Name class<b className="mt-1 block normal-case text-slate-300">{item.nameClass || item.rarity || "Standard"}</b></span></div>}
