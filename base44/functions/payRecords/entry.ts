@@ -12,8 +12,9 @@ export default async function(req: Request): Promise<Response> {
     const key = await crypto.subtle.importKey('raw', new PublicKey(wallet).toBytes(), { name: 'Ed25519' }, false, ['verify']);
     if (!await crypto.subtle.verify('Ed25519', key, decode64(String(body.signature || '')), message)) return Response.json({ error: 'Wallet authorization failed.' }, { status: 403 });
     const base44 = createClientFromRequest(req);
-    if (body.action === 'incoming') {
-      const rows = await base44.asServiceRole.entities.Payment.filter({ receiver_wallet: wallet, status: 'CONFIRMED' }, '-confirmed_at', 50);
+    if (body.action === 'incoming' || body.action === 'outgoing') {
+      const walletField = body.action === 'incoming' ? 'receiver_wallet' : 'sender_wallet';
+      const rows = await base44.asServiceRole.entities.Payment.filter({ [walletField]: wallet, status: 'CONFIRMED' }, '-confirmed_at', 50);
       return Response.json({ payments: rows });
     }
     if (body.action === 'receipt' && typeof body.id === 'string') {

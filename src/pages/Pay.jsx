@@ -13,7 +13,7 @@ export default function Pay() {
   const { publicKey, signTransaction, signMessage } = useWallet();
   const location = useLocation();
   const [handle, setHandle] = useState(() => new URLSearchParams(window.location.search).get('handle') || '');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(() => new URLSearchParams(window.location.search).get('amount') || '');
   const [preview, setPreview] = useState(null), [quote, setQuote] = useState(null), [receipt, setReceipt] = useState(null);
   const [loading, setLoading] = useState(''), [error, setError] = useState(''), [pending, setPending] = useState(null);
   const receiptId = new URLSearchParams(location.search).get('receipt');
