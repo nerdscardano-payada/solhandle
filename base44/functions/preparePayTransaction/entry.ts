@@ -79,11 +79,17 @@ export default async function(req: Request): Promise<Response> {
         const payment = await saveConfirmed(base44, rpcUrl, signature, handle, sender, info.destination, amount);
         return Response.json({ signature, payment });
       }
+      // Re-broadcasting the identical signed bytes cannot create a second transfer.
+      // Some RPC nodes acknowledge a transaction without forwarding it to a leader.
+      if (body.action === 'submit' && (attempt === 4 || attempt === 9 || attempt === 14)) {
+        try { await rpc(rpcUrl, 'sendTransaction', [body.signedTransaction, { encoding: 'base64', preflightCommitment: 'confirmed' }]); }
+        catch (error) { if (!/blockhash not found|already processed/i.test(error.message || '')) throw error; }
+      }
       if (attempt < 17) await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    return Response.json({ signature, pending: true, error: 'Confirmation is taking longer than expected. Check Explorer before retrying.' }, { status: 202 });
+    return Response.json({ signature, pending: true, error: 'Still awaiting on-chain confirmation. Check this signature on Explorer before signing a new payment.' }, { status: 202 });
   } catch (error) {
-    if (/blockhash not found/i.test(error.message || '')) return fail('The transaction expired before it could be sent. No payment was sent. Review the payment again.', 409);
+    if (/blockhash not found/i.test(error.message || '')) return fail('The blockhash expired. If this transaction was submitted earlier, check its signature on Explorer before signing a new payment.', 409);
     return Response.json({ error: error.message || 'Payment could not be completed.' }, { status: 500 });
   }
 }
