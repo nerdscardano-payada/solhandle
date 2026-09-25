@@ -1,0 +1,5 @@
+const usd = value => value ? `$${Number(value).toPrecision(5)}` : '—';
+export default function GrowthPriceMeter({ start, current, targetPercent, percentage }) {
+  const change = start && current ? (current / start - 1) * 100 : 0;
+  return <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-5"><div className="flex justify-between gap-3 text-sm"><strong className="text-white">$HANDLE prijs (USD)</strong><span className="text-cyan-200">{percentage}% van doel</span></div><div role="progressbar" aria-label="$HANDLE prijsdoel" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percentage} className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400" style={{ width: `${percentage}%` }}/></div><p className="mt-3 text-xs text-slate-400">Nu {usd(current)} · start {usd(start)} · doel {usd(start * (1 + targetPercent / 100))}</p><p className="mt-1 text-xs text-slate-400">{change >= 0 ? '+' : ''}{change.toFixed(1)}% sinds start · doel +{targetPercent}%</p></div>;
+}

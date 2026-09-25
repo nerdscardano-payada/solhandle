@@ -27,6 +27,15 @@
     "holders_now": {
       "type": "number"
     },
+    "price_start_usd": {
+      "type": "number"
+    },
+    "price_now_usd": {
+      "type": "number"
+    },
+    "price_target_percent": {
+      "type": "number"
+    },
     "max_progress": {
       "type": "number"
     },
