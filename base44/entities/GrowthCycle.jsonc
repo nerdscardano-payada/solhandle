@@ -1,0 +1,67 @@
+{
+  "name": "GrowthCycle",
+  "type": "object",
+  "properties": {
+    "cycle_number": {
+      "type": "number"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "handles_start": {
+      "type": "number"
+    },
+    "holders_start": {
+      "type": "number"
+    },
+    "handles_target": {
+      "type": "number"
+    },
+    "holders_target": {
+      "type": "number"
+    },
+    "handles_now": {
+      "type": "number"
+    },
+    "holders_now": {
+      "type": "number"
+    },
+    "max_progress": {
+      "type": "number"
+    },
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "cycle_number",
+    "started_at",
+    "handles_start",
+    "holders_start",
+    "handles_target",
+    "holders_target",
+    "handles_now",
+    "holders_now",
+    "last_checked_at"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -43,6 +43,7 @@ import TokenLaunchPreview from '@/pages/TokenLaunchPreview';
 import Market from '@/pages/Market';
 import Promo from '@/pages/Promo';
 import Pay from '@/pages/Pay';
+import Growth from '@/pages/Growth';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -108,6 +109,7 @@ const AuthenticatedApp = () => {
         <Route path="/mint-success" element={<MintSuccess />} />
         <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/pay" element={<Pay />} />
+        <Route path="/growth" element={<Growth />} />
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
