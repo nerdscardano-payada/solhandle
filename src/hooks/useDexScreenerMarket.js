@@ -17,8 +17,9 @@ export default function useDexScreenerMarket(tokenMint, configuredPair) {
       setMarket(selected || null);
       setStatus(selected ? "live" : "waiting");
     };
-    load();
-    const timer = window.setInterval(load, 30000);
+    const safeLoad = () => load().catch(() => { if (active) setStatus("unavailable"); });
+    safeLoad();
+    const timer = window.setInterval(safeLoad, 30000);
     return () => { active = false; window.clearInterval(timer); };
   }, [tokenMint, configuredPair]);
   return { market, status };
