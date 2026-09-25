@@ -6,7 +6,7 @@ const MINT = 'BLoVgMLRxxhq3X5x9s7KxaNhnQeMf5Lt7MrEpBkjpump';
 const MIN_BALANCE = 1000n;
 const MINT_TARGET = 200;
 const HOLDER_TARGETS = [50, 100, 200, 400];
-const PRICE_TARGET_PERCENT = 150;
+const MARKET_CAP_TARGET = 30000;
 const tokenPrograms = new Set(['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb']);
 const u64 = bytes => { let n = 0n; for (let i = 0; i < 8; i++) n |= BigInt(bytes[i]) << BigInt(i * 8); return n; };
 const chunks = (values, size = 500) => Array.from({ length: Math.ceil(values.length / size) }, (_, i) => values.slice(i * size, (i + 1) * size));
@@ -16,7 +16,7 @@ export default async function(req: Request): Promise<Response> {
     const body = await req.json().catch(() => ({}));
     if (body.action === 'view') {
       const cycles = await base44.entities.GrowthCycle.list('-cycle_number', 10);
-      return Response.json({ cycle: cycles[0] || null, completed_cycles: cycles.slice(1), minimum_balance: Number(MIN_BALANCE), weights: { handles: 40, holders: 40, price: 20 } });
+      return Response.json({ cycle: cycles[0] || null, completed_cycles: cycles.slice(1), minimum_balance: Number(MIN_BALANCE), weights: { handles: 40, holders: 40, market_cap: 20 } });
     }
     if (body.action !== 'refresh') return Response.json({ error: 'Unsupported action.' }, { status: 400 });
     const user = await base44.auth.me();
@@ -24,17 +24,23 @@ export default async function(req: Request): Promise<Response> {
     const settings = await base44.asServiceRole.entities.TokenLaunchSettings.list('-updated_date', 1);
     if (settings[0]?.token_mint_address !== MINT) return Response.json({ error: 'Official $HANDLE mint is not configured.' }, { status: 409 });
     const [previousCycle] = await base44.asServiceRole.entities.GrowthCycle.list('-cycle_number', 1);
-    let price = Number(previousCycle?.price_now_usd);
-    let priceChecked = false;
+    let marketCap = Number(previousCycle?.market_cap_now_usd);
+    let capChecked = false;
+    let feedError = '';
     try {
-      const marketResponse = await fetch(`https://api.dexscreener.com/token-pairs/v1/solana/${MINT}`);
-      if (marketResponse.ok) {
-        const pairs = await marketResponse.json();
-        const pair = Array.isArray(pairs) ? pairs.filter(p => p.chainId === 'solana' && p.baseToken?.address === MINT && Number(p.liquidity?.usd) >= 1000 && Number(p.priceUsd) > 0).sort((a, b) => Number(b.liquidity.usd) - Number(a.liquidity.usd))[0] : null;
-        if (pair) { price = Number(pair.priceUsd); priceChecked = true; }
+      let pairs = null;
+      for (const url of [`https://api.dexscreener.com/token-pairs/v1/solana/${MINT}`, `https://api.dexscreener.com/latest/dex/tokens/${MINT}`]) {
+        const response = await fetch(url);
+        if (!response.ok) { feedError = `DEX Screener responded ${response.status}`; continue; }
+        const payload = await response.json();
+        pairs = Array.isArray(payload) ? payload : payload.pairs;
+        if (Array.isArray(pairs) && pairs.length) break;
       }
-    } catch { /* Keep the last verified price when the feed is temporarily unavailable. */ }
-    if (!Number.isFinite(price) || price <= 0) throw new Error('Verified $HANDLE market price unavailable; snapshot was not updated.');
+      const pair = Array.isArray(pairs) ? pairs.filter(p => p.chainId === 'solana' && p.baseToken?.address === MINT && Number(p.liquidity?.usd) >= 1000 && Number(p.marketCap) > 0).sort((a, b) => Number(b.liquidity.usd) - Number(a.liquidity.usd))[0] : null;
+      if (!pair) throw new Error('No eligible pair with market cap');
+      marketCap = Number(pair.marketCap); capChecked = true;
+    } catch (error) { feedError = error.message; }
+    if (!Number.isFinite(marketCap) || marketCap <= 0) throw new Error(`Verified $HANDLE market cap unavailable (${feedError}); snapshot was not updated.`);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const mintAccount = await rpc(rpcUrl, 'getAccountInfo', [MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
     const decimals = mintAccount?.value?.data?.parsed?.info?.decimals;
@@ -71,25 +77,24 @@ export default async function(req: Request): Promise<Response> {
     for (const batch of chunks(create)) await base44.asServiceRole.entities.GrowthHolder.bulkCreate(batch);
     for (const batch of chunks(update)) await base44.asServiceRole.entities.GrowthHolder.bulkUpdate(batch);
     let cycle = previousCycle;
-    if (!cycle) cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: 1, started_at: stamp, handles_start: minted, holders_start: eligible.length, handles_target: MINT_TARGET, holders_target: HOLDER_TARGETS[0], price_start_usd: price, price_now_usd: price, price_checked_at: stamp, price_target_percent: PRICE_TARGET_PERCENT, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
+    if (!cycle) cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: 1, started_at: stamp, handles_start: minted, holders_start: eligible.length, handles_target: MINT_TARGET, holders_target: HOLDER_TARGETS[0], market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
     else {
       const changes = {};
+      const goalChanged = cycle.market_cap_target_usd !== MARKET_CAP_TARGET;
       if (cycle.cycle_number === 1 && (cycle.handles_target === 250 || cycle.handles_target === 50)) changes.handles_target = MINT_TARGET;
       if (cycle.cycle_number === 1 && cycle.holders_target === 250) changes.holders_target = HOLDER_TARGETS[0];
-      if (cycle.price_target_percent !== PRICE_TARGET_PERCENT) changes.price_target_percent = PRICE_TARGET_PERCENT;
-      if (!cycle.price_checked_at && cycle.price_now_usd && cycle.last_checked_at) changes.price_checked_at = cycle.last_checked_at;
+      if (goalChanged) changes.market_cap_target_usd = MARKET_CAP_TARGET;
       if (cycle.cycle_number === 1 && cycle.holders_start === 0 && cycle.holders_now === 0 && eligible.length > 0) changes.holders_start = eligible.length;
-      if (!cycle.price_start_usd) changes.price_start_usd = price;
       if (Object.keys(changes).length) cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, changes);
       const handleShare = Math.min(1, Math.max(0, minted - cycle.handles_start) / cycle.handles_target);
       const holderShare = Math.min(1, Math.max(0, qualified - cycle.holders_start) / cycle.holders_target);
-      const priceShare = Math.min(1, Math.max(0, price / cycle.price_start_usd - 1) / (cycle.price_target_percent / 100));
-      const progress = Math.floor(handleShare * 40 + holderShare * 40 + priceShare * 20);
-      const maxProgress = Math.max(cycle.max_progress || 0, progress);
-      if (handleShare === 1 && holderShare === 1 && priceShare === 1 && priceChecked) {
-        await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, price_now_usd: price, ...(priceChecked ? { price_checked_at: stamp } : {}), max_progress: 100, last_checked_at: stamp });
-        cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: cycle.cycle_number + 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGETS[Math.min(cycle.cycle_number, HOLDER_TARGETS.length - 1)], price_start_usd: price, price_now_usd: price, price_checked_at: stamp, price_target_percent: PRICE_TARGET_PERCENT, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
-      } else cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, price_now_usd: price, ...(priceChecked ? { price_checked_at: stamp } : {}), max_progress: maxProgress, last_checked_at: stamp });
+      const capShare = Math.min(1, marketCap / MARKET_CAP_TARGET);
+      const progress = Math.floor(handleShare * 40 + holderShare * 40 + capShare * 20);
+      const maxProgress = goalChanged ? progress : Math.max(cycle.max_progress || 0, progress);
+      if (handleShare === 1 && holderShare === 1 && capShare === 1 && capChecked) {
+        await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, market_cap_now_usd: marketCap, market_cap_checked_at: stamp, max_progress: 100, last_checked_at: stamp });
+        cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: cycle.cycle_number + 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGETS[Math.min(cycle.cycle_number, HOLDER_TARGETS.length - 1)], market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
+      } else cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, market_cap_now_usd: marketCap, ...(capChecked ? { market_cap_checked_at: stamp } : {}), max_progress: maxProgress, last_checked_at: stamp });
     }
     return Response.json({ cycle, eligible: eligible.length, qualified });
   } catch (error) { return Response.json({ error: error.message || 'Growth snapshot failed.' }, { status: 500 }); }
