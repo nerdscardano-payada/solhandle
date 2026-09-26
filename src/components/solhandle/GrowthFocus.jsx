@@ -5,7 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 const options = [
   { title: 'New SolHandles', detail: 'Every confirmed paid mainnet mint after the cycle baseline advances this goal.', action: 'Find a handle', path: '/' },
   { title: 'Qualified holders', detail: 'One wallet counts after holding the minimum $HANDLE balance for 24 hours of consecutive measurements.', action: 'Explore $HANDLE', path: '/upcoming/token-launch' },
-  { title: 'Market cap', detail: 'This is a live market signal, not a guaranteed outcome. Official milestone decisions use hourly snapshots.', action: 'See the Flywheel', path: '/flywheel' }
+  { title: 'Market cap', detail: 'This is a live market signal, not a guaranteed outcome. Official milestone decisions use hourly snapshots.', action: 'Explore $HANDLE', path: '/upcoming/token-launch' }
 ];
 
 export default function GrowthFocus() {
