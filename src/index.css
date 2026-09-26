@@ -105,6 +105,7 @@
   50% { box-shadow: 0 0 38px rgba(167, 139, 250, .55), 0 0 14px rgba(34, 211, 238, .35); }
 }
 .buyback-near-glow { animation: buyback-near 3s ease-in-out infinite; }
+.buyback-progress-label { -webkit-text-stroke: 1px rgba(2, 6, 23, .95); paint-order: stroke fill; text-shadow: 0 1px 3px rgba(2, 6, 23, 1); }
 @media (prefers-reduced-motion: reduce) {
   .solhandle-active-glow { animation: none; box-shadow: 0 0 24px rgba(34, 211, 238, 0.14); }
   .buyback-near-glow { animation: none; box-shadow: 0 0 22px rgba(167, 139, 250, .35); }
