@@ -100,6 +100,12 @@
   50% { box-shadow: 0 0 48px rgba(167, 139, 250, 0.24), inset 0 0 30px rgba(167, 139, 250, 0.055); }
 }
 .solhandle-active-glow { animation: solhandle-aura 5s ease-in-out infinite; }
+@keyframes buyback-near {
+  0%, 100% { box-shadow: 0 0 18px rgba(34, 211, 238, .2), 0 0 4px rgba(167, 139, 250, .15); }
+  50% { box-shadow: 0 0 38px rgba(167, 139, 250, .55), 0 0 14px rgba(34, 211, 238, .35); }
+}
+.buyback-near-glow { animation: buyback-near 3s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
   .solhandle-active-glow { animation: none; box-shadow: 0 0 24px rgba(34, 211, 238, 0.14); }
+  .buyback-near-glow { animation: none; box-shadow: 0 0 22px rgba(167, 139, 250, .35); }
 }
