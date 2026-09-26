@@ -1,5 +1,5 @@
 import { Image } from '@/components/ui/image';
 
 export default function IntegrationMascot() {
-  return <Image src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/ab0ad7460_generated_image.png" alt="Mouthless SolHandle mascot presenting a network of connected integrations" className="solhandle-mascot-blend mx-auto h-52 w-64 shrink-0 sm:h-64 sm:w-72 lg:mx-0 lg:h-72 lg:w-80" fittingType="fit" />;
+  return <Image src="https://base44.app/api/apps/6a86b7e4bcec5dfac8ee9a44/files/mp/public/6a86b7e4bcec5dfac8ee9a44/8509d8e83_solhandle-original-IntegrationMascot-cap.png" alt="Mouthless SolHandle mascot presenting a network of connected integrations" className="solhandle-mascot-blend mx-auto h-52 w-64 shrink-0 sm:h-64 sm:w-72 lg:mx-0 lg:h-72 lg:w-80" fittingType="fit" />;
 }
