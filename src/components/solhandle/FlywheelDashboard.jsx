@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import BuybackAllocation from '@/components/solhandle/BuybackAllocation';
 
 const stages = ['Mint @', 'Use @', 'Pay / trade / share', 'Protocol activity', '$HANDLE rewards + buybacks', 'More attention & adoption'];
 const display = (value, decimals = 0) => value == null ? '—' : Number(value).toLocaleString('en-US', { maximumFractionDigits: decimals });
@@ -19,7 +20,7 @@ export default function FlywheelDashboard({ progress }) {
     ['SolHandle Pay transactions', display(stats.payTransactions)],
     ['Marketplace volume', `${display(stats.marketplaceVolumeSol, 3)} SOL`],
     ['Royalty generated', `${display(stats.royaltyGeneratedSol, 4)} SOL`],
-    ['SOL earmarked for buyback · 1%', `${display(stats.buybackEarmarkedSol, 4)} SOL`],
+    ['Indicative buyback budget · 10% mint + 1% resale', `${display(stats.buybackEarmarkedSol, 4)} SOL`],
     ['$HANDLE bought', display(stats.handleBought)],
     ['$HANDLE burned', display(stats.handleBurned)]
   ];
@@ -32,6 +33,7 @@ export default function FlywheelDashboard({ progress }) {
     {error && <p role="alert" className="mt-4 text-rose-300">{error}</p>}
     {!stats && !error && <p className="mt-4 text-cyan-200">Loading protocol activity…</p>}
     {metrics && <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">{metrics.map(([label, value]) => <div key={label} className="rounded-xl border border-white/10 bg-slate-900/60 p-4"><strong className="block text-xl text-cyan-100 sm:text-2xl">{value}</strong><span className="mt-2 block text-xs leading-relaxed text-slate-400">{label}</span></div>)}<div className="rounded-xl border border-violet-300/25 bg-slate-900/70 p-4"><strong className="block text-xl text-violet-200 sm:text-2xl">{progress == null ? '—' : `${progress}%`}</strong><span className="mt-2 block text-xs text-slate-400">Next milestone · official progress</span></div></div>}
-    <p className="mt-4 text-xs leading-relaxed text-slate-500">Marketplace volume and royalties reflect recorded native marketplace sales only. Buyback earmarking is 1% of those sales, not a confirmed purchase or transfer. $HANDLE purchases and burns are shown once verifiable records are available. Mint total follows the latest protocol sync.</p>
+    {stats && <BuybackAllocation stats={stats}/>}
+    <p className="mt-4 text-xs leading-relaxed text-slate-500">Primary mint revenue reflects recorded direct mint sales; marketplace volume and royalties reflect recorded native marketplace sales only. Buyback budget is an indicative proposal, not a confirmed purchase or transfer. $HANDLE purchases and burns are shown once verifiable records are available. Mint total follows the latest protocol sync.</p>
   </section>;
 }
