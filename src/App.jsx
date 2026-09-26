@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -44,6 +44,7 @@ import Market from '@/pages/Market';
 import Promo from '@/pages/Promo';
 import Pay from '@/pages/Pay';
 import Growth from '@/pages/Growth';
+import Flywheel from '@/pages/Flywheel';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 
 const AuthenticatedApp = () => {
@@ -110,7 +111,7 @@ const AuthenticatedApp = () => {
         <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/pay" element={<Pay />} />
         <Route path="/growth" element={<Growth />} />
-        <Route path="/flywheel" element={<Navigate to="/growth" replace />} />
+        <Route path="/flywheel" element={<Flywheel />} />
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
