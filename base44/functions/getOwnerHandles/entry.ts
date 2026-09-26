@@ -11,7 +11,7 @@ export default async function(req: Request): Promise<Response> {
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
     const [primary, handles] = await Promise.all([getPrimaryHandle(rpcUrl, wallet), getOwnedActiveHandles(base44, rpcUrl, wallet)]);
     const enrichedHandles = handles.map((handle) => ({ ...handle, isPrimary: primary?.handle === handle.handle && primary?.assetAddress === handle.asset }));
-    console.info('getOwnerHandles RPC calls', { rpcCalls: 2, recordsMatched: enrichedHandles.length });
+    console.info('getOwnerHandles resolved', { recordsMatched: enrichedHandles.length });
     return Response.json({ wallet, handles: enrichedHandles, primaryHandle: primary?.handle || null });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }

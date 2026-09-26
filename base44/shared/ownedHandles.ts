@@ -1,8 +1,13 @@
 import { getAssetOwnersBatch } from './solanaRpc.ts';
 
 export async function getOwnedActiveHandles(base44, rpcUrl, wallet) {
-  const records = await base44.asServiceRole.entities.HandleIndex.filter({ status: 'active' }, '-minted_at', 100);
-  const owners = await getAssetOwnersBatch(rpcUrl, records);
+  const records = await base44.asServiceRole.entities.HandleIndex.filter({ status: 'active' }, '-minted_at', 5000);
+  if (records.length === 5000) throw new Error('Handle index exceeds the supported scan range.');
+  const owners = new Map();
+  for (let i = 0; i < records.length; i += 100) {
+    const batchOwners = await getAssetOwnersBatch(rpcUrl, records.slice(i, i + 100));
+    for (const [asset, owner] of batchOwners) owners.set(asset, owner);
+  }
   const verifiedAt = new Date().toISOString();
   const updates = records
     .filter((record) => owners.get(record.asset_address) && owners.get(record.asset_address) !== record.current_owner_cached)
