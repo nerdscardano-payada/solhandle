@@ -29,7 +29,5 @@ export default function BuybackCurve({ budget }) {
     </button>
     <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-slate-400"><span>Tap the bar for details</span><span>{fmt(1 - cycle)} SOL to {reached + 1} SOL budget threshold</span></div>
     {detailsOpen && <p id="buyback-progress-details" className="mt-3 rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-3 text-xs text-cyan-100">Recorded 10% first-mint allocation: {fmt(total)} SOL. {fmt(reached)} SOL in budget milestones reached; {fmt(cycle)} SOL toward the next 1 SOL milestone. No buyback or burn is confirmed by this calculation.</p>}
-    <p className="mt-4 text-sm text-slate-300">Each additional 1 SOL in the proposed 10% budget marks another potential buyback: buy $HANDLE with 1 SOL, then burn the purchased tokens after execution.</p>
-    <p className="mt-2 text-xs leading-relaxed text-slate-400">A reached threshold does not initiate a transaction or confirm a burn. This is cumulative recorded revenue, not available treasury balance; previous thresholds are not treated as completed buybacks.</p>
   </div>;
 }

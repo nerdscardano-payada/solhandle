@@ -44,7 +44,7 @@ export default function FlywheelDashboard({ progress }) {
     {!stats && !error && <p className="mt-4 text-cyan-200">Loading protocol activity…</p>}
     {metrics && <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">{metrics.map(([label, value]) => <div key={label} className="rounded-xl border border-white/10 bg-slate-900/60 p-4"><strong className="block text-xl text-cyan-100 sm:text-2xl">{value}</strong><span className="mt-2 block text-xs leading-relaxed text-slate-400">{label}</span></div>)}<Link to="/growth" className="rounded-xl border border-violet-300/25 bg-slate-900/70 p-4 transition-colors hover:border-violet-300/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-300" aria-label="View the Growth Curve and official progress"><strong className="block text-xl text-violet-200 sm:text-2xl">{progress == null ? '—' : `${progress}%`}</strong><span className="mt-2 block text-xs text-slate-400">Growth Curve · official progress ↗</span></Link></div>}
     {stats && <BuybackAllocation stats={stats}/>}
-    <p className="mt-4 text-xs leading-relaxed text-slate-500">Primary mint revenue reflects recorded direct mint sales; marketplace volume and royalties reflect recorded native marketplace sales only. Buyback budget is an indicative proposal, not a confirmed purchase or transfer. $HANDLE purchases and burns are shown once verifiable records are available. Mint total follows the latest protocol sync.</p>
+    <p className="mt-4 text-xs leading-relaxed text-slate-500">Figures include recorded direct mints and native marketplace sales only. $HANDLE purchases and burns appear when verifiable records are available; the mint total follows the latest protocol sync.</p>
     </div>
   </section>;
 }
