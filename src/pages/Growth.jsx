@@ -5,7 +5,6 @@ import GrowthProgressBar from '@/components/solhandle/GrowthProgressBar';
 import GrowthMilestones from '@/components/solhandle/GrowthMilestones';
 import GrowthPriceMeter from '@/components/solhandle/GrowthPriceMeter';
 import GrowthHowTo from '@/components/solhandle/GrowthHowTo';
-import FlywheelDashboard from '@/components/solhandle/FlywheelDashboard';
 import { base44 } from '@/api/base44Client';
 import useDexScreenerMarket from '@/hooks/useDexScreenerMarket';
 
@@ -38,6 +37,5 @@ export default function Growth() {
       <GrowthHowTo minimumBalance={data.minimum_balance} targetCap={targetCap}/><GrowthMilestones progress={officialProgress ?? 0} cycle={c.cycle_number}/>
       {data.completed_cycles?.length > 0 && <div className="mt-10 border-t border-white/10 pt-6"><h2 className="text-lg font-semibold">Completed cycles</h2><p className="mt-2 text-sm text-slate-400">{data.completed_cycles.map(item => `Cycle ${item.cycle_number}`).join(' · ')} · completion does not mean rewards have already been delivered.</p></div>}
     </>}
-    <FlywheelDashboard progress={officialProgress}/>
   </section></div></main>;
 }
