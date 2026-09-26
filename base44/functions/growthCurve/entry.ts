@@ -4,9 +4,9 @@ import { secrets } from 'base44:runtime';
 import { rpc } from '../../shared/solanaRpc.ts';
 const MINT = 'BLoVgMLRxxhq3X5x9s7KxaNhnQeMf5Lt7MrEpBkjpump';
 const MIN_BALANCE = 1000n;
-const MINT_TARGET = 200;
-const HOLDER_TARGETS = [50, 100, 200, 400];
-const MARKET_CAP_TARGET = 30000;
+const MINT_TARGET = 500;
+const HOLDER_TARGET = 150;
+const MARKET_CAP_TARGET = 60000;
 const tokenPrograms = new Set(['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb']);
 const u64 = bytes => { let n = 0n; for (let i = 0; i < 8; i++) n |= BigInt(bytes[i]) << BigInt(i * 8); return n; };
 const chunks = (values, size = 500) => Array.from({ length: Math.ceil(values.length / size) }, (_, i) => values.slice(i * size, (i + 1) * size));
@@ -77,14 +77,11 @@ export default async function(req: Request): Promise<Response> {
     for (const batch of chunks(create)) await base44.asServiceRole.entities.GrowthHolder.bulkCreate(batch);
     for (const batch of chunks(update)) await base44.asServiceRole.entities.GrowthHolder.bulkUpdate(batch);
     let cycle = previousCycle;
-    if (!cycle) cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: 1, started_at: stamp, handles_start: minted, holders_start: eligible.length, handles_target: MINT_TARGET, holders_target: HOLDER_TARGETS[0], market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
+    if (!cycle) cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGET, market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
     else {
       const changes = {};
       const goalChanged = cycle.market_cap_target_usd !== MARKET_CAP_TARGET;
-      if (cycle.cycle_number === 1 && (cycle.handles_target === 250 || cycle.handles_target === 50)) changes.handles_target = MINT_TARGET;
-      if (cycle.cycle_number === 1 && cycle.holders_target === 250) changes.holders_target = HOLDER_TARGETS[0];
       if (goalChanged) changes.market_cap_target_usd = MARKET_CAP_TARGET;
-      if (cycle.cycle_number === 1 && cycle.holders_start === 0 && cycle.holders_now === 0 && eligible.length > 0) changes.holders_start = eligible.length;
       if (Object.keys(changes).length) cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, changes);
       const handleShare = Math.min(1, Math.max(0, minted - cycle.handles_start) / cycle.handles_target);
       const holderShare = Math.min(1, Math.max(0, qualified - cycle.holders_start) / cycle.holders_target);
@@ -93,7 +90,7 @@ export default async function(req: Request): Promise<Response> {
       const maxProgress = goalChanged ? progress : Math.max(cycle.max_progress || 0, progress);
       if (handleShare === 1 && holderShare === 1 && capShare === 1 && capChecked) {
         await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, market_cap_now_usd: marketCap, market_cap_checked_at: stamp, max_progress: 100, last_checked_at: stamp });
-        cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: cycle.cycle_number + 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGETS[Math.min(cycle.cycle_number, HOLDER_TARGETS.length - 1)], market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
+        cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: cycle.cycle_number + 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGET, market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
       } else cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, market_cap_now_usd: marketCap, ...(capChecked ? { market_cap_checked_at: stamp } : {}), max_progress: maxProgress, last_checked_at: stamp });
     }
     return Response.json({ cycle, eligible: eligible.length, qualified });
