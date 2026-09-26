@@ -24,7 +24,7 @@ export default function Growth() {
   const liveProgress = Math.round((handles * .4 + holders * .4 + capProgress * .2) * 10) / 10;
   const officialProgress = c?.market_cap_target_usd === targetCap ? (c.max_progress ?? 0) : null;
   const next = [20, 40, 60, 80, 100].find(n => n > (officialProgress ?? 0));
-  return <main className="min-h-screen bg-slate-950 text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="mx-auto max-w-5xl px-5 py-12 sm:py-20">
+  return <main className="min-h-screen bg-slate-950 text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="mx-auto max-w-6xl px-5 py-12 sm:py-20">
     <p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">Community growth · Mainnet</p>
     <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">$HANDLE × SolHandle Growth Curve</h1>
     <p className="mt-3 text-slate-400">More handles, more holders, and sustained market interest bring the next reward closer.</p>
