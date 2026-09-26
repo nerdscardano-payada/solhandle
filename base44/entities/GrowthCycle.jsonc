@@ -30,6 +30,9 @@
     "minimum_balance": {
       "type": "number"
     },
+    "holders_manual_floor": {
+      "type": "number"
+    },
     "price_start_usd": {
       "type": "number"
     },
