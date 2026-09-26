@@ -3,7 +3,7 @@ import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { secrets } from 'base44:runtime';
 import { rpc } from '../../shared/solanaRpc.ts';
 const MINT = 'BLoVgMLRxxhq3X5x9s7KxaNhnQeMf5Lt7MrEpBkjpump';
-const MIN_BALANCE = 1000n;
+const MIN_BALANCE = 100000n;
 const MINT_TARGET = 500;
 const HOLDER_TARGET = 150;
 const MARKET_CAP_TARGET = 60000;
@@ -24,6 +24,7 @@ export default async function(req: Request): Promise<Response> {
     const settings = await base44.asServiceRole.entities.TokenLaunchSettings.list('-updated_date', 1);
     if (settings[0]?.token_mint_address !== MINT) return Response.json({ error: 'Official $HANDLE mint is not configured.' }, { status: 409 });
     const [previousCycle] = await base44.asServiceRole.entities.GrowthCycle.list('-cycle_number', 1);
+    const thresholdChanged = Boolean(previousCycle) && previousCycle.minimum_balance !== Number(MIN_BALANCE);
     let marketCap = Number(previousCycle?.market_cap_now_usd);
     let capChecked = false;
     let feedError = '';
@@ -66,10 +67,14 @@ export default async function(req: Request): Promise<Response> {
     for (const wallet of eligible) {
       const old = byWallet.get(wallet);
       const consecutive = old && now.getTime() - Date.parse(old.last_seen_at) <= 90 * 60 * 1000;
-      const first = consecutive ? old.first_seen_at : stamp;
+      const first = consecutive && !thresholdChanged ? old.first_seen_at : stamp;
       if (consecutive && now.getTime() - Date.parse(first) >= 24 * 3600 * 1000) qualified++;
       if (old) update.push({ id: old.id, first_seen_at: first, last_seen_at: stamp });
       else create.push({ wallet, first_seen_at: stamp, last_seen_at: stamp });
+    }
+    if (thresholdChanged) {
+      const eligibleWallets = new Set(eligible);
+      for (const row of previous) if (!eligibleWallets.has(row.wallet)) update.push({ id: row.id, first_seen_at: stamp });
     }
     const handles = await base44.asServiceRole.entities.HandleIndex.filter({ mint_price_lamports: { $gt: 0 } }, '-minted_at', 5000);
     if (handles.length >= 5000) throw new Error('Mint history exceeds supported range; progress was not updated.');
@@ -77,20 +82,21 @@ export default async function(req: Request): Promise<Response> {
     for (const batch of chunks(create)) await base44.asServiceRole.entities.GrowthHolder.bulkCreate(batch);
     for (const batch of chunks(update)) await base44.asServiceRole.entities.GrowthHolder.bulkUpdate(batch);
     let cycle = previousCycle;
-    if (!cycle) cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGET, market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
+    if (!cycle) cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGET, minimum_balance: Number(MIN_BALANCE), market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
     else {
       const changes = {};
       const goalChanged = cycle.market_cap_target_usd !== MARKET_CAP_TARGET;
       if (goalChanged) changes.market_cap_target_usd = MARKET_CAP_TARGET;
+      if (thresholdChanged) { changes.minimum_balance = Number(MIN_BALANCE); changes.holders_start = 0; }
       if (Object.keys(changes).length) cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, changes);
       const handleShare = Math.min(1, Math.max(0, minted - cycle.handles_start) / cycle.handles_target);
       const holderShare = Math.min(1, Math.max(0, qualified - cycle.holders_start) / cycle.holders_target);
       const capShare = Math.min(1, marketCap / MARKET_CAP_TARGET);
       const progress = Math.floor(handleShare * 40 + holderShare * 40 + capShare * 20);
-      const maxProgress = goalChanged ? progress : Math.max(cycle.max_progress || 0, progress);
+      const maxProgress = goalChanged || thresholdChanged ? progress : Math.max(cycle.max_progress || 0, progress);
       if (handleShare === 1 && holderShare === 1 && capShare === 1 && capChecked) {
         await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, market_cap_now_usd: marketCap, market_cap_checked_at: stamp, max_progress: 100, last_checked_at: stamp });
-        cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: cycle.cycle_number + 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGET, market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
+        cycle = await base44.asServiceRole.entities.GrowthCycle.create({ cycle_number: cycle.cycle_number + 1, started_at: stamp, handles_start: minted, holders_start: qualified, handles_target: MINT_TARGET, holders_target: HOLDER_TARGET, minimum_balance: Number(MIN_BALANCE), market_cap_now_usd: marketCap, market_cap_target_usd: MARKET_CAP_TARGET, market_cap_checked_at: stamp, handles_now: minted, holders_now: qualified, max_progress: 0, last_checked_at: stamp });
       } else cycle = await base44.asServiceRole.entities.GrowthCycle.update(cycle.id, { handles_now: minted, holders_now: qualified, market_cap_now_usd: marketCap, ...(capChecked ? { market_cap_checked_at: stamp } : {}), max_progress: maxProgress, last_checked_at: stamp });
     }
     return Response.json({ cycle, eligible: eligible.length, qualified });
