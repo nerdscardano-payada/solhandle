@@ -44,6 +44,7 @@ import Market from '@/pages/Market';
 import Promo from '@/pages/Promo';
 import Pay from '@/pages/Pay';
 import Growth from '@/pages/Growth';
+import HandleMintPayments from '@/pages/HandleMintPayments';
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
@@ -112,6 +113,7 @@ const AuthenticatedApp = () => {
         <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/pay" element={<Pay />} />
         <Route path="/growth" element={<Growth />} />
+        <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
         <Route path="/flywheel" element={<Navigate to="/growth" replace />} />
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
