@@ -58,5 +58,11 @@ export const roadmapMilestones = [
     summary: "The Earn Network is being prepared for controlled activation. Pre-launch attribution does not create claimable earnings; Live mode requires the official token and completed launch checks.",
     completed: ["Permanent origin-referral attribution infrastructure", "Mint-share tiers configured: 25,000 $HANDLE → 20%; 100,000 → 30%; 250,000 → 40%; 1,000,000 → 50%", "24-hour tier-upgrade qualification and actual-received revenue accounting implemented"],
     upcoming: ["Configure the official $HANDLE mint and verify balance checks for every tier", "Validate 24-hour qualification, revenue allocation and payout safeguards", "Activate Live mode and eligible reward claims after verification"]
+  },
+  {
+    number: "11", status: "upcoming", title: "Additional mint payment options",
+    summary: "Keep SOL as the default while exploring optional $HANDLE and USDC payments for new handle mints, subject to token availability and protocol security review.",
+    completed: ["Native SOL payment and NFT mint in one on-chain transaction"],
+    upcoming: ["Explore $HANDLE mint payments with a proposed 5% discount and 50% verifiable token burn", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Validate atomic payment and minting, treasury accounting and referral economics before launch"]
   }
 ];
