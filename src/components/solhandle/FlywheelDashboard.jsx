@@ -31,7 +31,8 @@ export default function FlywheelDashboard({ progress }) {
     ['Royalty generated', `${display(stats.royaltyGeneratedSol, 4)} SOL`],
     ['Indicative buyback budget · 10% mint + 1% resale', `${display(stats.buybackEarmarkedSol, 4)} SOL`],
     ['$HANDLE bought', display(stats.handleBought)],
-    ['$HANDLE burned', display(stats.handleBurned)]
+    ['$HANDLE burned', display(stats.handleBurned)],
+    ['Buyback SOL spent · admin-reported', `${display(stats.buybackSpentReportedSol, 4)} SOL`]
   ];
   return <section className="relative mt-8 overflow-hidden rounded-3xl border border-cyan-300/20 bg-slate-950/80 p-5 shadow-[0_0_60px_rgba(34,211,238,0.08)] sm:p-8" aria-labelledby="flywheel-heading">
     <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl"/>
@@ -44,7 +45,7 @@ export default function FlywheelDashboard({ progress }) {
     {!stats && !error && <p className="mt-4 text-cyan-200">Loading protocol activity…</p>}
     {metrics && <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">{metrics.map(([label, value]) => <div key={label} className="rounded-xl border border-white/10 bg-slate-900/60 p-4"><strong className="block text-xl text-cyan-100 sm:text-2xl">{value}</strong><span className="mt-2 block text-xs leading-relaxed text-slate-400">{label}</span></div>)}<Link to="/growth" className="rounded-xl border border-violet-300/25 bg-slate-900/70 p-4 transition-colors hover:border-violet-300/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-300" aria-label="View the Growth Curve and official progress"><strong className="block text-xl text-violet-200 sm:text-2xl">{progress == null ? '—' : `${progress}%`}</strong><span className="mt-2 block text-xs text-slate-400">Growth Curve · official progress ↗</span></Link></div>}
     {stats && <BuybackAllocation stats={stats}/>}
-    <p className="mt-4 text-xs leading-relaxed text-slate-500">Figures include recorded direct mints and native marketplace sales only. $HANDLE purchases and burns appear when verifiable records are available; the mint total follows the latest protocol sync.</p>
+    <p className="mt-4 text-xs leading-relaxed text-slate-500">Figures include recorded direct mints and native marketplace sales only. $HANDLE purchases and burns are recorded by admins using confirmed on-chain signatures; buyback SOL spending is admin-reported. The mint total follows the latest protocol sync.</p>
     </div>
   </section>;
 }

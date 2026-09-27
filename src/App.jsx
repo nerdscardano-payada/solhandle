@@ -45,6 +45,7 @@ import Promo from '@/pages/Promo';
 import Pay from '@/pages/Pay';
 import Growth from '@/pages/Growth';
 import Flywheel from '@/pages/Flywheel';
+import AdminBurn from '@/pages/AdminBurn';
 import HandleMintPayments from '@/pages/HandleMintPayments';
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
@@ -104,6 +105,7 @@ const AuthenticatedApp = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/financials" element={<Financials />} />
+        <Route path="/admin/burn" element={<AdminBurn />} />
         <Route path="/admin/referrals" element={<AdminReferrals />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/login" element={<Login />} />

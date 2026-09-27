@@ -1,0 +1,62 @@
+{
+  "name": "BurnActivity",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "BUYBACK",
+        "BURN"
+      ]
+    },
+    "signature": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "token_mint": {
+      "type": "string"
+    },
+    "token_amount": {
+      "type": "number"
+    },
+    "sol_reported": {
+      "type": "number"
+    },
+    "block_time": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "type",
+    "signature",
+    "wallet",
+    "token_mint",
+    "token_amount",
+    "block_time"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
