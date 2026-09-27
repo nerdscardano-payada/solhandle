@@ -29,6 +29,7 @@ export default async function(req: Request): Promise<Response> {
       handleBought: burnActivity.filter(row => row.type === 'BUYBACK').reduce((total, row) => total + Number(row.token_amount || 0), 0),
       handleBurned: burnActivity.filter(row => row.type === 'BURN').reduce((total, row) => total + Number(row.token_amount || 0), 0),
       buybackSpentReportedSol: burnActivity.filter(row => row.type === 'BUYBACK').reduce((total, row) => total + Number(row.sol_reported || 0), 0),
+      burnProofs: burnActivity.map(row => ({ type: row.type, signature: row.signature, token_amount: row.token_amount, block_time: row.block_time })),
       lastSync: statuses[0]?.last_sync ?? null,
       measuredAt: new Date().toISOString()
     });
