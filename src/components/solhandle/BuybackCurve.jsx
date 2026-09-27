@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import BuybackProof from '@/components/solhandle/BuybackProof';
 
 const fmt = value => Number(value).toLocaleString('en-US', { maximumFractionDigits: 4 });
 
-export default function BuybackCurve({ budget, proofs }) {
+export default function BuybackCurve({ budget }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const total = Math.max(0, Number(budget) || 0);
   const reached = Math.floor(total);
@@ -30,6 +29,5 @@ export default function BuybackCurve({ budget, proofs }) {
     </button>
     <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-slate-400"><span>Tap the bar for details</span><span>{fmt(1 - cycle)} SOL to {reached + 1} SOL budget threshold</span></div>
     {detailsOpen && <p id="buyback-progress-details" className="mt-3 rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-3 text-xs text-cyan-100">Recorded 10% first-mint allocation: {fmt(total)} SOL. {fmt(reached)} SOL in budget milestones reached; {fmt(cycle)} SOL toward the next 1 SOL milestone. No buyback or burn is confirmed by this calculation.</p>}
-    <BuybackProof proofs={proofs}/>
   </div>;
 }

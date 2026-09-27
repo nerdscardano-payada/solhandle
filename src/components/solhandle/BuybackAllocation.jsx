@@ -12,7 +12,7 @@ export default function BuybackAllocation({ stats }) {
       <div className="rounded-xl border border-white/10 bg-slate-950/60 p-4"><p className="text-xs text-slate-400">10% of first mints · proposed</p><strong className="mt-2 block text-xl text-cyan-200">{sol(stats.primaryBuybackBudgetSol)}</strong></div>
       <div className="rounded-xl border border-white/10 bg-slate-950/60 p-4"><p className="text-xs text-slate-400">1% of native secondary sales · indicative</p><strong className="mt-2 block text-xl text-violet-200">{sol(stats.secondaryBuybackBudgetSol)}</strong></div>
     </div>
-    <BuybackCurve budget={stats.primaryBuybackBudgetSol} proofs={stats.burnProofs}/>
+    <BuybackCurve budget={stats.primaryBuybackBudgetSol}/>
     <p className="mt-4 text-sm text-slate-300">Each additional 1 SOL in the proposed budget marks a potential buyback. If executed, 1 SOL may be used to buy $HANDLE and burn the purchased tokens. Reaching a threshold does not start a transaction or confirm a burn.</p>
     <p className="mt-2 text-xs leading-relaxed text-slate-400">Example: 10 SOL in recorded first mints → 1 SOL proposed budget. This is a calculation from cumulative recorded revenue, not segregated funds or available treasury balance. Historical mints count; previous milestones are not completed buybacks, and the 10% proposal has not been applied on-chain.</p>
   </div>;
