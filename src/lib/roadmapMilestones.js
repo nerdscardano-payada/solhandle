@@ -64,5 +64,11 @@ export const roadmapMilestones = [
     summary: "Keep SOL as the default while exploring optional $HANDLE and USDC payments for new handle mints, subject to token availability and protocol security review.",
     completed: ["Native SOL payment and NFT mint in one on-chain transaction"],
     upcoming: ["Explore $HANDLE mint payments with a proposed 5% discount and 50% verifiable token burn", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Validate atomic payment and minting, treasury accounting and referral economics before launch"]
+  },
+  {
+    number: "12", status: "upcoming", title: "SolHandle Pay — multi-token transfers & payment fee",
+    summary: "Extend non-custodial @handle payments beyond SOL to USDC, $HANDLE and selected SPL tokens, with a small, clearly disclosed SolHandle fee. This is a future phase, not a live payment option.",
+    completed: ["Native SOL transfers to verified @handle owners, currently without a SolHandle fee"],
+    upcoming: ["Start with an allowlist of supported token mints and verify token-program rules, decimals and recipient token-account readiness", "Build wallet-signed, atomic token transfers that split the recipient amount and a small protocol fee; display the exact fee and any account-creation/network costs before signing", "Extend protected payment links, on-chain confirmation, receipts and history by token; review fee policy and security before launch"]
   }
 ];
