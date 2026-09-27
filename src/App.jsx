@@ -46,6 +46,7 @@ import Pay from '@/pages/Pay';
 import Growth from '@/pages/Growth';
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
+import AttoChat from '@/components/solhandle/AttoChat';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -116,6 +117,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
+      <AttoChat />
     </>
   );
 };
