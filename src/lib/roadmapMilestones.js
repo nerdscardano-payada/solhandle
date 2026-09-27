@@ -30,8 +30,8 @@ export const roadmapMilestones = [
     next: "Continue security monitoring, improve RPC resilience and repair legacy metadata where required."
   },
   {
-    number: "06", status: "upcoming", title: "Partners, SDK & developer ecosystem",
-    summary: "The developer foundation is live; verified native adoption is the next growth phase.",
+    number: "06", status: "current", title: "Partners, SDK & developer ecosystem",
+    summary: "The SDK, resolver and Mainnet integration guides are available; third-party onboarding and verification remain in progress.",
     completed: ["Public solhandle-sdk package under the MIT License", "Developer Center, integration guides and resolver examples", "Forward and reverse resolution infrastructure"],
     upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model"]
   },
@@ -49,15 +49,15 @@ export const roadmapMilestones = [
   },
   {
     number: "09", status: "current", title: "$HANDLE community launch",
-    summary: "Preparing a pump.fun community launch with transparent allocation and verified trading routes. Token ownership is not required to use the identity protocol.",
-    completed: ["Launch plan: one billion $HANDLE, 99% community and 1% protocol allocation", "Six-month lock commitment defined for the ten million protocol tokens", "Launch dashboard with configurable CA, DexScreener data and Jupiter/pump.fun trading routes"],
-    upcoming: ["Create the official token through pump.fun", "Publish and verify the official CA and available trading routes", "Execute the six-month protocol allocation lock and publish proof"]
+    summary: "The $HANDLE mint address is configured and trading routes are enabled in the app. The protocol allocation lock and public proof remain open; token ownership is not required to use SolHandle.",
+    completed: ["Launch plan: one billion $HANDLE, 99% community and 1% protocol allocation", "Six-month lock commitment defined for the ten million protocol tokens", "Official $HANDLE mint address configured in launch settings", "DexScreener dashboard and Jupiter/pump.fun trading routes enabled"],
+    upcoming: ["Independently verify and publish the official mint address and trading routes", "Execute the six-month protocol allocation lock and publish proof"]
   },
   {
     number: "10", status: "current", title: "Earn Network tiers & activation",
-    summary: "The Earn Network is being prepared for controlled activation. Pre-launch attribution does not create claimable earnings; Live mode requires the official token and completed launch checks.",
-    completed: ["Permanent origin-referral attribution infrastructure", "Mint-share tiers configured: 25,000 $HANDLE → 20%; 100,000 → 30%; 250,000 → 40%; 1,000,000 → 50%", "24-hour tier-upgrade qualification and actual-received revenue accounting implemented"],
-    upcoming: ["Configure the official $HANDLE mint and verify balance checks for every tier", "Validate 24-hour qualification, revenue allocation and payout safeguards", "Activate Live mode and eligible reward claims after verification"]
+    summary: "The official token address is configured and Earn Network Live mode is enabled. Payouts are still paused, and end-to-end revenue and payout validation remains outstanding.",
+    completed: ["Permanent origin-referral attribution infrastructure", "Mint-share tiers configured: 25,000 $HANDLE → 20%; 100,000 → 30%; 250,000 → 40%; 1,000,000 → 50%", "24-hour tier-upgrade qualification and actual-received revenue accounting implemented", "Official token mint configured in Earn settings", "Earn Network Live mode enabled"],
+    upcoming: ["Verify live token balance checks and tier qualification with real activity", "Validate confirmed revenue allocation and payout safeguards end to end", "Unpause eligible payouts only after verification"]
   },
   {
     number: "11", status: "upcoming", title: "Additional mint payment options",
