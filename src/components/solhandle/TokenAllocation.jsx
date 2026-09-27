@@ -1,10 +1,13 @@
 import { LockKeyhole, Users } from "lucide-react";
+import TokenSupply from '@/components/solhandle/TokenSupply';
 
-export default function TokenAllocation() {
+export default function TokenAllocation({ tokenMint }) {
   return <section className="mt-12">
     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">Community-first supply</p>
-    <h2 className="mt-2 text-3xl font-semibold text-white">1 billion $HANDLE. 99% for the community.</h2>
-    <div className="mt-6 overflow-hidden rounded-full border border-white/10 bg-slate-900 p-1">
+    <h2 className="mt-2 text-3xl font-semibold text-white">Originally 1 billion $HANDLE. 99% allocated to the community at launch.</h2>
+    <TokenSupply tokenMint={tokenMint} />
+    <p className="mt-5 text-xs text-slate-400">The figures below describe the initial allocation, not today's circulating or total supply.</p>
+    <div className="mt-4 overflow-hidden rounded-full border border-white/10 bg-slate-900 p-1">
       <div className="flex h-5 overflow-hidden rounded-full"><div className="w-[99%] bg-gradient-to-r from-cyan-300 to-violet-400" /><div className="w-[1%] bg-amber-300" /></div>
     </div>
     <div className="mt-5 grid gap-4 md:grid-cols-2">
