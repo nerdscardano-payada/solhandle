@@ -123,7 +123,19 @@
 .buyback-finish-flag { width: 27px; height: 25px; filter: drop-shadow(0 1px 2px rgba(2, 6, 23, .9)); }
 .buyback-finish-flag::before { content: ''; position: absolute; left: 2px; top: 1px; width: 2px; height: 24px; background: white; }
 .buyback-finish-flag::after { content: ''; position: absolute; left: 4px; top: 2px; width: 22px; height: 17px; background: conic-gradient(white 25%, #020617 0 50%, white 0 75%, #020617 0) 0 0 / 10px 10px; clip-path: polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%); border: 1px solid white; }
+@keyframes buyback-burn-flicker {
+  0%, 100% { opacity: .75; filter: drop-shadow(0 0 3px rgba(251, 146, 60, .35)); transform: scale(1); }
+  35% { opacity: 1; filter: drop-shadow(0 0 9px rgba(251, 146, 60, .9)); transform: scale(1.12) rotate(-5deg); }
+  65% { opacity: .85; filter: drop-shadow(0 0 5px rgba(251, 146, 60, .55)); transform: scale(.97) rotate(3deg); }
+}
+@keyframes buyback-bought-glow {
+  0%, 100% { opacity: .7; filter: drop-shadow(0 0 2px rgba(167, 139, 250, .25)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 9px rgba(167, 139, 250, .9)); }
+}
+.buyback-burn-flicker { animation: buyback-burn-flicker 2.2s ease-in-out infinite; }
+.buyback-bought-glow { animation: buyback-bought-glow 3s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
+  .buyback-burn-flicker, .buyback-bought-glow { animation: none; }
   .solhandle-active-glow { animation: none; box-shadow: 0 0 24px rgba(34, 211, 238, 0.14); }
   .buyback-near-glow { animation: none; box-shadow: 0 0 22px rgba(167, 139, 250, .35); }
   .buyback-firework { animation: none; transform: translate(-50%, -50%); opacity: .25; }
