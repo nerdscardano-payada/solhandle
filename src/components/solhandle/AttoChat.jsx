@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Send, X, RotateCcw } from 'lucide-react';
 import AttoAvatar from '@/components/solhandle/AttoAvatar';
 import AttoMessages from '@/components/solhandle/AttoMessages';
@@ -7,6 +7,11 @@ import useAttoConversation from '@/components/solhandle/useAttoConversation';
 export default function AttoChat() {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
+  useEffect(() => {
+    const openChat = () => setOpen(true);
+    window.addEventListener('solhandle:open-atto', openChat);
+    return () => window.removeEventListener('solhandle:open-atto', openChat);
+  }, []);
   const { messages, loading, sending, replying, error, send, reset } = useAttoConversation(open);
   async function submit(event) {
     event.preventDefault();
