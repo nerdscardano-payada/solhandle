@@ -1,0 +1,12 @@
+import { useEffect } from 'react';
+import { ExternalLink, RefreshCw } from 'lucide-react';
+import useAdminTrades from '@/hooks/useAdminTrades';
+
+const sol = n => `${(Number(n || 0) / 1e9).toFixed(3)} SOL`;
+export default function AdminTradeOverview({ userId }) {
+  const { trades, loading, error, refresh } = useAdminTrades(userId, 100);
+  useEffect(() => { if (window.location.hash === '#trades') document.getElementById('trades')?.scrollIntoView(); }, []);
+  return <section id="trades" className="card-glow mt-8 scroll-mt-6"><div className="flex items-center justify-between gap-3"><div><h2 className="text-xl font-semibold text-white">Secondary Market trades</h2><p className="mt-1 text-xs text-slate-400">Recent confirmed trades through SolHandle Market · protocol royalties are shown separately.</p></div><button type="button" onClick={refresh} aria-label="Refresh trades" className="rounded-lg border border-white/15 p-2 text-cyan-300"><RefreshCw className="h-4 w-4"/></button></div>
+    {loading && !trades.length ? <p className="mt-5 text-sm text-slate-400">Loading trades…</p> : error ? <p role="alert" className="mt-5 text-sm text-rose-300">{error}</p> : trades.length ? <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[680px] text-left text-sm"><thead className="text-xs uppercase text-slate-500"><tr>{['Date','Handle','Sale price','Protocol royalty','Buyer','Transaction'].map(label => <th key={label} className="px-3 py-3">{label}</th>)}</tr></thead><tbody>{trades.map(t => <tr key={t.id} className="border-t border-white/10 text-slate-200"><td className="px-3 py-3">{new Date(t.timestamp).toLocaleString()}</td><td className="px-3 py-3 font-semibold text-white">@{t.handle}</td><td className="px-3 py-3">{sol(t.total_paid_lamports)}</td><td className="px-3 py-3">{sol(t.net_solhandle_lamports)}</td><td className="px-3 py-3 font-mono text-xs" title={t.buyer_wallet}>{t.buyer_wallet?.slice(0, 4)}…{t.buyer_wallet?.slice(-4)}</td><td className="px-3 py-3"><a href={`https://explorer.solana.com/tx/${t.transaction_signature}?cluster=mainnet-beta`} target="_blank" rel="noreferrer" aria-label={`View @${t.handle} trade on Solana Explorer`} className="text-cyan-300"><ExternalLink className="h-4 w-4"/></a></td></tr>)}</tbody></table></div> : <p className="mt-5 text-sm text-slate-400">No confirmed SolHandle Market trades yet.</p>}
+  </section>;
+}
