@@ -29,5 +29,5 @@ export default function JupiterSwap({ tokenMint }) {
     return () => { active = false; };
   }, [tokenMint]);
 
-  return <div className="relative min-h-[590px] overflow-hidden rounded-2xl bg-slate-950"><div id="jupiter-terminal" className="min-h-[590px]" />{status === "loading" && <div className="absolute inset-0 flex items-center justify-center bg-slate-950 text-sm text-slate-400">Loading Jupiter swap…</div>}{status === "error" && <div className="absolute inset-0 flex items-center justify-center bg-slate-950 p-6 text-center text-sm text-rose-300">Jupiter could not load. Use the pump.fun route below.</div>}</div>;
+  return <div className="relative min-h-[590px] min-w-0 max-w-full overflow-x-auto overflow-y-hidden rounded-2xl bg-slate-950"><div id="jupiter-terminal" className="min-h-[590px] min-w-[400px] max-[440px]:[zoom:0.84] max-[380px]:[zoom:0.76] sm:min-w-0" />{status === "loading" && <div className="absolute inset-0 flex items-center justify-center bg-slate-950 text-sm text-slate-400">Loading Jupiter swap…</div>}{status === "error" && <div className="absolute inset-0 flex items-center justify-center bg-slate-950 p-6 text-center text-sm text-rose-300">Jupiter could not load. Use the pump.fun route below.</div>}</div>;
 }
