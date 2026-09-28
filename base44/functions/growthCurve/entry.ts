@@ -66,7 +66,8 @@ export default async function(req: Request): Promise<Response> {
     let qualified = 0;
     for (const wallet of eligible) {
       const old = byWallet.get(wallet);
-      const consecutive = old && now.getTime() - Date.parse(old.last_seen_at) <= 90 * 60 * 1000;
+      // Allow one missed hourly snapshot without discarding an otherwise continuous qualification window.
+      const consecutive = old && now.getTime() - Date.parse(old.last_seen_at) <= 3 * 60 * 60 * 1000;
       const first = consecutive && !thresholdChanged ? old.first_seen_at : stamp;
       if (consecutive && now.getTime() - Date.parse(first) >= 24 * 3600 * 1000) qualified++;
       if (old) update.push({ id: old.id, first_seen_at: first, last_seen_at: stamp });
