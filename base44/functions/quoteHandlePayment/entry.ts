@@ -13,22 +13,16 @@ const encodeBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes));
 
 export default async function(req: Request): Promise<Response> {
   try {
-    const { handle: rawHandle, wallet: rawWallet } = await req.json();
+    const { handle: rawHandle, wallet: rawWallet, action } = await req.json();
+    if (action !== 'preview' && action !== 'sign') return Response.json({ error: 'Unsupported action.' }, { status: 400 });
     const handle = normalizeHandle(rawHandle);
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle.' }, { status: 400 });
     let wallet;
     try { wallet = new PublicKey(String(rawWallet || '')).toBase58(); }
     catch { return Response.json({ error: 'Connect a valid Solana wallet.' }, { status: 400 }); }
     const key = secrets.get('JUPITER_API_KEY');
-    const signerValue = secrets.get('HANDLE_QUOTE_SIGNER_KEYPAIR');
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    if (!key || !signerValue || !rpcUrl) throw new Error('Token payment quoting is not configured.');
-    let signer;
-    try {
-      const raw = JSON.parse(signerValue);
-      if (!Array.isArray(raw) || raw.length !== 64 || raw.some(value => !Number.isInteger(value) || value < 0 || value > 255)) throw new Error('Invalid signer');
-      signer = Keypair.fromSecretKey(Uint8Array.from(raw));
-    } catch { throw new Error('The payment quote signer is not a valid Solana keypair.'); }
+    if (!key || !rpcUrl) throw new Error('Token payment quoting is not configured.');
 
     // The public availability endpoint must have verified the name on-chain; never sign from an index-only fallback.
     const base44 = createClientFromRequest(req);
@@ -59,11 +53,20 @@ export default async function(req: Request): Promise<Response> {
     if (amount < 2n || amount > 18446744073709551615n) throw new Error('Jupiter returned an invalid token amount.');
     const burn = amount / 2n;
     const treasury = amount - burn;
+    const preview = { handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), paymentAvailable: false };
+    if (action === 'preview') return Response.json(preview);
+    const signerValue = secrets.get('HANDLE_QUOTE_SIGNER_KEYPAIR');
+    let signer;
+    try {
+      const raw = JSON.parse(signerValue || '');
+      if (!Array.isArray(raw) || raw.length !== 64 || raw.some(value => !Number.isInteger(value) || value < 0 || value > 255)) throw new Error('Invalid signer');
+      signer = Keypair.fromSecretKey(Uint8Array.from(raw));
+    } catch { throw new Error('The payment quote signer is not a valid Solana keypair.'); }
     const expiresAt = Math.floor(Date.now() / 1000) + 90;
     // Fixed field order and explicit version for the future on-chain Ed25519 verification.
     const message = `solhandle:token-mint:v1|${PROGRAM_ID}|${wallet}|${handle}|${HANDLE_MINT}|${priceLamports}|${amount}|${expiresAt}`;
     const signature = nacl.sign.detached(new TextEncoder().encode(message), signer.secretKey);
-    return Response.json({ handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), expiresAt, signer: signer.publicKey.toBase58(), message, signature: encodeBase64(signature), paymentAvailable: false });
+    return Response.json({ ...preview, expiresAt, signer: signer.publicKey.toBase58(), message, signature });
   } catch (error) {
     return Response.json({ error: error?.message || 'Could not issue $HANDLE reference quote.' }, { status: 503 });
   }
