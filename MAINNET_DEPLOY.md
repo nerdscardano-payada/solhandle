@@ -108,6 +108,21 @@ node scripts/set-mainnet-protocol-status.mjs active
 
 The on-chain time window automatically restores the configured length pricing and normal Premium surcharge when it expires.
 
+## $HANDLE token mint — WSL handoff (not ready to deploy)
+
+The contract draft adds a separate token-mint instruction with an Ed25519-verified, wallet-bound, 90-second quote. In the same transaction it transfers the remainder to the configured treasury token account, burns half, and mints the NFT directly to the wallet. It keeps the existing SOL instruction untouched. The quote signer stored in Base44 is a 32-byte seed; its public address is `7wZKJ2iDnr9MqBWqNUr97zV5VgmYteEwG1vdsUdMt7RZ` (never copy the private seed into WSL or chat).
+
+Sync the latest source into the native Linux/WSL2 checkout. From the repository root run:
+
+```bash
+anchor --version
+solana --version
+cargo build-sbf --tools-version v1.57 --manifest-path programs/solhandle/Cargo.toml
+solana-keygen pubkey target/deploy/solhandle-keypair.json
+```
+
+The last command must print `B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf`. **Stop if the build fails or the address differs. Do not deploy this draft yet.** The browser transaction, backend relay, local validator tests and safe pricing for the current low-liquidity Jupiter route are still incomplete. Test valid/expired/replayed and forged quotes, wrong token and treasury, exact burn and transfer, NFT ownership, rollback on failure and existing SOL mints before planning a Mainnet upgrade. The existing `redeploy-mainnet.sh` is for new installations, not upgrades.
+
 ## Permanent adoption pricing upgrade
 
 This upgrade installs authority-controlled tier pricing, sets `0.30 / 0.20 / 0.10 / 0.05 / 0.01 SOL`, changes the Premium surcharge to `+0.10 SOL`, and disables any active Rush override. Minting stays paused after verification.
@@ -124,4 +139,3 @@ Publish the updated app and confirm quotes for all five lengths and a Premium ha
 
 ```bash
 node scripts/set-mainnet-protocol-status.mjs active
-``

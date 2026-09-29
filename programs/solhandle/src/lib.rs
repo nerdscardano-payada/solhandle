@@ -1,4 +1,6 @@
 use anchor_lang::{prelude::*, system_program};
+use anchor_lang::solana_program::{ed25519_program, sysvar::instructions::{load_current_index_checked, load_instruction_at_checked}};
+use anchor_spl::token_interface::{self, BurnChecked, Mint, TokenAccount, TokenInterface, TransferChecked};
 use mpl_core::{
     accounts::{BaseAssetV1, BaseCollectionV1},
     fetch_plugin,
@@ -86,6 +88,44 @@ pub mod solhandle {
         ctx.accounts.handle_record.set_inner(HandleRecord { handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.payer.key(), minted_at: Clock::get()?.unix_timestamp, official_claim: false, bump: ctx.bumps.handle_record });
         ctx.accounts.config.total_minted = ctx.accounts.config.total_minted.checked_add(1).ok_or(SolHandleError::MathOverflow)?;
         emit!(HandleMinted { handle: args.handle, asset: ctx.accounts.asset.key(), owner: ctx.accounts.payer.key(), price_lamports: price, official_claim: false }); Ok(())
+    }
+
+    pub fn configure_token_payments(ctx: Context<ConfigureTokenPayments>, enabled: bool, token_mint: Pubkey, quote_signer: Pubkey, treasury_token: Pubkey) -> Result<()> {
+        require!(token_mint != Pubkey::default() && quote_signer != Pubkey::default() && treasury_token != Pubkey::default(), SolHandleError::InvalidTokenPayment);
+        let payment = &mut ctx.accounts.payment_config;
+        payment.enabled = enabled;
+        payment.token_mint = token_mint;
+        payment.quote_signer = quote_signer;
+        payment.treasury_token = treasury_token;
+        payment.bump = ctx.bumps.payment_config;
+        Ok(())
+    }
+
+    pub fn mint_handle_with_token(ctx: Context<MintHandleWithToken>, args: TokenMintArgs) -> Result<()> {
+        validate_handle(&args.handle)?;
+        require!(!ctx.accounts.config.paused && ctx.accounts.payment_config.enabled, SolHandleError::ProtocolPaused);
+        require!(ctx.accounts.config.protocol_version == 2, SolHandleError::ProtocolVersionMismatch);
+        require!(args.uri.len() <= MAX_URI_LENGTH, SolHandleError::UriTooLong);
+        require!(!is_active_restriction(&ctx.accounts.restriction)?, SolHandleError::HandleRestricted);
+        let base_price = base_price_for_handle(&ctx.accounts.config, &ctx.accounts.price_override, &args.handle)?;
+        let premium = is_active_premium(&ctx.accounts.premium_handle)?;
+        let price = final_price_for_handle(base_price, args.handle.len(), premium, &ctx.accounts.rush_config)?;
+        require!(price == args.sol_reference_lamports, SolHandleError::PriceLimitExceeded);
+        let now = Clock::get()?.unix_timestamp;
+        require!(args.expires_at >= now && args.expires_at <= now + 90 && args.amount >= 2, SolHandleError::InvalidTokenPayment);
+        let expected = format!("solhandle:token-mint:v1|{}|{}|{}|{}|{}|{}|{}", crate::ID, ctx.accounts.payer.key(), args.handle, ctx.accounts.token_mint.key(), price, args.amount, args.expires_at);
+        verify_token_quote(&ctx.accounts.instructions_sysvar.to_account_info(), &ctx.accounts.payment_config.quote_signer, expected.as_bytes())?;
+        let burn = args.amount / 2;
+        let treasury = args.amount - burn;
+        let token_program = ctx.accounts.token_program.to_account_info();
+        token_interface::transfer_checked(CpiContext::new(token_program.clone(), TransferChecked { from: ctx.accounts.payer_token.to_account_info(), mint: ctx.accounts.token_mint.to_account_info(), to: ctx.accounts.treasury_token.to_account_info(), authority: ctx.accounts.payer.to_account_info() }), treasury, ctx.accounts.token_mint.decimals)?;
+        token_interface::burn_checked(CpiContext::new(token_program, BurnChecked { mint: ctx.accounts.token_mint.to_account_info(), from: ctx.accounts.payer_token.to_account_info(), authority: ctx.accounts.payer.to_account_info() }), burn, ctx.accounts.token_mint.decimals)?;
+        create_handle_asset(&ctx.accounts.mpl_core_program, &ctx.accounts.asset, &ctx.accounts.collection, &ctx.accounts.config, &ctx.accounts.payer, &ctx.accounts.payer.to_account_info(), &ctx.accounts.system_program, &args.handle, args.uri, ctx.bumps.asset)?;
+        ctx.accounts.handle_record.set_inner(HandleRecord { handle: args.handle.clone(), asset: ctx.accounts.asset.key(), original_minter: ctx.accounts.payer.key(), minted_at: now, official_claim: false, bump: ctx.bumps.handle_record });
+        ctx.accounts.config.total_minted = ctx.accounts.config.total_minted.checked_add(1).ok_or(SolHandleError::MathOverflow)?;
+        emit!(HandleMinted { handle: args.handle.clone(), asset: ctx.accounts.asset.key(), owner: ctx.accounts.payer.key(), price_lamports: 0, official_claim: false });
+        emit!(TokenHandleMinted { handle: args.handle, asset: ctx.accounts.asset.key(), owner: ctx.accounts.payer.key(), amount: args.amount, burned: burn, treasury });
+        Ok(())
     }
 
     pub fn claim_restricted_handle(ctx: Context<ClaimRestrictedHandle>, args: ClaimRestrictedHandleArgs) -> Result<()> {
@@ -209,6 +249,24 @@ fn create_handle_asset<'info>(mpl_core_program: &UncheckedAccount<'info>, asset:
     Ok(())
 }
 
+fn verify_token_quote(sysvar: &AccountInfo, signer: &Pubkey, expected: &[u8]) -> Result<()> {
+    let index = load_current_index_checked(sysvar)?;
+    require!(index > 0, SolHandleError::InvalidTokenPayment);
+    let ix = load_instruction_at_checked((index - 1) as usize, sysvar)?;
+    require_keys_eq!(ix.program_id, ed25519_program::ID, SolHandleError::InvalidTokenPayment);
+    let data = &ix.data;
+    require!(data.len() >= 16 && data[0] == 1 && data[1] == 0, SolHandleError::InvalidTokenPayment);
+    let u16_at = |start: usize| u16::from_le_bytes([data[start], data[start + 1]]);
+    require!(u16_at(4) == u16::MAX && u16_at(8) == u16::MAX && u16_at(14) == u16::MAX, SolHandleError::InvalidTokenPayment);
+    let sig_offset = usize::from(u16_at(2));
+    let key_offset = usize::from(u16_at(6));
+    let msg_offset = usize::from(u16_at(10));
+    let msg_len = usize::from(u16_at(12));
+    require!(sig_offset.checked_add(64).is_some_and(|end| end <= data.len()) && key_offset.checked_add(32).is_some_and(|end| end <= data.len()) && msg_offset.checked_add(msg_len).is_some_and(|end| end <= data.len()), SolHandleError::InvalidTokenPayment);
+    require!(data[key_offset..key_offset + 32] == signer.to_bytes() && data[msg_offset..msg_offset + msg_len] == *expected, SolHandleError::InvalidTokenPayment);
+    Ok(())
+}
+
 fn marketplace_royalty(price: u64) -> Result<u64> { price.checked_mul(REWARDS_BPS).ok_or(SolHandleError::MathOverflow)?.checked_div(BPS_DENOMINATOR).ok_or(SolHandleError::MathOverflow.into()) }
 fn close_optional_listing(listing: &UncheckedAccount, recipient: &Signer) -> Result<()> {
     if listing.owner == &crate::ID && !listing.data_is_empty() {
@@ -225,6 +283,7 @@ fn close_optional_listing(listing: &UncheckedAccount, recipient: &Signer) -> Res
 #[derive(AnchorSerialize, AnchorDeserialize)] pub struct RushConfigArgs { pub enabled: bool, pub start_at: i64, pub end_at: i64, pub standard_price_lamports: u64, pub short_discount_bps: u64, pub premium_surcharge_lamports: u64 }
 #[derive(AnchorSerialize, AnchorDeserialize)] pub struct MintHandleArgs { pub handle: String, pub uri: String, pub max_price_lamports: u64 }
 #[derive(AnchorSerialize, AnchorDeserialize)] pub struct ClaimRestrictedHandleArgs { pub handle: String, pub uri: String }
+#[derive(AnchorSerialize, AnchorDeserialize)] pub struct TokenMintArgs { pub handle: String, pub uri: String, pub sol_reference_lamports: u64, pub amount: u64, pub expires_at: i64 }
 
 #[derive(Accounts)] pub struct Initialize<'info> { #[account(mut)] pub authority: Signer<'info>, #[account(init, payer = authority, space = 8 + Config::INIT_SPACE, seeds = [b"config"], bump)] pub config: Account<'info, Config>, /// CHECK: Collection PDA created by Metaplex Core.
 #[account(mut, seeds = [b"collection"], bump)] pub collection: UncheckedAccount<'info>, pub system_program: Program<'info, System>, /// CHECK: Verified Metaplex Core program.
@@ -247,6 +306,34 @@ fn close_optional_listing(listing: &UncheckedAccount, recipient: &Signer) -> Res
 pub recipient: UncheckedAccount<'info>, #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, /// CHECK: Verified Metaplex Core program.
 #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
 
+#[derive(Accounts)] pub struct ConfigureTokenPayments<'info> { #[account(mut)] pub authority: Signer<'info>, #[account(seeds = [b"config"], bump = config.bump, has_one = authority)] pub config: Account<'info, Config>, #[account(init_if_needed, payer = authority, space = 8 + TokenPaymentConfig::INIT_SPACE, seeds = [b"token_payment"], bump)] pub payment_config: Account<'info, TokenPaymentConfig>, pub system_program: Program<'info, System> }
+
+#[derive(Accounts)] #[instruction(args: TokenMintArgs)] pub struct MintHandleWithToken<'info> {
+    #[account(mut)] pub payer: Signer<'info>,
+    #[account(mut, seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>,
+    #[account(seeds = [b"token_payment"], bump = payment_config.bump)] pub payment_config: Account<'info, TokenPaymentConfig>,
+    #[account(init, payer = payer, space = 8 + HandleRecord::INIT_SPACE, seeds = [b"handle", args.handle.as_bytes()], bump)] pub handle_record: Account<'info, HandleRecord>,
+    /// CHECK: PDA created by Metaplex Core.
+    #[account(mut, seeds = [b"asset", args.handle.as_bytes()], bump)] pub asset: UncheckedAccount<'info>,
+    /// CHECK: Optional program-owned restriction.
+    #[account(seeds = [b"restriction", args.handle.as_bytes()], bump)] pub restriction: UncheckedAccount<'info>,
+    /// CHECK: Optional program-owned override.
+    #[account(seeds = [b"price", args.handle.as_bytes()], bump)] pub price_override: UncheckedAccount<'info>,
+    /// CHECK: Optional program-owned rush configuration.
+    #[account(seeds = [b"rush"], bump)] pub rush_config: UncheckedAccount<'info>,
+    /// CHECK: Optional program-owned premium marker.
+    #[account(seeds = [b"premium", args.handle.as_bytes()], bump)] pub premium_handle: UncheckedAccount<'info>,
+    #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>,
+    #[account(mut, address = payment_config.token_mint @ SolHandleError::InvalidTokenPayment)] pub token_mint: InterfaceAccount<'info, Mint>,
+    #[account(mut, token::mint = token_mint, token::authority = payer, token::token_program = token_program)] pub payer_token: InterfaceAccount<'info, TokenAccount>,
+    #[account(mut, address = payment_config.treasury_token @ SolHandleError::InvalidTokenPayment, token::mint = token_mint, token::authority = config.treasury, token::token_program = token_program)] pub treasury_token: InterfaceAccount<'info, TokenAccount>,
+    pub token_program: Interface<'info, TokenInterface>,
+    /// CHECK: Must be the instructions sysvar.
+    #[account(address = anchor_lang::solana_program::sysvar::instructions::ID)] pub instructions_sysvar: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
+    #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info>
+}
+
 #[derive(Accounts)] pub struct ListHandle<'info> { #[account(mut)] pub seller: Signer<'info>, #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut)] pub asset: Account<'info, BaseAssetV1>, #[account(init, payer = seller, space = 8 + MarketplaceListing::INIT_SPACE, seeds = [b"listing", asset.key().as_ref()], bump)] pub listing: Account<'info, MarketplaceListing>, #[account(mut, address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
 #[derive(Accounts)] pub struct BuyHandle<'info> { #[account(mut)] pub buyer: Signer<'info>, #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<'info, Config>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut)] pub asset: Account<'info, BaseAssetV1>, #[account(mut, seeds = [b"listing", asset.key().as_ref()], bump = listing.bump, has_one = asset, has_one = seller, close = seller)] pub listing: Account<'info, MarketplaceListing>, #[account(mut)] pub seller: SystemAccount<'info>, #[account(mut, address = config.rewards_vault @ SolHandleError::WrongRewardsVault)] pub rewards_vault: SystemAccount<'info>, #[account(address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
 #[derive(Accounts)] pub struct DelistHandle<'info> { #[account(mut)] pub seller: Signer<'info>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, #[account(mut, constraint = asset.owner == seller.key() @ SolHandleError::AssetNotOwnedBySigner)] pub asset: Account<'info, BaseAssetV1>, #[account(mut, seeds = [b"listing", asset.key().as_ref()], bump = listing.bump, has_one = asset, has_one = seller, close = seller)] pub listing: Account<'info, MarketplaceListing>, #[account(mut)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
@@ -255,6 +342,7 @@ pub recipient: UncheckedAccount<'info>, #[account(mut, address = config.collecti
 #[account(mut, seeds = [b"listing", asset.key().as_ref()], bump)] pub listing: UncheckedAccount<'info>, #[account(mut, seeds = [b"bid", asset.key().as_ref(), bidder.key().as_ref()], bump = bid.bump, has_one = asset, has_one = bidder, close = bidder)] pub bid: Account<'info, MarketplaceBid>, #[account(mut)] pub bidder: SystemAccount<'info>, #[account(mut, address = config.rewards_vault @ SolHandleError::WrongRewardsVault)] pub rewards_vault: SystemAccount<'info>, #[account(address = config.collection @ SolHandleError::WrongCollection)] pub collection: Account<'info, BaseCollectionV1>, pub system_program: Program<'info, System>, #[account(address = MPL_CORE_ID)] pub mpl_core_program: UncheckedAccount<'info> }
 #[derive(Accounts)] pub struct CancelBid<'info> { #[account(mut)] pub bidder: Signer<'info>, #[account(has_one = asset)] pub handle_record: Account<'info, HandleRecord>, pub asset: Account<'info, BaseAssetV1>, #[account(mut, seeds = [b"bid", asset.key().as_ref(), bidder.key().as_ref()], bump = bid.bump, has_one = asset, has_one = bidder, close = bidder)] pub bid: Account<'info, MarketplaceBid> }
 
+#[account] #[derive(InitSpace)] pub struct TokenPaymentConfig { pub enabled: bool, pub token_mint: Pubkey, pub quote_signer: Pubkey, pub treasury_token: Pubkey, pub bump: u8 }
 #[account] #[derive(InitSpace)] pub struct Config { pub authority: Pubkey, pub collection: Pubkey, pub treasury: Pubkey, pub rewards_vault: Pubkey, pub prices_lamports: [u64; 5], pub total_minted: u64, pub paused: bool, pub bump: u8, pub protocol_version: u8 }
 impl Config { fn price_for(&self, length: usize) -> u64 { self.prices_lamports[length.saturating_sub(1).min(4)] } }
 #[account] #[derive(InitSpace)] pub struct RushConfig { pub enabled: bool, pub start_at: i64, pub end_at: i64, pub standard_price_lamports: u64, pub short_discount_bps: u64, pub premium_surcharge_lamports: u64, pub bump: u8 }
@@ -290,4 +378,6 @@ fn final_price_for_handle(normal_base_price: u64, length: usize, premium: bool, 
     }
     base_price.checked_add(premium_surcharge).ok_or(SolHandleError::MathOverflow.into())
 }
-#[error_code] pub enum SolHandleError { #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle, #[msg("Rush end time must be after its start time.")] InvalidRushWindow, #[msg("Rush pricing values are invalid.")] InvalidRushPricing, #[msg("The protocol is paused.")] ProtocolPaused, #[msg("The provided collection is not the SolHandle collection.")] WrongCollection, #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury, #[msg("A price must be set for every handle tier.")] InvalidPrice, #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination, #[msg("Metadata URI exceeds the supported size.")] UriTooLong, #[msg("Reservation recipient label exceeds the supported size.")] ReservedForTooLong, #[msg("Arithmetic overflow.")] MathOverflow, #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded, #[msg("This handle is restricted by the protocol.")] HandleRestricted, #[msg("The restriction is inactive.")] RestrictionInactive, #[msg("Protected handles can never be claimed.")] ProtectedHandleCannotBeClaimed, #[msg("The supplied asset does not match the handle record.")] WrongAsset, #[msg("Only the current NFT owner may perform this action.")] AssetNotOwnedBySigner, #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch, #[msg("Marketplace price must be greater than zero.")] InvalidMarketplacePrice, #[msg("This marketplace order has expired.")] MarketplaceOrderExpired, #[msg("The rewards vault does not match protocol configuration.")] WrongRewardsVault, #[msg("Bid refund accounts are invalid.")] InvalidBidAccounts }
+#[event] pub struct TokenHandleMinted { pub handle: String, pub asset: Pubkey, pub owner: Pubkey, pub amount: u64, pub burned: u64, pub treasury: u64 }
+
+#[error_code] pub enum SolHandleError { #[msg("Invalid or expired token payment quote or accounts.")] InvalidTokenPayment, #[msg("Handle must use 1-20 lowercase letters or digits.")] InvalidHandle, #[msg("Rush end time must be after its start time.")] InvalidRushWindow, #[msg("Rush pricing values are invalid.")] InvalidRushPricing, #[msg("The protocol is paused.")] ProtocolPaused, #[msg("The provided collection is not the SolHandle collection.")] WrongCollection, #[msg("The treasury account does not match the protocol configuration.")] WrongTreasury, #[msg("A price must be set for every handle tier.")] InvalidPrice, #[msg("Treasury and rewards-vault addresses must be set.")] InvalidDestination, #[msg("Metadata URI exceeds the supported size.")] UriTooLong, #[msg("Reservation recipient label exceeds the supported size.")] ReservedForTooLong, #[msg("Arithmetic overflow.")] MathOverflow, #[msg("The quoted mint price exceeds the caller's maximum price.")] PriceLimitExceeded, #[msg("This handle is restricted by the protocol.")] HandleRestricted, #[msg("The restriction is inactive.")] RestrictionInactive, #[msg("Protected handles can never be claimed.")] ProtectedHandleCannotBeClaimed, #[msg("The supplied asset does not match the handle record.")] WrongAsset, #[msg("Only the current NFT owner may perform this action.")] AssetNotOwnedBySigner, #[msg("The account does not use the supported SolHandle protocol version.")] ProtocolVersionMismatch, #[msg("Marketplace price must be greater than zero.")] InvalidMarketplacePrice, #[msg("This marketplace order has expired.")] MarketplaceOrderExpired, #[msg("The rewards vault does not match protocol configuration.")] WrongRewardsVault, #[msg("Bid refund accounts are invalid.")] InvalidBidAccounts }
