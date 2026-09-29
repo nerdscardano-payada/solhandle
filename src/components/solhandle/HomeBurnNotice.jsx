@@ -16,7 +16,7 @@ export default function HomeBurnNotice() {
     <div className="relative flex flex-wrap items-center justify-between gap-4">
       <div className="flex min-w-0 items-center gap-4">
         <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-orange-300/40 bg-orange-400/15 shadow-[0_0_28px_rgba(251,146,60,0.35)]" aria-hidden="true"><Flame className="buyback-burn-flicker h-10 w-10 text-orange-300 drop-shadow-[0_0_12px_rgba(251,146,60,0.95)]"/></span>
-        {isLoading ? <span className="text-sm text-slate-400">Loading burn activity…</span> : <div><p className="text-xs font-semibold uppercase tracking-widest text-orange-300">On-chain burn</p><p className="mt-1 text-lg font-semibold text-white sm:text-xl">{Number(burn.token_amount).toLocaleString('en-US', { maximumFractionDigits: 9 })} $HANDLE burned</p></div>}
+        {isLoading ? <span className="text-sm text-slate-400">Loading burn activity…</span> : <div><p className="text-xs font-semibold uppercase tracking-widest text-orange-300">Total $HANDLE burned on-chain</p><p className="mt-1 text-lg font-semibold text-white sm:text-xl">{Number(data.handleBurned).toLocaleString('en-US', { maximumFractionDigits: 9 })} $HANDLE burned</p><p className="mt-1 text-xs text-slate-400">Latest burn: {Number(burn.token_amount).toLocaleString('en-US', { maximumFractionDigits: 9 })} $HANDLE</p></div>}
       </div>
       <div className="flex flex-wrap items-center gap-4 text-sm">
         {burn && <a href={`https://solscan.io/tx/${burn.signature}`} target="_blank" rel="noopener noreferrer" className="text-orange-200 underline underline-offset-2 hover:text-white">View transaction <ArrowUpRight className="inline h-4 w-4"/></a>}
