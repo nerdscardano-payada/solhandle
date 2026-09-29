@@ -27,6 +27,9 @@
     "block_time": {
       "type": "string",
       "format": "date-time"
+    },
+    "growth_cycle_number": {
+      "type": "number"
     }
   },
   "required": [
