@@ -47,6 +47,7 @@ import Growth from '@/pages/Growth';
 import Flywheel from '@/pages/Flywheel';
 import AdminBurn from '@/pages/AdminBurn';
 import HandleMintPayments from '@/pages/HandleMintPayments';
+import BurnDashboard from '@/pages/BurnDashboard';
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
@@ -117,6 +118,7 @@ const AuthenticatedApp = () => {
         <Route path="/pay" element={<Pay />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
+        <Route path="/growth/burn" element={<BurnDashboard />} />
         <Route path="/flywheel" element={<Flywheel />} />
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
