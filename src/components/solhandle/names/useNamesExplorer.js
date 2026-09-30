@@ -6,7 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { authorizeNamesWallet, namesProof } from '@/components/solhandle/names/namesWallet';
 export default function useNamesExplorer() {
   const [params, setParams] = useSearchParams(), { publicKey, signMessage } = useWallet();
-  const tab = ['trending', 'available', 'owned', 'watchlist'].includes(params.get('tab')) ? params.get('tab') : 'trending';
+  const tab = ['trending', 'available', 'owned', 'for-sale', 'watchlist'].includes(params.get('tab')) ? params.get('tab') : 'trending';
   const wallet = publicKey?.toBase58() || '';
   const [search, setSearch] = useState(''), [debounced, setDebounced] = useState('');
   const [filters, setFilters] = useState({ rarity: '', characterType: '', sort: 'newest' });
