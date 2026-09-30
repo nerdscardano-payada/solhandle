@@ -4,5 +4,5 @@ import PublicHandleMintReceipt from '@/components/solhandle/PublicHandleMintRece
 export default function PublicHandleMintRecovery() {
   const { publicKey } = useWallet();
   const mint = usePublicHandleMint(publicKey?.toBase58() || '');
-  return mint.receipt ? <section aria-label="Saved token mint" className="dark mx-5 mt-5"><PublicHandleMintReceipt mint={mint}/></section> : null;
+  return mint.receipt && mint.receipt.status !== 'confirmed' ? <section aria-label="Saved token mint" className="dark mx-5 mt-5"><PublicHandleMintReceipt mint={mint}/></section> : null;
 }

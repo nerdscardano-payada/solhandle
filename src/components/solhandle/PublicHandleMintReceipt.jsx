@@ -12,6 +12,6 @@ export default function PublicHandleMintReceipt({ mint }) {
     {(mint.error || receipt.error) && <p role="alert" className="mt-3 text-destructive">{mint.error || receipt.error}</p>}
     {receipt.status === 'pending' && <><p className="mt-3">Do not send another mint while this transaction is unresolved. Your receipt is saved on this device.</p><button disabled={mint.checking} onClick={mint.confirm} className="mt-3 rounded-lg border border-border px-4 py-2 disabled:opacity-50">{mint.checking ? 'Checking…' : 'Check confirmation'}</button></>}
     {receipt.status === 'confirmed' && <Link to={`/mint-success?${params}`} className="mt-3 block underline">View your minted handle</Link>}
-    {receipt.status !== 'pending' && <button onClick={mint.clear} className="mt-3 rounded-lg border border-border px-4 py-2">Review another mint</button>}
+    {receipt.status !== 'pending' && <button type="button" onClick={mint.clear} className="mt-3 rounded-lg border border-border px-4 py-2">Dismiss</button>}
   </div>;
 }
