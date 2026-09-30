@@ -2,9 +2,9 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 
-const mainLinks = [["Search handles", "/#search-handles"], ["My Handles", "/my-handles"], ["Pay", "/pay"], ["Market", "/market"], ["Earn", "/earn"], ["$HANDLE Token", "/upcoming/token-launch"]];
+const mainLinks = [["Search handles", "/#search-handles"], ["Names", "/names"], ["My Handles", "/my-handles"], ["Pay", "/pay"], ["Market", "/market"], ["Earn", "/earn"], ["$HANDLE Token", "/upcoming/token-launch"]];
 const groups = [
-  ["Discover", [["Premium Directory", "/directory"], ["Explore handles", "/explore"]]],
+  ["Discover", [["Premium Directory", "/directory"], ["My Watchlist", "/names?tab=watchlist"]]],
   ["Growth", [["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
   ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Documentation", "/docs"]]],
   ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],

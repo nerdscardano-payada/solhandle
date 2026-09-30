@@ -1,0 +1,47 @@
+{
+  "name": "NameWatch",
+  "type": "object",
+  "properties": {
+    "watch_key": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "watched_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "watch_key",
+    "wallet",
+    "handle",
+    "watched_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

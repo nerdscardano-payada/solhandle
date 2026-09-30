@@ -1,0 +1,12 @@
+import { Link } from 'react-router-dom';
+import { Search } from 'lucide-react';
+import ExploreFilters from '@/components/solhandle/ExploreFilters';
+const tabs = [['trending', 'Trending'], ['available', 'Available'], ['owned', 'Owned'], ['watchlist', 'Watchlist']];
+export default function NamesControls({ tab, search, filters, rank, preset, onTab, onSearch, onFilters, onRank, onPreset }) {
+  return <><div className="relative mt-7"><Search className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground"/><input value={search} onChange={e => onSearch(e.target.value)} placeholder="Search names…" aria-label="Search names" maxLength={21} className="w-full rounded-xl border border-border bg-card py-3 pl-12 pr-4 outline-none focus:border-names-accent"/></div>
+    <div className="my-5 flex flex-wrap gap-2" role="tablist" aria-label="Names"><>{tabs.map(([value, label]) => <button key={value} type="button" role="tab" aria-selected={tab === value} onClick={() => onTab(value)} className={`rounded-full border px-4 py-2 text-sm ${tab === value ? 'border-names-accent bg-names-accent text-background' : 'border-border text-muted-foreground hover:text-foreground'}`}>{label}</button>)}</></div>
+    {['trending', 'available'].includes(tab) && <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{tab === 'available' ? 'Free names with recorded interest. Availability checked on-chain.' : 'Discover names with recorded interest, whether free or owned.'}</p><select aria-label="Interest ranking" value={rank} onChange={e => onRank(e.target.value)} className="rounded-lg border border-border bg-card px-3 py-2 text-sm"><option value="searches">Most searched · 30 days</option><option value="watched">Most watched</option></select></div>}
+    {tab === 'owned' && <><div className="mb-3 flex flex-wrap gap-3 text-sm">{[['all', 'All owned'], ['premium', 'Premium'], ['short', 'Short names']].map(([value, label]) => <button key={value} onClick={() => onPreset(value)} className={preset === value ? 'text-names-accent' : 'text-muted-foreground'}>{label}</button>)}</div><ExploreFilters filters={filters} onChange={onFilters}/></>}
+    <div className="mt-5 flex flex-wrap gap-5 text-sm"><Link to="/directory" className="text-names-secondary">Premium Directory</Link><Link to="/market" className="text-names-accent">Buy / sell in Marketplace →</Link></div>
+  </>;
+}

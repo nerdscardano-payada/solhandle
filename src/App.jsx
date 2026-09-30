@@ -97,7 +97,8 @@ const AuthenticatedApp = () => {
         <Route path="/referral-terms" element={<ReferralTerms />} />
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
-        <Route path="/explore" element={<Explore />} />
+        <Route path="/names" element={<Explore />} />
+        <Route path="/explore" element={<Navigate to="/names" replace />} />
         <Route path="/directory" element={<PremiumDirectory />} />
         <Route path="/market" element={<Market />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />

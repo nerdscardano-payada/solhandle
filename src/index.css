@@ -32,6 +32,10 @@
     --font-heading: ui-sans-serif, system-ui, sans-serif;
     --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-display: ui-sans-serif, system-ui, sans-serif;
+    --names-accent: 189 94% 67%;
+    --names-secondary: 263 90% 78%;
+    --names-success: 160 84% 69%;
+    --names-warning: 43 96% 64%;
     --burn-accent: 25 95% 63%;
     --burn-highlight: 43 96% 64%;
     --burn-secondary: 263 90% 78%;
@@ -47,6 +51,10 @@
   }
 
   .dark {
+    --names-accent: 189 94% 67%;
+    --names-secondary: 263 90% 78%;
+    --names-success: 160 84% 69%;
+    --names-warning: 43 96% 64%;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;

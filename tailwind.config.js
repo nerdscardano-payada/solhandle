@@ -10,6 +10,7 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			names: { accent: 'hsl(var(--names-accent))', secondary: 'hsl(var(--names-secondary))', success: 'hsl(var(--names-success))', warning: 'hsl(var(--names-warning))' },
   			burn: { accent: 'hsl(var(--burn-accent))', highlight: 'hsl(var(--burn-highlight))', secondary: 'hsl(var(--burn-secondary))' },
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

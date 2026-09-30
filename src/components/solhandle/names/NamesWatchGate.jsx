@@ -1,0 +1,5 @@
+import { Eye, LoaderCircle } from 'lucide-react';
+import WalletButton from '@/components/solhandle/WalletButton';
+export default function NamesWatchGate({ wallet, busy, error, onVerify }) {
+  return <section className="mt-8 rounded-2xl border border-border bg-card p-8 text-center"><Eye className="mx-auto h-8 w-8 text-names-accent"/><h2 className="mt-4 text-xl font-semibold">Your private watchlist</h2><p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">Follow free or owned names. Verify your wallet with a message signature to view your list. No payment, transaction or email account.</p><div className="mt-5 flex justify-center">{wallet ? <button type="button" onClick={onVerify} disabled={busy} className="flex items-center gap-2 rounded-lg bg-names-accent px-5 py-3 font-semibold text-background disabled:opacity-50">{busy && <LoaderCircle className="h-4 w-4 animate-spin"/>}Verify wallet</button> : <WalletButton/>}</div>{error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}</section>;
+}
