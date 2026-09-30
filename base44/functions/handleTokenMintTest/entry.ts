@@ -13,12 +13,16 @@ const encoder = new TextEncoder();
 const budget = () => ComputeBudgetProgram.setComputeUnitLimit({ units: 600000 });
 async function signerKey(base44) { return (await base44.functions.invoke('quoteHandlePayment', { action: 'signer' })).data.publicKey; }
 async function previewTransaction(rpcUrl, wallet, instructions) {
-  const latest = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'confirmed' }]);
+  // Finalized hashes are visible to wallet simulators and other nodes behind the RPC load balancer.
+  const latest = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized' }]);
   const tx = new Transaction({ feePayer: wallet, recentBlockhash: latest.value.blockhash }).add(budget(), ...instructions);
   const encoded = toBase64(tx.serialize({ requireAllSignatures: false, verifySignatures: false }));
-  const simulation = await rpc(rpcUrl, 'simulateTransaction', [encoded, { encoding: 'base64', commitment: 'confirmed', sigVerify: false }]);
+  const simulation = await rpc(rpcUrl, 'simulateTransaction', [encoded, { encoding: 'base64', commitment: 'confirmed', minContextSlot: latest.context.slot, sigVerify: false, replaceRecentBlockhash: true }]);
   if (simulation.value?.err) throw new Error(`Transaction cannot proceed. The deployed program must support token payments and all accounts must be valid. Simulation: ${JSON.stringify(simulation.value.err)}. ${(simulation.value.logs || []).slice(-5).join(' ')}`);
-  return encoded;
+  // Refresh immediately before returning the unsigned transaction; never modify a signed transaction.
+  const fresh = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized', minContextSlot: latest.context.slot }]);
+  tx.recentBlockhash = fresh.value.blockhash;
+  return toBase64(tx.serialize({ requireAllSignatures: false, verifySignatures: false }));
 }
 function validateTransaction(tx, instructions, wallet) {
   const expected = [budget(), ...instructions];
@@ -105,7 +109,10 @@ export default async function(req: Request): Promise<Response> {
         const now = Math.floor(Date.now() / 1000);
         if (expected.expiresAt <= now || expected.expiresAt > now + 90) throw new Error('The payment quote expired. Review a fresh quote.');
       }
-      const signature = await rpc(rpcUrl, 'sendTransaction', [body.transaction_base64, { encoding: 'base64', preflightCommitment: 'confirmed' }]);
+      const minContextSlot = await rpc(rpcUrl, 'getSlot', [{ commitment: 'finalized' }]);
+      const validity = await rpc(rpcUrl, 'isBlockhashValid', [tx.recentBlockhash, { commitment: 'confirmed', minContextSlot }]);
+      if (!validity.value) throw new Error('The transaction expired while awaiting wallet approval. Prepare it again and approve the fresh transaction; this attempt was not submitted.');
+      const signature = await rpc(rpcUrl, 'sendTransaction', [body.transaction_base64, { encoding: 'base64', preflightCommitment: 'confirmed', minContextSlot }]);
       submittedSignature = signature;
       for (let i = 0; i < 12; i++) {
         const result = await rpc(rpcUrl, 'getSignatureStatuses', [[signature], { searchTransactionHistory: true }]);
