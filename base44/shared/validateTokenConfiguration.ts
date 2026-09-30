@@ -14,7 +14,12 @@ export default function validateTokenConfiguration(tx, instructions, authority) 
       const units = view.getUint32(1, true);
       if (!units || units > 600000) throw new Error('The wallet requested more compute units than the reviewed configuration allows.');
     } else if (kind === 3 && data.length === 9) {
-      if (view.getBigUint64(1, true) > 100000n) throw new Error('Wallet priority fees exceed the configuration limit of 0.00006 SOL. Reduce the wallet priority fee.');
+      // At the enforced maximum of 600,000 units, this permits at most 0.005 SOL in priority fees.
+      const price = view.getBigUint64(1, true);
+      if (price > 8_333_333n) {
+        const maximumFeeSol = Number(price * 600000n) / 1e15;
+        throw new Error(`Wallet priority fees can reach ${maximumFeeSol.toFixed(6)} SOL, above the configuration limit of 0.005 SOL. Choose a lower priority fee in your wallet.`);
+      }
     } else throw new Error('The wallet added an unsupported network-fee instruction.');
     seen.add(kind); budget.push(instruction);
   }
