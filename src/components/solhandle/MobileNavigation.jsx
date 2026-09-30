@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 const mainLinks = [["Search handles", "/#search-handles"], ["Names", "/names"], ["Market", "/market"], ["$HANDLE Token", "/upcoming/token-launch"]];
 const groups = [
   ["Utility", [["Earn", "/earn"], ["Pay", "/pay"]]],
-  ["Discover", [["Premium Directory", "/directory"], ["My Watchlist", "/names?tab=watchlist"]]],
+  ["Discover", [["Premium Directory", "/directory"]]],
   ["Growth", [["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
   ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Documentation", "/docs"]]],
   ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
