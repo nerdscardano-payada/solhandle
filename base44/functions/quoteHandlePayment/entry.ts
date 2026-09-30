@@ -4,6 +4,7 @@ import nacl from 'npm:tweetnacl@1.0.3';
 import bs58 from 'npm:bs58@5.0.0';
 import { secrets } from 'base44:runtime';
 import { rpc } from '../../shared/solanaRpc.ts';
+import solanaClock from '../../shared/solanaClock.ts';
 import { verifyHandleMint } from '../../shared/handleTokenMintInfo.ts';
 import { normalizeHandle } from '../../shared/handlePricing.ts';
 import { PROGRAM_ID } from '../../shared/solhandleProtocol.ts';
@@ -95,7 +96,9 @@ export default async function(req: Request): Promise<Response> {
     const signer = loadSigner();
     if (!(adminTest ? status.enabledOnChain : status.paymentAvailable) || status.quoteSigner !== signer.publicKey.toBase58()) return Response.json({ error: 'On-chain token payments and the quote signer are not verified for activation.' }, { status: 409 });
     if (adminTest) verifyHandleMint(mintInfo.value);
-    const expiresAt = Math.floor(Date.now() / 1000) + 90;
+    // The program enforces Clock::unix_timestamp <= expiry <= Clock::unix_timestamp + 90.
+    // Use chain time, leaving 15 seconds of headroom for RPC node clock differences.
+    const expiresAt = await solanaClock(rpcUrl) + 75;
     // Fixed field order and explicit version for the future on-chain Ed25519 verification.
     const message = `solhandle:token-mint:v1|${PROGRAM_ID}|${wallet}|${handle}|${HANDLE_MINT}|${priceLamports}|${amount}|${expiresAt}`;
     const signature = nacl.sign.detached(new TextEncoder().encode(message), signer.secretKey);

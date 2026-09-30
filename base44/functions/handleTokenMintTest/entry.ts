@@ -3,6 +3,7 @@ import { PublicKey, Transaction, ComputeBudgetProgram } from 'npm:@solana/web3.j
 import nacl from 'npm:tweetnacl@1.0.3';
 import { secrets } from 'base44:runtime';
 import { rpc, getProtocolConfig } from '../../shared/solanaRpc.ts';
+import solanaClock from '../../shared/solanaClock.ts';
 import { HANDLE_MINT, handlePaymentStatus } from '../../shared/handlePaymentStatus.ts';
 import { verifyHandleMint } from '../../shared/handleTokenMintInfo.ts';
 import { configurationInstructions, mintInstructions, sameInstruction, program, fromBase64, toBase64 } from '../../shared/handleTokenTransactions.ts';
@@ -106,7 +107,7 @@ export default async function(req: Request): Promise<Response> {
         if (body.action === 'validate_configuration') return Response.json({ valid: true, submitted: false });
       } else {
         expected = await validateMint(base44, tx, protocol, payment, tokenProgram);
-        const now = Math.floor(Date.now() / 1000);
+        const now = await solanaClock(rpcUrl);
         if (expected.expiresAt <= now || expected.expiresAt > now + 90) throw new Error('The payment quote expired. Review a fresh quote.');
       }
       const minContextSlot = await rpc(rpcUrl, 'getSlot', [{ commitment: 'finalized' }]);
