@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import formatHandleTokens from '@/components/solhandle/formatHandleTokens';
+import MintPaymentMethodOptions from '@/components/solhandle/MintPaymentMethodOptions';
 
 export default function MintPaymentChoice({ method, onChange, handle, wallet, busy, onQuote }) {
   const [state, setState] = useState({ quote: null, error: '', loading: false });
@@ -21,10 +22,7 @@ export default function MintPaymentChoice({ method, onChange, handle, wallet, bu
   const quote = state.quote;
   const tokens = raw => formatHandleTokens(raw, quote.decimals);
   return <section className="space-y-3 text-sm" aria-label="Payment method">
-    <label className="block text-slate-400" htmlFor="mint-payment-method">Payment method</label>
-    <select id="mint-payment-method" value={method} disabled={busy} onChange={event => onChange(event.target.value)} className="w-full rounded-lg border border-white/20 bg-slate-900 px-3 py-3 text-white">
-      <option value="SOL">SOL</option><option value="HANDLE">$HANDLE · no discount</option>
-    </select>
+    <MintPaymentMethodOptions method={method} onChange={onChange} busy={busy} />
     {method === 'HANDLE' && <div className="rounded-xl border border-violet-300/25 bg-slate-900/60 p-4">
       <p className="font-semibold text-violet-200">Pay with $HANDLE · 50% burned on-chain</p>
       {!wallet && <p className="mt-2 text-slate-400">Connect a wallet to review token pricing.</p>}
@@ -36,7 +34,7 @@ export default function MintPaymentChoice({ method, onChange, handle, wallet, bu
       {quote && !quote.singleAccountSufficient && quote.sufficientBalance && <p className="mt-3 text-amber-200">Consolidate your $HANDLE into one spendable token account before minting.</p>}
       {quote && !quote.paymentAvailable && <p className="mt-3 text-amber-200">$HANDLE payments are currently unavailable. You can still choose SOL.</p>}
       <button type="button" disabled={busy || state.loading} onClick={() => setRefresh(value => value + 1)} className="mt-3 underline disabled:opacity-50">Refresh quote</button>
-      <p className="mt-3 text-xs leading-relaxed text-slate-400">No discount. Maximum reference price impact: 10%. The approved token amount cannot increase without a new review. SOL is required for network and NFT account fees. Token mints do not generate SOL referral rewards.</p>
+      <p className="mt-3 text-xs leading-relaxed text-slate-400">50% of your $HANDLE payment is burned on-chain. Maximum reference price impact: 10%. The approved token amount cannot increase without a new review. SOL is required for network and NFT account fees. Token mints do not generate SOL referral rewards.</p>
     </div>}
   </section>;
 }
