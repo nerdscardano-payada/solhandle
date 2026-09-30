@@ -11,10 +11,21 @@ export default function useHandlePaymentTest() {
   const { publicKey, signTransaction } = useWallet(), wallet = publicKey?.toBase58() || '';
   const [handle, setHandle] = useState(''), [quote, setQuote] = useState(null), [status, setStatus] = useState(null);
   const [busy, setBusy] = useState(''), [error, setError] = useState(''), [result, setResult] = useState(restoredReceipt), [acknowledged, setAcknowledged] = useState(false);
+  const [configurationError, setConfigurationError] = useState('');
   const current = useRef({ wallet, handle }); current.current = { wallet, handle };
   const request = async payload => (await base44.functions.invoke('handleTokenMintTest', payload)).data;
   const refresh = useCallback(async () => { const res = await base44.functions.invoke('handleTokenMintTest', { action: 'status' }); setStatus(res.data); }, []);
-  const run = async (label, action) => { setBusy(label); setError(''); try { await action(); } catch (caught) { setError(caught.response?.data?.error || caught.message || 'Unable to continue.'); } finally { setBusy(''); } };
+  const run = async (label, action) => {
+    const configuring = label === 'Preparing configuration…';
+    setBusy(label); setError('');
+    if (configuring) setConfigurationError('');
+    try { await action(); }
+    catch (caught) {
+      const message = caught.response?.data?.error || caught.message || 'Unable to continue.';
+      setError(message);
+      if (configuring) setConfigurationError(message);
+    } finally { setBusy(''); }
+  };
   useEffect(() => { run('Loading status…', refresh); }, [refresh]);
   useEffect(() => { setQuote(null); setAcknowledged(false); }, [handle, wallet]);
   useEffect(() => { if (result) localStorage.setItem(storageKey, JSON.stringify(result)); else localStorage.removeItem(storageKey); }, [result]);
@@ -44,7 +55,14 @@ export default function useHandlePaymentTest() {
       throw caught;
     }
     setResult({ ...receipt, kind: action });
-    if (receipt.error) setError(receipt.error);
+    if (receipt.error) {
+      setError(receipt.error);
+      if (action === 'submit_configuration') setConfigurationError(receipt.error);
+    }
+    if (action === 'submit_configuration' && receipt.status === 'confirmed' && receipt.configuration) {
+      setStatus(previous => ({ ...previous, ...receipt.configuration }));
+      setConfigurationError('');
+    }
     if (receipt.status === 'confirmed' && receipt.payment) await base44.functions.invoke('syncSolHandleIndex', { signature: receipt.signature });
     await refresh();
   };
@@ -67,5 +85,5 @@ export default function useHandlePaymentTest() {
     if (receipt.status === 'confirmed' && receipt.payment) await base44.functions.invoke('syncSolHandleIndex', { signature: receipt.signature });
     await refresh();
   });
-  return { wallet, handle, setHandle, quote, status, busy, error, result, acknowledged, setAcknowledged, getQuote, configure, mint, confirm, refresh: () => run('Refreshing…', refresh), clearResult: () => { setResult(null); setQuote(null); setAcknowledged(false); } };
+  return { wallet, handle, setHandle, quote, status, busy, error, configurationError, result, acknowledged, setAcknowledged, getQuote, configure, mint, confirm, refresh: () => run('Refreshing…', refresh), clearResult: () => { setResult(null); setQuote(null); setAcknowledged(false); } };
 }
