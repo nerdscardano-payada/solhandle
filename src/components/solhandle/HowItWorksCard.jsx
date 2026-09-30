@@ -1,18 +1,18 @@
-import { ArrowRight, CircleDollarSign, Gem, Search, Sparkles } from "lucide-react";
+import { ArrowRight, Gem, Search, Sparkles, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const steps = [
   [Search, "Search", "Find the @handle you want."],
-  [CircleDollarSign, "Claim", "Claim it before anyone else."],
-  [Sparkles, "Mint", "Mint your @handle as an NFT."],
+  [Wallet, "Connect wallet", "Connect your Solana wallet."],
+  [Sparkles, "Pay & mint", "Pay with SOL or $HANDLE to mint your NFT."],
   [Gem, "Own", "Your identity. Yours forever."]
 ];
 
 export default function HowItWorksCard() {
-  return <section className="card-glow md:col-span-12 lg:col-span-6">
+  return <section className="card-glow flex flex-col md:col-span-12 lg:col-span-4">
     <h3 className="text-sm font-semibold uppercase tracking-wider text-white">How it works</h3>
-    <div className="relative mt-5 grid grid-cols-2 gap-5 sm:grid-cols-4">
-      <div className="absolute left-[12%] right-[12%] top-5 hidden h-px bg-gradient-to-r from-cyan-300/30 via-violet-400/50 to-emerald-300/30 sm:block" />
+    <div className="relative mt-5 grid flex-1 grid-cols-2 gap-5 sm:grid-cols-4 lg:grid-cols-2">
+      <div className="absolute left-[12%] right-[12%] top-5 hidden h-px bg-gradient-to-r from-cyan-300/30 via-violet-400/50 to-emerald-300/30 sm:block lg:hidden" />
       {steps.map(([Icon, title, text], index) => <div className="relative" key={title}>
         <div className="relative z-10 mb-3 flex h-11 w-11 items-center justify-center rounded-full border border-cyan-300/50 bg-slate-950 shadow-lg shadow-cyan-500/10">
           <Icon className={`h-5 w-5 ${index === 2 ? "text-violet-300" : "text-cyan-300"}`} />
