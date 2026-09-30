@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
-const links = [['Earn', '/earn'], ['Pay', '/pay']];
+const links = [['Earn', '/earn'], ['Pay', '/pay'], ['Integrations', '/integrations']];
 
 export default function UtilityMenu() {
   const { pathname } = useLocation();
