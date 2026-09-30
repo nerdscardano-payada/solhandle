@@ -26,6 +26,7 @@ import ProtectedBrands from '@/pages/ProtectedBrands';
 import Explore from '@/pages/Explore';
 import Developers from '@/pages/Developers';
 import Integrations from '@/pages/Integrations';
+import LiveIntegrations from '@/pages/LiveIntegrations';
 import IntegrationGuide from '@/pages/IntegrationGuide';
 import MintSuccess from '@/pages/MintSuccess';
 import Financials from '@/pages/Financials';
@@ -96,6 +97,7 @@ const AuthenticatedApp = () => {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/referral-terms" element={<ReferralTerms />} />
         <Route path="/integrations" element={<Integrations />} />
+        <Route path="/live-integrations" element={<LiveIntegrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/names" element={<Explore />} />
         <Route path="/explore" element={<Navigate to="/names" replace />} />
