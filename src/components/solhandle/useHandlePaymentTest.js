@@ -20,7 +20,7 @@ export default function useHandlePaymentTest() {
   useEffect(() => { if (result) localStorage.setItem(storageKey, JSON.stringify(result)); else localStorage.removeItem(storageKey); }, [result]);
   const getQuote = () => run('Getting quote…', async () => {
     const captured = { wallet, handle };
-    const response = await base44.functions.invoke('quoteHandlePayment', { action: 'preview', handle, wallet });
+    const response = await base44.functions.invoke('quoteHandlePayment', { action: 'preview_test', handle, wallet });
     if (current.current.wallet === captured.wallet && current.current.handle === captured.handle) setQuote(response.data);
   });
   const approve = async (prepared, action, expectedWallet) => {

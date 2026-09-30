@@ -33,7 +33,7 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ publicKey: loadSigner().publicKey.toBase58(), tokenMint: HANDLE_MINT });
     }
     if (action === 'status') return Response.json(await handlePaymentStatus(secrets.get('SOLANA_RPC_URL')));
-    const adminTest = action === 'sign_test';
+    const adminTest = action === 'sign_test' || action === 'preview_test';
     if (adminTest) {
       const user = await createClientFromRequest(req).auth.me();
       if (user?.role !== 'admin') return Response.json({ error: 'Only administrators can use the mainnet payment test.' }, { status: 403 });
@@ -76,16 +76,21 @@ export default async function(req: Request): Promise<Response> {
     if (quote.inputMint !== WSOL || quote.outputMint !== HANDLE_MINT || quote.inAmount !== String(priceLamports) || quote.swapMode !== 'ExactIn' || !Array.isArray(quote.routePlan) || !quote.routePlan.length) throw new Error('Jupiter returned an invalid reference quote.');
     const priceImpact = Number(quote.priceImpactPct);
     if (typeof quote.priceImpactPct !== 'string' || !quote.priceImpactPct.trim() || !Number.isFinite(priceImpact)) throw new Error('Jupiter returned an invalid price impact.');
-    const quoteEligible = Math.abs(priceImpact) <= 0.01;
-    const quoteWarning = quoteEligible ? '' : `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%, above the 1% payment-quote limit. This amount is illustrative only and cannot be used to approve a payment.`;
-    if ((action === 'sign' || adminTest) && !quoteEligible) throw new Error('Price impact is too high to issue a payment quote.');
+    const priceImpactLimitPercent = adminTest ? 5 : 1;
+    const quoteEligible = Math.abs(priceImpact) <= priceImpactLimitPercent / 100;
+    const quoteWarning = !quoteEligible
+      ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%, above the ${priceImpactLimitPercent}% payment-quote limit. This amount is illustrative only and cannot be used to approve a payment.`
+      : adminTest && Math.abs(priceImpact) > 0.01
+        ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%. This quote uses the higher 5% administrator-test limit; the public limit remains 1%.`
+        : '';
+    if ((action === 'sign' || action === 'sign_test') && !quoteEligible) throw new Error(`Price impact is too high to issue a payment quote (maximum ${priceImpactLimitPercent}%).`);
     const amount = BigInt(quote.outAmount);
     if (amount < 2n || amount > 18446744073709551615n) throw new Error('Jupiter returned an invalid token amount.');
     const burn = amount / 2n;
     const treasury = amount - burn;
     const walletBalanceRaw = await handleTokenBalance(rpcUrl, wallet, HANDLE_MINT, mintInfo.value.owner);
-    const preview = { handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), walletBalanceRaw, sufficientBalance: BigInt(walletBalanceRaw) >= amount, priceImpactPercent: Math.abs(priceImpact) * 100, quoteEligible, quoteWarning, paymentAvailable: false };
-    if (action === 'preview') return Response.json(preview);
+    const preview = { handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), walletBalanceRaw, sufficientBalance: BigInt(walletBalanceRaw) >= amount, priceImpactPercent: Math.abs(priceImpact) * 100, priceImpactLimitPercent, quoteEligible, quoteWarning, paymentAvailable: false };
+    if (action === 'preview' || action === 'preview_test') return Response.json(preview);
     const status = await handlePaymentStatus(rpcUrl);
     const signer = loadSigner();
     if (!(adminTest ? status.enabledOnChain : status.paymentAvailable) || status.quoteSigner !== signer.publicKey.toBase58()) return Response.json({ error: 'On-chain token payments and the quote signer are not verified for activation.' }, { status: 409 });
