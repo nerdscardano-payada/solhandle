@@ -16,10 +16,10 @@ export default function useNamesExplorer() {
   useEffect(() => { const timer = setTimeout(() => setDebounced(search), 250); return () => clearTimeout(timer); }, [search]);
   useEffect(() => { const timer = setInterval(() => setProof(namesProof(wallet)), 30000); return () => clearInterval(timer); }, [wallet]);
   const query = useInfiniteQuery({
-    queryKey: ['names', tab, debounced, filters, rank, preset, tab === 'watchlist' ? wallet : '', tab === 'watchlist' ? authorization?.timestamp : null],
+    queryKey: ['names', 'curated-fallback-v1', tab, debounced, filters, rank, preset, tab === 'watchlist' ? wallet : '', tab === 'watchlist' ? authorization?.timestamp : null],
     queryFn: async ({ pageParam }) => (await base44.functions.invoke('discoverNames', { tab, search: debounced, ...filters, rank, preset, cursor: pageParam, proof: tab === 'watchlist' ? authorization : undefined })).data,
     initialPageParam: null, getNextPageParam: page => page.has_more ? page.next_cursor : undefined,
-    enabled: tab !== 'watchlist' || Boolean(authorization), staleTime: 60000, retry: false
+    enabled: tab !== 'watchlist' || Boolean(authorization), staleTime: 60000, refetchInterval: ['trending', 'available'].includes(tab) ? 60000 : false, retry: false
   });
   const verify = async () => {
     setBusy(true); setAuthError('');

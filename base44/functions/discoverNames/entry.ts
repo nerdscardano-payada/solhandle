@@ -3,6 +3,7 @@ import { secrets } from 'base44:runtime';
 import { verifyNamesWallet } from '../../shared/namesAuthorization.ts';
 import { namesInterest, interestFor } from '../../shared/namesInterest.ts';
 import { namesChain } from '../../shared/namesChain.ts';
+import { getFallbackSuggestions } from '../../shared/handleSuggestionPool.ts';
 export default async function(req: Request): Promise<Response> {
   try {
     const input = await req.json(), base44 = createClientFromRequest(req);
@@ -39,6 +40,12 @@ export default async function(req: Request): Promise<Response> {
     if (tab === 'available') items = items.filter(i => i.status === 'AVAILABLE');
     if (tab === 'for-sale') items = items.filter(i => i.status === 'FOR_SALE');
     if (tab === 'owned') items = items.filter(i => ['OWNED', 'FOR_SALE'].includes(i.status));
+    if (!items.length && ['trending', 'available'].includes(tab)) {
+      const candidates = getFallbackSuggestions().map(row => row.handle).filter(handle => !search || handle.includes(search));
+      const checked = await namesChain(base44, secrets.get('SOLANA_RPC_URL'), candidates);
+      items = checked.filter(item => tab === 'available' ? item.status === 'AVAILABLE' : ['AVAILABLE', 'OWNED', 'FOR_SALE'].includes(item.status)).map(item => ({ ...item, suggested: true }));
+      if (items.length) interest = await namesInterest(base44, { handle: { $in: items.map(item => item.handle) } });
+    }
     items = items.slice(0, 24).map(i => ({ ...i, ...interestFor(interest, i.handle) }));
     return Response.json({ items, next_cursor: nextCursor, has_more: hasMore, ranked: tab === 'trending' || tab === 'available', windowDays: 30 });
   } catch (error) {
