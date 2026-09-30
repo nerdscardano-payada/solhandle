@@ -17,6 +17,10 @@ export function buildWalletBrowserUrl(wallet, targetUrl) {
 
 export function currentWalletTarget(detail) {
   const target = new URL(window.location.href);
-  if (detail?.action === "claim" && detail.handle) target.searchParams.set("claim", detail.handle);
+  if (detail?.action === "claim" && detail.handle) {
+    target.searchParams.set("claim", detail.handle);
+    if (detail.paymentMethod === "HANDLE") target.searchParams.set("payment", "HANDLE");
+    else target.searchParams.delete("payment");
+  }
   return target.toString();
 }

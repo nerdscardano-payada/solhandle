@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import usePublicHandleMint from '@/components/solhandle/usePublicHandleMint';
 import PublicHandleMintReceipt from '@/components/solhandle/PublicHandleMintReceipt';
 
-export default function MintReadinessDialog({ open, onOpenChange, wallet, result }) {
+export default function MintReadinessDialog({ open, onOpenChange, wallet, result, initialPaymentMethod = "SOL" }) {
   const { publicKey, signTransaction } = useWallet();
   const navigate = useNavigate();
   const [phase, setPhase] = useState("");
@@ -27,7 +27,7 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
   const [tokenQuote, setTokenQuote] = useState(null);
   const tokenMint = usePublicHandleMint(publicKey?.toBase58() || '');
   const tokenReady = tokenQuote?.handle === handle && tokenQuote?.wallet === publicKey?.toBase58() && tokenQuote.paymentAvailable && tokenQuote.quoteEligible && tokenQuote.sufficientBalance && tokenQuote.singleAccountSufficient;
-  useEffect(() => { setPaymentMethod("SOL"); }, [open, handle, publicKey?.toBase58()]);
+  useEffect(() => { setPaymentMethod(initialPaymentMethod === "HANDLE" ? "HANDLE" : "SOL"); }, [open, handle, publicKey?.toBase58(), initialPaymentMethod]);
   const minting = phase === "metadata" || phase === "wallet";
   useEffect(() => {
     const receipt = tokenMint.receipt;
