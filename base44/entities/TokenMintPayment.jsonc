@@ -1,0 +1,53 @@
+{
+  "name": "TokenMintPayment",
+  "type": "object",
+  "properties": {
+    "signature": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "token_mint": {
+      "type": "string"
+    },
+    "decimals": {
+      "type": "integer"
+    },
+    "amount_raw": {
+      "type": "string"
+    },
+    "burned_raw": {
+      "type": "string"
+    },
+    "treasury_raw": {
+      "type": "string"
+    },
+    "sol_reference_lamports": {
+      "type": "number"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "signature",
+    "handle",
+    "asset_address",
+    "wallet",
+    "token_mint",
+    "decimals",
+    "amount_raw",
+    "burned_raw",
+    "treasury_raw",
+    "sol_reference_lamports",
+    "confirmed_at"
+  ]
+}

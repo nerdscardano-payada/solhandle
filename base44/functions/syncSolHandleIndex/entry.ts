@@ -27,6 +27,7 @@ export default async function(req: Request): Promise<Response> {
     stage = 'loading_protocol';
     const protocol = await readLatestProtocolConfigCache(base44);
     if (!protocol) throw new Error('Protocol configuration cache is unavailable.');
+    const tokenEventDiscriminator = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('event:TokenHandleMinted'))).slice(0, 8);
 
     for (const entry of signatures) {
       if (entry.err) continue;
@@ -37,6 +38,11 @@ export default async function(req: Request): Promise<Response> {
         .map((line: string) => parseMintEvent(line.replace('Program data: ', '')))
         .find(Boolean);
       if (!mint) continue;
+      const tokenPaid = (transaction.meta.logMessages || []).some(line => {
+        if (!line.startsWith('Program data: ')) return false;
+        const bytes = Uint8Array.from(atob(line.slice(14)), c => c.charCodeAt(0));
+        return bytes.length >= 8 && tokenEventDiscriminator.every((byte, index) => bytes[index] === byte);
+      });
 
       stage = 'loading_asset_and_index';
       const owner = await getAssetOwner(rpcUrl, mint.assetAddress, mint.owner);
@@ -93,7 +99,8 @@ export default async function(req: Request): Promise<Response> {
       const premiumSurchargeLamports = premiumRows.length
         ? Math.max(0, (transaction.meta.postBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)] - transaction.meta.preBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)]) - mint.priceLamports)
         : 0;
-      await processConfirmedReferral(base44, { signature: entry.signature, handle: mint.handle, assetAddress: mint.assetAddress, buyerWallet: mint.owner, grossAmountLamports: mint.priceLamports + premiumSurchargeLamports, netRevenueLamports: mint.priceLamports + premiumSurchargeLamports, occurredAt: mintedAt, rpcUrl });
+      // Token mints emit a zero-SOL HandleMinted event; never book their token proceeds as SOL referral revenue.
+      if (!tokenPaid) await processConfirmedReferral(base44, { signature: entry.signature, handle: mint.handle, assetAddress: mint.assetAddress, buyerWallet: mint.owner, grossAmountLamports: mint.priceLamports + premiumSurchargeLamports, netRevenueLamports: mint.priceLamports + premiumSurchargeLamports, occurredAt: mintedAt, rpcUrl });
       synced += 1;
     }
 

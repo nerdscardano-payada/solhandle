@@ -4,6 +4,7 @@ import nacl from 'npm:tweetnacl@1.0.3';
 import bs58 from 'npm:bs58@5.0.0';
 import { secrets } from 'base44:runtime';
 import { rpc } from '../../shared/solanaRpc.ts';
+import { verifyHandleMint } from '../../shared/handleTokenMintInfo.ts';
 import { normalizeHandle } from '../../shared/handlePricing.ts';
 import { PROGRAM_ID } from '../../shared/solhandleProtocol.ts';
 import { HANDLE_MINT, HANDLE_PAYMENT_RELEASED, handlePaymentStatus, handleTokenBalance } from '../../shared/handlePaymentStatus.ts';
@@ -32,7 +33,12 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ publicKey: loadSigner().publicKey.toBase58(), tokenMint: HANDLE_MINT });
     }
     if (action === 'status') return Response.json(await handlePaymentStatus(secrets.get('SOLANA_RPC_URL')));
-    if (action !== 'preview' && action !== 'sign') return Response.json({ error: 'Unsupported action.' }, { status: 400 });
+    const adminTest = action === 'sign_test';
+    if (adminTest) {
+      const user = await createClientFromRequest(req).auth.me();
+      if (user?.role !== 'admin') return Response.json({ error: 'Only administrators can use the mainnet payment test.' }, { status: 403 });
+    }
+    if (action !== 'preview' && action !== 'sign' && !adminTest) return Response.json({ error: 'Unsupported action.' }, { status: 400 });
     if (action === 'sign' && !HANDLE_PAYMENT_RELEASED) return Response.json({ error: '$HANDLE payment signing is closed until deployment verification, accounting and wallet checks are complete.' }, { status: 409 });
     const handle = normalizeHandle(rawHandle);
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle.' }, { status: 400 });
@@ -52,6 +58,7 @@ export default async function(req: Request): Promise<Response> {
     }
     const priceLamports = availability.priceLamports;
     if (!Number.isSafeInteger(priceLamports) || priceLamports <= 0) throw new Error('Verified SOL reference price is unavailable.');
+    if (adminTest && priceLamports > 10_000_000) return Response.json({ error: 'The administrator test is limited to handles priced at 0.01 SOL or less.' }, { status: 422 });
     const mintInfo = await rpc(rpcUrl, 'getAccountInfo', [HANDLE_MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
     const decimals = mintInfo?.value?.data?.parsed?.info?.decimals;
     if (!TOKEN_PROGRAMS.has(mintInfo?.value?.owner) || !Number.isInteger(decimals) || decimals < 0 || decimals > 18) throw new Error('Official $HANDLE mint could not be verified.');
@@ -71,7 +78,7 @@ export default async function(req: Request): Promise<Response> {
     if (typeof quote.priceImpactPct !== 'string' || !quote.priceImpactPct.trim() || !Number.isFinite(priceImpact)) throw new Error('Jupiter returned an invalid price impact.');
     const quoteEligible = Math.abs(priceImpact) <= 0.01;
     const quoteWarning = quoteEligible ? '' : `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%, above the 1% payment-quote limit. This amount is illustrative only and cannot be used to approve a payment.`;
-    if (action === 'sign' && !quoteEligible) throw new Error('Price impact is too high to issue a payment quote.');
+    if ((action === 'sign' || adminTest) && !quoteEligible) throw new Error('Price impact is too high to issue a payment quote.');
     const amount = BigInt(quote.outAmount);
     if (amount < 2n || amount > 18446744073709551615n) throw new Error('Jupiter returned an invalid token amount.');
     const burn = amount / 2n;
@@ -81,7 +88,8 @@ export default async function(req: Request): Promise<Response> {
     if (action === 'preview') return Response.json(preview);
     const status = await handlePaymentStatus(rpcUrl);
     const signer = loadSigner();
-    if (!status.paymentAvailable || status.quoteSigner !== signer.publicKey.toBase58()) return Response.json({ error: 'On-chain token payments and the quote signer are not verified for activation.' }, { status: 409 });
+    if (!(adminTest ? status.enabledOnChain : status.paymentAvailable) || status.quoteSigner !== signer.publicKey.toBase58()) return Response.json({ error: 'On-chain token payments and the quote signer are not verified for activation.' }, { status: 409 });
+    if (adminTest) verifyHandleMint(mintInfo.value);
     const expiresAt = Math.floor(Date.now() / 1000) + 90;
     // Fixed field order and explicit version for the future on-chain Ed25519 verification.
     const message = `solhandle:token-mint:v1|${PROGRAM_ID}|${wallet}|${handle}|${HANDLE_MINT}|${priceLamports}|${amount}|${expiresAt}`;
