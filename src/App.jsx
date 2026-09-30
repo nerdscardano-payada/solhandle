@@ -15,6 +15,8 @@ import Faq from '@/pages/Faq';
 import Contact from '@/pages/Contact';
 import Footer from '@/components/solhandle/Footer';
 import Admin from '@/pages/Admin';
+import AdminMainnetTests from '@/pages/AdminMainnetTests';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import HandlePage from '@/pages/HandlePage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -105,6 +107,9 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fmainnet-tests" replace />} />}>
+          <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
+        </Route>
         <Route path="/admin/financials" element={<Financials />} />
         <Route path="/admin/burn" element={<AdminBurn />} />
         <Route path="/admin/referrals" element={<AdminReferrals />} />
