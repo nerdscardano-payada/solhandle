@@ -9,6 +9,8 @@ import { verifyHandleMint } from '../../shared/handleTokenMintInfo.ts';
 import { mintInstructions, fromBase64, pda } from '../../shared/handleTokenTransactions.ts';
 import { previewTokenTransaction, validateSignedTokenMint } from '../../shared/tokenMintFlow.ts';
 import indexTokenMint from '../../shared/indexTokenMint.ts';
+import { activeTokenLookup, lookupAddresses } from '../../shared/tokenPaymentLookup.ts';
+import decodeTokenTransaction from '../../shared/decodeTokenTransaction.ts';
 async function confirmation(base44, rpcUrl, signature, blockhash = null) {
   const status = (await rpc(rpcUrl, 'getSignatureStatuses', [[signature], { searchTransactionHistory: true }])).value?.[0];
   if (status?.err) return { signature, status: 'failed', error: `Transaction failed: ${JSON.stringify(status.err)}` };
@@ -44,6 +46,7 @@ export default async function(req: Request): Promise<Response> {
     const protocol = await getProtocolConfig(rpcUrl);
     const mintAccount = await rpc(rpcUrl, 'getAccountInfo', [HANDLE_MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
     const tokenProgram = new PublicKey(verifyHandleMint(mintAccount.value).tokenProgram);
+    const lookupTable = await activeTokenLookup(base44, rpcUrl, lookupAddresses(protocol, payment, tokenProgram));
     if (body.action === 'prepare') {
       const wallet = new PublicKey(body.wallet), handle = String(body.handle || '').trim().replace(/^@/, '').toLowerCase();
       if (!/^[a-z0-9]{1,20}$/.test(handle) || typeof body.uri !== 'string' || !/^https:\/\//.test(body.uri) || new TextEncoder().encode(body.uri).length > 200) throw new Error('Valid handle and NFT metadata are required.');
@@ -55,10 +58,11 @@ export default async function(req: Request): Promise<Response> {
       const account = accounts.value?.find(row => row.account.owner === tokenProgram.toBase58() && row.account.data.parsed.info.owner === wallet.toBase58() && row.account.data.parsed.info.state === 'initialized' && BigInt(row.account.data.parsed.info.tokenAmount.amount) >= BigInt(quote.totalRaw));
       if (!account) throw new Error('Consolidate your $HANDLE into one spendable account first.');
       const instructions = await mintInstructions(wallet, handle, body.uri, quote, protocol, payment, account.pubkey, tokenProgram);
-      return Response.json({ transaction_base64: await previewTokenTransaction(rpcUrl, wallet, instructions), quote, asset: pda('asset', handle).toBase58(), network: 'mainnet-beta' });
+      const transaction_base64 = await previewTokenTransaction(rpcUrl, wallet, instructions, lookupTable);
+      return Response.json({ transaction_base64, transaction_version: lookupTable ? 0 : 'legacy', transaction_bytes: fromBase64(transaction_base64).length, lookup_table: lookupTable?.key.toBase58() || null, quote, asset: pda('asset', handle).toBase58(), network: 'mainnet-beta' });
     }
     if (typeof body.transaction_base64 !== 'string' || body.transaction_base64.length > 1700) throw new Error('Invalid signed transaction.');
-    const tx = Transaction.from(fromBase64(body.transaction_base64));
+    const tx = decodeTokenTransaction(fromBase64(body.transaction_base64), lookupTable);
     const expected = await validateSignedTokenMint(tx, protocol, payment, tokenProgram);
     const now = await solanaClock(rpcUrl);
     if (expected.expiresAt <= now || expected.expiresAt > now + 90) throw new Error('Payment quote expired before submission. Review a fresh quote; nothing was submitted.');

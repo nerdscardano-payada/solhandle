@@ -4,6 +4,9 @@
   "properties": {
     "token_mint_address": {
       "type": "string"
+    },
+    "token_payment_lookup_table": {
+      "type": "string"
     }
   },
   "required": [

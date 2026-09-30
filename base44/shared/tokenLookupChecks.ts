@@ -1,0 +1,30 @@
+import { Keypair, PublicKey, AddressLookupTableAccount, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from 'npm:@solana/web3.js@1.98.4';
+import nacl from 'npm:tweetnacl@1.0.3';
+import { lookupAddresses } from './tokenPaymentLookup.ts';
+import { mintInstructions, program, mint, TOKEN, toBase64 } from './handleTokenTransactions.ts';
+import { tokenMintBudget, validateSignedTokenMint } from './tokenMintFlow.ts';
+import decodeTokenTransaction from './decodeTokenTransaction.ts';
+export default async function tokenLookupChecks() {
+  const wallet = Keypair.generate(), signer = Keypair.generate();
+  const protocol = { collection: Keypair.generate().publicKey.toBase58() };
+  const payment = { quoteSigner: signer.publicKey.toBase58(), treasuryToken: Keypair.generate().publicKey.toBase58() };
+  const handle = 'fixture', uri = 'https://devnet.irys.xyz/' + 'a'.repeat(43), expiresAt = 1800000075;
+  const message = `solhandle:token-mint:v1|${program}|${wallet.publicKey}|${handle}|${mint}|10000000|1000000000000|${expiresAt}`;
+  const quote = { signer: payment.quoteSigner, message, signature: toBase64(nacl.sign.detached(new TextEncoder().encode(message), signer.secretKey)), solReferenceLamports: 10000000, totalRaw: '1000000000000', expiresAt };
+  const instructions = [tokenMintBudget(), ...await mintInstructions(wallet.publicKey, handle, uri, quote, protocol, payment, Keypair.generate().publicKey, TOKEN)];
+  const table = new AddressLookupTableAccount({ key: Keypair.generate().publicKey, state: { deactivationSlot: 18446744073709551615n, lastExtendedSlot: 0, lastExtendedSlotStartIndex: 0, authority: undefined, addresses: lookupAddresses(protocol, payment, TOKEN) } });
+  const blockhash = Keypair.generate().publicKey.toBase58();
+  const legacy = new Transaction({ feePayer: wallet.publicKey, recentBlockhash: blockhash }).add(...instructions); legacy.sign(wallet);
+  const build = items => { const tx = new VersionedTransaction(new TransactionMessage({ payerKey: wallet.publicKey, recentBlockhash: blockhash, instructions: items }).compileToV0Message([table])); tx.sign([wallet]); return tx; };
+  const wire = build(instructions), raw = wire.serialize();
+  await validateSignedTokenMint(decodeTokenTransaction(raw, table), protocol, payment, TOKEN);
+  await validateSignedTokenMint(decodeTokenTransaction(legacy.serialize(), table), protocol, payment, TOKEN);
+  const rejected = [];
+  const reject = async (name, action) => { let failed = false; try { await action(); } catch { failed = true; } if (!failed) throw new Error(`Validation accepted ${name}.`); rejected.push(name); };
+  await reject('invalid wallet signature', async () => { const bad = VersionedTransaction.deserialize(raw); bad.signatures[0][0] ^= 1; await validateSignedTokenMint(decodeTokenTransaction(bad.serialize(), table), protocol, payment, TOKEN); });
+  await reject('unapproved transfer', async () => { const bad = build([...instructions, SystemProgram.transfer({ fromPubkey: wallet.publicKey, toPubkey: new PublicKey(protocol.collection), lamports: 1 })]); await validateSignedTokenMint(decodeTokenTransaction(bad.serialize(), table), protocol, payment, TOKEN); });
+  await reject('unapproved lookup table', () => decodeTokenTransaction(raw, new AddressLookupTableAccount({ key: Keypair.generate().publicKey, state: table.state })));
+  const legacyBytes = legacy.serialize().length, compactBytes = raw.length;
+  if (compactBytes >= legacyBytes || compactBytes > 1232) throw new Error('The compact transaction did not reduce packet size.');
+  return { valid: true, fixtureOnly: true, legacyBytes, compactBytes, savedBytes: legacyBytes - compactBytes, signers: wire.message.header.numRequiredSignatures, rejected };
+}

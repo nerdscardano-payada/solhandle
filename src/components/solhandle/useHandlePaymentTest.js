@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Transaction } from '@solana/web3.js';
+import { Transaction, VersionedTransaction } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { base44 } from '@/api/base44Client';
 import { buildHandlePngBlob } from '@/lib/buildHandlePng';
@@ -38,10 +38,11 @@ export default function useHandlePaymentTest() {
     if (current.current.wallet !== expectedWallet) throw new Error('Wallet changed. Review the transaction again.');
     if (!signTransaction) throw new Error('Connect a wallet that supports transaction signing.');
     setBusy('Approve in your wallet…');
-    const signed = await signTransaction(Transaction.from(from64(prepared.transaction_base64)));
+    const transaction = prepared.transaction_version === 0 ? VersionedTransaction.deserialize(from64(prepared.transaction_base64)) : Transaction.from(from64(prepared.transaction_base64));
+    const signed = await signTransaction(transaction);
     setBusy('Confirming on Solana…');
     // Retain the deterministic signature even if submission or confirmation loses its connection.
-    const bytes = signed.signature;
+    const bytes = prepared.transaction_version === 0 ? signed.signatures[0] : signed.signature;
     let encoded = '', number = 0n;
     for (const byte of bytes) number = number * 256n + BigInt(byte);
     const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';

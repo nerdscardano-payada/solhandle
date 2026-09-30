@@ -1,19 +1,25 @@
-import { PublicKey, Transaction, ComputeBudgetProgram, Ed25519Program } from 'npm:@solana/web3.js@1.98.4';
+import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, ComputeBudgetProgram, Ed25519Program } from 'npm:@solana/web3.js@1.98.4';
 import nacl from 'npm:tweetnacl@1.0.3';
 import { rpc } from './solanaRpc.ts';
 import { HANDLE_MINT } from './handlePaymentStatus.ts';
 import { mintInstructions, program, fromBase64, toBase64, discriminator, equal } from './handleTokenTransactions.ts';
 import validateTokenConfiguration from './validateTokenConfiguration.ts';
 export const tokenMintBudget = () => ComputeBudgetProgram.setComputeUnitLimit({ units: 600000 });
-export async function previewTokenTransaction(rpcUrl, wallet, instructions) {
+export async function previewTokenTransaction(rpcUrl, wallet, instructions, lookupTable = null) {
   const latest = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized' }]);
-  const tx = new Transaction({ feePayer: wallet, recentBlockhash: latest.value.blockhash }).add(tokenMintBudget(), ...instructions);
-  const encoded = toBase64(tx.serialize({ requireAllSignatures: false, verifySignatures: false }));
+  const build = blockhash => lookupTable
+    ? new VersionedTransaction(new TransactionMessage({ payerKey: wallet, recentBlockhash: blockhash, instructions: [tokenMintBudget(), ...instructions] }).compileToV0Message([lookupTable]))
+    : new Transaction({ feePayer: wallet, recentBlockhash: blockhash }).add(tokenMintBudget(), ...instructions);
+  const encode = tx => {
+    const raw = lookupTable ? tx.serialize() : tx.serialize({ requireAllSignatures: false, verifySignatures: false });
+    if (raw.length > 1232) throw new Error('The transaction exceeds Solana’s size limit.');
+    return toBase64(raw);
+  };
+  const encoded = encode(build(latest.value.blockhash));
   const simulation = await rpc(rpcUrl, 'simulateTransaction', [encoded, { encoding: 'base64', commitment: 'confirmed', minContextSlot: latest.context.slot, sigVerify: false, replaceRecentBlockhash: true }]);
   if (simulation.value?.err) throw new Error(`Mint cannot proceed: ${JSON.stringify(simulation.value.err)}. ${(simulation.value.logs || []).slice(-5).join(' ')}`);
   const fresh = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized', minContextSlot: latest.context.slot }]);
-  tx.recentBlockhash = fresh.value.blockhash;
-  return toBase64(tx.serialize({ requireAllSignatures: false, verifySignatures: false }));
+  return encode(build(fresh.value.blockhash));
 }
 export function readTokenMint(instruction) {
   const bytes = instruction.data, view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);

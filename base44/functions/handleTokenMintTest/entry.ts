@@ -11,6 +11,8 @@ import { confirmTokenMint } from '../../shared/handleTokenProof.ts';
 import validateTokenConfiguration from '../../shared/validateTokenConfiguration.ts';
 import tokenConfigurationValidationChecks from '../../shared/tokenConfigurationValidationChecks.ts';
 import { previewTokenTransaction as previewTransaction, validateSignedTokenMint } from '../../shared/tokenMintFlow.ts';
+import { activeTokenLookup, lookupAddresses } from '../../shared/tokenPaymentLookup.ts';
+import decodeTokenTransaction from '../../shared/decodeTokenTransaction.ts';
 const encoder = new TextEncoder();
 async function signerKey(base44) { return (await base44.functions.invoke('quoteHandlePayment', { action: 'signer' })).data.publicKey; }
 async function validateMint(base44, tx, protocol, payment, tokenProgram) {
@@ -31,6 +33,7 @@ export default async function(req: Request): Promise<Response> {
     const mintAccount = await rpc(rpcUrl, 'getAccountInfo', [HANDLE_MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
     const verifiedMint = verifyHandleMint(mintAccount.value);
     const tokenProgram = new PublicKey(verifiedMint.tokenProgram);
+    const lookupTable = await activeTokenLookup(base44, rpcUrl, lookupAddresses(protocol, payment, tokenProgram));
     if (body.action === 'validate_configuration_rules') return Response.json(await tokenConfigurationValidationChecks(protocol.treasury, await signerKey(base44), tokenProgram));
     if (body.action === 'prepare_configuration') {
       const wallet = new PublicKey(body.wallet);
@@ -49,11 +52,11 @@ export default async function(req: Request): Promise<Response> {
       const account = accounts.value?.find(row => row.account.owner === tokenProgram.toBase58() && row.account.data.parsed.info.owner === wallet.toBase58() && row.account.data.parsed.info.state === 'initialized' && BigInt(row.account.data.parsed.info.tokenAmount.amount) >= BigInt(quote.totalRaw));
       if (!account) throw new Error('One spendable token account must cover the full payment; consolidate your $HANDLE balance first.');
       const instructions = await mintInstructions(wallet, handle, body.uri, quote, protocol, payment, account.pubkey, tokenProgram);
-      const transaction_base64 = await previewTransaction(rpcUrl, wallet, instructions);
-      return Response.json({ transaction_base64, quote, network: 'mainnet-beta' });
+      const transaction_base64 = await previewTransaction(rpcUrl, wallet, instructions, lookupTable);
+      return Response.json({ transaction_base64, transaction_version: lookupTable ? 0 : 'legacy', transaction_bytes: fromBase64(transaction_base64).length, quote, network: 'mainnet-beta' });
     }
     if (body.action === 'submit_configuration' || body.action === 'submit' || body.action === 'validate_configuration') {
-      const raw = fromBase64(body.transaction_base64 || ''), tx = Transaction.from(raw);
+      const raw = fromBase64(body.transaction_base64 || ''), tx = body.action === 'submit' ? decodeTokenTransaction(raw, lookupTable) : Transaction.from(raw);
       let expected;
       if (body.action === 'submit_configuration' || body.action === 'validate_configuration') {
         const authority = new PublicKey(protocol.authority);
@@ -86,7 +89,7 @@ export default async function(req: Request): Promise<Response> {
       const found = await rpc(rpcUrl, 'getTransaction', [body.signature, { encoding: 'base64', commitment: 'confirmed', maxSupportedTransactionVersion: 0 }]);
       if (!found) return Response.json({ signature: body.signature, status: 'pending' });
       if (found.meta?.err) return Response.json({ signature: body.signature, status: 'failed', error: `Transaction failed: ${JSON.stringify(found.meta.err)}` });
-      const tx = Transaction.from(fromBase64(found.transaction[0]));
+      const tx = decodeTokenTransaction(fromBase64(found.transaction[0]), lookupTable);
       if (tx.instructions.some(ix => ix.programId.toBase58() === 'Ed25519SigVerify111111111111111111111111111')) {
         const expected = await validateMint(base44, tx, protocol, payment, tokenProgram);
         return Response.json({ signature: body.signature, status: 'confirmed', payment: await confirmTokenMint(base44, rpcUrl, body.signature, expected) });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Transaction } from '@solana/web3.js';
+import { Transaction, VersionedTransaction } from '@solana/web3.js';
 import { base44 } from '@/api/base44Client';
 const storageKey = 'solhandle_public_token_mint';
 const from64 = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
@@ -35,8 +35,9 @@ export default function usePublicHandleMint(wallet) {
     if (receipt?.status === 'pending') throw new Error('Resolve your pending transaction before minting again.');
     if (!signTransaction || !quote || quote.wallet !== publicKey.toBase58() || quote.handle !== handle || !quote.paymentAvailable || !quote.quoteEligible || !quote.sufficientBalance || !quote.singleAccountSufficient) throw new Error('Review an eligible quote for this wallet first.');
     const prepared = await request({ action: 'prepare', handle, uri, wallet: publicKey.toBase58(), max_amount_raw: quote.totalRaw, sol_reference_lamports: quote.solReferenceLamports });
-    const signed = await signTransaction(Transaction.from(from64(prepared.transaction_base64)));
-    const pending = { wallet: publicKey.toBase58(), handle, premium, asset: prepared.asset, signature: signature58(signed.signature), blockhash: signed.recentBlockhash, status: 'pending' };
+    const transaction = prepared.transaction_version === 0 ? VersionedTransaction.deserialize(from64(prepared.transaction_base64)) : Transaction.from(from64(prepared.transaction_base64));
+    const signed = await signTransaction(transaction);
+    const pending = { wallet: publicKey.toBase58(), handle, premium, asset: prepared.asset, signature: signature58(prepared.transaction_version === 0 ? signed.signatures[0] : signed.signature), blockhash: prepared.transaction_version === 0 ? signed.message.recentBlockhash : signed.recentBlockhash, status: 'pending' };
     save(pending);
     try { const response = await request({ action: 'submit', transaction_base64: to64(signed.serialize()) }); const next = { ...pending, ...response }; save(next); return next; }
     catch (caught) { if (caught.response?.status >= 400 && caught.response?.status < 500) { save(null); throw caught; } setError('Connection interrupted. Check the saved transaction before retrying.'); return pending; }
