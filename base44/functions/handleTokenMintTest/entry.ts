@@ -7,6 +7,7 @@ import { HANDLE_MINT, handlePaymentStatus } from '../../shared/handlePaymentStat
 import { verifyHandleMint } from '../../shared/handleTokenMintInfo.ts';
 import { configurationInstructions, mintInstructions, sameInstruction, program, fromBase64, toBase64 } from '../../shared/handleTokenTransactions.ts';
 import { confirmTokenMint } from '../../shared/handleTokenProof.ts';
+import validateTokenConfiguration from '../../shared/validateTokenConfiguration.ts';
 const encoder = new TextEncoder();
 const budget = () => ComputeBudgetProgram.setComputeUnitLimit({ units: 600000 });
 async function signerKey(base44) { return (await base44.functions.invoke('quoteHandlePayment', { action: 'signer' })).data.publicKey; }
@@ -90,12 +91,13 @@ export default async function(req: Request): Promise<Response> {
       const transaction_base64 = await previewTransaction(rpcUrl, wallet, instructions);
       return Response.json({ transaction_base64, quote, network: 'mainnet-beta' });
     }
-    if (body.action === 'submit_configuration' || body.action === 'submit') {
+    if (body.action === 'submit_configuration' || body.action === 'submit' || body.action === 'validate_configuration') {
       const raw = fromBase64(body.transaction_base64 || ''), tx = Transaction.from(raw);
       let expected;
-      if (body.action === 'submit_configuration') {
+      if (body.action === 'submit_configuration' || body.action === 'validate_configuration') {
         const authority = new PublicKey(protocol.authority);
-        validateTransaction(tx, await configurationInstructions(authority, protocol.treasury, await signerKey(base44), tokenProgram), authority);
+        validateTokenConfiguration(tx, await configurationInstructions(authority, protocol.treasury, await signerKey(base44), tokenProgram), authority);
+        if (body.action === 'validate_configuration') return Response.json({ valid: true, submitted: false });
       } else {
         expected = await validateMint(base44, tx, protocol, payment, tokenProgram);
         const now = Math.floor(Date.now() / 1000);
@@ -125,7 +127,7 @@ export default async function(req: Request): Promise<Response> {
         const expected = await validateMint(base44, tx, protocol, payment, tokenProgram);
         return Response.json({ signature: body.signature, status: 'confirmed', payment: await confirmTokenMint(base44, rpcUrl, body.signature, expected) });
       }
-      validateTransaction(tx, await configurationInstructions(new PublicKey(protocol.authority), protocol.treasury, await signerKey(base44), tokenProgram), new PublicKey(protocol.authority));
+      validateTokenConfiguration(tx, await configurationInstructions(new PublicKey(protocol.authority), protocol.treasury, await signerKey(base44), tokenProgram), new PublicKey(protocol.authority));
       return Response.json({ signature: body.signature, status: 'confirmed', configuration: payment });
     }
     return Response.json({ error: 'Unsupported action.' }, { status: 400 });
