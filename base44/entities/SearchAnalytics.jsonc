@@ -27,6 +27,12 @@
     "timestamp": {
       "type": "string",
       "format": "date-time"
+    },
+    "source": {
+      "type": "string"
+    },
+    "event_key": {
+      "type": "string"
     }
   },
   "required": [

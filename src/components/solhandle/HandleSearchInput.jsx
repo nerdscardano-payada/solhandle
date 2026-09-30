@@ -1,0 +1,7 @@
+import { LoaderCircle, Search } from 'lucide-react';
+export default function HandleSearchInput({ input, onChange, onSearch, busy, error }) {
+  return <div className="dark text-foreground"><form onSubmit={event => { event.preventDefault(); onSearch(); }} className="flex flex-wrap gap-2">
+    <label className="flex min-w-0 flex-1 items-center rounded-xl border border-names-accent/50 bg-card px-4 py-3"><Search className="mr-3 h-4 w-4 shrink-0 text-muted-foreground"/><span className="mr-1 text-muted-foreground">@</span><input value={input} onChange={event => onChange(event.target.value)} className="min-w-0 w-full bg-transparent outline-none" aria-label="Search handle"/><span className="ml-2 text-xs text-muted-foreground">{input.replace(/^@+/, '').length}/20</span></label>
+    <button type="submit" disabled={busy} className="inline-flex items-center justify-center gap-2 rounded-xl border border-names-accent/50 bg-names-accent/10 px-4 py-3 text-sm font-semibold text-names-accent disabled:opacity-50">{busy && <LoaderCircle className="h-4 w-4 animate-spin"/>}Search</button>
+  </form><p className="mt-2 text-xs text-muted-foreground">Press Enter or Search to confirm your search. Automatic suggestions do not count as interest.</p>{error && <p role="alert" className="mt-2 text-xs text-destructive">{error}</p>}</div>;
+}

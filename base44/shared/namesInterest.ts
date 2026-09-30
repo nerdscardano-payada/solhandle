@@ -10,7 +10,7 @@ async function cached(key, load) {
 export async function namesInterest(base44, query = {}, rank = 'searches') {
   return await cached(JSON.stringify({ query, rank }), async () => {
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
-    const searchQuery = scope => base44.asServiceRole.entities.SearchAnalytics.aggregate({ query: { ...scope, timestamp: { $gte: since }, session_hash: { $exists: true, $ne: '' } }, groupBy: 'handle', countDistinct: 'session_hash', max: 'timestamp', sort: '-count_distinct_session_hash', limit: 48 });
+    const searchQuery = scope => base44.asServiceRole.entities.SearchAnalytics.aggregate({ query: { ...scope, source: 'manual_confirmed_v1', timestamp: { $gte: since }, session_hash: { $exists: true, $ne: '' } }, groupBy: 'handle', countDistinct: 'session_hash', max: 'timestamp', sort: '-count_distinct_session_hash', limit: 48 });
     const watchQuery = scope => base44.asServiceRole.entities.NameWatch.aggregate({ query: scope, groupBy: 'handle', countDistinct: 'wallet', sort: '-count_distinct_wallet', limit: 48 });
     let searches, watches;
     if (rank === 'watched') {
