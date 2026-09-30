@@ -34,7 +34,7 @@ export default function MintPaymentChoice({ method, onChange, handle, wallet, bu
       {quote && !quote.singleAccountSufficient && quote.sufficientBalance && <p className="mt-3 text-amber-200">Consolidate your $HANDLE into one spendable token account before minting.</p>}
       {quote && !quote.paymentAvailable && <p className="mt-3 text-amber-200">$HANDLE payments are currently unavailable. You can still choose SOL.</p>}
       <button type="button" disabled={busy || state.loading} onClick={() => setRefresh(value => value + 1)} className="mt-3 underline disabled:opacity-50">Refresh quote</button>
-      <p className="mt-3 text-xs leading-relaxed text-slate-400">50% of your $HANDLE payment is burned on-chain. Maximum reference price impact: 10%. The approved token amount cannot increase without a new review. SOL is required for network and NFT account fees. Token mints do not generate SOL referral rewards.</p>
+      <p className="mt-3 text-xs leading-relaxed text-slate-400">50% of your $HANDLE payment is burned on-chain. Maximum reference price impact: 5%. The approved token amount cannot increase without a new review. SOL is required for network and NFT account fees. Token mints do not generate SOL referral rewards.</p>
     </div>}
   </section>;
 }

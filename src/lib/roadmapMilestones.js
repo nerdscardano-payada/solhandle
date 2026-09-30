@@ -61,8 +61,8 @@ export const roadmapMilestones = [
   },
   {
     number: "11", status: "current", title: "Additional mint payment options",
-    summary: "SOL remains available alongside wallet-signed $HANDLE minting: no discount, a maximum 10% reference price impact and a verifiable 50/50 burn-treasury split. USDC remains planned.",
-    completed: ["Native SOL payment and NFT mint in one on-chain transaction", "Public $HANDLE mint preparation and confirmation connected to mainnet", "No-discount quotes with a 10% price-impact limit", "Verified token payment, burn and treasury accounting kept separate from SOL referral revenue"],
+    summary: "SOL remains available alongside wallet-signed $HANDLE minting: no discount, a maximum 5% reference price impact and a verifiable 50/50 burn-treasury split. USDC remains planned.",
+    completed: ["Native SOL payment and NFT mint in one on-chain transaction", "Public $HANDLE mint preparation and confirmation connected to mainnet", "No-discount quotes with a 5% price-impact limit", "Verified token payment, burn and treasury accounting kept separate from SOL referral revenue"],
     upcoming: ["Complete production wallet approval checks in Phantom and Backpack", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Independent review of token mint security and accounting"]
   },
   {

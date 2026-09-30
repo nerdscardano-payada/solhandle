@@ -77,12 +77,12 @@ export default async function(req: Request): Promise<Response> {
     if (quote.inputMint !== WSOL || quote.outputMint !== HANDLE_MINT || quote.inAmount !== String(priceLamports) || quote.swapMode !== 'ExactIn' || !Array.isArray(quote.routePlan) || !quote.routePlan.length) throw new Error('Jupiter returned an invalid reference quote.');
     const priceImpact = Number(quote.priceImpactPct);
     if (typeof quote.priceImpactPct !== 'string' || !quote.priceImpactPct.trim() || !Number.isFinite(priceImpact)) throw new Error('Jupiter returned an invalid price impact.');
-    const priceImpactLimitPercent = 10;
+    const priceImpactLimitPercent = 5;
     const quoteEligible = Math.abs(priceImpact) <= priceImpactLimitPercent / 100;
     const quoteWarning = !quoteEligible
       ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%, above the ${priceImpactLimitPercent}% payment-quote limit. This amount is illustrative only and cannot be used to approve a payment.`
       : Math.abs(priceImpact) > 0.01
-        ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%. Review the token amount carefully; the maximum allowed impact is 10%.`
+        ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%. Review the token amount carefully; the maximum allowed impact is ${priceImpactLimitPercent}%.`
         : '';
     if ((action === 'sign' || action === 'sign_test') && !quoteEligible) throw new Error(`Price impact is too high to issue a payment quote (maximum ${priceImpactLimitPercent}%).`);
     const amount = BigInt(quote.outAmount);
