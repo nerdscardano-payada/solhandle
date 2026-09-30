@@ -8,6 +8,7 @@ import { verifyHandleMint } from '../../shared/handleTokenMintInfo.ts';
 import { configurationInstructions, mintInstructions, sameInstruction, program, fromBase64, toBase64 } from '../../shared/handleTokenTransactions.ts';
 import { confirmTokenMint } from '../../shared/handleTokenProof.ts';
 import validateTokenConfiguration from '../../shared/validateTokenConfiguration.ts';
+import tokenConfigurationValidationChecks from '../../shared/tokenConfigurationValidationChecks.ts';
 const encoder = new TextEncoder();
 const budget = () => ComputeBudgetProgram.setComputeUnitLimit({ units: 600000 });
 async function signerKey(base44) { return (await base44.functions.invoke('quoteHandlePayment', { action: 'signer' })).data.publicKey; }
@@ -71,6 +72,7 @@ export default async function(req: Request): Promise<Response> {
     const mintAccount = await rpc(rpcUrl, 'getAccountInfo', [HANDLE_MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
     const verifiedMint = verifyHandleMint(mintAccount.value);
     const tokenProgram = new PublicKey(verifiedMint.tokenProgram);
+    if (body.action === 'validate_configuration_rules') return Response.json(await tokenConfigurationValidationChecks(protocol.treasury, await signerKey(base44), tokenProgram));
     if (body.action === 'prepare_configuration') {
       const wallet = new PublicKey(body.wallet);
       if (wallet.toBase58() !== protocol.authority) throw new Error(`Connect the protocol authority wallet: ${protocol.authority}`);
