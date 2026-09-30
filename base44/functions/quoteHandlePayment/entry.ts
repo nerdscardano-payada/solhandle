@@ -6,8 +6,7 @@ import { secrets } from 'base44:runtime';
 import { rpc } from '../../shared/solanaRpc.ts';
 import { normalizeHandle } from '../../shared/handlePricing.ts';
 import { PROGRAM_ID } from '../../shared/solhandleProtocol.ts';
-
-const HANDLE_MINT = 'BLoVgMLRxxhq3X5x9s7KxaNhnQeMf5Lt7MrEpBkjpump';
+import { HANDLE_MINT, HANDLE_PAYMENT_RELEASED, handlePaymentStatus, handleTokenBalance } from '../../shared/handlePaymentStatus.ts';
 const WSOL = 'So11111111111111111111111111111111111111112';
 const TOKEN_PROGRAMS = new Set(['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb']);
 const encodeBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes));
@@ -32,7 +31,9 @@ export default async function(req: Request): Promise<Response> {
       if (user?.role !== 'admin') return Response.json({ error: 'Forbidden.' }, { status: 403 });
       return Response.json({ publicKey: loadSigner().publicKey.toBase58(), tokenMint: HANDLE_MINT });
     }
+    if (action === 'status') return Response.json(await handlePaymentStatus(secrets.get('SOLANA_RPC_URL')));
     if (action !== 'preview' && action !== 'sign') return Response.json({ error: 'Unsupported action.' }, { status: 400 });
+    if (action === 'sign' && !HANDLE_PAYMENT_RELEASED) return Response.json({ error: '$HANDLE payment signing is closed until deployment verification, accounting and wallet checks are complete.' }, { status: 409 });
     const handle = normalizeHandle(rawHandle);
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: 'Invalid handle.' }, { status: 400 });
     let wallet;
@@ -71,9 +72,12 @@ export default async function(req: Request): Promise<Response> {
     if (amount < 2n || amount > 18446744073709551615n) throw new Error('Jupiter returned an invalid token amount.');
     const burn = amount / 2n;
     const treasury = amount - burn;
-    const preview = { handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), paymentAvailable: false };
+    const walletBalanceRaw = await handleTokenBalance(rpcUrl, wallet, HANDLE_MINT, mintInfo.value.owner);
+    const preview = { handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), walletBalanceRaw, sufficientBalance: BigInt(walletBalanceRaw) >= amount, paymentAvailable: false };
     if (action === 'preview') return Response.json(preview);
+    const status = await handlePaymentStatus(rpcUrl);
     const signer = loadSigner();
+    if (!status.paymentAvailable || status.quoteSigner !== signer.publicKey.toBase58()) return Response.json({ error: 'On-chain token payments and the quote signer are not verified for activation.' }, { status: 409 });
     const expiresAt = Math.floor(Date.now() / 1000) + 90;
     // Fixed field order and explicit version for the future on-chain Ed25519 verification.
     const message = `solhandle:token-mint:v1|${PROGRAM_ID}|${wallet}|${handle}|${HANDLE_MINT}|${priceLamports}|${amount}|${expiresAt}`;

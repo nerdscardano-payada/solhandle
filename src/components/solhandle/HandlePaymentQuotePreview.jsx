@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { base44 } from '@/api/base44Client';
+import formatHandleTokens from '@/components/solhandle/formatHandleTokens';
 
 export default function HandlePaymentQuotePreview() {
   const { publicKey } = useWallet();
@@ -18,7 +19,7 @@ export default function HandlePaymentQuotePreview() {
       setError(caught.response?.data?.error || caught.message || 'Pricing is temporarily unavailable.');
     } finally { setLoading(false); }
   };
-  const tokens = (raw) => (Number(raw) / 10 ** quote.decimals).toLocaleString('en-US', { maximumFractionDigits: Math.min(quote.decimals, 9) });
+  const tokens = (raw) => formatHandleTokens(raw, quote.decimals);
   return <section className="mt-6 rounded-2xl border border-cyan-300/20 bg-slate-900/60 p-5">
     <h2 className="text-lg font-semibold text-white">$HANDLE reference quote</h2>
     <p className="mt-2 text-sm text-slate-400">See an indicative Jupiter-based token amount. No swap or payment takes place.</p>
