@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom';
 import Header from '@/components/solhandle/Header';
 import HandlePaymentQuotePreview from '@/components/solhandle/HandlePaymentQuotePreview';
-import AdminHandlePaymentTest from '@/components/solhandle/AdminHandlePaymentTest';
 
 export default function HandleMintPayments() {
   return <main className="min-h-screen bg-slate-950 text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="mx-auto max-w-4xl px-5 py-12 sm:py-20">
     <Link to="/growth" className="text-sm text-cyan-300 hover:text-cyan-100">← Back to Growth Curve</Link>
     <div className="mt-8"><span className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-200">Mainnet · Wallet-signed payments</span><h1 className="mt-5 text-4xl font-semibold sm:text-5xl">Mint a handle with $HANDLE</h1><p className="mt-4 text-lg leading-relaxed text-slate-300">Choose $HANDLE or SOL when claiming a new SolHandle. Your wallet signs the payment and receives the NFT in one atomic mainnet transaction.</p></div>
     <div className="mt-8 grid gap-4 sm:grid-cols-2"><div className="rounded-2xl border border-cyan-300/20 bg-slate-900/60 p-5"><p className="text-sm text-cyan-300">Maximum reference price impact</p><p className="mt-2 text-3xl font-semibold">10%</p><p className="mt-3 text-sm leading-relaxed text-slate-400">No discount is applied. A fresh Jupiter reference quote converts the verified SOL mint price into $HANDLE. Quotes above 10% price impact are rejected.</p></div><div className="rounded-2xl border border-violet-300/20 bg-slate-900/60 p-5"><p className="text-sm text-violet-300">On-chain token burn</p><p className="mt-2 text-3xl font-semibold">50%</p><p className="mt-3 text-sm leading-relaxed text-slate-400">Half of the $HANDLE payment is burned, rounded down; the remainder goes to the protocol treasury. If minting fails, the payment and burn roll back together.</p></div></div>
-    <AdminHandlePaymentTest />
     <HandlePaymentQuotePreview />
     <div className="mt-6 rounded-2xl border border-white/10 bg-slate-900/60 p-5 text-sm leading-relaxed text-slate-300"><h2 className="text-lg font-semibold text-white">Before approving</h2><p className="mt-2">Review the token amount and your wallet’s network fees. SOL is still required for network and NFT account costs. Quotes expire quickly; an increased amount requires a new review. Pending transactions are saved on your device for confirmation checks. Token payments do not generate SOL referral rewards. Local contract tests and a successful mainnet test are not an independent security audit.</p></div>
     <Link to="/roadmap" className="mt-7 inline-block text-sm font-medium text-cyan-300 underline underline-offset-4">View the roadmap →</Link>
