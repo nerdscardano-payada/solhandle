@@ -1,0 +1,87 @@
+SOLHANDLE — $HANDLE MAINNET PROGRAM UPGRADE
+
+Run this in your EXISTING native Linux/WSL SolHandle project root.
+This is an upgrade of the existing program, NOT a redeployment or initialization.
+No private key, seed phrase, quote-signing key or private RPC URL belongs in chat.
+
+Your reported result was: LOCAL PAYMENT TESTS PASSED: 19.
+Those tests covered the binary with SHA-256:
+f80aa41369d37aa1c1072e68e8566da190945b83a9a272c56d96d5b7cf2b68e0
+The commands below refuse a different binary. They do NOT rebuild it.
+If the fingerprint differs, STOP: that new build must be tested separately.
+The 19 tests are not an independent audit or Token-2022/marketplace regression coverage.
+
+Paste ONLY the block between BEGIN COMMANDS and END COMMANDS into WSL.
+Do not paste the BEGIN/END markers. Prompts read directly from your terminal.
+If you already exported SOLHANDLE_AUTHORITY or SOLANA_RPC_URL, those values are reused.
+Otherwise enter your LOCAL upgrade-authority keypair path and private mainnet RPC URL.
+RPC input is hidden. Nothing uploads your keypair.
+The original program keypair defaults to keys/solhandle-v1-mainnet-program.json.
+Use SOLHANDLE_PROGRAM_KEYPAIR if yours is elsewhere; do not generate a replacement.
+
+BEGIN COMMANDS
+(
+set -euo pipefail
+PROGRAM_ID='B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf'
+GENESIS='5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d'
+BINARY='target/deploy/solhandle.so'
+EXPECTED_HASH='f80aa41369d37aa1c1072e68e8566da190945b83a9a272c56d96d5b7cf2b68e0'
+for TOOL in solana node sha256sum cmp wc; do
+  command -v "$TOOL" >/dev/null || { echo "STOP: missing $TOOL"; exit 1; }
+done
+case "$(command -v node)" in /mnt/*|*.exe) echo 'STOP: use native Linux Node in WSL.'; exit 1;; esac
+test -f "$BINARY" || { echo 'STOP: open your existing WSL project root with the tested binary.'; exit 1; }
+test -f scripts/verify-mainnet.mjs || { echo 'STOP: existing mainnet verification script is missing.'; exit 1; }
+printf '%s  %s\n' "$EXPECTED_HASH" "$BINARY" | sha256sum --check -
+AUTHORITY="${SOLHANDLE_AUTHORITY:-}"
+if [ -z "$AUTHORITY" ]; then read -r -p 'Local upgrade-authority keypair path: ' AUTHORITY </dev/tty; fi
+case "$AUTHORITY" in '~/'*) AUTHORITY="$HOME/${AUTHORITY:2}";; esac
+PROGRAM_KEYPAIR="${SOLHANDLE_PROGRAM_KEYPAIR:-keys/solhandle-v1-mainnet-program.json}"
+case "$PROGRAM_KEYPAIR" in '~/'*) PROGRAM_KEYPAIR="$HOME/${PROGRAM_KEYPAIR:2}";; esac
+RPC_URL="${SOLANA_RPC_URL:-}"
+if [ -z "$RPC_URL" ]; then read -r -s -p 'Private mainnet RPC URL (hidden): ' RPC_URL </dev/tty; printf '\n'; fi
+test -n "$RPC_URL" || { echo 'STOP: RPC URL is empty.'; exit 1; }
+test -f "$AUTHORITY" || { echo 'STOP: authority keypair file not found.'; exit 1; }
+test -f "$PROGRAM_KEYPAIR" || { echo 'STOP: original program keypair file not found.'; exit 1; }
+test "$(solana genesis-hash --url "$RPC_URL")" = "$GENESIS" || { echo 'STOP: RPC is not mainnet-beta.'; exit 1; }
+test "$(solana address -k "$PROGRAM_KEYPAIR")" = "$PROGRAM_ID" || { echo 'STOP: wrong program keypair.'; exit 1; }
+AUTHORITY_ADDRESS="$(solana address -k "$AUTHORITY")"
+PROGRAM_INFO="$(solana program show "$PROGRAM_ID" --url "$RPC_URL")"
+printf '%s\n' "$PROGRAM_INFO"
+printf '%s\n' "$PROGRAM_INFO" | grep -Eq "^[[:space:]]*Authority: ${AUTHORITY_ADDRESS}[[:space:]]*$" || { echo 'STOP: this wallet is not the program upgrade authority.'; exit 1; }
+export SOLHANDLE_PROGRAM_ID="$PROGRAM_ID"
+export SOLANA_RPC_URL="$RPC_URL"
+node scripts/verify-mainnet.mjs
+printf 'Upgrade authority: %s\nBalance: ' "$AUTHORITY_ADDRESS"
+solana balance "$AUTHORITY_ADDRESS" --url "$RPC_URL"
+echo 'This uses real SOL for deployment fees and any required account funding.'
+echo 'Existing collection, prices, pause state and handle accounts are not reinitialized.'
+echo 'This does not configure token payments or open public $HANDLE minting.'
+read -r -p 'Type UPGRADE HANDLE PAYMENTS to deploy the tested binary: ' CONFIRMATION </dev/tty
+test "$CONFIRMATION" = 'UPGRADE HANDLE PAYMENTS' || { echo 'Cancelled: no deployment transaction sent.'; exit 1; }
+BACKUP_DIR="$(mktemp -d /tmp/solhandle-mainnet-upgrade.XXXXXXXX)"
+printf 'Backup and verification output directory: %s\n' "$BACKUP_DIR"
+solana program dump "$PROGRAM_ID" "$BACKUP_DIR/before.so" --url "$RPC_URL"
+solana program deploy --url "$RPC_URL" --keypair "$AUTHORITY" --upgrade-authority "$AUTHORITY" --program-id "$PROGRAM_KEYPAIR" "$BINARY"
+solana program dump "$PROGRAM_ID" "$BACKUP_DIR/after.so" --url "$RPC_URL"
+BINARY_BYTES="$(wc -c < "$BINARY")"
+cmp -n "$BINARY_BYTES" "$BINARY" "$BACKUP_DIR/after.so" || { echo 'STOP: deployed program does not match the tested binary. Do not configure payments.'; exit 1; }
+node scripts/verify-mainnet.mjs
+solana program show "$PROGRAM_ID" --url "$RPC_URL"
+echo 'SUCCESS: deployed mainnet program bytes match the tested binary.'
+echo 'Token-payment configuration and public activation were NOT changed.'
+echo 'Next: use the administrator payment page to configure with the protocol wallet.'
+)
+END COMMANDS
+
+After SUCCESS:
+1. Sign in as an administrator and open /growth/handle-mint-payments.
+2. Connect the PROTOCOL authority wallet shown there. The protocol authority can differ from the program upgrade authority checked above.
+3. Refresh status, acknowledge real mainnet costs, then choose Configure with protocol wallet. This is a SEPARATE on-chain transaction; review it before signing.
+4. Review a quote for an available handle costing at most 0.01 SOL-equivalent, then approve the administrator mint test. This spends real $HANDLE and requires SOL for network/NFT account costs. High price impact or insufficient balance must block it.
+5. Confirm the receipt and inspect the mint, burn and treasury amounts. If a transaction is pending, check that receipt before retrying.
+
+The program upgrade and administrator test do not activate the public website payment flow. Public signing remains gated separately.
+Do not use redeploy-mainnet.sh or upgrade-mainnet-pricing.sh for this change: they initialize a new deployment or alter pause/pricing behavior.
+If any STOP/error appears, do not keep pasting later steps or blindly redeploy. Share only the error, transaction signature and public addresses, with RPC URLs and secrets removed.
+This procedure was prepared here; it has NOT been executed against mainnet by the assistant.
