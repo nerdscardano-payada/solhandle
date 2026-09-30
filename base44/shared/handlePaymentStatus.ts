@@ -2,8 +2,8 @@ import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { rpc, getProtocolConfig } from './solanaRpc.ts';
 import { PROGRAM_ID } from './solhandleProtocol.ts';
 
-// Keep closed until deployment, accounting and wallet end-to-end checks are complete.
-export const HANDLE_PAYMENT_RELEASED = false;
+// Public website release; every transaction still verifies mainnet, on-chain configuration and the signed quote.
+export const HANDLE_PAYMENT_RELEASED = true;
 export const HANDLE_MINT = 'BLoVgMLRxxhq3X5x9s7KxaNhnQeMf5Lt7MrEpBkjpump';
 export async function handlePaymentStatus(rpcUrl) {
   const [paymentConfig] = PublicKey.findProgramAddressSync([new TextEncoder().encode('token_payment')], new PublicKey(PROGRAM_ID));

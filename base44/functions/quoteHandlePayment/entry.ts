@@ -61,7 +61,7 @@ export default async function(req: Request): Promise<Response> {
     if (!Number.isSafeInteger(priceLamports) || priceLamports <= 0) throw new Error('Verified SOL reference price is unavailable.');
     if (adminTest && priceLamports > 10_000_000) return Response.json({ error: 'The administrator test is limited to handles priced at 0.01 SOL or less.' }, { status: 422 });
     const mintInfo = await rpc(rpcUrl, 'getAccountInfo', [HANDLE_MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
-    const decimals = mintInfo?.value?.data?.parsed?.info?.decimals;
+    const { decimals } = verifyHandleMint(mintInfo?.value);
     if (!TOKEN_PROGRAMS.has(mintInfo?.value?.owner) || !Number.isInteger(decimals) || decimals < 0 || decimals > 18) throw new Error('Official $HANDLE mint could not be verified.');
 
     // Jupiter supplies a reference conversion only. No user tokens are swapped or sent to Jupiter.
@@ -77,12 +77,12 @@ export default async function(req: Request): Promise<Response> {
     if (quote.inputMint !== WSOL || quote.outputMint !== HANDLE_MINT || quote.inAmount !== String(priceLamports) || quote.swapMode !== 'ExactIn' || !Array.isArray(quote.routePlan) || !quote.routePlan.length) throw new Error('Jupiter returned an invalid reference quote.');
     const priceImpact = Number(quote.priceImpactPct);
     if (typeof quote.priceImpactPct !== 'string' || !quote.priceImpactPct.trim() || !Number.isFinite(priceImpact)) throw new Error('Jupiter returned an invalid price impact.');
-    const priceImpactLimitPercent = adminTest ? 5 : 1;
+    const priceImpactLimitPercent = 10;
     const quoteEligible = Math.abs(priceImpact) <= priceImpactLimitPercent / 100;
     const quoteWarning = !quoteEligible
       ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%, above the ${priceImpactLimitPercent}% payment-quote limit. This amount is illustrative only and cannot be used to approve a payment.`
-      : adminTest && Math.abs(priceImpact) > 0.01
-        ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%. This quote uses the higher 5% administrator-test limit; the public limit remains 1%.`
+      : Math.abs(priceImpact) > 0.01
+        ? `Reference price impact is ${(Math.abs(priceImpact) * 100).toFixed(2)}%. Review the token amount carefully; the maximum allowed impact is 10%.`
         : '';
     if ((action === 'sign' || action === 'sign_test') && !quoteEligible) throw new Error(`Price impact is too high to issue a payment quote (maximum ${priceImpactLimitPercent}%).`);
     const amount = BigInt(quote.outAmount);
@@ -90,7 +90,10 @@ export default async function(req: Request): Promise<Response> {
     const burn = amount / 2n;
     const treasury = amount - burn;
     const walletBalanceRaw = await handleTokenBalance(rpcUrl, wallet, HANDLE_MINT, mintInfo.value.owner);
-    const preview = { handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), walletBalanceRaw, sufficientBalance: BigInt(walletBalanceRaw) >= amount, priceImpactPercent: Math.abs(priceImpact) * 100, priceImpactLimitPercent, quoteEligible, quoteWarning, paymentAvailable: false };
+    const paymentStatus = await handlePaymentStatus(rpcUrl);
+    const tokenAccounts = await rpc(rpcUrl, 'getTokenAccountsByOwner', [wallet, { mint: HANDLE_MINT }, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
+    const singleAccountSufficient = tokenAccounts.value?.some(row => row.account.owner === mintInfo.value.owner && row.account.data.parsed.info.owner === wallet && row.account.data.parsed.info.state === 'initialized' && BigInt(row.account.data.parsed.info.tokenAmount.amount) >= amount) || false;
+    const preview = { singleAccountSufficient, discountPercent: 0, handle, wallet, mint: HANDLE_MINT, decimals, solReferenceLamports: priceLamports, totalRaw: amount.toString(), burnRaw: burn.toString(), treasuryRaw: treasury.toString(), walletBalanceRaw, sufficientBalance: BigInt(walletBalanceRaw) >= amount, priceImpactPercent: Math.abs(priceImpact) * 100, priceImpactLimitPercent, quoteEligible, quoteWarning, paymentAvailable: paymentStatus.paymentAvailable };
     if (action === 'preview' || action === 'preview_test') return Response.json(preview);
     const status = await handlePaymentStatus(rpcUrl);
     const signer = loadSigner();

@@ -29,6 +29,15 @@
     "treasury_raw": {
       "type": "string"
     },
+    "total_tokens": {
+      "type": "number"
+    },
+    "burned_tokens": {
+      "type": "number"
+    },
+    "treasury_tokens": {
+      "type": "number"
+    },
     "sol_reference_lamports": {
       "type": "number"
     },
@@ -49,5 +58,23 @@
     "treasury_raw",
     "sol_reference_lamports",
     "confirmed_at"
-  ]
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }

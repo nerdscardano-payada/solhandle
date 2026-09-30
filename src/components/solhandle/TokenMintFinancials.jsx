@@ -1,0 +1,21 @@
+import { useEffect, useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import formatHandleTokens from '@/components/solhandle/formatHandleTokens';
+export default function TokenMintFinancials({ period, startDate, endDate }) {
+  const [data, setData] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('');
+  const load = async (cursor = null) => {
+    setBusy(true); setError('');
+    try {
+      const now = new Date(), today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      const days = n => new Date(today.getTime() + n * 86400000).toISOString();
+      const month = offset => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1)).toISOString();
+      const bounds = { today: { start: days(0) }, yesterday: { start: days(-1), end: days(0) }, last7: { start: days(-6) }, month: { start: month(0) }, previous_month: { start: month(-1), end: month(0) }, quarter: { start: new Date(Date.UTC(now.getUTCFullYear(), Math.floor(now.getUTCMonth() / 3) * 3, 1)).toISOString() }, year: { start: new Date(Date.UTC(now.getUTCFullYear(), 0, 1)).toISOString() }, custom: { ...(startDate ? { start: `${startDate}T00:00:00Z` } : {}), ...(endDate ? { end: new Date(new Date(`${endDate}T00:00:00Z`).getTime() + 86400000).toISOString() } : {}) } };
+      const response = (await base44.functions.invoke('getTokenMintPayments', { ...(bounds[period] || {}), ...(cursor ? { cursor } : {}) })).data;
+      setData(previous => cursor ? { ...response, items: [...previous.items, ...response.items], totals: previous.totals } : response);
+    } catch (caught) { setError(caught.response?.data?.error || caught.message); }
+    finally { setBusy(false); }
+  };
+  useEffect(() => { setData(null); load(); }, [period, startDate, endDate]);
+  const number = value => Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  return <section className="dark mt-6 rounded-2xl border border-border bg-card p-5 text-card-foreground"><div className="flex items-center justify-between gap-3"><h2 className="text-xl font-semibold">$HANDLE mint accounting</h2><button onClick={() => load()} disabled={busy} className="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-50">Refresh</button></div><p className="mt-2 text-sm text-muted-foreground">Confirmed on-chain payments only. Separate from SOL revenue; no SOL referral rewards.</p>{error && <p role="alert" className="mt-3 text-destructive">{error}</p>}{busy && <p role="status" className="mt-3 text-sm text-muted-foreground">Loading token payments…</p>}{data && <><dl className="mt-4 grid gap-4 sm:grid-cols-4">{[['Token mints', number(data.totals?.count)], ['Paid $HANDLE', number(data.totals?.sum_total_tokens)], ['Burned $HANDLE', number(data.totals?.sum_burned_tokens)], ['Treasury $HANDLE', number(data.totals?.sum_treasury_tokens)]].map(([label, value]) => <div key={label}><dt className="text-sm text-muted-foreground">{label}</dt><dd className="text-xl font-semibold">{value}</dd></div>)}</dl><div className="mt-5 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr>{['Handle / date', 'Paid', 'Burned', 'Treasury', 'Proof'].map(label => <th key={label} className="border-b border-border p-2">{label}</th>)}</tr></thead><tbody>{data.items.map(row => <tr key={row.signature}><td className="p-2">@{row.handle}<span className="block text-xs text-muted-foreground">{new Date(row.confirmed_at).toLocaleString()}</span></td>{['amount_raw', 'burned_raw', 'treasury_raw'].map(field => <td key={field} className="whitespace-nowrap p-2">{formatHandleTokens(row[field], row.decimals)}</td>)}<td className="p-2"><a href={`https://explorer.solana.com/tx/${row.signature}`} target="_blank" rel="noreferrer" className="underline">Solana</a></td></tr>)}</tbody></table></div>{!data.items.length && <p className="mt-4 text-sm text-muted-foreground">No $HANDLE mints in this period.</p>}{data.hasMore && <button onClick={() => load(data.nextCursor)} disabled={busy} className="mt-4 rounded-lg border border-border px-4 py-2 disabled:opacity-50">Load more</button>}</>}</section>;
+}

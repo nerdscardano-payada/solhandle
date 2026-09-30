@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.49';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { secrets } from 'base44:runtime';
 import { rpc } from '../../shared/solanaRpc.ts';
@@ -77,9 +77,12 @@ export default async function(req: Request): Promise<Response> {
       const eligibleWallets = new Set(eligible);
       for (const row of previous) if (!eligibleWallets.has(row.wallet)) update.push({ id: row.id, first_seen_at: stamp });
     }
-    const handles = await base44.asServiceRole.entities.HandleIndex.filter({ mint_price_lamports: { $gt: 0 } }, '-minted_at', 5000);
-    if (handles.length >= 5000) throw new Error('Mint history exceeds supported range; progress was not updated.');
-    const minted = new Set(handles.filter(h => h.mint_signature && h.minted_at && h.status !== 'pending').map(h => h.handle)).size;
+    const [solMints, tokenMints] = await Promise.all([
+      base44.asServiceRole.entities.HandleIndex.count({ mint_price_lamports: { $gt: 0 }, mint_signature: { $exists: true, $ne: '' }, minted_at: { $exists: true, $ne: '' }, status: { $ne: 'pending' } }),
+      base44.asServiceRole.entities.TokenMintPayment.count({ token_mint: MINT })
+    ]);
+    // Official token mints emit a zero-SOL event, so these two verified payment sets do not overlap.
+    const minted = solMints + tokenMints;
     for (const batch of chunks(create)) await base44.asServiceRole.entities.GrowthHolder.bulkCreate(batch);
     for (const batch of chunks(update)) await base44.asServiceRole.entities.GrowthHolder.bulkUpdate(batch);
     let cycle = previousCycle;

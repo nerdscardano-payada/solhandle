@@ -10,58 +10,12 @@ import { configurationInstructions, mintInstructions, sameInstruction, program, 
 import { confirmTokenMint } from '../../shared/handleTokenProof.ts';
 import validateTokenConfiguration from '../../shared/validateTokenConfiguration.ts';
 import tokenConfigurationValidationChecks from '../../shared/tokenConfigurationValidationChecks.ts';
+import { previewTokenTransaction as previewTransaction, validateSignedTokenMint } from '../../shared/tokenMintFlow.ts';
 const encoder = new TextEncoder();
-const budget = () => ComputeBudgetProgram.setComputeUnitLimit({ units: 600000 });
 async function signerKey(base44) { return (await base44.functions.invoke('quoteHandlePayment', { action: 'signer' })).data.publicKey; }
-async function previewTransaction(rpcUrl, wallet, instructions) {
-  // Finalized hashes are visible to wallet simulators and other nodes behind the RPC load balancer.
-  const latest = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized' }]);
-  const tx = new Transaction({ feePayer: wallet, recentBlockhash: latest.value.blockhash }).add(budget(), ...instructions);
-  const encoded = toBase64(tx.serialize({ requireAllSignatures: false, verifySignatures: false }));
-  const simulation = await rpc(rpcUrl, 'simulateTransaction', [encoded, { encoding: 'base64', commitment: 'confirmed', minContextSlot: latest.context.slot, sigVerify: false, replaceRecentBlockhash: true }]);
-  if (simulation.value?.err) throw new Error(`Transaction cannot proceed. The deployed program must support token payments and all accounts must be valid. Simulation: ${JSON.stringify(simulation.value.err)}. ${(simulation.value.logs || []).slice(-5).join(' ')}`);
-  // Refresh immediately before returning the unsigned transaction; never modify a signed transaction.
-  const fresh = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized', minContextSlot: latest.context.slot }]);
-  tx.recentBlockhash = fresh.value.blockhash;
-  return toBase64(tx.serialize({ requireAllSignatures: false, verifySignatures: false }));
-}
-function validateTransaction(tx, instructions, wallet) {
-  const expected = [budget(), ...instructions];
-  if (!tx.feePayer?.equals(wallet) || !tx.verifySignatures() || tx.instructions.length !== expected.length || !tx.instructions.every((item, index) => sameInstruction(item, expected[index]))) throw new Error('Only the exact reviewed, wallet-signed test transaction is allowed.');
-}
-function readMint(instruction) {
-  const bytes = instruction.data, view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  let offset = 8;
-  const text = max => {
-    if (offset + 4 > bytes.length) throw new Error('Invalid mint data.');
-    const size = view.getUint32(offset, true); offset += 4;
-    if (size < 1 || size > max || offset + size > bytes.length) throw new Error('Invalid mint text.');
-    const value = new TextDecoder('utf-8', { fatal: true }).decode(bytes.slice(offset, offset + size)); offset += size; return value;
-  };
-  const handle = text(20), uri = text(200);
-  if (!/^[a-z0-9]{1,20}$/.test(handle) || offset + 24 !== bytes.length) throw new Error('Invalid mint data.');
-  const solReferenceLamports = Number(view.getBigUint64(offset, true)), totalRaw = view.getBigUint64(offset + 8, true).toString(), expiresAt = Number(view.getBigUint64(offset + 16, true));
-  return { handle, uri, solReferenceLamports, totalRaw, expiresAt };
-}
 async function validateMint(base44, tx, protocol, payment, tokenProgram) {
-  if (tx.instructions.length !== 3) throw new Error('Invalid token transaction.');
-  const fields = readMint(tx.instructions[2]);
-  const wallet = tx.feePayer?.toBase58();
-  if (!wallet || fields.solReferenceLamports < 1 || fields.solReferenceLamports > 10000000 || BigInt(fields.totalRaw) < 2n) throw new Error('The administrator test is capped at a 0.01 SOL reference price.');
-  const signer = await signerKey(base44);
-  if (!payment.enabledOnChain || payment.quoteSigner !== signer) throw new Error('The on-chain payment configuration is not ready.');
-  const message = `solhandle:token-mint:v1|${program.toBase58()}|${wallet}|${fields.handle}|${HANDLE_MINT}|${fields.solReferenceLamports}|${fields.totalRaw}|${fields.expiresAt}`;
-  const ed = tx.instructions[1].data;
-  if (ed.length < 16) throw new Error('Missing quote verification.');
-  const offset = new DataView(ed.buffer, ed.byteOffset, ed.byteLength).getUint16(2, true);
-  const signature = ed.slice(offset, offset + 64);
-  if (signature.length !== 64 || !nacl.sign.detached.verify(encoder.encode(message), signature, new PublicKey(signer).toBytes())) throw new Error('Invalid payment quote signature.');
-  const quote = { ...fields, signer, message, signature: toBase64(signature) };
-  const payerToken = tx.instructions[2].keys[11]?.pubkey;
-  if (!payerToken) throw new Error('Missing payer token account.');
-  const instructions = await mintInstructions(new PublicKey(wallet), fields.handle, fields.uri, quote, protocol, payment, payerToken, tokenProgram);
-  validateTransaction(tx, instructions, new PublicKey(wallet));
-  return { ...fields, wallet, payerToken: payerToken.toBase58(), treasuryToken: payment.treasuryToken };
+  if (!payment.enabledOnChain || payment.quoteSigner !== await signerKey(base44)) throw new Error('The on-chain payment configuration is not ready.');
+  return validateSignedTokenMint(tx, protocol, payment, tokenProgram, 10000000);
 }
 export default async function(req: Request): Promise<Response> {
   let submittedSignature = '';
@@ -133,7 +87,7 @@ export default async function(req: Request): Promise<Response> {
       if (!found) return Response.json({ signature: body.signature, status: 'pending' });
       if (found.meta?.err) return Response.json({ signature: body.signature, status: 'failed', error: `Transaction failed: ${JSON.stringify(found.meta.err)}` });
       const tx = Transaction.from(fromBase64(found.transaction[0]));
-      if (tx.instructions.length === 3 && tx.instructions[1].programId.toBase58() === 'Ed25519SigVerify111111111111111111111111111') {
+      if (tx.instructions.some(ix => ix.programId.toBase58() === 'Ed25519SigVerify111111111111111111111111111')) {
         const expected = await validateMint(base44, tx, protocol, payment, tokenProgram);
         return Response.json({ signature: body.signature, status: 'confirmed', payment: await confirmTokenMint(base44, rpcUrl, body.signature, expected) });
       }

@@ -12,6 +12,8 @@ import useMintLaunch from "@/hooks/useMintLaunch";
 import { trackFunnel } from "@/lib/protocolAnalytics";
 import MintPaymentChoice from "@/components/solhandle/MintPaymentChoice";
 import { useEffect } from "react";
+import usePublicHandleMint from '@/components/solhandle/usePublicHandleMint';
+import PublicHandleMintReceipt from '@/components/solhandle/PublicHandleMintReceipt';
 
 export default function MintReadinessDialog({ open, onOpenChange, wallet, result }) {
   const { publicKey, signTransaction } = useWallet();
@@ -22,20 +24,37 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
   const launch = useMintLaunch();
   const handle = result?.handle || "";
   const [paymentMethod, setPaymentMethod] = useState("SOL");
+  const [tokenQuote, setTokenQuote] = useState(null);
+  const tokenMint = usePublicHandleMint(publicKey?.toBase58() || '');
+  const tokenReady = tokenQuote?.handle === handle && tokenQuote?.wallet === publicKey?.toBase58() && tokenQuote.paymentAvailable && tokenQuote.quoteEligible && tokenQuote.sufficientBalance && tokenQuote.singleAccountSufficient;
   useEffect(() => { setPaymentMethod("SOL"); }, [open, handle, publicKey?.toBase58()]);
   const minting = phase === "metadata" || phase === "wallet";
+  useEffect(() => {
+    const receipt = tokenMint.receipt;
+    if (!open || receipt?.status !== 'confirmed' || receipt.handle !== handle) return;
+    trackFunnel('MINT_CONFIRMED', handle);
+    localStorage.removeItem('solhandle_pending_handle');
+    const params = new URLSearchParams({ handle, signature: receipt.signature, asset: receipt.asset || '', wallet: receipt.wallet, premium: String(Boolean(receipt.premium)), payment: 'HANDLE' });
+    onOpenChange(false);
+    navigate(`/mint-success?${params}`);
+  }, [open, tokenMint.receipt, handle, navigate, onOpenChange]);
 
   const mint = async () => {
-    if (!launch.isLive || paymentMethod !== "SOL") return;
+    if (!launch.isLive || tokenMint.hasPending || (paymentMethod === 'HANDLE' && !tokenReady)) return;
     setError("");
     setSignature("");
     setPhase("metadata");
     trackFunnel("MINT_STARTED", handle);
     try {
       const png = await buildHandlePngBlob(handle);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: png });
+      const { file_url } = await base44.integrations.Core.UploadPublicFile({ file: png });
       const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle, image_url: file_url });
       setPhase("wallet");
+      if (paymentMethod === 'HANDLE') {
+        await tokenMint.mint({ handle, uri: upload.data.uri, quote: tokenQuote, publicKey, signTransaction, premium: Boolean(result?.premium) });
+        setPhase('');
+        return;
+      }
       const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction });
       setSignature(mintResult.signature);
       setPhase("confirmed");
@@ -50,5 +69,5 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
     }
   };
 
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-h-[90dvh] overflow-y-auto border-cyan-300/30 bg-slate-950 text-white sm:max-w-md"><DialogHeader><DialogTitle>Review your Mainnet Beta claim</DialogTitle><DialogDescription className="text-slate-400">Your wallet will approve the on-chain NFT mint.</DialogDescription></DialogHeader><div className="rounded-xl border border-cyan-300/25 bg-gradient-to-br from-cyan-300/10 via-slate-900/70 to-violet-400/10 p-4"><div className="flex items-center justify-between"><div><span className="text-xs text-cyan-100/70">Your SolHandle NFT</span><b className="block text-3xl">@{handle}</b></div><button onClick={() => navigator.clipboard.writeText(`@${handle}`)} className="rounded-md p-2 text-cyan-200" aria-label="Copy handle"><Copy className="h-4 w-4" /></button></div><div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-4 text-sm"><div><span className="block text-slate-500">{result?.premium ? "Total · Premium" : "Mainnet Beta price"}</span><b>{lamportsToSol(result?.priceLamports)} SOL</b>{result?.premium && <span className="mt-1 block text-xs text-violet-200">{lamportsToSol(result?.basePriceLamports)} base + {lamportsToSol(result?.premiumSurchargeLamports)} premium</span>}</div><div><span className="block text-slate-500">Receives NFT</span><b>{shortenAddress(wallet)}</b></div></div></div><MintPaymentChoice method={paymentMethod} onChange={setPaymentMethod} handle={handle} wallet={open ? publicKey?.toBase58() : ""} busy={minting || Boolean(signature)} /><div className="space-y-3 text-sm text-slate-300"><p className="flex gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />Availability confirmed for @{handle}.</p><p className="flex gap-2"><Wallet className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />The NFT is minted directly to your connected wallet.</p><MintProgress phase={phase} error={error}/>{signature && <a className="flex items-center gap-2 text-violet-300 underline" href={`https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta`} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" />View transaction</a>}</div><button disabled={!launch.isLive || !publicKey || Boolean(signature) || minting || paymentMethod !== "SOL"} onClick={mint} className="w-full rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-400 to-violet-500 py-3 text-sm font-semibold text-slate-950 disabled:opacity-50">{!launch.isLive ? `Minting opens ${launch.launchLabel}` : signature ? "Minted on Mainnet Beta" : minting ? "Minting…" : paymentMethod === "HANDLE" ? "$HANDLE payments not active yet" : "Mint on Mainnet Beta"}</button></DialogContent></Dialog>;
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-h-[90dvh] overflow-y-auto border-cyan-300/30 bg-slate-950 text-white sm:max-w-md"><DialogHeader><DialogTitle>Review your Mainnet Beta claim</DialogTitle><DialogDescription className="text-slate-400">Your wallet will approve the on-chain NFT mint.</DialogDescription></DialogHeader><div className="rounded-xl border border-cyan-300/25 bg-gradient-to-br from-cyan-300/10 via-slate-900/70 to-violet-400/10 p-4"><div className="flex items-center justify-between"><div><span className="text-xs text-cyan-100/70">Your SolHandle NFT</span><b className="block text-3xl">@{handle}</b></div><button onClick={() => navigator.clipboard.writeText(`@${handle}`)} className="rounded-md p-2 text-cyan-200" aria-label="Copy handle"><Copy className="h-4 w-4" /></button></div><div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-4 text-sm"><div><span className="block text-slate-500">{result?.premium ? "Total · Premium" : "Mainnet Beta price"}</span><b>{lamportsToSol(result?.priceLamports)} SOL</b>{result?.premium && <span className="mt-1 block text-xs text-violet-200">{lamportsToSol(result?.basePriceLamports)} base + {lamportsToSol(result?.premiumSurchargeLamports)} premium</span>}</div><div><span className="block text-slate-500">Receives NFT</span><b>{shortenAddress(wallet)}</b></div></div></div><MintPaymentChoice method={paymentMethod} onChange={setPaymentMethod} onQuote={setTokenQuote} handle={handle} wallet={open ? publicKey?.toBase58() : ""} busy={minting || Boolean(signature) || tokenMint.hasPending} /><PublicHandleMintReceipt mint={tokenMint} /><div className="space-y-3 text-sm text-slate-300"><p className="flex gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />Availability confirmed for @{handle}.</p><p className="flex gap-2"><Wallet className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />The NFT is minted directly to your connected wallet.</p><MintProgress phase={phase} error={error}/>{signature && <a className="flex items-center gap-2 text-violet-300 underline" href={`https://explorer.solana.com/tx/${signature}?cluster=mainnet-beta`} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" />View transaction</a>}</div><button disabled={!launch.isLive || !publicKey || Boolean(signature) || minting || tokenMint.hasPending || (paymentMethod === 'HANDLE' && !tokenReady)} onClick={mint} className="w-full rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-400 to-violet-500 py-3 text-sm font-semibold text-slate-950 disabled:opacity-50">{!launch.isLive ? `Minting opens ${launch.launchLabel}` : signature ? "Minted on Mainnet Beta" : minting ? "Minting…" : tokenMint.hasPending ? 'Confirmation pending' : paymentMethod === "HANDLE" ? 'Mint with $HANDLE' : "Mint on Mainnet Beta"}</button></DialogContent></Dialog>;
 }

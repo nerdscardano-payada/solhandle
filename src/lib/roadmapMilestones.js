@@ -60,10 +60,10 @@ export const roadmapMilestones = [
     upcoming: ["Verify live token balance checks and tier qualification with real activity", "Validate confirmed revenue allocation and payout safeguards end to end", "Unpause eligible payouts only after verification"]
   },
   {
-    number: "11", status: "upcoming", title: "Additional mint payment options",
-    summary: "Keep SOL as the default while exploring optional $HANDLE and USDC payments for new handle mints, subject to token availability and protocol security review.",
-    completed: ["Native SOL payment and NFT mint in one on-chain transaction"],
-    upcoming: ["Explore $HANDLE mint payments with a proposed 5% discount and 50% verifiable token burn", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Validate atomic payment and minting, treasury accounting and referral economics before launch"]
+    number: "11", status: "current", title: "Additional mint payment options",
+    summary: "SOL remains available alongside wallet-signed $HANDLE minting: no discount, a maximum 10% reference price impact and a verifiable 50/50 burn-treasury split. USDC remains planned.",
+    completed: ["Native SOL payment and NFT mint in one on-chain transaction", "Public $HANDLE mint preparation and confirmation connected to mainnet", "No-discount quotes with a 10% price-impact limit", "Verified token payment, burn and treasury accounting kept separate from SOL referral revenue"],
+    upcoming: ["Complete production wallet approval checks in Phantom and Backpack", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Independent review of token mint security and accounting"]
   },
   {
     number: "12", status: "upcoming", title: "SolHandle Pay — multi-token transfers & payment fee",

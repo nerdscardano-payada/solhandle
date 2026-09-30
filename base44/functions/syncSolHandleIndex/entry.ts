@@ -1,9 +1,10 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
 import { getAssetOwner, parseMintEvent, PROGRAM_ID, rpc } from '../../shared/solanaRpc.ts';
 import { readLatestProtocolConfigCache } from '../../shared/protocolConfigCache.ts';
 import { getHistoricalSolEur } from '../../shared/solEur.ts';
 import { processConfirmedReferral } from '../../shared/referralEngine.ts';
+import indexTokenMint from '../../shared/indexTokenMint.ts';
 
 export default async function(req: Request): Promise<Response> {
   let stage = 'initialization';
@@ -37,13 +38,17 @@ export default async function(req: Request): Promise<Response> {
         .filter((line: string) => line.startsWith('Program data: '))
         .map((line: string) => parseMintEvent(line.replace('Program data: ', '')))
         .find(Boolean);
-      if (!mint) continue;
+      if (!mint || transaction.meta?.err) continue;
       const tokenPaid = (transaction.meta.logMessages || []).some(line => {
         if (!line.startsWith('Program data: ')) return false;
         const bytes = Uint8Array.from(atob(line.slice(14)), c => c.charCodeAt(0));
         return bytes.length >= 8 && tokenEventDiscriminator.every((byte, index) => bytes[index] === byte);
       });
 
+      if (tokenPaid) {
+        stage = 'saving_token_payment_proof';
+        await indexTokenMint(base44, rpcUrl, entry.signature, transaction);
+      }
       stage = 'loading_asset_and_index';
       const owner = await getAssetOwner(rpcUrl, mint.assetAddress, mint.owner);
       const [existing, premiumRows] = await Promise.all([
@@ -96,7 +101,7 @@ export default async function(req: Request): Promise<Response> {
           });
         }
       }
-      const premiumSurchargeLamports = premiumRows.length
+      const premiumSurchargeLamports = !tokenPaid && premiumRows.length
         ? Math.max(0, (transaction.meta.postBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)] - transaction.meta.preBalances[transaction.transaction.message.accountKeys.map((key) => typeof key === 'string' ? key : key.pubkey).indexOf(protocol.treasury)]) - mint.priceLamports)
         : 0;
       // Token mints emit a zero-SOL HandleMinted event; never book their token proceeds as SOL referral revenue.

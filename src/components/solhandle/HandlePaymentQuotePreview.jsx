@@ -31,6 +31,6 @@ export default function HandlePaymentQuotePreview() {
     {error && <p role="alert" className="mt-3 text-sm text-rose-300">{error}</p>}
     {quote && <div className="mt-4 grid gap-3 border-t border-white/10 pt-4 text-sm sm:grid-cols-3"><div><span className="text-slate-400">Indicative total</span><b className="block text-xl text-white">{tokens(quote.totalRaw)} $HANDLE</b></div><div><span className="text-orange-300">Burn (50%)</span><b className="block text-xl text-white">{tokens(quote.burnRaw)}</b></div><div><span className="text-violet-300">Treasury (remainder)</span><b className="block text-xl text-white">{tokens(quote.treasuryRaw)}</b></div></div>}
     {quote?.quoteWarning && <p className="mt-3 text-xs leading-relaxed text-amber-200" role="status">{quote.quoteWarning}</p>}
-    <p className="mt-4 text-xs text-slate-400">Illustrative only. $HANDLE minting is not active until the on-chain payment, burn and treasury rules are deployed and verified.</p>
+    <p className="mt-4 text-xs text-slate-400">Quote only: no payment takes place here. Choose $HANDLE in the claim dialog to mint. No discount; maximum reference price impact 10%. SOL is required for network and NFT account fees.</p>
   </section>;
 }
