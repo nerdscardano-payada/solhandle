@@ -1,4 +1,5 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import tokenMintVolume24h from '../../shared/tokenMintVolume24h.ts';
 import { secrets } from 'base44:runtime';
 
 export default async function(req: Request): Promise<Response> {
@@ -8,9 +9,10 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
     if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
 
-    const [configs, handles] = await Promise.all([
+    const [configs, handles, mintVolume24hHandle] = await Promise.all([
       base44.asServiceRole.entities.ProtocolStatus.list('-last_sync', 1),
-      base44.asServiceRole.entities.HandleIndex.list('-minted_at', 250)
+      base44.asServiceRole.entities.HandleIndex.list('-minted_at', 250),
+      tokenMintVolume24h(base44)
     ]);
     const config = configs[0];
     const balanceFor = async (address: string | undefined) => {
@@ -27,7 +29,7 @@ export default async function(req: Request): Promise<Response> {
     const revenueLamports = confirmed.reduce((total, handle) => total + (handle.mint_price_lamports || 0), 0);
     return Response.json({
       treasury: config?.treasury || null, treasuryLamports, rewardsVault: config?.rewards_vault || null, rewardsLamports,
-      totalMinted: config?.total_minted ?? confirmed.length, indexedRevenueLamports: revenueLamports,
+      totalMinted: config?.total_minted ?? confirmed.length, indexedRevenueLamports: revenueLamports, mintVolume24hHandle,
       paused: config?.paused ?? false, lastSync: config?.last_sync || null,
       recentMints: handles.slice(0, 12).map((handle) => ({ handle: handle.display_handle, signature: handle.mint_signature, priceLamports: handle.mint_price_lamports, mintedAt: handle.minted_at, asset: handle.asset_address }))
     });

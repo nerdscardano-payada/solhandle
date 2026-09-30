@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { HANDLE_MINT } from '../../shared/handlePaymentStatus.ts';
+import tokenMintVolume24h from '../../shared/tokenMintVolume24h.ts';
 export default async function(req: Request): Promise<Response> {
   try {
     const body = await req.json(), base44 = createClientFromRequest(req), query = { token_mint: HANDLE_MINT };
@@ -16,10 +17,11 @@ export default async function(req: Request): Promise<Response> {
       }
     }
     const entities = base44.asServiceRole.entities;
-    const [page, totals] = await Promise.all([
+    const [page, totals, mintVolume24hHandle] = await Promise.all([
       entities.TokenMintPayment.filter(query, { sort: '-confirmed_at', limit: 50, ...(body.cursor ? { cursor: body.cursor } : {}), fields: ['signature', 'handle', 'wallet', 'decimals', 'amount_raw', 'burned_raw', 'treasury_raw', 'confirmed_at'] }),
-      body.cursor ? null : entities.TokenMintPayment.aggregate({ query, sum: ['total_tokens', 'burned_tokens', 'treasury_tokens'] })
+      body.cursor ? null : entities.TokenMintPayment.aggregate({ query, sum: ['total_tokens', 'burned_tokens', 'treasury_tokens'] }),
+      body.cursor ? null : tokenMintVolume24h(base44, query.wallet)
     ]);
-    return Response.json({ items: page.items, nextCursor: page.next_cursor, hasMore: page.has_more, totals: totals?.rows?.[0] || null });
+    return Response.json({ items: page.items, nextCursor: page.next_cursor, hasMore: page.has_more, totals: totals?.rows?.[0] || null, mintVolume24hHandle });
   } catch (error) { return Response.json({ error: error.message || 'Token payment history unavailable.' }, { status: 400 }); }
 }
