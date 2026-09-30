@@ -51,10 +51,7 @@ export default async function(req: Request): Promise<Response> {
       }
       stage = 'loading_asset_and_index';
       const owner = await getAssetOwner(rpcUrl, mint.assetAddress, mint.owner);
-      const [existing, premiumRows] = await Promise.all([
-        base44.asServiceRole.entities.HandleIndex.filter({ handle: mint.handle }, '-updated_date', 1),
-        base44.asServiceRole.entities.PremiumHandle.filter({ handle: mint.handle }, '-updated_date', 1)
-      ]);
+      const premiumRows = await base44.asServiceRole.entities.PremiumHandle.filter({ handle: mint.handle }, '-updated_date', 1);
       const length = mint.handle.length;
       const blockTimestamp = transaction.blockTime || Math.floor(Date.now() / 1000);
       const mintedAt = new Date(blockTimestamp * 1000).toISOString();
@@ -76,8 +73,9 @@ export default async function(req: Request): Promise<Response> {
         character_type: /^\d+$/.test(mint.handle) ? 'NUMBERS' : /^[a-z]+$/.test(mint.handle) ? 'LETTERS' : 'ALPHANUMERIC',
       };
       stage = 'saving_handle_index';
-      if (existing[0]) await base44.asServiceRole.entities.HandleIndex.update(existing[0].id, record);
-      else await base44.asServiceRole.entities.HandleIndex.create(record);
+      // Confirmation polling and the scheduled indexer can process the same mint concurrently.
+      // Atomically match the unique on-chain handle rather than racing a read and create.
+      await base44.asServiceRole.entities.HandleIndex.upsert([record], { key: 'handle' });
 
       if (mint.priceLamports > 0) {
         const financial = await base44.asServiceRole.entities.FinancialTransaction.filter({ transaction_signature: entry.signature }, '-timestamp', 1);
