@@ -5,6 +5,7 @@ import FlywheelStages from '@/components/solhandle/FlywheelStages';
 import { base44 } from '@/api/base44Client';
 import BuybackAllocation from '@/components/solhandle/BuybackAllocation';
 import BuybackProof from '@/components/solhandle/BuybackProof';
+import FlywheelMobileView from '@/components/solhandle/FlywheelMobileView';
 
 const display = (value, decimals = 0) => value == null ? '—' : Number(value).toLocaleString('en-US', { maximumFractionDigits: decimals });
 
@@ -35,7 +36,7 @@ export default function FlywheelDashboard({ progress }) {
     ['$HANDLE burned', display(stats.handleBurned)],
     ['Buyback SOL spent · admin-reported', `${display(stats.buybackSpentReportedSol, 4)} SOL`]
   ];
-  return <section className="relative mt-8 overflow-hidden rounded-3xl border border-cyan-300/20 bg-slate-950/80 p-5 shadow-[0_0_60px_rgba(34,211,238,0.08)] sm:p-8" aria-labelledby="flywheel-heading">
+  return <><FlywheelMobileView stats={stats} metrics={metrics} progress={progress} error={error} refreshing={refreshing} load={load}/><section className="relative mt-8 hidden overflow-hidden sm:block rounded-3xl border border-cyan-300/20 bg-slate-950/80 p-5 shadow-[0_0_60px_rgba(34,211,238,0.08)] sm:p-8" aria-labelledby="flywheel-heading">
     <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl"/>
     <div className="relative"><p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">Protocol activity · explore the loop</p>
     <h1 id="flywheel-heading" className="mt-2 text-3xl font-semibold sm:text-5xl">The SolHandle <span className="bg-gradient-to-r from-cyan-200 via-white to-violet-300 bg-clip-text text-transparent">Flywheel</span></h1>
@@ -49,5 +50,5 @@ export default function FlywheelDashboard({ progress }) {
     {stats && <BuybackAllocation stats={stats}/>}
     <p className="mt-4 text-xs leading-relaxed text-slate-500">Figures include recorded direct mints and native marketplace sales only. $HANDLE purchases and burns are recorded by admins using confirmed on-chain signatures; buyback SOL spending is admin-reported. The mint total follows the latest protocol sync.</p>
     </div>
-  </section>;
+  </section></>;
 }
