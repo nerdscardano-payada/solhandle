@@ -1,22 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { base44 } from '@/api/base44Client';
 
 export default function useTokenSupply(tokenMint) {
-  const { connection } = useConnection();
   const [supply, setSupply] = useState(null);
   const [status, setStatus] = useState('loading');
 
   useEffect(() => {
     if (!tokenMint) { setSupply(null); setStatus('unavailable'); return; }
-    let mint;
-    try { mint = new PublicKey(tokenMint); }
-    catch { setSupply(null); setStatus('unavailable'); return; }
     let active = true;
     const load = async () => {
       try {
-        const result = await connection.getTokenSupply(mint, 'confirmed');
-        if (active) { setSupply(Number(result.value.uiAmountString)); setStatus('live'); }
+        const { data } = await base44.functions.invoke('getTokenSupply', { tokenMint });
+        if (!Number.isFinite(data.supply)) throw new Error('Supply data unavailable.');
+        if (active) { setSupply(data.supply); setStatus('live'); }
       } catch {
         if (active) { setSupply(null); setStatus('unavailable'); }
       }
@@ -25,7 +21,7 @@ export default function useTokenSupply(tokenMint) {
     load();
     const timer = window.setInterval(load, 60000);
     return () => { active = false; window.clearInterval(timer); };
-  }, [connection, tokenMint]);
+  }, [tokenMint]);
 
   return { supply, status };
 }
