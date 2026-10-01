@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { authorizeNamesWallet, namesProof } from '@/components/solhandle/names/namesWallet';
 export default function useNamesExplorer() {
@@ -15,10 +15,12 @@ export default function useNamesExplorer() {
   const authorization = proof?.wallet === wallet && Date.now() - proof.timestamp < 9 * 60000 ? proof : namesProof(wallet);
   useEffect(() => { const timer = setTimeout(() => setDebounced(search), 250); return () => clearTimeout(timer); }, [search]);
   useEffect(() => { const timer = setInterval(() => setProof(namesProof(wallet)), 30000); return () => clearInterval(timer); }, [wallet]);
-  const query = useInfiniteQuery({
-    queryKey: ['names', 'curated-fallback-v1', tab, debounced, filters, rank, preset, tab === 'watchlist' ? wallet : '', tab === 'watchlist' ? authorization?.timestamp : null],
-    queryFn: async ({ pageParam }) => (await base44.functions.invoke('discoverNames', { tab, search: debounced, ...filters, rank, preset, cursor: pageParam, proof: tab === 'watchlist' ? authorization : undefined })).data,
-    initialPageParam: null, getNextPageParam: page => page.has_more ? page.next_cursor : undefined,
+  const key = JSON.stringify([tab, debounced, filters, rank, preset, tab === 'watchlist' ? wallet : '', tab === 'watchlist' ? authorization?.timestamp : null]);
+  const [navigation, setNavigation] = useState(null);
+  const nav = navigation?.key === key ? navigation : { key, index: 0, cursors: [null] };
+  const query = useQuery({
+    queryKey: ['names', 'paged-14', key, nav.index],
+    queryFn: async () => (await base44.functions.invoke('discoverNames', { tab, search: debounced, ...filters, rank, preset, cursor: nav.cursors[nav.index], proof: tab === 'watchlist' ? authorization : undefined })).data,
     enabled: tab !== 'watchlist' || Boolean(authorization), staleTime: 60000, refetchInterval: ['trending', 'available'].includes(tab) ? 60000 : false, retry: false
   });
   const verify = async () => {
@@ -28,5 +30,5 @@ export default function useNamesExplorer() {
     finally { setBusy(false); }
   };
   const onTab = value => { setAuthError(''); setParams({ tab: value }); };
-  return { ...query, tab, search, filters, rank, preset, wallet, busy, authError, verify, authorization, onTab, onSearch: setSearch, onFilters: setFilters, onRank: setRank, onPreset: setPreset, items: query.data?.pages.flatMap(page => page.items) || [] };
+  return { ...query, tab, search, filters, rank, preset, wallet, busy, authError, verify, authorization, onTab, onSearch: setSearch, onFilters: setFilters, onRank: setRank, onPreset: setPreset, items: query.data?.items || [], page: nav.index + 1, hasNext: Boolean(query.data?.has_more), onPrevious: () => setNavigation({ ...nav, index: nav.index - 1 }), onNext: () => setNavigation({ ...nav, index: nav.index + 1, cursors: [...nav.cursors.slice(0, nav.index + 1), query.data.next_cursor] }) };
 }
