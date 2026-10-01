@@ -4,11 +4,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { authorizeNamesWallet, namesProof } from '@/components/solhandle/names/namesWallet';
+import useDiscoverConfirmedSearch from '@/components/solhandle/names/useDiscoverConfirmedSearch';
 export default function useNamesExplorer() {
   const [params, setParams] = useSearchParams(), { publicKey, signMessage } = useWallet();
   const tab = ['trending', 'available', 'owned', 'for-sale', 'watchlist'].includes(params.get('tab')) ? params.get('tab') : 'trending';
   const wallet = publicKey?.toBase58() || '';
   const [search, setSearch] = useState(''), [debounced, setDebounced] = useState('');
+  useDiscoverConfirmedSearch(search);
   const [filters, setFilters] = useState({ rarity: '', characterType: '', sort: 'newest' });
   const [rank, setRank] = useState('searches'), [preset, setPreset] = useState('all');
   const [proof, setProof] = useState(null), [busy, setBusy] = useState(false), [authError, setAuthError] = useState('');
