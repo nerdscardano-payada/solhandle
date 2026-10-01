@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import { Link } from "react-router-dom";
 import { Check, Clock3, LoaderCircle, ShieldAlert, Wallet } from "lucide-react";
 import invokeWithRetry from "@/lib/invokeWithRetry";
@@ -18,6 +19,7 @@ export default function HandleSearch({ wallet }) {
   const resumeClaimId = urlParams.get("official_claim") || "";
   const [input, setInput] = useState(pendingClaim || ""); const [result, setResult] = useState(null); const [showClaim, setShowClaim] = useState(false); const [showOfficialClaim, setShowOfficialClaim] = useState(false); const handle = normalizeHandle(input);
   const launch = useMintLaunch();
+  const client = useQueryClient();
   const userInput = useRef(null);
   useConfirmedHandleSearch(handle, result, userInput.current === handle);
   const updateInput = value => { userInput.current = normalizeHandle(value); setInput(value); };
@@ -54,8 +56,8 @@ export default function HandleSearch({ wallet }) {
     setResult({ state: "checking", handle });
     const timer = setTimeout(async () => {
       try {
-        const res = await invokeWithRetry("getHandleAvailability", { handle });
-        if (active && res.data?.handle === handle) setResult(res.data);
+        const data = await client.fetchQuery({ queryKey: ['handle-availability', handle], queryFn: async () => (await invokeWithRetry('getHandleAvailability', { handle })).data, staleTime: 15000, retry: false });
+        if (active && data?.handle === handle) setResult(data);
       } catch {
         if (active) setResult({ handle, display: `@${handle}`, available: false, status: "UNAVAILABLE", state: "unavailable" });
       }
@@ -65,7 +67,7 @@ export default function HandleSearch({ wallet }) {
       active = false;
       clearTimeout(timer);
     };
-  }, [handle]);
+  }, [handle, client]);
   useEffect(() => {
     if (!launch.isLive || !pendingClaim || !wallet || !result?.available || result.handle !== pendingClaim) return;
     setShowClaim(true);

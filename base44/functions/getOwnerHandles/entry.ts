@@ -13,5 +13,8 @@ export default async function(req: Request): Promise<Response> {
     const enrichedHandles = handles.map((handle) => ({ ...handle, isPrimary: primary?.handle === handle.handle && primary?.assetAddress === handle.asset }));
     console.info('getOwnerHandles resolved', { recordsMatched: enrichedHandles.length });
     return Response.json({ wallet, handles: enrichedHandles, primaryHandle: primary?.handle || null });
-  } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
+  } catch (error) {
+    const rateLimited = error?.status === 429 || error?.response?.status === 429 || /rate limit/i.test(error?.message || '');
+    return Response.json({ error: error.message }, { status: rateLimited ? 429 : 500, headers: rateLimited ? { 'Retry-After': '5' } : {} });
+  }
 }

@@ -80,6 +80,7 @@ export default async function(req: Request): Promise<Response> {
     return Response.json({ handle, display: `@${handle}`, available: status === 'AVAILABLE', status, currentOwner, assetAddress, verificationSource: rpcVerified ? 'blockchain' : 'indexer', priceLamports: pricing.finalPriceLamports, basePriceLamports: pricing.basePriceLamports, premiumSurchargeLamports: pricing.premiumSurchargeLamports, premium: pricing.isPremium, nameClass: pricing.isPremium ? 'Premium' : 'Standard', rush: rushDisplay, categories: discoveryRows[0]?.categories || ['identity'], tags: discoveryRows[0]?.tags || ['personal', 'solana'], handleScore, restriction: activeRestriction, listing: listings[0] ? { price: listings[0].price, currency: listings[0].currency, url: listings[0].listing_url, marketplace: listings[0].marketplace } : null });
   } catch (error) {
     console.error('getHandleAvailability failed', error?.stack || error?.message || String(error));
-    return Response.json({ error: error?.message || 'Unable to verify handle availability.' }, { status: 500 });
+    const rateLimited = error?.status === 429 || error?.response?.status === 429 || /rate limit/i.test(error?.message || '');
+    return Response.json({ error: error?.message || 'Unable to verify handle availability.' }, { status: rateLimited ? 429 : 500, headers: rateLimited ? { 'Retry-After': '5' } : {} });
   }
 }
