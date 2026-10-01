@@ -16,10 +16,10 @@ export default async function(req: Request): Promise<Response> {
     if (tab === 'owned' || tab === 'watchlist' || tab === 'for-sale') {
       let page;
       if (tab === 'for-sale') {
-        page = await base44.asServiceRole.entities.NativeListing.filter({ ...query, status: 'ACTIVE' }, { sort: '-created_at', limit: 14, cursor: input.cursor || undefined, fields: ['handle'] });
+        page = await base44.asServiceRole.entities.NativeListing.filter({ ...query, status: 'ACTIVE' }, { sort: '-created_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
       } else if (tab === 'watchlist') {
         const wallet = await verifyNamesWallet(input.proof);
-        page = await base44.asServiceRole.entities.NameWatch.filter({ ...query, wallet }, { sort: '-watched_at', limit: 14, cursor: input.cursor || undefined, fields: ['handle'] });
+        page = await base44.asServiceRole.entities.NameWatch.filter({ ...query, wallet }, { sort: '-watched_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
       } else {
         const allowedRarities = ['LEGENDARY', 'ULTRA_RARE', 'RARE', 'UNCOMMON', 'STANDARD'];
         const allowedTypes = ['LETTERS', 'NUMBERS', 'ALPHANUMERIC'];
@@ -28,7 +28,7 @@ export default async function(req: Request): Promise<Response> {
         if (input.preset === 'premium') query.name_class = 'Premium';
         if (input.preset === 'short') query.length = { $lte: 4 };
         const sort = input.sort === 'oldest' ? 'minted_at' : input.sort === 'shortest' ? 'length' : '-minted_at';
-        page = await base44.asServiceRole.entities.HandleIndex.filter({ ...query, status: 'active' }, { sort, limit: 14, cursor: input.cursor || undefined, fields: ['handle'] });
+        page = await base44.asServiceRole.entities.HandleIndex.filter({ ...query, status: 'active' }, { sort, limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
       }
       handles = page.items.map(r => r.handle); nextCursor = page.next_cursor; hasMore = page.has_more;
       interest = handles.length ? await namesInterest(base44, { handle: { $in: handles } }) : null;
@@ -48,11 +48,11 @@ export default async function(req: Request): Promise<Response> {
     }
     if (['trending', 'available'].includes(tab)) {
       const offset = Math.max(0, Number(input.cursor) || 0);
-      hasMore = items.length > offset + 14;
-      nextCursor = hasMore ? offset + 14 : null;
-      items = items.slice(offset, offset + 14);
+      hasMore = items.length > offset + 16;
+      nextCursor = hasMore ? offset + 16 : null;
+      items = items.slice(offset, offset + 16);
     }
-    items = items.slice(0, 14).map(i => ({ ...i, ...interestFor(interest, i.handle) }));
+    items = items.slice(0, 16).map(i => ({ ...i, ...interestFor(interest, i.handle) }));
     return Response.json({ items, next_cursor: nextCursor, has_more: hasMore, ranked: tab === 'trending' || tab === 'available', windowDays: 30 });
   } catch (error) {
     return Response.json({ error: error.message || 'Names could not be loaded.' }, { status: 400 });
