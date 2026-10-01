@@ -33,7 +33,7 @@ export const roadmapMilestones = [
     number: "06", status: "current", title: "Partners, SDK & developer ecosystem",
     summary: "The SDK, resolver and Mainnet integration guides are available; third-party onboarding and verification remain in progress.",
     completed: ["Public solhandle-sdk package under the MIT License", "Developer Center, integration guides and resolver examples", "Forward and reverse resolution infrastructure"],
-    upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model"]
+    upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model", "Partner Mint Phase 1 (planned): approved partners, atomic 50/50 SOL settlement, verified attribution, APIs and devnet mint links", "Partner Mint Phase 2 (planned): SDK, React component, widget, scoped dashboard, credentials and domain verification", "Partner Mint Phase 3 (planned): wallet-native/mobile adapters, approval-controlled onboarding, webhooks and enterprise analytics"]
   },
   {
     number: "07", status: "completed", title: "Native marketplace live",

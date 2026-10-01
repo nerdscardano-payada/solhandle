@@ -25,6 +25,7 @@ import ResetPassword from '@/pages/ResetPassword';
 import ProtectedBrands from '@/pages/ProtectedBrands';
 import Explore from '@/pages/Explore';
 import Developers from '@/pages/Developers';
+import PartnerMintPlan from '@/pages/PartnerMintPlan';
 import Integrations from '@/pages/Integrations';
 import LiveIntegrations from '@/pages/LiveIntegrations';
 import IntegrationGuide from '@/pages/IntegrationGuide';
@@ -86,6 +87,7 @@ const AuthenticatedApp = () => {
         <Route path="/my-handles" element={<MyHandles />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
+        <Route path="/developers/partner-mint" element={<PartnerMintPlan />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/upcoming/marketplace" element={<Market />} />
