@@ -15,12 +15,12 @@ export default function MobileHomeActions() {
     </Link>
     <Link to="/upcoming/token-launch" className="flex items-center gap-3 rounded-xl border border-names-success/30 bg-names-success/10 p-4">
       <Coins className="h-5 w-5 shrink-0 text-names-success" />
-      <span className="min-w-0 flex-1 font-semibold">$HANDLE Token</span>
+      <div className="min-w-0 flex-1"><span className="block font-semibold">$HANDLE Token</span><span className="text-xs text-names-success">Explore the token powering SolHandle</span></div>
       <ArrowRight className="h-4 w-4 shrink-0 text-names-success" />
     </Link>
     <Link to="/developers" className="flex items-center gap-3 rounded-xl border border-names-secondary/30 bg-names-secondary/10 p-4">
       <Code2 className="h-5 w-5 shrink-0 text-names-secondary" />
-      <span className="min-w-0 flex-1 font-semibold">Developers / SDK</span>
+      <div className="min-w-0 flex-1"><span className="block font-semibold">Developers / SDK</span><span className="text-xs text-names-secondary">Build with SolHandle’s SDK and API</span></div>
       <ArrowRight className="h-4 w-4 shrink-0 text-names-secondary" />
     </Link>
   </nav>;

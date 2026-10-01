@@ -11,8 +11,8 @@ export default function LatestMarketplaceListings() {
 
   useEffect(() => {
     let active = true;
-    base44.entities.NativeListing.filter({ status: "ACTIVE" }, "-created_date", 2)
-      .then((items) => active && setListings(items))
+    base44.entities.NativeListing.filter({ status: "ACTIVE" }, { sort: "-created_date", limit: 4 })
+      .then(({ items }) => active && setListings(items))
       .catch(() => active && setListings([]));
     return () => { active = false; };
   }, []);
