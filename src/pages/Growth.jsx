@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GrowthFocus from '@/components/solhandle/GrowthFocus';
+import GrowthMobileView from '@/components/solhandle/GrowthMobileView';
 import Header from '@/components/solhandle/Header';
 import GrowthMeter from '@/components/solhandle/GrowthMeter';
 import GrowthProgressBar from '@/components/solhandle/GrowthProgressBar';
@@ -42,7 +43,7 @@ export default function Growth() {
   const liveProgress = Math.round((handles * .4 + holders * .4 + capProgress * .2) * 10) / 10;
   const officialProgress = c?.market_cap_target_usd === targetCap ? (c.max_progress ?? 0) : null;
   const next = [20, 40, 60, 80, 100].find(n => n > (officialProgress ?? 0));
-  return <main className="min-h-screen bg-slate-950 text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><section className="mx-auto max-w-6xl px-5 py-12 sm:py-20">
+  return <main className="min-h-screen bg-slate-950 text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><GrowthMobileView data={data} error={error} refreshing={refreshing} checkedAt={checkedAt} load={load} cycle={c} newHolders={newHolders} handles={handles} holders={holders} marketCap={displayedCap} targetCap={targetCap} capProgress={capProgress} liveProgress={liveProgress} officialProgress={officialProgress} next={next} source={marketCap === null ? 'snapshot' : marketStatus === 'unavailable' ? 'stale' : 'live'}/><section className="mx-auto hidden max-w-6xl px-5 py-12 sm:block sm:py-20">
     <p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">Community growth · Mainnet</p>
     <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><h1 className="min-w-0 text-4xl font-semibold sm:text-5xl">$HANDLE × <span className="bg-gradient-to-r from-cyan-200 via-white to-violet-300 bg-clip-text text-transparent">SolHandle Growth Curve</span></h1><GrowthGoalMascot/></div>
     <p className="mt-3 text-slate-400">More handles, more holders, and sustained market interest bring the next reward closer.</p>
