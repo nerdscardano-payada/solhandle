@@ -2,7 +2,7 @@ import { Flame, Activity, Coins, Clock } from 'lucide-react';
 const amount = value => Number(value).toLocaleString('en-US', { maximumFractionDigits: 6 });
 export default function BurnDashboardStats({ stats }) {
   const metrics = [
-    { label: 'Total recorded burn', value: `${amount(stats.totalBurned)} $HANDLE`, Icon: Flame, color: 'text-burn-accent' },
+    { label: 'Total recorded burn', value: `${Number(stats.totalBurned) >= 1_000_000 ? `${(Number(stats.totalBurned) / 1_000_000).toLocaleString('nl-BE', { maximumFractionDigits: 2 })}M` : amount(stats.totalBurned)} $HANDLE`, Icon: Flame, color: 'text-burn-accent' },
     { label: 'Confirmed burn transactions', value: amount(stats.burnTransactions), Icon: Activity, color: 'text-burn-highlight' },
     { label: 'Verified $HANDLE-paid mints', value: amount(stats.automaticMints), Icon: Coins, color: 'text-burn-secondary' },
     { label: 'Latest recorded burn', value: stats.lastBurn ? new Date(stats.lastBurn).toLocaleDateString('en-GB') : 'No burns yet', Icon: Clock, color: 'text-burn-accent' },
