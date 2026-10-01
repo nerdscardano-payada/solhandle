@@ -14,8 +14,8 @@ export default function FeatureCards({ wallet }) {
   useEffect(() => { let active = true; if (!wallet) { setHandles([]); setHandlesState("idle"); return () => { active = false; }; } setHandlesState("loading"); invokeWithRetry("getOwnerHandles", { wallet }).then(({ data }) => { if (active) { setHandles(data.handles || []); setHandlesState("ready"); } }).catch(() => active && setHandlesState("error")); return () => { active = false; }; }, [wallet]);
 
   return <div className="grid gap-4 md:grid-cols-12 md:gap-6 lg:gap-4">
-    <HowItWorksCard />
-    <MyHandlesCard wallet={wallet} state={handlesState} handles={handles} />
+    <div className="hidden sm:contents"><HowItWorksCard /></div>
+    <div className="hidden sm:contents"><MyHandlesCard wallet={wallet} state={handlesState} handles={handles} /></div>
     <ProtocolStatsCard stats={stats} state={statsState} />
   </div>;
 }
