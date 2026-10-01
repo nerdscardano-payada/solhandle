@@ -3,6 +3,7 @@ import Header from '@/components/solhandle/Header';
 import PartnerMintPhases from '@/components/solhandle/partner-mint/PartnerMintPhases';
 import PartnerMintMarkdown from '@/components/solhandle/partner-mint/PartnerMintMarkdown';
 import PartnerMintWebsiteExample from '@/components/solhandle/partner-mint/PartnerMintWebsiteExample';
+import PartnerMintWalletExample from '@/components/solhandle/partner-mint/PartnerMintWalletExample';
 import { partnerMintSections } from '@/components/solhandle/partner-mint/partnerMintPlan';
 
 export default function PartnerMintPlan() {
@@ -18,7 +19,7 @@ export default function PartnerMintPlan() {
       <details className="mt-7 rounded-xl border border-border p-4 sm:hidden"><summary className="cursor-pointer text-sm font-semibold text-names-accent">Plan contents</summary><div className="mt-4">{contents}</div></details>
       <div className="mt-9 grid min-w-0 gap-8 sm:grid-cols-[230px_minmax(0,1fr)]">
         <aside className="sticky top-6 hidden max-h-[85vh] overflow-y-auto self-start pr-3 sm:block">{contents}</aside>
-        <article className="min-w-0">{partnerMintSections.map(section => <section id={section.id} key={section.id} className="mb-9 scroll-mt-6 border-t border-border pt-6"><h2 className="mb-4 text-xl font-semibold sm:text-2xl">{section.title}</h2><PartnerMintMarkdown body={section.body}/></section>)}</article>
+        <article className="min-w-0">{partnerMintSections.map(section => <section id={section.id} key={section.id} className="mb-9 scroll-mt-6 border-t border-border pt-6"><h2 className="mb-4 text-xl font-semibold sm:text-2xl">{section.title}</h2>{section.id === 'phase-3' && <PartnerMintWalletExample/>}<PartnerMintMarkdown body={section.body}/></section>)}</article>
       </div>
     </div>
   </div></main>;
