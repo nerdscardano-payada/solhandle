@@ -3,12 +3,12 @@ import HandleCard from "@/components/solhandle/HandleCard";
 import SetPrimaryButton from "@/components/solhandle/SetPrimaryButton";
 import HandleShareActions from "@/components/solhandle/HandleShareActions";
 import MarketplaceNotificationBell from "@/components/solhandle/MarketplaceNotificationBell";
-import { Image } from "@/components/ui/image";
+
 
 export default function HandleList({ handles, wallet, loading, bids = [], onNotificationsRefresh, onPrimarySet }) {
-  if (!wallet) return <div className="card-glow mt-9 text-slate-400">Connect your wallet to view your SolHandle portfolio.</div>;
+  if (!wallet) return null;
   if (loading) return <div className="card-glow mt-9 text-slate-400">Verifying ownership on Solana…</div>;
-  if (!handles.length) return <div className="card-glow mt-9 text-center text-slate-400"><Image src="https://base44.app/api/apps/6a86b7e4bcec5dfac8ee9a44/files/mp/public/6a86b7e4bcec5dfac8ee9a44/b35a3a97d_solhandle-original-HandleList-cap.png" alt="SolHandle mascot holding an empty identity card" className="solhandle-mascot-blend mx-auto mb-3 h-40 w-40 sm:h-44 sm:w-44" fittingType="fit"/><p>No verified SolHandles were found for this wallet yet.</p></div>;
+  if (!handles.length) return null;
   return <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{handles.map(item => <article className="overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-950 shadow-xl shadow-cyan-950/20" key={item.handle}>
     <HandleCard handle={item.handle} display={item.display} to={`/${item.handle}`}/>
     <div className="p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs uppercase tracking-wider text-emerald-300">{item.isPrimary ? "Primary SolHandle" : "Verified Core Asset"}</p><MarketplaceNotificationBell compact inline wallet={wallet} bids={bids.filter((bid) => bid.asset_address === item.asset)} onRefresh={onNotificationsRefresh}/></div><p className="mt-2 text-sm text-slate-400">Minted {item.mintedAt ? new Date(item.mintedAt).toLocaleDateString() : "on Solana"}</p><div className="mt-5 flex flex-wrap gap-4 text-sm"><button onClick={() => navigator.clipboard.writeText(item.display)} className="inline-flex items-center gap-1 text-cyan-200"><Copy className="h-4 w-4"/>Copy</button><HandleShareActions handle={item.handle} isPremium={item.nameClass === "Premium"} location="collection" />{!item.isPrimary && <SetPrimaryButton handle={item.handle} onSuccess={onPrimarySet}/>}<a href={`/${item.handle}`} className="inline-flex items-center gap-1 text-violet-300"><ExternalLink className="h-4 w-4"/>Profile</a><a href={`https://explorer.solana.com/address/${item.asset}?cluster=mainnet-beta`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-slate-300"><ExternalLink className="h-4 w-4"/>Asset</a></div></div>
