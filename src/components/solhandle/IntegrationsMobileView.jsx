@@ -1,0 +1,18 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
+import { integrations, integrationTypes } from '@/lib/integrationCatalog';
+
+export default function IntegrationsMobileView() {
+  const [type, setType] = useState('wallet');
+  const selected = integrationTypes.find(item => item.id === type);
+  return <div className="dark sm:hidden">
+    <div className="flex items-center justify-between gap-2"><h1 className="font-heading text-2xl font-semibold">Integrations</h1><span className="rounded-full border border-names-success/25 px-2 py-1 text-[10px] text-names-success">Mainnet live</span></div>
+    <p className="mt-2 text-xs text-muted-foreground">Product guides · not verified partnerships.</p>
+    <div className="mt-4 grid grid-cols-2 gap-3"><Link to="/developers" className="rounded-xl border border-names-accent/25 p-3 text-center text-sm font-semibold text-names-accent">Developer tools →</Link><Link to="/live-integrations" className="rounded-xl border border-names-secondary/25 p-3 text-center text-sm font-semibold text-names-secondary">Live integrations →</Link></div>
+    <h2 className="mt-6 text-sm font-semibold">Choose your product</h2>
+    <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Product type">{integrationTypes.map(item => <button key={item.id} type="button" aria-pressed={type === item.id} onClick={() => setType(item.id)} className={`rounded-xl border px-3 py-3 text-left text-xs font-medium ${type === item.id ? 'border-names-accent/60 bg-names-accent/10 text-names-accent' : 'border-border bg-card text-muted-foreground'}`}>{item.title}</button>)}</div>
+    <section className="mt-5" aria-label={`${selected.title} implementation guides`}><h2 className="text-base font-semibold">{selected.title} guides</h2><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{selected.description}</p><div className="mt-3 space-y-2">{integrations.filter(item => item.type === type).map(item => <Link key={item.slug} to={`/integrations/${item.slug}`} className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-3"><div><p className="text-sm font-semibold">{item.name}</p><p className="mt-1 text-[10px] text-muted-foreground">Guide available · Not verified</p></div><ArrowUpRight className="h-4 w-4 shrink-0 text-names-accent" /></Link>)}</div></section>
+    <details className="mt-5 rounded-xl border border-border bg-card p-3"><summary className="cursor-pointer text-sm text-names-secondary">About these integration guides</summary><div className="mt-3 space-y-3 text-xs leading-relaxed text-muted-foreground"><p>Choose a product type, follow a Mainnet-ready implementation path and prepare for technical verification against the live SolHandle protocol.</p><p>Direct on-chain, REST resolution and the public <a href="https://www.npmjs.com/package/solhandle-sdk" target="_blank" rel="noreferrer" className="text-names-accent underline">solhandle-sdk@1.0.1 npm package</a> are available now.</p><p>These are product-specific technical guides, not partnership announcements. Verification is shown only after a live Mainnet integration passes the protocol test suite. Protocol test-suite verification is separate from a third party’s public integration announcement.</p></div></details>
+  </div>;
+}
