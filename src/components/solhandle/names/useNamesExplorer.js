@@ -21,7 +21,7 @@ export default function useNamesExplorer() {
   const [navigation, setNavigation] = useState(null);
   const nav = navigation?.key === key ? navigation : { key, index: 0, cursors: [null] };
   const query = useQuery({
-    queryKey: ['names', 'paged-16', key, nav.index],
+    queryKey: ['names', rank === 'watched' ? 'paged-16-live-watched' : 'paged-16', key, nav.index],
     queryFn: async () => (await base44.functions.invoke('discoverNames', { tab, search: debounced, ...filters, rank, preset, cursor: nav.cursors[nav.index], proof: tab === 'watchlist' ? authorization : undefined })).data,
     enabled: tab !== 'watchlist' || Boolean(authorization), staleTime: 60000, refetchInterval: ['trending', 'available'].includes(tab) ? 60000 : false, retry: false
   });

@@ -40,7 +40,7 @@ export default async function(req: Request): Promise<Response> {
     if (tab === 'available') items = items.filter(i => i.status === 'AVAILABLE');
     if (tab === 'for-sale') items = items.filter(i => i.status === 'FOR_SALE');
     if (tab === 'owned') items = items.filter(i => ['OWNED', 'FOR_SALE'].includes(i.status));
-    if (!items.length && ['trending', 'available'].includes(tab)) {
+    if (!items.length && ['trending', 'available'].includes(tab) && input.rank !== 'watched') {
       const candidates = getFallbackSuggestions().map(row => row.handle).filter(handle => !search || handle.includes(search));
       const checked = await namesChain(base44, secrets.get('SOLANA_RPC_URL'), candidates);
       items = checked.filter(item => tab === 'available' ? item.status === 'AVAILABLE' : ['AVAILABLE', 'OWNED', 'FOR_SALE'].includes(item.status)).map(item => ({ ...item, suggested: true }));
