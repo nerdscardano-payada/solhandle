@@ -13,13 +13,13 @@ export default function useMarketplacePage({ search, maxPrice, rarity, sort }) {
   if (maxPrice) query.price_lamports = { $lte: Number(maxPrice) * 1e9 };
   const lengths = { LEGENDARY: '^.{1}$', ULTRA_RARE: '^.{2}$', RARE: '^.{3}$', UNCOMMON: '^.{4}$', STANDARD: '^.{5,20}$' };
   if (lengths[rarity]) query.$and = [{ handle: { $regex: lengths[rarity] } }];
-  const listings = useQuery({ queryKey: ['market-page', key, nav.index], queryFn: async () => {
+  const listings = useQuery({ queryKey: ['market-page', 'paged-16', key, nav.index], queryFn: async () => {
     const cursor = nav.cursors[nav.index];
-    if (!sort.startsWith('length-')) return base44.entities.NativeListing.filter(query, { limit: 14, cursor: cursor || undefined, sort: { oldest: 'created_at', 'price-asc': 'price_lamports', 'price-desc': '-price_lamports' }[sort] || '-created_at' });
+    if (!sort.startsWith('length-')) return base44.entities.NativeListing.filter(query, { limit: 16, cursor: cursor || undefined, sort: { oldest: 'created_at', 'price-asc': 'price_lamports', 'price-desc': '-price_lamports' }[sort] || '-created_at' });
     const step = sort === 'length-desc' ? -1 : 1;
     let length = cursor?.length || (step === 1 ? 1 : 20), position = cursor?.cursor, items = [];
-    while (length >= 1 && length <= 20 && items.length < 14) {
-      const page = await base44.entities.NativeListing.filter({ ...query, $and: [...(query.$and || []), { handle: { $regex: `^.{${length}}$` } }] }, { sort: '-created_at', limit: 14 - items.length, cursor: position || undefined });
+    while (length >= 1 && length <= 20 && items.length < 16) {
+      const page = await base44.entities.NativeListing.filter({ ...query, $and: [...(query.$and || []), { handle: { $regex: `^.{${length}}$` } }] }, { sort: '-created_at', limit: 16 - items.length, cursor: position || undefined });
       items.push(...page.items);
       if (page.has_more) return { items, has_more: true, next_cursor: { length, cursor: page.next_cursor } };
       length += step; position = undefined;
