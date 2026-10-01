@@ -3,6 +3,14 @@ module.exports = {
     darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
+    // Tablets retain the mobile layout; desktop variants start together.
+    screens: {
+      sm: '1280px',
+      md: '1280px',
+      lg: '1280px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
   	extend: {
   		borderRadius: {
   			lg: 'var(--radius)',
