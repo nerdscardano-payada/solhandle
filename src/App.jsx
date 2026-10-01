@@ -24,6 +24,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import ProtectedBrands from '@/pages/ProtectedBrands';
 import Explore from '@/pages/Explore';
+import Fun from '@/pages/Fun';
 import Developers from '@/pages/Developers';
 import PartnerMintPlan from '@/pages/PartnerMintPlan';
 import Integrations from '@/pages/Integrations';
@@ -102,6 +103,7 @@ const AuthenticatedApp = () => {
         <Route path="/live-integrations" element={<LiveIntegrations />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/names" element={<Explore />} />
+        <Route path="/fun" element={<Fun />} />
         <Route path="/explore" element={<Navigate to="/names" replace />} />
         <Route path="/directory" element={<PremiumDirectory />} />
         <Route path="/market" element={<Market />} />
