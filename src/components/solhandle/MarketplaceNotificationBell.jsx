@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useMarketplaceReadState from '@/components/solhandle/useMarketplaceReadState';
 import { Bell } from "lucide-react";
 import MarketplaceNotificationItems from "@/components/solhandle/MarketplaceNotificationItems";
 
 export default function MarketplaceNotificationBell({ bids = [], sales = [], wallet, onRefresh, inline = false, compact = false }) {
   const [open, setOpen] = useState(false);
+  const { count, markRead } = useMarketplaceReadState(wallet, bids, sales);
+  useEffect(() => { if (open) markRead(); }, [open, markRead]);
+  useEffect(() => { setOpen(false); }, [wallet]);
   if (!wallet) return null;
-  const count = bids.length + sales.length;
   return <div className={`relative ${inline ? "w-full" : ""}`}>
     <button type="button" onClick={() => setOpen((value) => !value)} aria-label={`${count} marketplace notifications`} aria-expanded={open} className={`relative inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2 font-semibold shadow-lg ${count ? "border-cyan-300/50 bg-gradient-to-r from-cyan-300/20 to-violet-400/20 text-cyan-100 shadow-cyan-950/40" : "border-white/10 bg-slate-950 text-slate-400"}`}>
       <Bell className={`h-5 w-5 ${count ? "animate-pulse" : ""}`}/>
