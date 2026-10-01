@@ -3,19 +3,21 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import HandleCard from "@/components/solhandle/HandleCard";
+import useHomeHandleLimit from "@/components/solhandle/useHomeHandleLimit";
 
 const toSol = (lamports) => (Number(lamports || 0) / 1_000_000_000).toLocaleString(undefined, { maximumFractionDigits: 3 });
 
 export default function LatestMarketplaceListings() {
   const [listings, setListings] = useState(null);
+  const limit = useHomeHandleLimit();
 
   useEffect(() => {
     let active = true;
-    base44.entities.NativeListing.filter({ status: "ACTIVE" }, { sort: "-created_date", limit: 4 })
+    base44.entities.NativeListing.filter({ status: "ACTIVE" }, { sort: "-created_date", limit })
       .then(({ items }) => active && setListings(items))
       .catch(() => active && setListings([]));
     return () => { active = false; };
-  }, []);
+  }, [limit]);
 
   return <section className="rounded-xl border border-white/10 bg-[#11161f] p-4 shadow-xl shadow-black/20">
     <div className="flex items-end justify-between gap-4">
