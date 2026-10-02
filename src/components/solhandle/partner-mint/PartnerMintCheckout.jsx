@@ -11,8 +11,8 @@ export default function PartnerMintCheckout() {
   const urlParams = new URLSearchParams(window.location.search), partnerId = urlParams.get('partner') || '';
   const [handle, setHandle] = useState((urlParams.get('handle') || '').replace(/^@/, '').toLowerCase());
   const wallet = useWallet(), { setVisible } = useWalletModal(), pilot = usePartnerMintPilot(wallet, partnerId);
-  if (!partnerId) return <div className="mt-6"><p className="text-muted-foreground">Open de pilot met de geregistreerde Devnet-testpartner. De partner wordt vóór het minten on-chain gecontroleerd.</p><Button asChild className="mt-4"><Link to={`/mint?partner=devnet-testpartner${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`}>Open Devnet-testpartner</Link></Button></div>;
-  if (!/^[a-z0-9-]{1,32}$/.test(partnerId)) return <p role="alert" className="mt-6 text-destructive">Deze partnercode is ongeldig. Open de pilot via een geldige partnerlink; er wordt niet overgeschakeld naar gewone minting.</p>;
+  if (!partnerId) return <div className="mt-6"><p className="text-muted-foreground">Open the pilot with the registered Devnet test partner. The partner is verified on-chain before minting.</p><Button asChild className="mt-4"><Link to={`/mint?partner=devnet-testpartner${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`}>Open Devnet test partner</Link></Button></div>;
+  if (!/^[a-z0-9-]{1,32}$/.test(partnerId)) return <p role="alert" className="mt-6 text-destructive">This partner ID is invalid. Open the pilot using a valid partner link; there is no fallback to ordinary minting.</p>;
   const valid = /^[a-z0-9]{1,20}$/.test(handle), currentQuote = pilot.quote?.quote.wallet === wallet.publicKey?.toBase58() ? pilot.quote : null;
   return <div className="mt-6">
     <p className="text-muted-foreground">Partner ID: {partnerId}. Approval and payment recipients are checked on-chain.</p>
