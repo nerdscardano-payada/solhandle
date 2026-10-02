@@ -3,6 +3,7 @@ import Header from '@/components/solhandle/Header';
 import PartnerMintPhases from '@/components/solhandle/partner-mint/PartnerMintPhases';
 import PartnerMintMarkdown from '@/components/solhandle/partner-mint/PartnerMintMarkdown';
 import PartnerMintWebsiteExample from '@/components/solhandle/partner-mint/PartnerMintWebsiteExample';
+import PartnerEmbedPreview from '@/components/solhandle/partner-mint/PartnerEmbedPreview';
 import PartnerMintWalletExample from '@/components/solhandle/partner-mint/PartnerMintWalletExample';
 import { partnerMintSections } from '@/components/solhandle/partner-mint/partnerMintPlan';
 
@@ -14,6 +15,7 @@ export default function PartnerMintPlan() {
       <p className="mt-7 text-xs font-semibold uppercase tracking-widest text-names-secondary">Technical plan · planned, not live</p>
       <h1 className="mt-3 text-3xl font-semibold sm:text-5xl">SolHandle Partner Mint</h1>
       <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">Your interface. Our protocol. Shared revenue. A devnet-first, non-custodial integration plan for approved partners, with a 50/50 split on SOL mint fees only.</p>
+      <PartnerEmbedPreview/>
       <PartnerMintWebsiteExample/>
       <PartnerMintPhases showLink={false}/>
       <details className="mt-7 rounded-xl border border-border p-4 sm:hidden"><summary className="cursor-pointer text-sm font-semibold text-names-accent">Plan contents</summary><div className="mt-4">{contents}</div></details>
