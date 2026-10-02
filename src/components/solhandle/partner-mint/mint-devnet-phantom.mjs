@@ -5,7 +5,7 @@ import { createServer } from 'node:http';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Transaction } from '@solana/web3.js';
+import { readSignedTransaction } from './devnet-signed-transaction.mjs';
 import { rpc, BUYER, HANDLE, preflight, prepare, validateFresh, signatureOf, verify } from './devnet-pilot-chain.mjs';
 assert(process.argv.includes('--mint-devnet'), 'Start with --mint-devnet. Nothing is minted until Phantom signs.');
 await preflight();
@@ -13,8 +13,8 @@ const directory = dirname(fileURLToPath(import.meta.url));
 const stateFile = join(directory, '.devnet-pilot-partnerpilot1.json');
 let saved = existsSync(stateFile) ? JSON.parse(readFileSync(stateFile, 'utf8')) : null;
 if (saved) {
-  const transaction = Transaction.from(Buffer.from(saved.transaction, 'base64'));
-  assert(transaction.verifySignatures() && signatureOf(transaction) === saved.signature && transaction.serializeMessage().toString('base64') === saved.message && transaction.feePayer.equals(BUYER), 'Invalid saved mint. Do not remove it before checking the on-chain signature.');
+  const transaction = readSignedTransaction(Buffer.from(saved.transaction, 'base64'), saved.message, BUYER);
+  assert(signatureOf(transaction) === saved.signature, 'Invalid saved mint signature. Do not remove it before checking the on-chain signature.');
   console.log('Recovering existing devnet mint:', saved.signature);
 }
 const require = createRequire(import.meta.url);
@@ -45,11 +45,10 @@ const server = createServer(async (req, res) => {
     try {
       if (req.url === '/prepare') { pending = await prepare(); res.end(JSON.stringify({ transaction: pending.transaction, preview: pending.preview })); return; }
       assert(pending && typeof body.transaction === 'string', 'Prepare the mint first');
-      const transaction = Transaction.from(Buffer.from(body.transaction, 'base64'));
-      assert(transaction.verifySignatures() && transaction.serializeMessage().toString('base64') === pending.message, 'Phantom changed the transaction or signature is invalid');
+      const transaction = readSignedTransaction(Buffer.from(body.transaction, 'base64'), pending.message, BUYER);
       await validateFresh(pending.q);
       assert(await rpc.getBlockHeight() <= pending.lastValidBlockHeight, 'Blockhash expired. Prepare and sign again.');
-      const raw = transaction.serialize(), signature = signatureOf(transaction);
+      const raw = Buffer.from(transaction.serialize()), signature = signatureOf(transaction);
       const draft = { q: pending.q, message: pending.message, blockhash: pending.blockhash, lastValidBlockHeight: pending.lastValidBlockHeight, transaction: raw.toString('base64'), signature };
       // Save the EXACT signed bytes and signature before any broadcast. No private key is stored.
       writeFileSync(stateFile, JSON.stringify(draft, null, 2), { mode: 0o600, flag: 'wx' }); saved = draft;

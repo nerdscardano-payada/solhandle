@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction, VersionedTransaction, Ed25519Program, SYSVAR_INSTRUCTIONS_PUBKEY, SYSVAR_CLOCK_PUBKEY } from '@solana/web3.js';
+import { Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction, TransactionMessage, VersionedTransaction, Ed25519Program, SYSVAR_INSTRUCTIONS_PUBKEY, SYSVAR_CLOCK_PUBKEY } from '@solana/web3.js';
 export const rpc = new Connection('https://api.devnet.solana.com', 'confirmed');
 export const PROGRAM = new PublicKey('ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT');
 const CORE = new PublicKey('CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d');
@@ -63,20 +63,21 @@ export async function prepare() {
   const transaction = new Transaction({ feePayer: BUYER, recentBlockhash: latest.blockhash });
   transaction.add(Ed25519Program.createInstructionWithPrivateKey({ privateKey: signer.secretKey, message: digest(q) }));
   transaction.add(new TransactionInstruction({ programId: PROGRAM, keys: [key(BUYER, true, true), key(CONFIG, true), key(SETTINGS), key(PARTNER), key(RECORD, true), key(ASSET, true), key(pda('restriction', HANDLE)), key(pda('price', HANDLE)), key(pda('rush')), key(pda('premium', HANDLE)), key(new PublicKey(q.collection), true), key(new PublicKey(q.treasury), true), key(WALLET, true), key(RECEIPT, true), key(SYSVAR_INSTRUCTIONS_PUBKEY), key(SystemProgram.programId), key(CORE)], data: Buffer.concat([sha('global:mint_handle_partner_sol').subarray(0, 8), str(HANDLE), str(URI), str(PARTNER_ID), u64(1), u64(2), u64(q.price), u64(q.expiry)]) }));
-  const simulation = await rpc.simulateTransaction(new VersionedTransaction(transaction.compileMessage()), { sigVerify: false, commitment: 'confirmed' });
+  const versioned = new VersionedTransaction(new TransactionMessage({ payerKey: BUYER, recentBlockhash: latest.blockhash, instructions: transaction.instructions }).compileToV0Message());
+  const simulation = await rpc.simulateTransaction(versioned, { sigVerify: false, commitment: 'confirmed' });
   assert(!simulation.value.err, 'Devnet simulation failed: ' + JSON.stringify(simulation.value.err) + '\n' + (simulation.value.logs || []).join('\n'));
   const fresh = await state(); assert(fresh.price === q.price && fresh.treasury === q.treasury && fresh.collection === q.collection && fresh.now < q.expiry, 'Quote changed or expired; prepare again');
-  const fee = (await rpc.getFeeForMessage(transaction.compileMessage())).value; assert(fee !== null, 'Fee unavailable');
+  const fee = (await rpc.getFeeForMessage(versioned.message)).value; assert(fee !== null, 'Fee unavailable');
   const rent = await Promise.all([106, 249, 300].map(size => rpc.getMinimumBalanceForRentExemption(size)));
   const minimumEstimate = BigInt(q.price) + BigInt(fee) + BigInt(rent[0] + rent[1] + rent[2]);
   assert(BigInt(await rpc.getBalance(BUYER)) >= minimumEstimate, 'Buyer needs more DEVNET SOL for price, network fee and account rent');
-  return { q, ...latest, message: transaction.serializeMessage().toString('base64'), transaction: transaction.serialize({ requireAllSignatures: false }).toString('base64'), preview: { handle: '@' + HANDLE, buyer: BUYER.toBase58(), mintPriceLamports: q.price, partnerShareLamports: (BigInt(q.price) / 2n).toString(), treasuryShareLamports: (BigInt(q.price) - BigInt(q.price) / 2n).toString(), revenueWallet: WALLET.toBase58(), treasury: q.treasury, accountAndNetworkCostsExcluded: true, primaryEarnCommissionEligible: false, quoteValidForSeconds: 50 } };
+  return { q, ...latest, message: Buffer.from(versioned.message.serialize()).toString('base64'), transaction: Buffer.from(versioned.serialize()).toString('base64'), preview: { handle: '@' + HANDLE, buyer: BUYER.toBase58(), mintPriceLamports: q.price, partnerShareLamports: (BigInt(q.price) / 2n).toString(), treasuryShareLamports: (BigInt(q.price) - BigInt(q.price) / 2n).toString(), revenueWallet: WALLET.toBase58(), treasury: q.treasury, accountAndNetworkCostsExcluded: true, primaryEarnCommissionEligible: false, quoteValidForSeconds: 50 } };
 }
 export async function validateFresh(q) {
   const fresh = await state(); assert(fresh.now <= q.expiry && fresh.price === q.price && fresh.treasury === q.treasury && fresh.collection === q.collection, 'Quote expired or changed. Prepare and sign again.');
 }
 export function signatureOf(transaction) {
-  const b = transaction.signature; assert(b?.length === 64, 'Missing buyer signature');
+  const b = Buffer.from(transaction.signature ?? transaction.signatures[0]); assert(b.length === 64, 'Missing buyer signature');
   const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let number = BigInt('0x' + b.toString('hex')), result = '';
   while (number > 0n) { result = alphabet[Number(number % 58n)] + result; number /= 58n; }
@@ -90,7 +91,7 @@ export async function verify(saved) {
   const tx = await rpc.getTransaction(saved.signature, { commitment: status.confirmationStatus, maxSupportedTransactionVersion: 0 });
   if (!tx?.meta) return { status: 'PENDING', signature: saved.signature, confirmationHistoryUnavailable: true };
   assert(!tx.meta.err, 'Transaction failed');
-  assert(tx.transaction.message.serialize().toString('base64') === saved.message, 'Confirmed message differs');
+  assert(Buffer.from(tx.transaction.message.serialize()).toString('base64') === saved.message, 'Confirmed message differs');
   const [r, a, h] = await rpc.getMultipleAccountsInfo([RECEIPT, ASSET, RECORD], { commitment: status.confirmationStatus, minContextSlot: tx.slot });
   const receipt = bytes(r, 'PartnerMintReceipt', 249); assert.equal(receipt.length, 249, 'Receipt size mismatch');
   for (const [offset, expected] of [[8, PARTNER], [40, ASSET], [72, BUYER], [104, WALLET], [136, new PublicKey(saved.q.treasury)]]) assert(at(receipt, offset).equals(expected), 'Receipt recipient mismatch');
@@ -100,7 +101,7 @@ export async function verify(saved) {
   assert(a?.owner.equals(CORE) && a.data.length >= 66 && a.data[0] === 1 && at(a.data, 1).equals(BUYER) && a.data[33] === 2 && at(a.data, 34).toBase58() === saved.q.collection, 'NFT owner or official collection mismatch');
   const record = bytes(h, 'HandleRecord', 106), len = record.readUInt32LE(8);
   assert(len === HANDLE.length && record.subarray(12, 12 + len).toString() === HANDLE && at(record, 12 + len).equals(ASSET) && at(record, 44 + len).equals(BUYER), 'Handle record mismatch');
-  const keys = tx.transaction.message.accountKeys;
+  const keys = tx.transaction.message.staticAccountKeys ?? tx.transaction.message.accountKeys;
   const delta = address => { const i = keys.findIndex(k => k.toBase58() === address); assert(i >= 0, 'Missing transaction account'); assert(Number.isSafeInteger(tx.meta.postBalances[i]) && Number.isSafeInteger(tx.meta.preBalances[i]), 'Unsafe balance'); return BigInt(tx.meta.postBalances[i]) - BigInt(tx.meta.preBalances[i]); };
   assert.equal(delta(WALLET.toBase58()), partnerShare, 'Actual partner payment mismatch'); assert.equal(delta(saved.q.treasury), treasuryShare, 'Actual treasury payment mismatch');
   const accountCosts = delta(RECORD.toBase58()) + delta(ASSET.toBase58()) + delta(RECEIPT.toBase58());
