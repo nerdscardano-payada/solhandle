@@ -1,0 +1,38 @@
+diff --git a/programs/solhandle/src/lib.rs b/programs/solhandle/src/lib.rs
+--- a/programs/solhandle/src/lib.rs
++++ b/programs/solhandle/src/lib.rs
+@@ -10,6 +10,9 @@
+ };
+ 
++mod partner_registry;
++pub use partner_registry::*;
++
+ const REWARDS_BPS: u64 = 500;
+ const BPS_DENOMINATOR: u64 = 10_000;
+ const NORMAL_PREMIUM_SURCHARGE_LAMPORTS: u64 = 100_000_000;
+ const DEFAULT_PRICES_LAMPORTS: [u64; 5] = [300_000_000, 200_000_000, 100_000_000, 50_000_000, 10_000_000];
+@@ -37,6 +40,22 @@
+         Ok(())
+     }
+ 
++    pub fn configure_partner_mint(ctx: Context<ConfigurePartnerMint>, enabled: bool, quote_signer: Pubkey) -> Result<()> {
++        partner_registry::configure_settings(ctx, enabled, quote_signer)
++    }
++
++    pub fn create_mint_partner(ctx: Context<CreateMintPartner>, partner_id: String) -> Result<()> {
++        partner_registry::create_partner(ctx, partner_id)
++    }
++
++    pub fn set_mint_partner_status(ctx: Context<ManageMintPartner>, partner_id: String, expected_revision: u64, status: PartnerStatus) -> Result<()> {
++        partner_registry::change_status(ctx, partner_id, expected_revision, status)
++    }
++
++    pub fn change_mint_partner_wallet(ctx: Context<ChangePartnerWallet>, partner_id: String, expected_revision: u64) -> Result<()> {
++        partner_registry::change_wallet(ctx, partner_id, expected_revision)
++    }
++
+     pub fn set_paused(ctx: Context<UpdateConfig>, paused: bool) -> Result<()> { ctx.accounts.config.paused = paused; Ok(()) }
+ 
+     pub fn set_prices(ctx: Context<UpdateConfig>, prices_lamports: [u64; 5]) -> Result<()> {
+-- 
+SolHandle Phase 1 foundation transfer
