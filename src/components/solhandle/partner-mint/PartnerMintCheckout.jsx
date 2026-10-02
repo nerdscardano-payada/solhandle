@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,8 @@ export default function PartnerMintCheckout() {
   const urlParams = new URLSearchParams(window.location.search), partnerId = urlParams.get('partner') || '';
   const [handle, setHandle] = useState((urlParams.get('handle') || '').replace(/^@/, '').toLowerCase());
   const wallet = useWallet(), { setVisible } = useWalletModal(), pilot = usePartnerMintPilot(wallet, partnerId);
-  if (!/^[a-z0-9-]{1,32}$/.test(partnerId)) return <p role="alert" className="mt-6 text-destructive">A valid partner ID is required in the link. No fallback to ordinary minting.</p>;
+  if (!partnerId) return <div className="mt-6"><p className="text-muted-foreground">Open de pilot met de geregistreerde Devnet-testpartner. De partner wordt vóór het minten on-chain gecontroleerd.</p><Button asChild className="mt-4"><Link to={`/mint?partner=devnet-testpartner${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`}>Open Devnet-testpartner</Link></Button></div>;
+  if (!/^[a-z0-9-]{1,32}$/.test(partnerId)) return <p role="alert" className="mt-6 text-destructive">Deze partnercode is ongeldig. Open de pilot via een geldige partnerlink; er wordt niet overgeschakeld naar gewone minting.</p>;
   const valid = /^[a-z0-9]{1,20}$/.test(handle), currentQuote = pilot.quote?.quote.wallet === wallet.publicKey?.toBase58() ? pilot.quote : null;
   return <div className="mt-6">
     <p className="text-muted-foreground">Partner ID: {partnerId}. Approval and payment recipients are checked on-chain.</p>
