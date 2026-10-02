@@ -23,6 +23,9 @@ export function validateWalletExtras(instructions, quoteIndex) {
       assert(limit !== undefined && data.length >= 2 && data[0] >= 2 && data[0] <= limit, 'Unsupported wallet addition: ' + id + ', instruction ' + data[0] + '. Nothing submitted.');
     }
   }
-  // Additional priority fee may never exceed 0.00001 SOL.
-  assert(price * units <= 10000n * 1000000n, 'Wallet priority fee exceeds the devnet pilot cap. Nothing submitted.');
+  // Bounded devnet allowance for wallet-selected priority fees: 0.001 SOL.
+  // Round up like Solana; absent a unit limit, use the conservative maximum.
+  const priorityFeeLamports = (price * units + 999999n) / 1000000n;
+  const maximumPriorityFeeLamports = 1000000n;
+  assert(priorityFeeLamports <= maximumPriorityFeeLamports, 'Wallet priority fee is up to ' + priorityFeeLamports.toString() + ' lamports; devnet pilot cap is ' + maximumPriorityFeeLamports.toString() + ' lamports (0.001 SOL). Lower Phantom priority fees and prepare again. Nothing submitted.');
 }
