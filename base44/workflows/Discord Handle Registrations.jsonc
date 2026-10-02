@@ -2,7 +2,7 @@
   "name": "Discord Handle Registrations",
   "description": "Publishes each newly active SolHandle registration once in the official Discord community channel.",
   "trigger": {
-    "condition": "${ .trigger.data.status == \"active\" and (.trigger.data.discord_announced_at // \"\") == \"\" and (.trigger.event_type == \"create\" or (.trigger.old_data.status // \"\") != \"active\") }",
+    "condition": "${ .trigger.data.status == \"active\" and (.trigger.data.discord_announced_at // \"\") == \"\" }",
     "config": {
       "trigger_type": "entity",
       "events": [

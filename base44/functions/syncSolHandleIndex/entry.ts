@@ -75,7 +75,13 @@ export default async function(req: Request): Promise<Response> {
       stage = 'saving_handle_index';
       // Confirmation polling and the scheduled indexer can process the same mint concurrently.
       // Atomically match the unique on-chain handle rather than racing a read and create.
-      await base44.asServiceRole.entities.HandleIndex.upsert([record], { key: 'handle' });
+      const indexed = await base44.asServiceRole.entities.HandleIndex.upsert([record], { key: 'handle' });
+      // Upsert bypasses entity-trigger side effects. Emit a single-record update
+      // for unannounced mints so the Discord workflow can publish them.
+      const indexedHandle = indexed.records[0];
+      if (indexedHandle && !indexedHandle.discord_announced_at) {
+        await base44.asServiceRole.entities.HandleIndex.update(indexedHandle.id, { last_chain_sync: record.last_chain_sync });
+      }
 
       if (mint.priceLamports > 0) {
         const financial = await base44.asServiceRole.entities.FinancialTransaction.filter({ transaction_signature: entry.signature }, '-timestamp', 1);
