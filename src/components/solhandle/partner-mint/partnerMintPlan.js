@@ -5,7 +5,7 @@ export const partnerMintPhases = [
 ];
 
 export const partnerMintSections = [
-  { id: 'status', title: 'Status, scope & partner proposition', body: `**Design specification · planned, not live · 1 October 2026.** This page documents Phase 1–3; publishing it does not deploy a new program, mint API, widget, dashboard or partner agreement. There are no promised release dates.
+  { id: 'status', title: 'Status, scope & partner proposition', body: `**Phase 1 foundation in development · not deployed · 2 October 2026.** Financial policy is approved: treasury receives odd-lamport rounding, network/rent/storage costs are excluded from the split, and Partner Mint excludes Earn primary-mint commission for the same transaction. The first source-code work package adds an authority-controlled on-chain registry and separate settings; it does not yet include the partner mint instruction, API or checkout. Rust/local-validator verification and devnet deployment remain pending. No mainnet upgrade or live revenue-sharing integration has been performed.
 
 **Integrate SolHandle. Offer @handles directly inside your product. Earn 50% of eligible SOL mint revenue.** Your interface. Our protocol. Shared revenue.
 
@@ -29,9 +29,9 @@ Authority remains **blockchain → indexer → database/cache → UI**. SolHandl
 | --- | --- | --- |
 | 0.10 SOL / 100,000,000 lamports | 50,000,000 lamports | 50,000,000 lamports |
 
-Use checked u64 integers on-chain and BigInt in SDK code. Transport lamport amounts as decimal strings; SOL values are display-only. Proposed odd-lamport rule: **partner = floor(price / 2); protocol = price − partner**. The indivisible remainder goes to the treasury. Test 100,000,001 lamports explicitly.
+Use checked u64 integers on-chain and BigInt in SDK code. Transport lamport amounts as decimal strings; SOL values are display-only. Approved odd-lamport rule (2 October 2026): **partner = floor(price / 2); protocol = price − partner**. The indivisible remainder goes to the treasury. Test 100,000,001 lamports explicitly.
 
-The proposal makes **Partner Mint and Earn primary-mint commission mutually exclusive for the same transaction**: pay the partner once, with no additional Earn primary-mint commission. Preserve origin-referral history and unrelated secondary/creator-fee rules; a partner parameter must not rewrite them. Confirm this accounting policy before implementation and add regression tests.
+Approved policy (2 October 2026): **Partner Mint and Earn primary-mint commission are mutually exclusive for the same transaction**: pay the partner once, with no additional Earn primary-mint commission. Preserve origin-referral history and unrelated secondary/creator-fee rules; a partner parameter must not rewrite them. This policy still requires enforcement in the upcoming partner indexer/accounting path and regression tests; the existing Earn flow is unchanged.
 
 Free official claims stay in their existing verification flow and earn no partner revenue. No token burn or Integration Rewards Vault distribution is added to the SOL split.` },
   { id: 'registry', title: 'Registry, ownership & approval model', body: `**Proposed application records:**

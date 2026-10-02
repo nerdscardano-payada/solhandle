@@ -9,6 +9,9 @@ use mpl_core::{
     ID as MPL_CORE_ID,
 };
 
+mod partner_registry;
+pub use partner_registry::*;
+
 const REWARDS_BPS: u64 = 500;
 const BPS_DENOMINATOR: u64 = 10_000;
 const NORMAL_PREMIUM_SURCHARGE_LAMPORTS: u64 = 100_000_000;
@@ -35,6 +38,22 @@ pub mod solhandle {
             .invoke_signed(&[collection_seeds])?;
         ctx.accounts.config.set_inner(Config { authority: ctx.accounts.authority.key(), collection: ctx.accounts.collection.key(), treasury: args.treasury, rewards_vault: args.rewards_vault, prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: true, bump: ctx.bumps.config, protocol_version: 2 });
         Ok(())
+    }
+
+    pub fn configure_partner_mint(ctx: Context<ConfigurePartnerMint>, enabled: bool, quote_signer: Pubkey) -> Result<()> {
+        partner_registry::configure_settings(ctx, enabled, quote_signer)
+    }
+
+    pub fn create_mint_partner(ctx: Context<CreateMintPartner>, partner_id: String) -> Result<()> {
+        partner_registry::create_partner(ctx, partner_id)
+    }
+
+    pub fn set_mint_partner_status(ctx: Context<ManageMintPartner>, partner_id: String, expected_revision: u64, status: PartnerStatus) -> Result<()> {
+        partner_registry::change_status(ctx, partner_id, expected_revision, status)
+    }
+
+    pub fn change_mint_partner_wallet(ctx: Context<ChangePartnerWallet>, partner_id: String, expected_revision: u64) -> Result<()> {
+        partner_registry::change_wallet(ctx, partner_id, expected_revision)
     }
 
     pub fn set_paused(ctx: Context<UpdateConfig>, paused: bool) -> Result<()> { ctx.accounts.config.paused = paused; Ok(()) }
