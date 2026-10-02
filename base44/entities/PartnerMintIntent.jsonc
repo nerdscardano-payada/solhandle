@@ -1,0 +1,92 @@
+{
+  "name": "PartnerMintIntent",
+  "type": "object",
+  "properties": {
+    "cluster": {
+      "type": "string",
+      "enum": [
+        "devnet"
+      ]
+    },
+    "admin_user_id": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "quote": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "QUOTED",
+        "PREPARED",
+        "SUBMITTED",
+        "CONFIRMED",
+        "FINALIZED",
+        "FAILED",
+        "EXPIRED"
+      ]
+    },
+    "unsigned_transaction": {
+      "type": "string"
+    },
+    "message_hash": {
+      "type": "string"
+    },
+    "last_valid_block_height": {
+      "type": "number"
+    },
+    "transaction_signature": {
+      "type": "string"
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "cluster",
+    "admin_user_id",
+    "handle",
+    "partner_id",
+    "wallet",
+    "quote",
+    "expires_at",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
