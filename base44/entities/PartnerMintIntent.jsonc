@@ -55,6 +55,10 @@
     "receipt": {
       "type": "object",
       "additionalProperties": true
+    },
+    "receipt_indexed": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

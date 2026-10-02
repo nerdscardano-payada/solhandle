@@ -1,0 +1,154 @@
+{
+  "name": "PartnerMintReceipt",
+  "type": "object",
+  "properties": {
+    "receipt_key": {
+      "type": "string"
+    },
+    "cluster": {
+      "type": "string",
+      "enum": [
+        "devnet"
+      ]
+    },
+    "program": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "instruction_index": {
+      "type": "integer"
+    },
+    "intent_id": {
+      "type": "string"
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "partner_pda": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "asset_address": {
+      "type": "string"
+    },
+    "receipt_address": {
+      "type": "string"
+    },
+    "original_owner": {
+      "type": "string"
+    },
+    "collection": {
+      "type": "string"
+    },
+    "revenue_wallet": {
+      "type": "string"
+    },
+    "treasury": {
+      "type": "string"
+    },
+    "mint_price_lamports": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "partner_share_lamports": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "protocol_share_lamports": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "mint_price_raw": {
+      "type": "string"
+    },
+    "partner_share_raw": {
+      "type": "string"
+    },
+    "protocol_share_raw": {
+      "type": "string"
+    },
+    "network_fee_raw": {
+      "type": "string"
+    },
+    "account_costs_raw": {
+      "type": "string"
+    },
+    "slot": {
+      "type": "integer"
+    },
+    "minted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "FINALIZED"
+      ]
+    },
+    "primary_earn_commission_eligible": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "receipt_key",
+    "cluster",
+    "program",
+    "signature",
+    "instruction_index",
+    "intent_id",
+    "partner_id",
+    "partner_pda",
+    "handle",
+    "asset_address",
+    "receipt_address",
+    "original_owner",
+    "collection",
+    "revenue_wallet",
+    "treasury",
+    "mint_price_lamports",
+    "partner_share_lamports",
+    "protocol_share_lamports",
+    "mint_price_raw",
+    "partner_share_raw",
+    "protocol_share_raw",
+    "network_fee_raw",
+    "account_costs_raw",
+    "slot",
+    "minted_at",
+    "verified_at",
+    "status",
+    "primary_earn_commission_eligible"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

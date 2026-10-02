@@ -1,7 +1,8 @@
 import partnerMintSigned from './partnerMintSigned.ts';
+import indexPartnerMint from './partnerMintIndex.ts';
 import bs58 from 'npm:bs58@5.0.0';
 import { rpc } from './solanaRpc.ts';
-import { CORE, pda, unb64, b64, sha, equal, fault, accountBytes, keyAt, uint, quoteDigest } from './partnerMintCodec.ts';
+import { PROGRAM_ID, CORE, pda, unb64, b64, sha, equal, fault, accountBytes, keyAt, uint, quoteDigest } from './partnerMintCodec.ts';
 export default async function partnerMintStatus(base44, intent, url) {
   const q = intent.quote, signature = intent.transaction_signature;
   if (!signature) {
@@ -47,6 +48,11 @@ export default async function partnerMintStatus(base44, intent, url) {
   if (a?.owner !== CORE.toBase58() || !assetBytes || assetBytes.length < 66 || assetBytes[0] !== 1 || assetBytes[33] !== 2 || keyAt(assetBytes, 34) !== q.collection) fault('OFFICIAL_ASSET_MISMATCH', 503);
   const receipt = { cluster: 'devnet', receiptAddress: receiptAddress.toBase58(), partnerId: q.partnerId, handle: q.handle, assetAddress: asset.toBase58(), originalOwner: q.wallet, currentOwner: keyAt(assetBytes, 1), collection: q.collection, revenueWallet: q.revenueWallet, treasury: q.treasury, mintPriceLamports: q.mintPriceLamports, partnerShareLamports: q.partnerShareLamports, protocolShareLamports: q.protocolShareLamports, slot: tx.slot, signature, splitVerified: true, costsExcludedVerified: true, networkFeeLamports: String(tx.meta.fee), accountCostsLamports: accountCosts.toString(), primaryEarnCommissionEligible: false, countsAsFinalizedRevenue: commitment === 'finalized' };
   const finalStatus = commitment === 'finalized' ? 'FINALIZED' : 'CONFIRMED';
-  await base44.entities.PartnerMintIntent.update(intent.id, { status: finalStatus, receipt });
+  if (finalStatus === 'FINALIZED') {
+    const instructions = verifiedTx.message.compiledInstructions ?? verifiedTx.message.instructions;
+    const instructionIndex = instructions.findIndex(ix => keys[ix.programIdIndex]?.toBase58() === PROGRAM_ID);
+    await indexPartnerMint(base44, intent, receipt, instructionIndex, tx.blockTime);
+  }
+  await base44.entities.PartnerMintIntent.update(intent.id, { status: finalStatus, receipt, receipt_indexed: finalStatus === 'FINALIZED' });
   return { intentId: intent.id, status: finalStatus, signature, receipt };
 }

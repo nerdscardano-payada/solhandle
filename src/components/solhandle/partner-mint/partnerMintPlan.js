@@ -5,7 +5,9 @@ export const partnerMintPhases = [
 ];
 
 export const partnerMintSections = [
-  { id: 'status', title: 'Status, scope & partner proposition', body: `**Phase 1 · Devnet core pilot operational · 2 October 2026.** The first local Partner Mint finalized on Devnet with direct buyer ownership and an atomic 50/50 SOL mint-fee split. An administrator-only hosted pilot is now available at /mint?partner=devnet-testpartner, with search, live quotes, wallet signing, relay and receipt checks. Its availability, quote and unsigned preparation calls have passed; a hosted wallet-signed mint is still awaiting acceptance. Network/rent/storage costs remain outside the split. Durable partner indexing/reporting, the complete security/concurrency/regression evidence, wider wallet acceptance and independent review remain release gates. Phase 1 is not complete. No Mainnet Partner Mint upgrade or production activation has been performed.
+  { id: 'status', title: 'Status, scope & partner proposition', body: `**Phase 1 · Hosted Devnet mint finalized · 2 October 2026.** The administrator-only hosted pilot at /mint?partner=devnet-testpartner successfully finalized @power with the verified original owner and atomic 50/50 SOL mint-fee split. Finalized receipts now have a dedicated idempotent ledger, exact-lamport partner reporting and on-chain rechecking of saved pilot intents. Network/rent/storage costs remain outside the split. This does not yet recover arbitrary direct broadcasts or provide full partner onboarding, telemetry, security/concurrency/regression evidence, wider wallet acceptance or independent review. Phase 1 is not complete.
+
+**Approved rollout order: complete Phase 1 → complete Phase 2 → complete Phase 3 → separately approve Mainnet.** No phase is complete merely because one successful mint passed. All deliverables and acceptance gates must be evidenced before advancing. No Mainnet Partner Mint upgrade or production activation has been performed.
 
 **Integrate SolHandle. Offer @handles directly inside your product. Earn 50% of eligible SOL mint revenue.** Your interface. Our protocol. Shared revenue.
 
@@ -166,7 +168,7 @@ Minimize wallet analytics, define consent/retention/deletion before wider launch
 
 Approved on 2 October 2026: odd-lamport treasury remainder, separate network/rent/storage costs and Earn primary-mint exclusivity. The initial registry uses a separate quote signer and defaults self-mint permission to false; exemptions and receipt-rent disclosure still require review before the mint route is enabled. Choose a concrete public-domain/API-routing setup and wallet transaction strategy during implementation. This plan creates no domain, key, deployed program or partner account.
 
-Devnet first; then separately approve a mainnet pilot with a small verified allowlist. Keep production Partner Mint disabled until program, API, indexing and accounting are compatible; expand after reconciliation/wallet acceptance. Ordinary minting remains independent.
+Complete all three phases on Devnet in order before requesting a separately approved Mainnet pilot with a small verified allowlist. Keep production Partner Mint disabled until every phase's deliverables and acceptance gates, independent review and deployment readiness are evidenced. Ordinary minting remains independent.
 
 **Definition of done:** an approved integration mints the same official NFT as the main site to the user's wallet, with exact SOL settlement and durable attribution. Failed mints never settle mint revenue. Financial figures reconcile to finalized receipts. SDKs, widgets and dashboards are layers above this foundation, not substitutes for it.` },
 ];

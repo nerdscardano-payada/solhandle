@@ -2,10 +2,15 @@ import { pilotRequest, pilotSigner, pilotError } from '../../shared/partnerMintR
 import { validatePartnerInput, readPartnerState } from '../../shared/partnerMintChain.ts';
 import { fault, b64, quoteDigest, mintInstructions, view } from '../../shared/partnerMintCodec.ts';
 import partnerMintMetadata from '../../shared/partnerMintMetadata.ts';
+import partnerMintReporting from '../../shared/partnerMintReporting.ts';
 export default async function(req) {
   const requestId = crypto.randomUUID();
   try {
-    const { base44, user, body, url } = await pilotRequest(req, ['availability', 'quote']);
+    const { base44, user, body, url } = await pilotRequest(req, ['availability', 'quote', 'report', 'reconcile']);
+    if (['report', 'reconcile'].includes(body.action)) {
+      const result = await partnerMintReporting(base44, user, body, url);
+      return Response.json({ ...result, cluster: 'devnet', requestId }, { headers: { 'Cache-Control': 'no-store' } });
+    }
     const input = validatePartnerInput(body, body.action === 'quote'), signer = body.action === 'quote' ? pilotSigner() : null;
     const state = await readPartnerState(url, input, signer);
     if (body.action === 'availability') return Response.json({ ...state, cluster: 'devnet', advisoryOnly: true, requestId }, { headers: { 'Cache-Control': 'no-store' } });

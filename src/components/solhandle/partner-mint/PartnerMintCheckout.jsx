@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import usePartnerMintPilot from '@/components/solhandle/partner-mint/usePartnerMintPilot';
 import PartnerMintQuote from '@/components/solhandle/partner-mint/PartnerMintQuote';
 import PartnerMintReceipt from '@/components/solhandle/partner-mint/PartnerMintReceipt';
+import PartnerMintReport from '@/components/solhandle/partner-mint/PartnerMintReport';
 export default function PartnerMintCheckout() {
   const { search } = useLocation();
   const urlParams = new URLSearchParams(search), partnerId = urlParams.get('partner') || '';
@@ -27,5 +28,6 @@ export default function PartnerMintCheckout() {
     {pilot.busy && <p className="mt-4 text-sm text-muted-foreground" role="status">Processing Devnet request…</p>}
     {pilot.error && <p className="mt-4 text-sm text-destructive" role="alert">{pilot.error}</p>}
     <PartnerMintReceipt record={pilot.record} busy={pilot.busy} onCheck={pilot.check} onRetry={pilot.retry} onClear={pilot.clear} />
+    <PartnerMintReport key={partnerId} partnerId={partnerId} refreshKey={`${pilot.record?.signature || ''}:${pilot.record?.status || ''}`} />
   </div>;
 }
