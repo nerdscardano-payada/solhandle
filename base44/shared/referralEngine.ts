@@ -1,5 +1,6 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
 import { lockMintOrigin } from "./earnNetwork.ts";
+import { checkPrimaryMintEarn } from "./partnerMintEarnGuard.ts";
 
 export async function getReferralSettings(base44) {
   const rows = await base44.asServiceRole.entities.ReferralSettings.list("-updated_date", 1);
@@ -97,6 +98,8 @@ export async function processConfirmedReferral(base44, mint) {
   const intents = await base44.asServiceRole.entities.MintIntent.filter({ transaction_signature: mint.signature }, "-created_date", 1);
   const intent = intents[0];
   if (!intent?.referral_profile_id) return { credited: false, reason: "no_referral" };
+  const policy = await checkPrimaryMintEarn({ ...mint, source: "MINT" }, mint.rpcUrl);
+  if (!policy.eligible) return { credited: false, reason: policy.reason };
   const token = crypto.randomUUID();
   if (intent.status === "CONFIRMED") await base44.asServiceRole.entities.MintIntent.updateMany({ id: intent.id, status: "CONFIRMED" }, { $set: { status: "PROCESSING", processing_token: token, processing_started_at: new Date().toISOString() } });
   const claimedRows = await base44.asServiceRole.entities.MintIntent.filter({ id: intent.id }, "-created_date", 1);

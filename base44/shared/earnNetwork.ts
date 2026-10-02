@@ -1,5 +1,6 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
 import { rpc } from "./solanaRpc.ts";
+import { checkPrimaryMintEarn } from "./partnerMintEarnGuard.ts";
 
 const nowIso = () => new Date().toISOString();
 const clean = (value) => String(value || "").replace(/^@/, "").toLowerCase();
@@ -67,6 +68,8 @@ async function createEvent(base44, settings, origin, input, sharePercentage) {
 }
 
 export async function lockMintOrigin(base44, settings, input, rpcUrl) {
+  const policy = await checkPrimaryMintEarn({ ...input, source: "MINT" }, rpcUrl);
+  if (!policy.eligible) return { origin: null, reason: policy.reason };
   const duplicate = await base44.asServiceRole.entities.OriginReferral.filter({ mint_signature: input.signature }, "-locked_at", 1);
   if (duplicate[0]) return { origin: duplicate[0], duplicate: true };
   const walletOrigins = await base44.asServiceRole.entities.OriginReferral.filter({ referred_wallet: input.referredWallet, status: "LOCKED" }, "locked_at", 1);
@@ -89,6 +92,10 @@ export async function lockMintOrigin(base44, settings, input, rpcUrl) {
 }
 
 export async function recordOriginRevenue(base44, settings, input, rpcUrl) {
+  if (input.source === "MINT") {
+    const policy = await checkPrimaryMintEarn(input, rpcUrl);
+    if (!policy.eligible) return { credited: false, reason: policy.reason };
+  }
   const query = input.assetAddress ? { referred_asset_address: input.assetAddress, status: "LOCKED" } : { referred_wallet: input.referredWallet, status: "LOCKED" };
   const origins = await base44.asServiceRole.entities.OriginReferral.filter(query, "locked_at", 1);
   const origin = origins[0];
