@@ -12,6 +12,7 @@ export default function PartnerMintPhases({ showLink = true }) {
       <ul className="mt-4 list-disc space-y-2 pl-4 text-sm text-muted-foreground">{phase.deliverables.map(item => <li key={item}>{item}</li>)}</ul>
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground"><strong className="text-foreground">Release gate:</strong> {phase.gate}</p>
     </article>)}</div>
-    {showLink && <Link to="/developers/partner-mint" className="mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Read the complete technical plan →</Link>}
+    <Link to="/mint?partner=devnet-testpartner" className="mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Open Devnet mint pilot (admin only) →</Link>
+    {showLink && <Link to="/developers/partner-mint" className="ml-5 mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Read the complete technical plan →</Link>}
   </section>;
 }

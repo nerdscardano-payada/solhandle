@@ -1,7 +1,7 @@
 import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { rpc } from './solanaRpc.ts';
 import { normalizeHandle } from './handlePricing.ts';
-import { PROGRAM_ID } from './solhandleProtocol.ts';
+import { PROGRAM_ID } from './partnerMintCodec.ts';
 import { enc, pda, sha, fault, accountBytes, keyAt, uint, view } from './partnerMintCodec.ts';
 export async function devnetRpc(url, cluster) {
   if (cluster !== 'devnet') fault('DEVNET_ONLY', 403, 'Partner Mint pilot accepts only devnet.');

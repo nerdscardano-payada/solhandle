@@ -27,6 +27,7 @@ import Explore from '@/pages/Explore';
 import Fun from '@/pages/Fun';
 import Developers from '@/pages/Developers';
 import PartnerMintPlan from '@/pages/PartnerMintPlan';
+import PartnerMint from '@/pages/PartnerMint';
 import Integrations from '@/pages/Integrations';
 import LiveIntegrations from '@/pages/LiveIntegrations';
 import IntegrationGuide from '@/pages/IntegrationGuide';
@@ -89,6 +90,9 @@ const AuthenticatedApp = () => {
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
         <Route path="/developers/partner-mint" element={<PartnerMintPlan />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`} replace />} />}>
+          <Route path="/mint" element={<PartnerMint />} />
+        </Route>
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/upcoming/marketplace" element={<Market />} />

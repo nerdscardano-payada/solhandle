@@ -5,7 +5,7 @@ export const partnerMintPhases = [
 ];
 
 export const partnerMintSections = [
-  { id: 'status', title: 'Status, scope & partner proposition', body: `**Phase 1 foundation in development · not deployed · 2 October 2026.** Financial policy is approved: treasury receives odd-lamport rounding, network/rent/storage costs are excluded from the split, and Partner Mint excludes Earn primary-mint commission for the same transaction. The first source-code work package adds an authority-controlled on-chain registry and separate settings; it does not yet include the partner mint instruction, API or checkout. Rust/local-validator verification and devnet deployment remain pending. No mainnet upgrade or live revenue-sharing integration has been performed.
+  { id: 'status', title: 'Status, scope & partner proposition', body: `**Phase 1 · Devnet core pilot operational · 2 October 2026.** The first local Partner Mint finalized on Devnet with direct buyer ownership and an atomic 50/50 SOL mint-fee split. An administrator-only hosted pilot is now available at /mint?partner=devnet-testpartner, with search, live quotes, wallet signing, relay and receipt checks. Its availability, quote and unsigned preparation calls have passed; a hosted wallet-signed mint is still awaiting acceptance. Network/rent/storage costs remain outside the split. Durable partner indexing/reporting, the complete security/concurrency/regression evidence, wider wallet acceptance and independent review remain release gates. Phase 1 is not complete. No Mainnet Partner Mint upgrade or production activation has been performed.
 
 **Integrate SolHandle. Offer @handles directly inside your product. Earn 50% of eligible SOL mint revenue.** Your interface. Our protocol. Shared revenue.
 

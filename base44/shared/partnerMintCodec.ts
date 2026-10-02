@@ -1,6 +1,7 @@
 import { PublicKey, Keypair, Ed25519Program, TransactionInstruction, SystemProgram, SYSVAR_INSTRUCTIONS_PUBKEY } from 'npm:@solana/web3.js@1.98.4';
 import { Buffer } from 'node:buffer';
-import { PROGRAM_ID } from './solhandleProtocol.ts';
+// Dedicated devnet pilot identity; never import the production program identity.
+export const PROGRAM_ID = 'ATJutPfzXiYpf7NXaGPEBek69jHaU8Cy85ekUH8drMGT';
 export const PROGRAM = new PublicKey(PROGRAM_ID);
 export const CORE = new PublicKey('CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d');
 export const enc = value => new TextEncoder().encode(value);
