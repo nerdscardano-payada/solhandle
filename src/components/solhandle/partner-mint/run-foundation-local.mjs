@@ -6,6 +6,7 @@ import { security } from '../local-tests/security.mjs';
 import { connection, send, rejection } from '../local-tests/transport.mjs';
 import { PROGRAM, CORE, TOKEN } from '../local-tests/codec.mjs';
 import { settingsPda, partnerPda, configureIx, createIx, statusIx, walletIx, accountData, readPartner } from './registry-local-client.mjs';
+import solLocalChecks from './sol-local-checks.mjs';
 
 let passed = 0;
 async function check(label, action) { await action(); console.log(`PASS ${++passed}: ${label}`); }
@@ -80,7 +81,8 @@ try {
   });
   await payments(f, check);
   await security(f, check);
-  console.log(`FOUNDATION AND LEGACY PAYMENT TESTS PASSED: ${passed}. LOCAL ONLY. No Partner Mint instruction or devnet/mainnet deployment.`);
+  await solLocalChecks(f, check);
+  console.log(`PARTNER SOL MINT, FOUNDATION AND LEGACY TESTS PASSED: ${passed}. LOCAL ONLY. No devnet/mainnet deployment.`);
 } catch (error) {
   console.error(`STOP: incomplete after ${passed} passes.\n${error.stack || error}`);
   process.exitCode = 1;

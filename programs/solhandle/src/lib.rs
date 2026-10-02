@@ -11,6 +11,8 @@ use mpl_core::{
 
 mod partner_registry;
 pub use partner_registry::*;
+mod partner_sol_mint;
+pub use partner_sol_mint::*;
 
 const REWARDS_BPS: u64 = 500;
 const BPS_DENOMINATOR: u64 = 10_000;
@@ -38,6 +40,10 @@ pub mod solhandle {
             .invoke_signed(&[collection_seeds])?;
         ctx.accounts.config.set_inner(Config { authority: ctx.accounts.authority.key(), collection: ctx.accounts.collection.key(), treasury: args.treasury, rewards_vault: args.rewards_vault, prices_lamports: DEFAULT_PRICES_LAMPORTS, total_minted: 0, paused: true, bump: ctx.bumps.config, protocol_version: 2 });
         Ok(())
+    }
+
+    pub fn mint_handle_partner_sol(ctx: Context<MintHandlePartnerSol>, args: PartnerSolMintArgs) -> Result<()> {
+        partner_sol_mint::mint_partner_sol(ctx, args)
     }
 
     pub fn configure_partner_mint(ctx: Context<ConfigurePartnerMint>, enabled: bool, quote_signer: Pubkey) -> Result<()> {
