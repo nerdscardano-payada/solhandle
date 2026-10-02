@@ -45,11 +45,14 @@ const server = createServer(async (req, res) => {
     try {
       if (req.url === '/prepare') { pending = await prepare(); res.end(JSON.stringify({ transaction: pending.transaction, preview: pending.preview })); return; }
       assert(pending && typeof body.transaction === 'string', 'Prepare the mint first');
-      const transaction = readSignedTransaction(Buffer.from(body.transaction, 'base64'), pending.message, BUYER);
+      const transaction = readSignedTransaction(Buffer.from(body.transaction, 'base64'), pending.message, BUYER, true);
       await validateFresh(pending.q);
       assert(await rpc.getBlockHeight() <= pending.lastValidBlockHeight, 'Blockhash expired. Prepare and sign again.');
+      const simulation = await rpc.simulateTransaction(transaction, { sigVerify: true, commitment: 'confirmed' });
+      assert(!simulation.value.err, 'Signed mint simulation failed; nothing submitted: ' + JSON.stringify(simulation.value.err) + '\n' + (simulation.value.logs || []).join('\n'));
+      await validateFresh(pending.q);
       const raw = Buffer.from(transaction.serialize()), signature = signatureOf(transaction);
-      const draft = { q: pending.q, message: pending.message, blockhash: pending.blockhash, lastValidBlockHeight: pending.lastValidBlockHeight, transaction: raw.toString('base64'), signature };
+      const draft = { q: pending.q, message: Buffer.from(transaction.message.serialize()).toString('base64'), preparedMessage: pending.message, blockhash: pending.blockhash, lastValidBlockHeight: pending.lastValidBlockHeight, transaction: raw.toString('base64'), signature };
       // Save the EXACT signed bytes and signature before any broadcast. No private key is stored.
       writeFileSync(stateFile, JSON.stringify(draft, null, 2), { mode: 0o600, flag: 'wx' }); saved = draft;
       console.log('Devnet mint signature (also saved locally):', signature);

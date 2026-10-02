@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
 import { createPublicKey, verify } from 'node:crypto';
 import { VersionedTransaction } from '@solana/web3.js';
+import { validateWalletMessage } from './devnet-wallet-message.mjs';
 
 // Decode without legacy Transaction.from recompilation or account reordering.
 // Supports previously saved legacy transactions as well as the v0 pilot.
-export function readSignedTransaction(raw, expectedMessage, expectedPayer) {
+export function readSignedTransaction(raw, expectedMessage, expectedPayer, allowWalletAssertions = false) {
+  assert(raw.length <= 1232, 'Signed transaction exceeds the packet limit. Nothing submitted.');
   const transaction = VersionedTransaction.deserialize(raw);
   const message = Buffer.from(transaction.message.serialize());
-  assert(message.toString('base64') === expectedMessage, 'Signed message differs from the prepared mint. Nothing was submitted; prepare again.');
+  validateWalletMessage(transaction.message, expectedMessage, allowWalletAssertions);
   const keys = transaction.message.staticAccountKeys ?? transaction.message.accountKeys;
   assert(keys[0].equals(expectedPayer) && transaction.message.header.numRequiredSignatures === 1, 'Unexpected mint payer or signer count. Nothing was submitted.');
   assert(transaction.signatures.length === 1, 'Missing buyer signature. Nothing was submitted.');
