@@ -87,7 +87,7 @@ export default async function solLocalChecks(base, check) {
   await send(f.authority, [walletIx(f, 'atomic-partner', 3n, f.authority.publicKey)], [f.authority]);
   await check('Wallet change invalidates old recipient', () => fails(f, 'partoldwallet', { args: { revision: 4n } }, /InvalidRecipient/));
   await send(f.authority, [configureIx(f, f.partnerSigner.publicKey, false)]);
-  await check('Partner switch disables the partner route', () => fails(f, 'partstopped', {}, /Disabled/));
+  await check('Partner switch disables the partner route', () => fails({ ...f, revenue: f.authority }, 'partstopped', { args: { revision: 4n, settingsRevision: 3n } }, /Disabled/));
   await check('Ordinary SOL mint still works after partner suspension', async () => {
     const before = await connection.getBalance(f.treasury.publicKey);
     await solMint(f, 'ordinaryafter');
