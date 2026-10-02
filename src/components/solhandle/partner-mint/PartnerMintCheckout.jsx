@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,8 @@ import usePartnerMintPilot from '@/components/solhandle/partner-mint/usePartnerM
 import PartnerMintQuote from '@/components/solhandle/partner-mint/PartnerMintQuote';
 import PartnerMintReceipt from '@/components/solhandle/partner-mint/PartnerMintReceipt';
 export default function PartnerMintCheckout() {
-  const urlParams = new URLSearchParams(window.location.search), partnerId = urlParams.get('partner') || '';
+  const { search } = useLocation();
+  const urlParams = new URLSearchParams(search), partnerId = urlParams.get('partner') || '';
   const [handle, setHandle] = useState((urlParams.get('handle') || '').replace(/^@/, '').toLowerCase());
   const wallet = useWallet(), { setVisible } = useWalletModal(), pilot = usePartnerMintPilot(wallet, partnerId);
   if (!partnerId) return <div className="mt-6"><p className="text-muted-foreground">Open the pilot with the registered Devnet test partner. The partner is verified on-chain before minting.</p><Button asChild className="mt-4"><Link to={`/mint?partner=devnet-testpartner${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`}>Open Devnet test partner</Link></Button></div>;
