@@ -1,0 +1,3 @@
+export default async function partnerMintEvent(base44, partnerId, event, correlation, intentId = '') {
+  await base44.entities.PartnerMintEvent.upsert([{ event_key: `devnet:${correlation}:${event}`, cluster: 'devnet', partner_id: partnerId, intent_id: intentId, event, source: ['CONFIRMED', 'FINALIZED'].includes(event) ? 'CHAIN_VERIFIED' : 'SERVER_OBSERVED', occurred_at: new Date().toISOString() }], { key: 'event_key' });
+}

@@ -8,6 +8,7 @@ import usePartnerMintPilot from '@/components/solhandle/partner-mint/usePartnerM
 import PartnerMintQuote from '@/components/solhandle/partner-mint/PartnerMintQuote';
 import PartnerMintReceipt from '@/components/solhandle/partner-mint/PartnerMintReceipt';
 import PartnerMintReport from '@/components/solhandle/partner-mint/PartnerMintReport';
+import PartnerMintCostReview from '@/components/solhandle/partner-mint/PartnerMintCostReview';
 export default function PartnerMintCheckout() {
   const { search } = useLocation();
   const urlParams = new URLSearchParams(search), partnerId = urlParams.get('partner') || '';
@@ -24,7 +25,7 @@ export default function PartnerMintCheckout() {
     {pilot.availability && <p className="mt-3 text-sm">@{pilot.availability.handle}: {pilot.availability.status}. Availability is not a reservation.</p>}
     {pilot.availability?.available && !pilot.record && <><Button className="mt-4" disabled={pilot.busy || !wallet.connected || !wallet.publicKey || !wallet.signTransaction} onClick={() => pilot.review(handle)}>{pilot.busy ? 'Loading live SOL quote…' : 'Get live SOL quote'}</Button>{!wallet.connected && <p className="mt-2 text-sm text-names-warning">Connect your wallet above to unlock the live SOL quote. Requesting a quote does not require a signature or payment.</p>}</>}
     <PartnerMintQuote quote={currentQuote?.quote} />
-    {currentQuote && <><p className="mt-3 text-xs text-muted-foreground">Quote expires: {new Date(currentQuote.expiresAt).toLocaleTimeString()}. Review the transaction in your wallet.</p><Button className="mt-4" disabled={pilot.busy || !!pilot.record} onClick={pilot.mint}>Sign and mint on Devnet</Button></>}
+    {currentQuote && <><p className="mt-3 text-xs text-muted-foreground">Quote expires: {new Date(currentQuote.expiresAt).toLocaleTimeString()}. Review separate costs before the wallet transaction.</p><PartnerMintCostReview prepared={pilot.prepared?.intentId === currentQuote.intentId ? pilot.prepared : null} /><Button className="mt-4" disabled={pilot.busy || !!pilot.record} onClick={pilot.prepared?.intentId === currentQuote.intentId ? pilot.mint : pilot.prepare}>{pilot.prepared?.intentId === currentQuote.intentId ? 'Sign and mint on Devnet' : 'Simulate and review total costs'}</Button></>}
     {pilot.busy && <p className="mt-4 text-sm text-muted-foreground" role="status">Processing Devnet request…</p>}
     {pilot.error && <p className="mt-4 text-sm text-destructive" role="alert">{pilot.error}</p>}
     <PartnerMintReceipt record={pilot.record} busy={pilot.busy} onCheck={pilot.check} onRetry={pilot.retry} onClear={pilot.clear} />

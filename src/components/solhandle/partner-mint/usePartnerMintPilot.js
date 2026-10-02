@@ -4,7 +4,7 @@ import { pilotCall, pilotMessage, from64, to64 } from '@/components/solhandle/pa
 const storageKey = 'solhandle-partner-devnet-intent';
 export default function usePartnerMintPilot(wallet, partnerId) {
   const [record, setRecord] = useState(() => { try { return JSON.parse(localStorage.getItem(storageKey) || 'null'); } catch { return null; } });
-  const [quote, setQuote] = useState(null), [availability, setAvailability] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('');
+  const [quote, setQuote] = useState(null), [availability, setAvailability] = useState(null), [prepared, setPrepared] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('');
   const lock = useRef(false);
   const save = value => { if (value) localStorage.setItem(storageKey, JSON.stringify(value)); else localStorage.removeItem(storageKey); setRecord(value); };
   const run = async action => { if (lock.current) return; lock.current = true; setBusy(true); setError(''); try { await action(); } catch (e) { setError(pilotMessage(e)); } finally { lock.current = false; setBusy(false); } };
@@ -15,7 +15,7 @@ export default function usePartnerMintPilot(wallet, partnerId) {
   const retry = () => run(async () => {
     if (!record?.signedTransaction) return;
     const current = await pilotCall('status', { intentId: record.intentId });
-    if (['FINALIZED', 'CONFIRMED', 'FAILED'].includes(current.status) || (current.status === 'EXPIRED' && !current.signature)) { save({ ...record, ...current }); return; }
+    if (['FINALIZED', 'CONFIRMED', 'FAILED'].includes(current.status) || (current.status === 'EXPIRED' && (!current.signature || current.expiredWithoutReceiptVerified))) { save({ ...record, ...current }); return; }
     const result = await pilotCall('submit', { intentId: record.intentId, signedTransaction: record.signedTransaction }); save({ ...record, ...result });
   });
   const search = handle => run(async () => { setQuote(null); setAvailability(null); setAvailability(await pilotCall('availability', { partnerId, handle })); });
@@ -24,14 +24,20 @@ export default function usePartnerMintPilot(wallet, partnerId) {
     if (!wallet.publicKey || !wallet.signTransaction) throw new Error('Connect a signing wallet on Devnet first.');
     const result = await pilotCall('quote', { partnerId, handle, wallet: wallet.publicKey.toBase58() }); setQuote(result);
   });
+  const prepare = () => run(async () => {
+    if (record || !quote || quote.quote.wallet !== wallet.publicKey?.toBase58()) throw new Error('Review a quote for your connected wallet first.');
+    setPrepared(await pilotCall('prepare', { intentId: quote.intentId }));
+  });
   const mint = () => run(async () => {
     if (record || !quote || quote.quote.wallet !== wallet.publicKey?.toBase58() || !wallet.signTransaction) throw new Error('Review a quote for your connected wallet first.');
     if (Date.now() >= Date.parse(quote.expiresAt)) { setQuote(null); throw new Error('Quote expired. Request a fresh quote.'); }
-    const prepared = await pilotCall('prepare', { intentId: quote.intentId });
+    if (!prepared || prepared.intentId !== quote.intentId) throw new Error('Review the simulated account and network costs first.');
+    const fresh = await pilotCall('prepare', { intentId: quote.intentId });
+    if (fresh.transactionBase64 !== prepared.transactionBase64 || fresh.estimatedTotalLamports !== prepared.estimatedTotalLamports) { setPrepared(fresh); throw new Error('Preparation costs changed. Review the updated estimate before signing.'); }
     const signed = await wallet.signTransaction(VersionedTransaction.deserialize(from64(prepared.transactionBase64)));
     const pending = { intentId: quote.intentId, handle: quote.quote.handle, partnerId, wallet: quote.quote.wallet, signedTransaction: to64(signed.serialize()), status: 'SIGNED' };
     save(pending); setQuote(null);
     const result = await pilotCall('submit', { intentId: pending.intentId, signedTransaction: pending.signedTransaction }); save({ ...pending, ...result });
   });
-  return { record, quote, availability, busy, error, search, review, mint, check, retry, resetQuote: () => { setQuote(null); setAvailability(null); }, clear: () => { save(null); setQuote(null); setAvailability(null); } };
+  return { record, quote, prepared, availability, busy, error, search, review, prepare, mint, check, retry, resetQuote: () => { setQuote(null); setPrepared(null); setAvailability(null); }, clear: () => { save(null); setQuote(null); setPrepared(null); setAvailability(null); } };
 }

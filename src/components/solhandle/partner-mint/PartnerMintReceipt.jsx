@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 export default function PartnerMintReceipt({ record, busy, onCheck, onRetry, onClear }) {
   if (!record) return null;
-  const terminal = ['FINALIZED', 'FAILED'].includes(record.status) || (record.status === 'EXPIRED' && !record.signature);
+  const terminal = ['FINALIZED', 'FAILED'].includes(record.status) || (record.status === 'EXPIRED' && (!record.signature || record.expiredWithoutReceiptVerified));
   return <section className="mt-5 rounded-xl border border-names-secondary/30 bg-card p-5">
     <h2 className="text-xl font-heading">@{record.handle} · {record.status}</h2>
     <p className="mt-2 text-sm text-muted-foreground">{terminal ? 'Devnet result saved. This is not a mainnet asset.' : 'A signed mint is saved locally. Check this intent before creating another mint.'}</p>

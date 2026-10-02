@@ -2,6 +2,7 @@ import { VersionedTransaction, TransactionMessage, PublicKey } from 'npm:@solana
 import { rpc } from './solanaRpc.ts';
 import { readPartnerState, assertFresh } from './partnerMintChain.ts';
 import { b64, unb64, sha, fault, mintInstructions } from './partnerMintCodec.ts';
+import partnerMintCosts from './partnerMintCosts.ts';
 export default async function preparePartnerMint(base44, intent, url, signer) {
   if (!['QUOTED', 'PREPARED'].includes(intent.status)) fault('INTENT_NOT_PREPARABLE', 409);
   const q = intent.quote, state = await readPartnerState(url, { handle: q.handle, partnerId: q.partnerId, wallet: q.wallet }, signer);
@@ -9,7 +10,7 @@ export default async function preparePartnerMint(base44, intent, url, signer) {
   if (intent.status === 'PREPARED') {
     const height = await rpc(url, 'getBlockHeight', [{ commitment: 'confirmed' }]);
     if (height > intent.last_valid_block_height) fault('BLOCKHASH_EXPIRED', 410);
-    return { intentId: intent.id, status: 'PREPARED', transactionBase64: intent.unsigned_transaction, lastValidBlockHeight: intent.last_valid_block_height, quote: q };
+    return { intentId: intent.id, status: 'PREPARED', transactionBase64: intent.unsigned_transaction, lastValidBlockHeight: intent.last_valid_block_height, quote: q, ...await partnerMintCosts(url, intent) };
   }
   const latest = await rpc(url, 'getLatestBlockhash', [{ commitment: 'confirmed' }]);
   const transaction = new VersionedTransaction(new TransactionMessage({ payerKey: new PublicKey(q.wallet), recentBlockhash: latest.value.blockhash, instructions: await mintInstructions(q, signer) }).compileToV0Message());
@@ -24,6 +25,5 @@ export default async function preparePartnerMint(base44, intent, url, signer) {
   const saved = items[0];
   if (saved?.status !== 'PREPARED') fault('INTENT_CONFLICT', 409);
   const prepared = VersionedTransaction.deserialize(unb64(saved.unsigned_transaction));
-  const fee = await rpc(url, 'getFeeForMessage', [b64(prepared.message.serialize()), { commitment: 'confirmed' }]);
-  return { intentId: intent.id, status: 'PREPARED', transactionBase64: saved.unsigned_transaction, blockhash: prepared.message.recentBlockhash, lastValidBlockHeight: saved.last_valid_block_height, quote: q, estimatedNetworkFeeLamports: fee?.value === null ? null : String(fee.value), rentAndStorageIncludedInMintPrice: false, simulationUnitsConsumed: simulation.value.unitsConsumed };
+  return { intentId: intent.id, status: 'PREPARED', transactionBase64: saved.unsigned_transaction, blockhash: prepared.message.recentBlockhash, lastValidBlockHeight: saved.last_valid_block_height, quote: q, ...await partnerMintCosts(url, saved) };
 }

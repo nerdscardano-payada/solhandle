@@ -2,7 +2,7 @@ import { base44 } from '@/api/base44Client';
 export const from64 = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
 export const to64 = value => btoa(String.fromCharCode(...value));
 export async function pilotCall(action, payload) {
-  const name = ['availability', 'quote', 'report', 'reconcile'].includes(action) ? 'partnerMintRead' : 'partnerMintTransaction';
+  const name = ['availability', 'quote', 'report', 'reconcile', 'recover'].includes(action) ? 'partnerMintRead' : 'partnerMintTransaction';
   const { data } = await base44.functions.invoke(name, { ...payload, action, cluster: 'devnet' });
   if (data.error) throw new Error(data.error.message || data.error.code);
   return data;

@@ -17,7 +17,18 @@ export default async function partnerMintStatus(base44, intent, url) {
     await base44.entities.PartnerMintIntent.update(intent.id, { status: 'FAILED' });
     return { intentId: intent.id, status: 'FAILED', signature, receipt: null, networkFeesMayApply: true };
   }
-  if (!status || !['confirmed', 'finalized'].includes(status.confirmationStatus)) return { intentId: intent.id, status: 'PENDING', signature, receipt: null, retrySameTransactionOnly: true };
+  if (!status || !['confirmed', 'finalized'].includes(status.confirmationStatus)) {
+    if (!status && Number.isSafeInteger(intent.last_valid_block_height) && await rpc(url, 'getBlockHeight', [{ commitment: 'finalized' }]) > intent.last_valid_block_height) {
+      const asset = pda('asset', q.handle), receiptAddress = pda('partner_receipt', asset.toBytes());
+      const historical = await rpc(url, 'getTransaction', [signature, { encoding: 'base64', commitment: 'finalized', maxSupportedTransactionVersion: 0 }]);
+      const record = await rpc(url, 'getAccountInfo', [receiptAddress.toBase58(), { encoding: 'base64', commitment: 'finalized' }]);
+      if (!historical && !record.value) {
+        await base44.entities.PartnerMintIntent.update(intent.id, { status: 'EXPIRED', receipt_indexed: false });
+        return { intentId: intent.id, status: 'EXPIRED', signature, receipt: null, expiredWithoutReceiptVerified: true, networkFeesMayApply: true };
+      }
+    }
+    return { intentId: intent.id, status: 'PENDING', signature, receipt: null, retrySameTransactionOnly: true };
+  }
   const commitment = status.confirmationStatus, tx = await rpc(url, 'getTransaction', [signature, { encoding: 'base64', commitment, maxSupportedTransactionVersion: 0 }]);
   if (!tx?.meta || tx.meta.err || !tx.transaction?.[0]) fault('CONFIRMATION_UNAVAILABLE', 503);
   const verifiedTx = await partnerMintSigned(tx.transaction[0], intent);

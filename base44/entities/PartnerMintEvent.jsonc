@@ -1,0 +1,74 @@
+{
+  "name": "PartnerMintEvent",
+  "type": "object",
+  "properties": {
+    "event_key": {
+      "type": "string"
+    },
+    "cluster": {
+      "type": "string",
+      "enum": [
+        "devnet"
+      ]
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "intent_id": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string",
+      "enum": [
+        "SEARCH",
+        "AVAILABLE_SEARCH",
+        "QUOTE",
+        "PREPARED",
+        "SUBMITTED",
+        "CONFIRMED",
+        "FINALIZED"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "SERVER_OBSERVED",
+        "CHAIN_VERIFIED"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "event_key",
+    "cluster",
+    "partner_id",
+    "event",
+    "source",
+    "occurred_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

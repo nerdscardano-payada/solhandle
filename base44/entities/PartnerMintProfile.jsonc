@@ -1,0 +1,81 @@
+{
+  "name": "PartnerMintProfile",
+  "type": "object",
+  "properties": {
+    "profile_key": {
+      "type": "string"
+    },
+    "cluster": {
+      "type": "string",
+      "enum": [
+        "devnet"
+      ]
+    },
+    "partner_id": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "partner_link": {
+      "type": "string"
+    },
+    "partner_pda": {
+      "type": "string"
+    },
+    "revenue_wallet": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "suspended",
+        "disabled"
+      ]
+    },
+    "revision": {
+      "type": "string"
+    },
+    "allow_self_mint": {
+      "type": "boolean"
+    },
+    "chain_slot": {
+      "type": "integer"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "profile_key",
+    "cluster",
+    "partner_id",
+    "display_name",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

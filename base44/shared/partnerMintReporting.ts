@@ -24,7 +24,9 @@ export default async function partnerMintReporting(base44, user, body, url) {
     if (result.truncated) fault('REPORT_TOTALS_UNAVAILABLE', 503);
     const row = result.rows[0];
     const exact = name => { const value = row?.[name] ?? 0; if (!Number.isSafeInteger(value) || value < 0) fault('REPORT_AMOUNT_RANGE', 503, 'Totals exceed exact reporting range. Rounded totals are not displayed.'); return String(value); };
-    totals = { count: row?.count ?? 0, mintPriceLamports: exact('sum_mint_price_lamports'), partnerShareLamports: exact('sum_partner_share_lamports'), protocolShareLamports: exact('sum_protocol_share_lamports') };
+    const activity = await base44.entities.PartnerMintEvent.aggregate({ query, groupBy: 'event' });
+    const events = Object.fromEntries(activity.rows.map(event => [event.event, event.count]));
+    totals = { count: row?.count ?? 0, mintPriceLamports: exact('sum_mint_price_lamports'), partnerShareLamports: exact('sum_partner_share_lamports'), protocolShareLamports: exact('sum_protocol_share_lamports'), events };
   }
   return { receipts: page.items, hasMore: page.has_more, nextCursor: page.next_cursor, ...(totals ? { totals } : {}), checkedAt: new Date().toISOString() };
 }

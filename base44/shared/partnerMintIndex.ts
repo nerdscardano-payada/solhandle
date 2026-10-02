@@ -1,4 +1,5 @@
 import { PROGRAM_ID, fault } from './partnerMintCodec.ts';
+import partnerMintEvent from './partnerMintEvents.ts';
 export default async function indexPartnerMint(base44, intent, receipt, instructionIndex, blockTime) {
   if (receipt.cluster !== 'devnet' || !receipt.countsAsFinalizedRevenue || !receipt.splitVerified || !receipt.costsExcludedVerified || receipt.primaryEarnCommissionEligible !== false) fault('UNVERIFIED_RECEIPT', 503);
   if (!Number.isSafeInteger(instructionIndex) || instructionIndex < 0 || !Number.isSafeInteger(blockTime) || blockTime <= 0) fault('RECEIPT_CONTEXT_UNAVAILABLE', 503);
@@ -18,4 +19,5 @@ export default async function indexPartnerMint(base44, intent, receipt, instruct
     status: 'FINALIZED', primary_earn_commission_eligible: false
   };
   await base44.entities.PartnerMintReceipt.upsert([record], { key: 'receipt_key' });
+  await partnerMintEvent(base44, receipt.partnerId, 'FINALIZED', record.receipt_key, intent.id);
 }
