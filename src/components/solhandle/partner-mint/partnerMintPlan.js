@@ -164,7 +164,7 @@ Minimize wallet analytics, define consent/retention/deletion before wider launch
 
 **Phase 3:** native-wallet/mobile adapters, approval-controlled onboarding, webhooks and enterprise distribution.
 
-Record approval of the odd-lamport treasury remainder, separate network/rent/storage costs, Earn primary-mint exclusivity, self-mint exemptions, dedicated quote signer and receipt rent before building. Choose a concrete public-domain/API-routing setup and wallet transaction strategy during implementation. This plan creates no domain, key, deployed program or partner account.
+Approved on 2 October 2026: odd-lamport treasury remainder, separate network/rent/storage costs and Earn primary-mint exclusivity. The initial registry uses a separate quote signer and defaults self-mint permission to false; exemptions and receipt-rent disclosure still require review before the mint route is enabled. Choose a concrete public-domain/API-routing setup and wallet transaction strategy during implementation. This plan creates no domain, key, deployed program or partner account.
 
 Devnet first; then separately approve a mainnet pilot with a small verified allowlist. Keep production Partner Mint disabled until program, API, indexing and accounting are compatible; expand after reconciliation/wallet acceptance. Ordinary minting remains independent.
 
