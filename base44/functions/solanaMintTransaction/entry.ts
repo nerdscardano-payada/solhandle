@@ -122,7 +122,7 @@ export default async function(req: Request): Promise<Response> {
       throw new Error("Transaction confirmation timed out. Check Solana Explorer before retrying.");
     }
 
-    if (body.action === "submit") {
+    if (body.action === "submit" || body.action === "simulate") {
       if (mintIsLocked()) return Response.json({ error: "Public minting is not open yet." }, { status: 423 });
       if (typeof body.transaction_base64 !== "string") return Response.json({ error: "Signed transaction is required." }, { status: 400 });
       const transaction = Transaction.from(decodeBase64(body.transaction_base64));
@@ -153,6 +153,18 @@ export default async function(req: Request): Promise<Response> {
       if (mintData.maxPriceLamports !== pricing.finalPriceLamports) return Response.json({ error: "The signed mint price does not match the official handle price." }, { status: 400 });
       if (instruction.keys[8]?.pubkey.toBase58() !== protocol.collection || instruction.keys[9]?.pubkey.toBase58() !== protocol.treasury) return Response.json({ error: "Invalid collection or treasury account." }, { status: 400 });
       if (systemInstructions.length > 0) return Response.json({ error: "Unexpected external payment instruction." }, { status: 400 });
+
+      if (body.action === "simulate") {
+        const simulation = await rpc(rpcUrl, "simulateTransaction", [body.transaction_base64, { encoding: "base64", sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed" }]);
+        if (!simulation?.value) return Response.json({ error: "Unable to check this mint safely. Please retry. Do not bypass wallet warnings." }, { status: 503 });
+        if (simulation.value.err) {
+          const logs = simulation.value.logs || [];
+          console.warn("SOL mint simulation failed", JSON.stringify({ handle: mintData.handle, error: simulation.value.err, logs }));
+          const insufficient = logs.some(line => /insufficient (lamports|funds)/i.test(line)) || simulation.value.err === "InsufficientFundsForFee";
+          return Response.json({ error: insufficient ? "Not enough SOL to complete this mint. Your wallet must cover the handle price, NFT account creation and network fees. Add SOL and try again. No transaction was sent." : "This mint did not pass the on-chain check. No transaction was sent. Refresh the handle and try again; do not bypass wallet warnings." }, { status: 422 });
+        }
+        return Response.json({ ok: true, blockhash: simulation.value.replacementBlockhash?.blockhash || transaction.recentBlockhash });
+      }
 
       const mintIntent = await lockReferralMintIntent(base44, { mintIntentId: String(body.mint_intent_id || ""), buyerWallet: transaction.feePayer.toBase58(), handle: mintData.handle, totalPriceLamports: pricing.finalPriceLamports });
       const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);

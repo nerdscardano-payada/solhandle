@@ -98,6 +98,10 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
   if (!signTransaction) throw new Error("This wallet cannot sign Solana transactions.");
   if (Number(maxPriceLamports) !== Number(protocol.finalPriceLamports)) throw new Error("The handle price changed. Please review the updated price.");
   const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
+  const unsignedBase64 = btoa(String.fromCharCode(...transaction.serialize({ requireAllSignatures: false, verifySignatures: false })));
+  const checked = await base44.functions.invoke("solanaMintTransaction", { action: "simulate", transaction_base64: unsignedBase64 });
+  if (!checked.data?.ok) throw new Error("Unable to check this mint safely. Do not bypass wallet warnings.");
+  transaction.recentBlockhash = checked.data.blockhash;
   const signed = await signTransaction(transaction);
   const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
   base44.analytics.track({ eventName: "referral_mint_submitted", properties: { handle } });
