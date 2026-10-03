@@ -12,9 +12,9 @@ export default function Search() {
       <Link to="/" className="text-sm text-names-accent">← Back to home</Link>
       <h1 className="mt-5 text-3xl font-semibold sm:text-5xl">Find your SolHandle</h1>
       <p className="mt-3 text-sm text-muted-foreground">Search, claim, and own your unique NFT-backed identity on Solana.</p>
-      <div className="mt-7 grid items-center gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <div className="min-w-0"><HandleSearch wallet={wallet}/></div>
+      <div className="mt-7 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
         <SearchAtto/>
+        <div className="min-w-0"><HandleSearch wallet={wallet}/></div>
       </div>
     </div>
   </div></main>;

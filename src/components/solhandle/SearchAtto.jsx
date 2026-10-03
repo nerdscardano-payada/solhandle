@@ -5,7 +5,7 @@ export default function SearchAtto() {
     <Image
       src="https://base44.app/api/apps/6a86b7e4bcec5dfac8ee9a44/files/mp/public/6a86b7e4bcec5dfac8ee9a44/fd76de801_solhandle-original-ExploreMascot-cap.png"
       alt="Atto standing full-length with a magnifying glass, ready to help find your SolHandle"
-      className="solhandle-mascot-blend absolute inset-0 block h-full w-full -scale-x-100"
+      className="solhandle-mascot-blend absolute inset-0 block h-full w-full"
       fittingType="fit"
     />
   </aside>;
