@@ -24,6 +24,6 @@ export default function BulkPreviewCart() {
     <p className="mt-2 text-xs text-muted-foreground">0.10 SOL per name is an example, not an official quote. Network and account costs are excluded.</p>
     <Button disabled={!items.length} onClick={() => setReview(true)} className="mt-4 h-11 w-full bg-gradient-to-r from-names-success via-names-accent to-names-secondary font-semibold text-background hover:opacity-90">Review preview order</Button>
     {!!items.length && <button type="button" onClick={() => { setItems([]); setError(''); }} className="mt-3 w-full text-sm text-muted-foreground hover:text-names-accent">Clear cart</button>}
-    <p className="mt-4 text-xs text-muted-foreground">Local preview only. No wallet connection, payments, metadata uploads or saved records. Closing the preview discards the cart.</p>
+    <p className="mt-4 text-xs text-muted-foreground">Local preview only. No wallet connection, payments, metadata uploads or saved records. Leaving this preview discards the cart.</p>
   </div>;
 }

@@ -11,9 +11,9 @@ export default function Search() {
     <div className="mx-auto max-w-4xl px-5 py-8 sm:px-9 sm:py-12">
       <Link to="/" className="text-sm text-names-accent">← Back to home</Link>
       <h1 className="mt-5 text-3xl font-semibold sm:text-5xl">Find your SolHandle</h1>
-      <p className="mt-3 text-sm text-muted-foreground">Claim one name with the existing mainnet flow below. Local single and bulk minting have their own test-wallet checkout further down.</p>
+      <p className="mt-3 text-sm text-muted-foreground">Claim one name with the existing mainnet flow below. Explore the separate bulk-mint sandbox further down; real local minting is available when running the website locally.</p>
       <div className="mt-7"><HandleSearch wallet={wallet}/></div>
-      {import.meta.env.DEV && <LocalBulkMint/>}
+      <LocalBulkMint/>
     </div>
   </div></main>;
 }
