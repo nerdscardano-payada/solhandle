@@ -1,0 +1,20 @@
+import { useWallet } from '@solana/wallet-adapter-react';
+import { ShoppingCart, Plus, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import useLocalBulkCart from '@/components/solhandle/bulk-local/useLocalBulkCart';
+import { sol } from '@/components/solhandle/bulk-local/localRpc';
+export default function LocalBulkCart({ checkout }) {
+  const cart = useLocalBulkCart(), { publicKey } = useWallet(); const disabled = cart.busy || checkout.busy;
+  return <div className="mt-5 border-t border-border pt-5">
+    <h3 className="flex items-center gap-2 text-xl font-semibold"><ShoppingCart className="h-5 w-5 text-names-accent"/>Your local handle cart <span className="ml-auto text-sm text-names-secondary">{cart.items.length}/10</span></h3>
+    <p className="mt-2 text-sm text-muted-foreground">Add 1–10 names. Availability and prices come directly from your local validator; nothing is reserved until confirmed.</p>
+    <form onSubmit={cart.add} className="mt-4 flex flex-wrap gap-2"><label className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-names-accent/30 px-3"><span className="text-names-accent">@</span><Input aria-label="Local handle to mint" placeholder="ansem" value={cart.input} disabled={disabled} onChange={event => cart.setInput(event.target.value)} className="h-11 min-w-0 border-0 px-0 shadow-none focus-visible:ring-0"/></label><Button type="submit" disabled={disabled || cart.items.length >= 10} className="h-11 bg-names-accent text-background hover:bg-names-accent/90"><Plus className="h-4 w-4"/>{cart.busy ? 'Checking…' : 'Add to cart'}</Button></form>
+    {(cart.error || checkout.error) && <p role="alert" className="mt-3 break-words text-sm text-names-warning">{cart.error || checkout.error}</p>}
+    {!cart.items.length ? <p className="my-6 rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">Your cart is empty. Add a local test name to get started.</p> : <ul className="mt-4 space-y-2">{cart.items.map(item => <li key={item.handle} className="flex items-center gap-3 rounded-lg border border-border p-3"><span className="min-w-0 flex-1 break-all font-semibold">@{item.handle}<span className={item.available ? 'block text-xs font-normal text-names-success' : 'block text-xs font-normal text-names-warning'}>{item.status}</span></span><span className="shrink-0 text-sm text-names-accent">{sol(item.priceLamports)} SOL</span><button disabled={disabled} type="button" aria-label={`Remove @${item.handle}`} onClick={() => cart.remove(item.handle)} className="rounded p-2 text-muted-foreground hover:text-names-warning"><Trash2 className="h-4 w-4"/></button></li>)}</ul>}
+    <div className="mt-4 flex justify-between text-sm"><span>Local mint subtotal</span><strong>{sol(cart.items.reduce((sum, item) => sum + item.priceLamports, 0))} test SOL</strong></div>
+    <p className="mt-2 text-xs text-muted-foreground">Review includes estimated network fees and NFT account costs. Batches adapt to actual serialized size and local preflight results, with at most two names per approval.</p>
+    <Button disabled={disabled || !publicKey || !cart.items.length || cart.items.some(item => !item.available)} onClick={() => checkout.review(cart.items.map(item => item.handle))} className="mt-4 h-11 w-full bg-gradient-to-r from-names-success via-names-accent to-names-secondary text-background">{checkout.busy ? 'Checking prices, balance and transactions…' : 'Review local mint order'}</Button>
+    {!!cart.items.length && <div className="mt-3 flex gap-3"><Button variant="outline" disabled={disabled} onClick={cart.refresh}>Refresh availability</Button><Button variant="ghost" disabled={disabled} onClick={cart.clear}>Clear cart</Button></div>}
+  </div>;
+}

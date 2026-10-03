@@ -1,0 +1,26 @@
+import { Check, Layers } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { pda } from '@/components/solhandle/bulk-local/localCodec';
+import { sol, LOCAL_RPC } from '@/components/solhandle/bulk-local/localRpc';
+export default function LocalBulkCheckout({ checkout }) {
+  const { order, busy, error, walletMatches } = checkout;
+  const pending = order.batches.find(batch => batch.status === 'pending'), next = order.batches.findIndex(batch => batch.status !== 'confirmed'), complete = next < 0;
+  const count = order.batches.reduce((sum, batch) => sum + batch.items.length, 0), confirmed = order.batches.reduce((sum, batch) => sum + (batch.status === 'confirmed' ? batch.items.length : 0), 0);
+  return <div className="mt-5 border-t border-border pt-5" aria-live="polite">
+    <h3 className="text-2xl font-semibold">{complete ? 'Local mint order complete' : 'Review your local mint order'}</h3>
+    <p className="mt-2 text-sm text-muted-foreground">{confirmed}/{count} NFTs confirmed · {order.batches.length} transactions · local validator only.</p>
+    <div className="mt-4 rounded-xl border border-names-accent/30 p-4"><div className="flex justify-between gap-3 text-sm"><span>Estimated total including fees and accounts</span><strong className="text-names-accent">{sol(order.estimatedDebit)} test SOL</strong></div><p className="mt-2 break-all text-xs text-muted-foreground">Order wallet: {order.wallet}<br/>Ledger: {order.genesis}</p></div>
+    <ol className="mt-4 space-y-3">{order.batches.map((batch, index) => <li key={index} className="rounded-xl border border-border p-4">
+      <div className="flex justify-between gap-2"><span className="flex items-center gap-2 text-sm font-semibold">{batch.status === 'confirmed' ? <Check className="h-4 w-4 text-names-success"/> : <Layers className="h-4 w-4 text-names-secondary"/>}Batch {index + 1}</span><span className="text-xs capitalize text-names-accent">{batch.status}</span></div>
+      <ul className="mt-3 space-y-2 text-sm">{batch.items.map(item => <li key={item.handle}><strong>@{item.handle}</strong><span className="ml-2 text-muted-foreground">{sol(item.priceLamports)} SOL</span>{batch.status === 'confirmed' && <p className="mt-1 break-all text-xs text-names-success">Asset: {pda('asset', item.handle).toBase58()}<br/>Owner: {order.wallet}</p>}</li>)}</ul>
+      <p className="mt-3 text-xs text-muted-foreground">{batch.status === 'confirmed' ? `Actual debit: ${sol(batch.actualDebit)} SOL · transaction fee: ${sol(batch.actualFee)} SOL · slot ${batch.slot}` : `Estimated debit: ${sol(batch.estimatedDebit)} SOL · fee: ${sol(batch.fee)} SOL`}</p>
+      {batch.signature && <a className="mt-2 block break-all text-xs text-names-accent underline" href={`https://explorer.solana.com/tx/${batch.signature}?cluster=custom&customUrl=${encodeURIComponent(LOCAL_RPC)}`} target="_blank" rel="noreferrer">Local transaction: {batch.signature}</a>}
+      {batch.error && <p className="mt-2 break-words text-xs text-names-warning">{batch.error}</p>}
+    </li>)}</ol>
+    {error && <p role="alert" className="mt-4 break-words text-sm text-names-warning">{error}{pending && ' Your signed transaction is saved. Check its status before retrying.'}</p>}
+    {!walletMatches && !complete && <p className="mt-4 text-sm text-names-warning">Connect the order wallet in this local panel to approve the next transaction.</p>}
+    {pending ? <><Button disabled={busy} onClick={checkout.check} className="mt-4 w-full bg-names-accent text-background hover:bg-names-accent/90">{busy ? 'Checking local transaction…' : 'Check saved transaction'}</Button><Button disabled={busy} variant="outline" onClick={checkout.rebroadcast} className="mt-3 w-full">Resend the same signed transaction</Button><Button disabled={busy} variant="ghost" onClick={checkout.discardResetLedger} className="mt-3 w-full">Discard only if the local ledger was reset</Button></> : complete ? <><p className="mt-4 text-sm text-names-success">All {count} NFTs were verified on your local chain with the correct wallet and official local collection. No mainnet SOL was spent.</p><Button disabled={busy} onClick={() => { if (checkout.reset()) localStorage.removeItem('solhandle-local-bulk-cart-v1'); }} className="mt-4 w-full bg-names-accent text-background hover:bg-names-accent/90">Start another local order</Button></> : <Button disabled={busy || !walletMatches} onClick={checkout.mintNext} className="mt-4 h-11 w-full bg-gradient-to-r from-names-success via-names-accent to-names-secondary text-background">{busy ? 'Preparing, approving or submitting…' : `Approve local mint · batch ${next + 1} of ${order.batches.length}`}</Button>}
+    {!pending && !complete && <Button disabled={busy} variant="outline" onClick={checkout.reset} className="mt-3 w-full">Back to cart · keep confirmed NFTs</Button>}
+    <p className="mt-4 text-xs leading-relaxed text-muted-foreground">Each batch is atomic; the complete order is not. Earlier confirmed NFTs stay minted if you reject a later approval. Pending signatures are saved locally for recovery after a reload.</p>
+  </div>;
+}
