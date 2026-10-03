@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import Home from '@/pages/Home';
 import Search from '@/pages/Search';
+import MintWeekend from '@/pages/MintWeekend';
 import MyHandles from '@/pages/MyHandles';
 import Docs from '@/pages/Docs';
 import Legal from '@/pages/Legal';
@@ -88,6 +89,7 @@ const AuthenticatedApp = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/mint-weekend" element={<MintWeekend />} />
         <Route path="/my-handles" element={<MyHandles />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />

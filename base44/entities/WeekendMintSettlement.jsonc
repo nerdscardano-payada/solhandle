@@ -1,0 +1,60 @@
+{
+  "name": "WeekendMintSettlement",
+  "type": "object",
+  "properties": {
+    "campaign": {
+      "type": "string"
+    },
+    "key": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "reward",
+        "burn25",
+        "burn50"
+      ]
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "tokens": {
+      "type": "number"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "campaign",
+    "key",
+    "kind",
+    "recipient",
+    "tokens",
+    "signature",
+    "confirmed_at"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

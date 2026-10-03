@@ -8,7 +8,7 @@ const groups = [
   ["Discover", [["Premium Directory", "/directory"], ["Handle Wheel", "/fun"]]],
   ["Growth", [["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
   ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Partner Mint Plan", "/developers/partner-mint"], ["Documentation", "/docs"]]],
-  ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
+  ["More", [["Mint Weekend", "/mint-weekend"], ["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
 ];
 
 export default function MobileNavigation({ onNavigate, tokenIsLive }) {

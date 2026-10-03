@@ -1,0 +1,6 @@
+export default function WeekendMilestones({ data }) {
+  return <section className="grid gap-4 sm:grid-cols-2">{[{ kind: 'burn25', target: 25, amount: '1,000,000' }, { kind: 'burn50', target: 50, amount: '1,500,000' }].map(m => {
+    const proof = data.settlements.find(s => s.kind === m.kind), reached = data.mintCount >= m.target;
+    return <div key={m.kind} className="rounded-2xl border border-border bg-card p-5"><h2 className="text-lg font-semibold">{m.target} weekend mints → {m.amount} $HANDLE burn</h2><p className="mt-2 text-muted-foreground">{Math.min(data.mintCount, m.target)} / {m.target} verified mints</p><progress className="mt-3 h-2 w-full accent-current text-names-secondary" max={m.target} value={Math.min(data.mintCount,m.target)}/>{proof ? <a className="mt-3 block text-names-success" target="_blank" rel="noreferrer" href={`https://explorer.solana.com/tx/${proof.signature}`}>Burn finalized on-chain ↗</a> : <p className="mt-3 text-sm text-muted-foreground">{reached ? 'Milestone reached; burn awaits wallet approval after final verification.' : 'Milestone not reached yet.'}</p>}</div>;
+  })}</section>;
+}

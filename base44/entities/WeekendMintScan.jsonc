@@ -1,0 +1,57 @@
+{
+  "name": "WeekendMintScan",
+  "type": "object",
+  "properties": {
+    "campaign": {
+      "type": "string"
+    },
+    "before": {
+      "type": "string"
+    },
+    "head": {
+      "type": "string"
+    },
+    "previous_head": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "finalized_through": {
+      "type": "string"
+    },
+    "checked_at": {
+      "type": "string"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "final": {
+      "type": "boolean"
+    },
+    "error": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

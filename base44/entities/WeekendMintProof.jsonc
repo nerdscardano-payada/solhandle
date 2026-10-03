@@ -1,0 +1,67 @@
+{
+  "name": "WeekendMintProof",
+  "type": "object",
+  "properties": {
+    "campaign": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "asset": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "slot": {
+      "type": "number"
+    },
+    "transaction_index": {
+      "type": "integer"
+    },
+    "event_index": {
+      "type": "integer"
+    },
+    "order": {
+      "type": "number"
+    },
+    "minted_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "campaign",
+    "wallet",
+    "handle",
+    "asset",
+    "signature",
+    "slot",
+    "transaction_index",
+    "event_index",
+    "order",
+    "minted_at"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
