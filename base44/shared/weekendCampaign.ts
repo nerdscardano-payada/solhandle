@@ -1,7 +1,7 @@
 export const CAMPAIGN = 'mint-weekend-2026-10-03';
-// Agreed period: Saturday 00:00 to Monday 00:00, Europe/Berlin (UTC+2).
+// Extended by 24 hours: Saturday 00:00 to Tuesday 00:00, Europe/Berlin (UTC+2).
 export const START = '2026-10-02T22:00:00.000Z';
-export const END = '2026-10-04T22:00:00.000Z';
+export const END = '2026-10-05T22:00:00.000Z';
 export const campaignQuery = { campaign: CAMPAIGN };
 export async function weekendSnapshot(client) {
   const [scan, totals, leaders, settlements] = await Promise.all([
