@@ -1,0 +1,14 @@
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+export default function TokenDemoRegistration({ state, dispatch }) {
+  const [confirmed, setConfirmed] = useState(false);
+  return <div className="space-y-4">
+    <h3 className="text-xl font-semibold">5. Balance payment & registration</h3>
+    <p className="text-sm text-names-success">Both fictional reviewer roles approved. Real Mainnet registration is still disabled.</p>
+    <dl className="space-y-2 rounded-xl border border-border p-4 text-sm">{[['Binding', `$${state.token.symbol} ↔ ${state.token.id}`], ['Claimant', state.wallet], ['Total service price', `${state.token.price} SOL`], ['Deposit credit', '−0.25 SOL'], ['Remaining balance', `${state.token.price - 0.25} SOL`], ['Payment recipient', 'Not configured; demonstration only'], ['Network fees / account costs', 'Not charged or estimated in demo'], ['Registration', 'Non-transferable registry binding, not an NFT or a tradable asset'], ['Status', `SIMULATED ${state.registration.toUpperCase()}`]].map(([label, value]) => <div key={label}><dt className="text-muted-foreground">{label}</dt><dd className="break-all">{value}</dd></div>)}</dl>
+    {['none', 'expired'].includes(state.registration) && <><p className="text-sm text-muted-foreground">{state.registration === 'expired' ? 'Recover the existing simulated payment and prepare registration again. The balance will not be charged twice.' : 'First simulate fresh evidence, approval validity and unique forward/reverse binding checks.'}</p><Button onClick={() => { setConfirmed(false); dispatch({ type: 'prepare' }); }}>Simulate checks & prepare registration</Button></>}
+    {state.registration === 'prepared' && <><label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} className="mt-1"/><span>I confirm this exact sample binding and the {state.balancePaid ? 'previously simulated balance payment; no additional debit' : `${state.token.price - 0.25} SOL simulated balance payment`}. No real transaction will be signed or submitted.</span></label><Button disabled={!confirmed} onClick={() => dispatch({ type: 'submit' })}>Simulate {state.balancePaid ? 'resubmission' : 'balance payment & submission'}</Button></>}
+    {state.registration === 'pending' && <><p className="text-sm text-names-warning">Pending is not verified. No blockchain signature exists; these controls simulate the settlement outcome.</p><div className="flex flex-wrap gap-3"><Button onClick={() => dispatch({ type: 'finalize' })}>Simulate finalized registration</Button><Button variant="outline" onClick={() => dispatch({ type: 'transaction-expired' })}>Simulate registration expiry</Button></div></>}
+  </div>;
+}

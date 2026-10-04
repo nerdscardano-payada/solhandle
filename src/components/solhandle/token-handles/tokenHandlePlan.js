@@ -180,7 +180,11 @@ The registration price covers verification and, only after approval, on-chain re
 
 **The 0.25 SOL application deposit is non-refundable.** An application or payment does not guarantee approval, reserve ticker priority or establish project ownership. Every applicant must satisfy the same token-control, project-identity and independent dual-review requirements.
 
-Before accepting payments, publish when each amount is charged, whether the deposit is credited toward the registration price, fee recipients and the treatment of rejected or expired applications. Network fees and account costs must be disclosed separately before wallet approval. No deposit-credit policy is implied by this pricing table.
+**The deposit is credited toward the total service price.** For a standard handle, pay 0.25 SOL with the application and the remaining 2.75 SOL only after approval. For a short handle, pay 0.25 SOL with the application and the remaining 14.75 SOL only after approval. The total is 3 SOL or 15 SOL, not an additional deposit on top.
+
+Rejected or expired applications do not incur the remaining balance; the application deposit stays non-refundable. Before accepting real payments, finalize fee recipients, verified settlement, registration failure/recovery and any refund policy for a registration that cannot complete. Network fees and account costs must be disclosed separately before wallet approval.
+
+An interactive demonstration on this page simulates this flow using fictional tokens and reviewers. It requests no wallet signatures, moves no SOL and creates no registry entries.
 
 Keep verificationFee and registrationFee configurable and separate from eligibility. Verification does not guarantee token safety, liquidity, exchange listings or investment returns.
 
@@ -202,7 +206,7 @@ Keep verificationFee and registrationFee configurable and separate from eligibil
 No Mainnet issuance before independent audit, remediation and explicit approval. Program builds and deployment require the Solana development environment; publishing this plan does not deploy the registry.` },
   { id: 'release', title: '19. Release boundaries and open decisions', body: `This page publishes the proposal only. It does not activate detection, wallet challenges, claims, verification badges, token APIs or registry transactions. Existing site styling, @ handles, marketplace and Partner Mint behavior remain unchanged.
 
-Before implementation, finalize reviewer identities and independence, verifier threshold/custody, conflict and appeal criteria, review response targets, recovery objection period, protection provenance, storage atomicity, RPC agreement/freshness policy, monitoring cadence and payment timing/deposit-credit policy.
+Before implementation, finalize reviewer identities and independence, verifier threshold/custody, conflict and appeal criteria, review response targets, recovery objection period, protection provenance, storage atomicity, RPC agreement/freshness policy, monitoring cadence, fee recipients and registration settlement/failure policy. The application deposit is credited toward the total service price; no real payments are enabled.
 
 Partner Mint and Token Handles require separate security acceptance. Do not bundle their deployment solely for convenience; each change needs isolated review, regressions and explicit release approval.
 
