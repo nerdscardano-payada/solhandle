@@ -168,11 +168,23 @@ Periodically inspect name, symbol, relevant authorities and metadata URI. A chan
 Legitimate rebranding requires an atomic, reviewed transition preserving history, retiring the old symbol and maintaining one active primary handle per mint.
 
 Revocation after successful verification does not automatically revoke the existing binding. Record the change and evaluate whether it affects the verified identity. Disputes may suspend resolution until reviewed.` },
-  { id: 'fees', title: '17. Fees independent of identity', body: `Keep verificationFee and registrationFee configurable and separate from eligibility. Fees do not buy approval, ticker priority or ownership legitimacy.
+  { id: 'fees', title: '17. Pricing and application deposit', body: `**Finalized pricing for the planned service. Payments are not enabled.**
 
-Define recipients, caps, refund policy and when a fee is charged before enabling payments. Any registration payment must be explicit in the approved transaction. Possible future policies include free verified-project registration or a stated SOL fee; $HANDLE payments require separate review.
+| Service | Price | Scope |
+| --- | --- | --- |
+| Standard token handle | 3 SOL | Normalized symbols of 4–10 characters |
+| Short token handle | 15 SOL | Normalized symbols of 1–3 characters, excluding the $ prefix |
+| Application deposit | 0.25 SOL | Non-refundable application deposit |
 
-This plan sets no live fee and changes no existing payment or Partner Mint flow.` },
+The registration price covers verification and, only after approval, on-chain registration of a non-transferable symbol-to-mint binding, with planned resolution and a badge in SolHandle products. You pay for identity verification, not a tradable asset.
+
+**The 0.25 SOL application deposit is non-refundable.** An application or payment does not guarantee approval, reserve ticker priority or establish project ownership. Every applicant must satisfy the same token-control, project-identity and independent dual-review requirements.
+
+Before accepting payments, publish when each amount is charged, whether the deposit is credited toward the registration price, fee recipients and the treatment of rejected or expired applications. Network fees and account costs must be disclosed separately before wallet approval. No deposit-credit policy is implied by this pricing table.
+
+Keep verificationFee and registrationFee configurable and separate from eligibility. Verification does not guarantee token safety, liquidity, exchange listings or investment returns.
+
+**Claims, applications, deposits and registration remain disabled until the independent Mainnet audit, remediation and explicit launch approval.** Publishing these prices changes no existing @ handle payment or Partner Mint flow.` },
   { id: 'phases', title: '18. Delivery phases and definitions of done', body: `**Phase 1: Detection, no claims.** Enter a mint; validate SPL/Token-2022; display metadata, program, authorities and normalized candidate; report protected/registry availability without promising entitlement. Done when supported mints and invalid/missing metadata cases are handled reliably.
 
 **Phase 2: Evidence and review.** Wallet challenges, signature verification, authority adapters, protection/conflict checks, private evidence and two-reviewer approval. Done when repeatable evidence-backed outcomes are AUTHORITY_PROVEN, MANUAL_REVIEW or REJECTED, with no registration enabled.
@@ -190,7 +202,7 @@ This plan sets no live fee and changes no existing payment or Partner Mint flow.
 No Mainnet issuance before independent audit, remediation and explicit approval. Program builds and deployment require the Solana development environment; publishing this plan does not deploy the registry.` },
   { id: 'release', title: '19. Release boundaries and open decisions', body: `This page publishes the proposal only. It does not activate detection, wallet challenges, claims, verification badges, token APIs or registry transactions. Existing site styling, @ handles, marketplace and Partner Mint behavior remain unchanged.
 
-Before implementation, finalize reviewer identities and independence, verifier threshold/custody, conflict and appeal criteria, review response targets, recovery objection period, protection provenance, storage atomicity, RPC agreement/freshness policy, monitoring cadence and fees.
+Before implementation, finalize reviewer identities and independence, verifier threshold/custody, conflict and appeal criteria, review response targets, recovery objection period, protection provenance, storage atomicity, RPC agreement/freshness policy, monitoring cadence and payment timing/deposit-credit policy.
 
 Partner Mint and Token Handles require separate security acceptance. Do not bundle their deployment solely for convenience; each change needs isolated review, regressions and explicit release approval.
 

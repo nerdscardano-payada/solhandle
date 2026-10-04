@@ -2,11 +2,13 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function BrandProtectionBanner() {
-  return <section className="relative overflow-hidden rounded-2xl border border-cyan-300/25 bg-gradient-to-r from-cyan-950/40 via-slate-950 to-violet-950/40 p-5 shadow-xl shadow-black/20">
-    <div className="absolute -right-12 top-0 h-full w-40 bg-violet-500/10 blur-3xl"/>
-    <div className="relative flex h-full flex-col justify-between gap-5 sm:flex-row sm:items-center">
-      <div className="flex min-w-0 items-start gap-4"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-300/30 bg-cyan-300/10"><ShieldCheck className="h-6 w-6 text-emerald-300"/></div><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200">Fair brand protection</p><h2 className="mt-1 text-lg font-semibold text-white">Reserved names for verified organizations.</h2><p className="mt-1 text-sm text-slate-400">Protected from impersonation and available after verification.</p></div></div>
-      <Link to="/protected-brands" className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-cyan-200">View directory <ArrowRight className="h-4 w-4"/></Link>
+  return <section className="dark relative overflow-hidden rounded-2xl border border-names-accent/25 bg-gradient-to-br from-names-accent/10 via-background to-names-secondary/10 p-5 text-foreground">
+    <div className="flex items-center gap-3"><ShieldCheck className="h-5 w-5 text-names-accent"/><p className="text-xs font-semibold uppercase tracking-widest text-names-accent">Identity protection</p></div>
+    <h2 className="mt-3 font-heading text-xl font-semibold">Protect your name. Verify your token.</h2>
+    <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="min-w-0"><p className="font-mono text-2xl font-semibold text-names-accent">@name</p><h3 className="mt-2 text-sm font-semibold">Brand protection</h3><p className="mt-2 text-sm text-muted-foreground">Reserved names for verified organizations, protected from impersonation.</p><Link to="/protected-brands" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-names-accent">View directory <ArrowRight className="h-4 w-4 shrink-0"/></Link></div>
+      <div className="min-w-0 border-l border-names-secondary/20 pl-4"><p className="font-mono text-2xl font-semibold text-names-secondary">$SYMBOL</p><h3 className="mt-2 text-sm font-semibold">Token verification</h3><p className="mt-2 text-sm text-muted-foreground">Planned: one verified ticker bound to one exact Solana mint.</p><Link to="/developers/token-handles" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-names-secondary">Token Handles <ArrowRight className="h-4 w-4 shrink-0"/></Link></div>
     </div>
+    <p className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">Token Handles are not live. Applications and registration remain disabled pending an independent Mainnet audit and launch approval.</p>
   </section>;
 }

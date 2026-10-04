@@ -6,6 +6,7 @@ import TokenAllocation from "@/components/solhandle/TokenAllocation";
 import TokenUtilityPreview from "@/components/solhandle/TokenUtilityPreview";
 import TokenTradingMascot from "@/components/solhandle/TokenTradingMascot";
 import useTokenLaunchSettings from "@/hooks/useTokenLaunchSettings";
+import TokenHandleLaunchCta from '@/components/solhandle/token-handles/TokenHandleLaunchCta';
 
 export default function TokenLaunchPreview() {
   const { tokenMint } = useTokenLaunchSettings();
@@ -18,6 +19,7 @@ export default function TokenLaunchPreview() {
       </div>
       <TokenTradingDashboard />
       <TokenAllocation tokenMint={tokenMint} />
+      <TokenHandleLaunchCta />
       <div className="mt-12 hidden sm:block"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">Confirmed $HANDLE utility</p><div className="mt-2 flex flex-wrap items-end justify-between gap-4"><div><h2 className="text-2xl font-semibold">Earn Network tiers from day one</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">Hold $HANDLE to qualify for a larger share of the revenue generated through your permanent referral network.</p></div><Link to="/earn" className="rounded-xl bg-gradient-to-r from-violet-400 to-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950">Explore Earn Network</Link></div><div className="mt-5"><TokenUtilityPreview /></div></div>
       <p className="mt-8 break-words text-xs leading-relaxed text-slate-500 sm:text-sm">{tokenMint ? `Official $HANDLE CA: ${tokenMint}. Always verify this address before trading.` : "The official token mint will be published here before trading is enabled."}<span className="hidden sm:inline"> Earn Network percentages apply only to verified, eligible revenue and remain subject to the published program terms.</span></p>
     </div>
