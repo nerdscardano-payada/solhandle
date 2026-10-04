@@ -7,7 +7,7 @@ const groups = [
   ["Utility", [["Earn", "/earn"], ["Pay", "/pay"], ["Integrations", "/live-integrations"]]],
   ["Discover", [["Premium Directory", "/directory"], ["Handle Wheel", "/fun"]]],
   ["Growth", [["Mint Weekend", "/mint-weekend"], ["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
-  ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Partner Mint Plan", "/developers/partner-mint"], ["Documentation", "/docs"]]],
+  ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["Partner Mint Plan", "/developers/partner-mint"], ["Token Handles Plan", "/developers/token-handles"], ["Documentation", "/docs"]]],
   ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
 ];
 
