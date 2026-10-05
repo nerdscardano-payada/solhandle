@@ -9,12 +9,13 @@ export default async function(req: Request): Promise<Response> {
     const body = await req.json().catch(() => ({}));
     const code = String(body.code || "").trim().replace(/^@+/, "").toLowerCase();
     const sessionId = String(body.browser_session_id || "").trim();
-    if (!/^[a-z0-9-]{1,40}$/.test(code) || reserved.has(code) || !/^[a-f0-9-]{16,64}$/i.test(sessionId)) return Response.json({ valid: false }, { status: 400 });
+    if (!/^[a-z0-9-]{1,40}$/.test(code) || reserved.has(code) || (body.action !== 'validate' && !/^[a-f0-9-]{16,64}$/i.test(sessionId))) return Response.json({ valid: false }, { status: 400 });
     const settings = await getReferralSettings(base44);
     if (!settings?.referral_enabled) return Response.json({ enabled: false, valid: false });
     const profiles = await base44.asServiceRole.entities.ReferralProfile.filter({ referral_code: code }, "-created_date", 1);
     const profile = profiles[0];
     if (!profile || profile.status !== "ACTIVE") return Response.json({ enabled: true, valid: false });
+    if (body.action === 'validate') return Response.json({ enabled: true, valid: true, referralCode: profile.referral_code });
     const now = new Date();
     const expiresAt = new Date(now.getTime() + settings.cookie_duration_days * 86400000).toISOString();
     const existing = await base44.asServiceRole.entities.ReferralAttribution.filter({ browser_session_id: sessionId }, "-updated_date", 1);

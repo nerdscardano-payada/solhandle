@@ -1,0 +1,7 @@
+import { widgetOrigin } from '@/components/solhandle/widgets/widgetOptions';
+import ResolveCodeBlock from '@/components/solhandle/resolve/ResolveCodeBlock';
+export default function ReferralWidgetEmbed({ code }) {
+  const url = `${widgetOrigin}/widgets/search?${new URLSearchParams({ ref: code })}`;
+  const snippet = `<iframe\n  src="${url}"\n  title="SolHandle Search & Claim"\n  width="100%" height="620"\n  style="border:0; border-radius:16px; max-width:480px;"\n  loading="lazy"\n  referrerpolicy="strict-origin-when-cross-origin"\n></iframe>`;
+  return <details className="dark mt-5 rounded-xl border border-names-secondary/30 bg-background p-4 text-foreground"><summary className="cursor-pointer font-semibold text-names-secondary">Earn with Search & Claim on your website</summary><p className="mt-3 text-sm leading-6 text-muted-foreground">Paste this embed into your website’s HTML block. Your referral code travels with visitors when they continue to claim on SolHandle. Eligible confirmed SOL mints appear in this dashboard under the existing Earn Network rules.</p><ResolveCodeBlock code={snippet} language="Your affiliate widget · HTML"/><p className="mt-3 text-xs leading-6 text-muted-foreground">No commission for searches, self-referrals or $HANDLE-paid mints. Existing tiers, origin attribution and payout restrictions apply. Your website and SolHandle must permit iframe embedding.</p></details>;
+}

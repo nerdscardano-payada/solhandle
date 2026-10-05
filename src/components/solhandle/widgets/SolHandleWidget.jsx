@@ -3,7 +3,7 @@ import { LoaderCircle } from 'lucide-react';
 import { widgetOptions, widgetOrigin } from '@/components/solhandle/widgets/widgetOptions';
 import useWidgetLookup from '@/components/solhandle/widgets/useWidgetLookup';
 import WidgetResult from '@/components/solhandle/widgets/WidgetResult';
-export default function SolHandleWidget({ type = 'search', wallet = '' }) {
+export default function SolHandleWidget({ type = 'search', wallet = '', referralCode = '' }) {
   const option = widgetOptions.find(item => item.id === type) || widgetOptions[0];
   const lookup = useWidgetLookup(option.id, wallet);
   const inputId = useId();
@@ -18,7 +18,7 @@ export default function SolHandleWidget({ type = 'search', wallet = '' }) {
     </form>}
     {option.id === 'identity' && wallet && <button type="button" onClick={() => lookup.lookup(wallet)} disabled={lookup.loading} className="mt-4 text-sm text-names-accent disabled:opacity-50">{lookup.loading ? 'Checking on Solana…' : 'Refresh identity'}</button>}
     {lookup.error && <p role="alert" className="mt-3 text-sm text-names-warning">{lookup.error}</p>}
-    {lookup.result && <WidgetResult key={JSON.stringify(lookup.result)} type={option.id} result={lookup.result}/>}
+    {lookup.result && <WidgetResult key={JSON.stringify(lookup.result)} type={option.id} result={lookup.result} referralCode={referralCode}/>}
     {option.id === 'lookup' && <p className="mt-4 text-xs leading-5 text-muted-foreground">Lookup only. No payment is sent. Resolve again before any use of the address.</p>}
     <a href={widgetOrigin} target="_blank" rel="noopener noreferrer" className="mt-5 block border-t border-border pt-3 text-xs text-muted-foreground">Powered by SolHandle ↗</a>
   </section>;

@@ -4,6 +4,7 @@ import Header from '@/components/solhandle/Header';
 import HandleSearch from '@/components/solhandle/HandleSearch';
 import SearchAtto from '@/components/solhandle/SearchAtto';
 import PublicHandleMintRecovery from '@/components/solhandle/PublicHandleMintRecovery';
+import ReferralLandingGate from '@/components/solhandle/ReferralLandingGate';
 export default function Search() {
   const [wallet, setWallet] = useState(() => localStorage.getItem('solhandle_wallet') || '');
   return <main className="dark min-h-screen bg-background text-foreground"><div className="mx-auto min-h-screen max-w-7xl border-x border-border">
@@ -12,10 +13,10 @@ export default function Search() {
       <Link to="/" className="text-sm text-names-accent">← Back to home</Link>
       <h1 className="mt-5 text-3xl font-semibold sm:text-5xl">Find your SolHandle</h1>
       <p className="mt-3 text-sm text-muted-foreground">Search, claim, and own your unique NFT-backed identity on Solana.</p>
-      <div className="mt-7 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+      <ReferralLandingGate><div className="mt-7 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
         <SearchAtto/>
         <div className="min-w-0"><HandleSearch wallet={wallet}/></div>
-      </div>
+      </div></ReferralLandingGate>
     </div>
   </div></main>;
 }
