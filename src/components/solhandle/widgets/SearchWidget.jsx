@@ -10,7 +10,7 @@ export default function SearchWidget({ lookup, inputId, referralCode, showClaime
     <section aria-label="SolHandle Search & Claim widget" className="relative overflow-hidden rounded-2xl border border-names-accent/60 bg-background p-5 shadow-xl shadow-names-accent/15">
       <MintBackground/>
       <div className="relative z-10">
-        <a href={widgetOrigin} target="_blank" rel="noopener noreferrer" aria-label="Visit SolHandle" className="mb-5 flex w-fit items-center gap-3 text-foreground"><Image src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/d5ca25623_solhandlelogo2.png" alt="SolHandle logo" className="h-12 w-12 rounded-lg mix-blend-screen" fittingType="fit"/><span className="text-xl font-semibold tracking-tight">SolHandle.io</span></a>
+        <div className="mb-5 flex w-fit items-center gap-3 text-foreground"><Image src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/d5ca25623_solhandlelogo2.png" alt="SolHandle logo" className="h-12 w-12 rounded-lg mix-blend-screen" fittingType="fit"/><span className="text-xl font-semibold tracking-tight">SolHandle.io</span></div>
         <header className="mb-5 flex flex-wrap items-center justify-between gap-2"><h2 className="text-xl font-semibold tracking-tight">Find your SolHandle</h2><a href={`${widgetOrigin}/directory`} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-names-accent">Browse Premium Directory →</a></header>
         <form onSubmit={event => { event.preventDefault(); lookup.lookup(); }}>
           <label htmlFor={inputId} className="sr-only">Your @name</label>
