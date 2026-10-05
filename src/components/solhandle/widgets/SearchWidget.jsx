@@ -2,8 +2,9 @@ import { ArrowRight, LoaderCircle, Search } from 'lucide-react';
 
 import MintBackground from '@/components/solhandle/MintBackground';
 import WidgetResult from '@/components/solhandle/widgets/WidgetResult';
+import WidgetActivitySection from '@/components/solhandle/widgets/WidgetActivitySection';
 import { widgetOrigin } from '@/components/solhandle/widgets/widgetOptions';
-export default function SearchWidget({ lookup, inputId, referralCode }) {
+export default function SearchWidget({ lookup, inputId, referralCode, showClaimed = false, showMarket = false }) {
   return <div className="solhandle-search-widget relative w-full text-foreground">
     <section aria-label="SolHandle Search & Claim widget" className="relative overflow-hidden rounded-2xl border border-names-accent/60 bg-background p-5 shadow-xl shadow-names-accent/15">
       <MintBackground/>
@@ -22,6 +23,8 @@ export default function SearchWidget({ lookup, inputId, referralCode }) {
         {lookup.error && <p role="alert" className="mt-4 text-sm text-names-warning">{lookup.error}</p>}
         {lookup.result && <WidgetResult type="search" result={lookup.result} referralCode={referralCode}/>}
         <p className="mt-5 text-center text-xs leading-5 text-muted-foreground">One-time payment. No renewals. Yours until you transfer it.</p>
+        {showClaimed && <WidgetActivitySection/>}
+        {showMarket && <WidgetActivitySection market/>}
         <a href={widgetOrigin} target="_blank" rel="noopener noreferrer" className="mt-4 block text-center text-xs text-muted-foreground">Powered by SolHandle ↗</a>
       </div>
     </section>

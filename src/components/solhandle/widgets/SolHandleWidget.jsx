@@ -4,11 +4,11 @@ import { widgetOptions, widgetOrigin } from '@/components/solhandle/widgets/widg
 import useWidgetLookup from '@/components/solhandle/widgets/useWidgetLookup';
 import WidgetResult from '@/components/solhandle/widgets/WidgetResult';
 import SearchWidget from '@/components/solhandle/widgets/SearchWidget';
-export default function SolHandleWidget({ type = 'search', wallet = '', referralCode = '' }) {
+export default function SolHandleWidget({ type = 'search', wallet = '', referralCode = '', showClaimed = false, showMarket = false }) {
   const option = widgetOptions.find(item => item.id === type) || widgetOptions[0];
   const lookup = useWidgetLookup(option.id, wallet);
   const inputId = useId();
-  if (option.id === 'search') return <SearchWidget lookup={lookup} inputId={inputId} referralCode={referralCode}/>;
+  if (option.id === 'search') return <SearchWidget lookup={lookup} inputId={inputId} referralCode={referralCode} showClaimed={showClaimed} showMarket={showMarket}/>;
   return <section aria-label={`${option.title} widget`} className="w-full rounded-2xl border border-names-accent/30 bg-card p-5 text-card-foreground">
     <p className="text-xs font-semibold uppercase tracking-widest text-names-secondary">SolHandle · {option.title}</p>
     <h2 className="mt-3 text-2xl font-semibold tracking-tight">{option.heading}</h2>
