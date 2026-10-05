@@ -5,19 +5,20 @@ import SolHandleWidget from '@/components/solhandle/widgets/SolHandleWidget';
 import WidgetAffiliateSetup from '@/components/solhandle/widgets/WidgetAffiliateSetup';
 import WidgetExtrasOptions from '@/components/solhandle/widgets/WidgetExtrasOptions';
 import { widgetOptions, widgetOrigin } from '@/components/solhandle/widgets/widgetOptions';
+import createWidgetEmbed from '@/components/solhandle/widgets/createWidgetEmbed';
 export default function WidgetGallery() {
   const type = 'search';
   const [referralCode, setReferralCode] = useState('');
   const [showClaimed, setShowClaimed] = useState(false);
   const [showMarket, setShowMarket] = useState(false);
-  const embedHeight = 780 + (showClaimed ? 240 : 0) + (showMarket ? 240 : 0);
+  const embedHeight = 360 + (showClaimed ? 240 : 0) + (showMarket ? 240 : 0);
   const option = widgetOptions.find(item => item.id === type);
   const params = new URLSearchParams();
   if (referralCode) params.set('ref', referralCode);
   if (showClaimed) params.set('claimed', '1');
   if (showMarket) params.set('market', '1');
   const url = `${widgetOrigin}/widgets/${type}${params.size ? `?${params}` : ''}`;
-  const snippet = `<iframe\n  src="${url}"\n  title="SolHandle ${option.title}"\n  width="100%" height="${embedHeight}"\n  style="border:0; border-radius:16px; max-width:480px;"\n  loading="lazy"\n  referrerpolicy="strict-origin-when-cross-origin"\n></iframe>`;
+  const snippet = createWidgetEmbed(url, `SolHandle ${option.title}`, embedHeight);
   return <section id="widgets" className="mt-8">
 
     <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
@@ -27,7 +28,7 @@ export default function WidgetGallery() {
         <WidgetAffiliateSetup onVerified={setReferralCode} verifiedCode={referralCode}/>
         <ol className="mt-5 space-y-3 text-sm text-muted-foreground"><li><strong className="text-foreground">1. Copy</strong> the embed below.</li><li><strong className="text-foreground">2. Paste</strong> it into your website’s HTML/embed block.</li><li><strong className="text-foreground">3. Publish</strong> your page and try the widget.</li></ol>
         <ResolveCodeBlock code={snippet} language="HTML embed · no API key"/>
-        <p className="mt-4 text-xs leading-6 text-muted-foreground">Your website must allow iframe embeds. Claims continue on SolHandle. Add your Share & Earn referral code to link eligible mints to your account.</p>
+        <p className="mt-4 text-xs leading-6 text-muted-foreground">Copy the complete snippet, including the script, for automatic height adjustment. Your website must allow iframe embeds and scripts. Claims continue on SolHandle. Add your Share & Earn referral code to link eligible mints to your account.</p>
       </div>
     </div>
 

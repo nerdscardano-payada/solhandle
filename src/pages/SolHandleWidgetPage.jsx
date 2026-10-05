@@ -1,10 +1,12 @@
 import { useParams } from 'react-router-dom';
 import SolHandleWidget from '@/components/solhandle/widgets/SolHandleWidget';
 import { widgetOptions } from '@/components/solhandle/widgets/widgetOptions';
+import useWidgetAutoHeight from '@/components/solhandle/widgets/useWidgetAutoHeight';
 export default function SolHandleWidgetPage() {
   const { type } = useParams();
+  const heightRef = useWidgetAutoHeight();
   const urlParams = new URLSearchParams(window.location.search);
   const wallet = urlParams.get('wallet') || '';
   const referralCode = String(urlParams.get('ref') || '').trim().replace(/^@+/, '').toLowerCase();
-  return <main className="dark min-h-screen bg-background p-3 font-body text-foreground"><div className="mx-auto max-w-md">{widgetOptions.some(item => item.id === type) ? <SolHandleWidget type={type} showClaimed={urlParams.get('claimed') === '1'} showMarket={urlParams.get('market') === '1'} wallet={type === 'identity' ? wallet : ''} referralCode={type === 'search' && /^[a-z0-9-]{1,40}$/.test(referralCode) ? referralCode : ''}/> : <p role="alert" className="p-5 text-sm text-muted-foreground">Unknown SolHandle widget. Choose Search & Claim, @Name Lookup or Wallet Identity Card.</p>}</div></main>;
+  return <main ref={heightRef} className="dark bg-background p-3 font-body text-foreground"><div className="mx-auto max-w-md">{widgetOptions.some(item => item.id === type) ? <SolHandleWidget type={type} showClaimed={urlParams.get('claimed') === '1'} showMarket={urlParams.get('market') === '1'} wallet={type === 'identity' ? wallet : ''} referralCode={type === 'search' && /^[a-z0-9-]{1,40}$/.test(referralCode) ? referralCode : ''}/> : <p role="alert" className="p-5 text-sm text-muted-foreground">Unknown SolHandle widget. Choose Search & Claim, @Name Lookup or Wallet Identity Card.</p>}</div></main>;
 }
