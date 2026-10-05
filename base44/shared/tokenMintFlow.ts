@@ -4,6 +4,7 @@ import { rpc } from './solanaRpc.ts';
 import { HANDLE_MINT } from './handlePaymentStatus.ts';
 import { mintInstructions, program, fromBase64, toBase64, discriminator, equal } from './handleTokenTransactions.ts';
 import validateTokenConfiguration from './validateTokenConfiguration.ts';
+import { validateDefaultPrimary } from './defaultPrimary.ts';
 export const tokenMintBudget = () => ComputeBudgetProgram.setComputeUnitLimit({ units: 600000 });
 export async function previewTokenTransaction(rpcUrl, wallet, instructions, lookupTable = null) {
   const latest = await rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'finalized' }]);
@@ -36,7 +37,7 @@ export function readTokenMint(instruction) {
   if (!Number.isSafeInteger(solReferenceLamports) || solReferenceLamports < 1 || BigInt(totalRaw) < 2n) throw new Error('Invalid mint price.');
   return { handle, uri, solReferenceLamports, totalRaw, expiresAt };
 }
-export async function validateSignedTokenMint(tx, protocol, payment, tokenProgram, maxSolLamports = null) {
+export async function validateSignedTokenMint(tx, protocol, payment, tokenProgram, maxSolLamports = null, rpcUrl = null) {
   const index = tx.instructions.findIndex(ix => ix.programId.equals(program));
   const instruction = tx.instructions[index];
   if (!instruction || index < 1 || !equal(instruction.data.slice(0, 8), await discriminator('mint_handle_with_token'))) throw new Error('Missing token mint instruction.');
@@ -51,6 +52,12 @@ export async function validateSignedTokenMint(tx, protocol, payment, tokenProgra
   if (!payerToken) throw new Error('Missing payer token account.');
   const quote = { ...fields, signer: payment.quoteSigner, message, signature: toBase64(signature) };
   const instructions = await mintInstructions(new PublicKey(wallet), fields.handle, fields.uri, quote, protocol, payment, payerToken, tokenProgram);
+  const protocolInstructions = tx.instructions.filter(ix => ix.programId.equals(program));
+  if (protocolInstructions.length > 2) throw new Error('Unexpected additional protocol actions.');
+  if (protocolInstructions[1]) {
+    if (!rpcUrl) throw new Error('Default primary is unavailable in this mint flow.');
+    instructions.push(await validateDefaultPrimary(rpcUrl, protocolInstructions[1], wallet, fields.handle));
+  }
   validateTokenConfiguration(tx, instructions, new PublicKey(wallet));
   return { ...fields, wallet, payerToken: payerToken.toBase58(), treasuryToken: payment.treasuryToken };
 }

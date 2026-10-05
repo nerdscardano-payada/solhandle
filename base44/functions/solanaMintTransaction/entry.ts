@@ -2,6 +2,7 @@ import { createClientFromRequest } from "npm:@base44/sdk@0.8.44";
 import { ComputeBudgetProgram, PublicKey, SystemProgram, Transaction } from "npm:@solana/web3.js@1.98.4";
 import { secrets } from "base44:runtime";
 import { rpc } from "../../shared/solanaRpc.ts";
+import { needsDefaultPrimary, validateDefaultPrimary } from "../../shared/defaultPrimary.ts";
 import { getCachedProtocolConfig } from "../../shared/protocolConfigCache.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
 import { calculateHandlePrice, normalizeHandle } from "../../shared/handlePricing.ts";
@@ -54,7 +55,7 @@ export default async function(req: Request): Promise<Response> {
       const handle = normalizeHandle(body.handle);
       if (!/^[a-z0-9]{1,20}$/.test(handle)) return Response.json({ error: "Invalid handle." }, { status: 400 });
       const latest = await rpc(rpcUrl, "getLatestBlockhash", [{ commitment: "confirmed" }]);
-      return Response.json({ blockhash: latest.value.blockhash, lastValidBlockHeight: latest.value.lastValidBlockHeight });
+      return Response.json({ blockhash: latest.value.blockhash, lastValidBlockHeight: latest.value.lastValidBlockHeight, ...(body.wallet ? { initializePrimary: await needsDefaultPrimary(rpcUrl, new PublicKey(body.wallet)) } : {}) });
     }
 
     if (body.action === "prepare") {
@@ -89,6 +90,7 @@ export default async function(req: Request): Promise<Response> {
         finalPriceLamports: pricing.finalPriceLamports,
         premium: pricing.isPremium,
         mintIntentId: mintIntent?.id || "",
+        initializePrimary: await needsDefaultPrimary(rpcUrl, wallet),
         blockhash: latest.value.blockhash,
         lastValidBlockHeight: latest.value.lastValidBlockHeight
       });
@@ -134,7 +136,7 @@ export default async function(req: Request): Promise<Response> {
       const protocolInstructions = transaction.instructions.filter((instruction) => instruction.programId.equals(program));
       const systemInstructions = transaction.instructions.filter((instruction) => instruction.programId.equals(SystemProgram.programId));
       const unsupported = transaction.instructions.filter((instruction) => !instruction.programId.equals(program) && !instruction.programId.equals(SystemProgram.programId) && !instruction.programId.equals(ComputeBudgetProgram.programId) && !walletPrograms.has(instruction.programId.toBase58()));
-      if (protocolInstructions.length !== 1 || unsupported.length > 0) return Response.json({ error: "Only one SolHandle mint instruction with approved wallet verification is allowed." }, { status: 400 });
+      if (protocolInstructions.length < 1 || protocolInstructions.length > 2 || unsupported.length > 0) return Response.json({ error: "Only a SolHandle mint and its optional default primary instruction are allowed." }, { status: 400 });
 
       const instruction = protocolInstructions[0];
       const expectedDiscriminator = await instructionDiscriminator("mint_handle");
@@ -144,6 +146,7 @@ export default async function(req: Request): Promise<Response> {
 
       const mintData = parseMintData(instruction.data);
       if (!/^[a-z0-9]{1,20}$/.test(mintData.handle)) return Response.json({ error: "Invalid mint handle." }, { status: 400 });
+      if (protocolInstructions[1]) await validateDefaultPrimary(rpcUrl, protocolInstructions[1], transaction.feePayer, mintData.handle);
       const [protocol, premiumRows, rush] = await Promise.all([
         getCachedProtocolConfig(base44, rpcUrl),
         base44.asServiceRole.entities.PremiumHandle.filter({ handle: mintData.handle }, '-updated_date', 1),

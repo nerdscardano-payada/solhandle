@@ -11,6 +11,7 @@ import { previewTokenTransaction, validateSignedTokenMint } from '../../shared/t
 import indexTokenMint from '../../shared/indexTokenMint.ts';
 import { activeTokenLookup, lookupAddresses } from '../../shared/tokenPaymentLookup.ts';
 import decodeTokenTransaction from '../../shared/decodeTokenTransaction.ts';
+import { needsDefaultPrimary, defaultPrimaryInstruction } from '../../shared/defaultPrimary.ts';
 async function confirmation(base44, rpcUrl, signature, blockhash = null) {
   const status = (await rpc(rpcUrl, 'getSignatureStatuses', [[signature], { searchTransactionHistory: true }])).value?.[0];
   if (status?.err) return { signature, status: 'failed', error: `Transaction failed: ${JSON.stringify(status.err)}` };
@@ -58,12 +59,14 @@ export default async function(req: Request): Promise<Response> {
       const account = accounts.value?.find(row => row.account.owner === tokenProgram.toBase58() && row.account.data.parsed.info.owner === wallet.toBase58() && row.account.data.parsed.info.state === 'initialized' && BigInt(row.account.data.parsed.info.tokenAmount.amount) >= BigInt(quote.totalRaw));
       if (!account) throw new Error('Consolidate your $HANDLE into one spendable account first.');
       const instructions = await mintInstructions(wallet, handle, body.uri, quote, protocol, payment, account.pubkey, tokenProgram);
+      const initializePrimary = await needsDefaultPrimary(rpcUrl, wallet);
+      if (initializePrimary) instructions.push(await defaultPrimaryInstruction(wallet, handle));
       const transaction_base64 = await previewTokenTransaction(rpcUrl, wallet, instructions, lookupTable);
       return Response.json({ transaction_base64, transaction_version: lookupTable ? 0 : 'legacy', transaction_bytes: fromBase64(transaction_base64).length, lookup_table: lookupTable?.key.toBase58() || null, quote, asset: pda('asset', handle).toBase58(), network: 'mainnet-beta' });
     }
     if (typeof body.transaction_base64 !== 'string' || body.transaction_base64.length > 1700) throw new Error('Invalid signed transaction.');
     const tx = decodeTokenTransaction(fromBase64(body.transaction_base64), lookupTable);
-    const expected = await validateSignedTokenMint(tx, protocol, payment, tokenProgram);
+    const expected = await validateSignedTokenMint(tx, protocol, payment, tokenProgram, null, rpcUrl);
     const now = await solanaClock(rpcUrl);
     if (expected.expiresAt <= now || expected.expiresAt > now + 90) throw new Error('Payment quote expired before submission. Review a fresh quote; nothing was submitted.');
     const minContextSlot = await rpc(rpcUrl, 'getSlot', [{ commitment: 'finalized' }]);
