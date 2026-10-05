@@ -4,9 +4,9 @@ import { ChevronDown } from "lucide-react";
 
 const mainLinks = [["Search handles", "/#search-handles"], ["Names", "/names"], ["Market", "/market"], ["$HANDLE Token", "/upcoming/token-launch"]];
 const groups = [
-  ["Utility", [["Earn", "/earn"], ["Pay", "/pay"], ["Integrations", "/live-integrations"]]],
+  ["Utility", [["Share & Earn (Referrals)", "/earn"], ["Pay", "/pay"], ["Integrations", "/live-integrations"]]],
   ["Discover", [["Premium Directory", "/directory"], ["Handle Wheel", "/fun"]]],
-  ["Growth", [["Mint Weekend", "/mint-weekend"], ["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
+  ["Growth", [["Share & Earn (Referrals)", "/earn"], ["Mint Weekend", "/mint-weekend"], ["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
   ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["SolHandle EMBED", "/developers/resolve"], ["Partner Mint Plan", "/developers/partner-mint"], ["Documentation", "/docs"]]],
   ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
 ];
