@@ -12,11 +12,18 @@ import EarnRevenueStreams from "@/components/solhandle/EarnRevenueStreams";
 
 export default function ReferralDashboard({ wallet, handles = [] }) {
   const [data, setData] = useState(null); const [loading, setLoading] = useState(false); const [message, setMessage] = useState(""); const [activationError, setActivationError] = useState("");
-  const load = () => wallet && base44.functions.invoke("referralPortal", { action: "get", wallet }).then((res) => setData(res.data));
+  const [loadError, setLoadError] = useState("");
+  const load = async () => {
+    if (!wallet) return;
+    setLoadError("");
+    try { const res = await base44.functions.invoke("referralPortal", { action: "get", wallet }); setData(res.data); }
+    catch { setLoadError("Unable to verify your Earn status. Please retry; an unavailable balance is not treated as zero."); }
+  };
   useEffect(() => { if (wallet) load(); else setData(null); }, [wallet]);
   const activate = async (handle) => { setLoading(true); setActivationError(""); try { await base44.functions.invoke("referralPortal", { action: "activate", wallet, handle }); await load(); } catch (error) { setActivationError(error.response?.data?.error || "Handle ownership could not be verified."); } finally { setLoading(false); } };
   const payout = async () => { setLoading(true); setMessage(""); try { const res = await base44.functions.invoke("referralPortal", { action: "request_payout", wallet }); setMessage(`Payout of ${res.data.amountSol.toFixed(3)} SOL requested.`); await load(); } catch (error) { setMessage(error.response?.data?.error || "Payout request is not available."); } finally { setLoading(false); } };
   if (!wallet) return <div className="card-glow mt-8 text-center text-slate-400">Connect your wallet using the button in the menu above. Then choose your @handle to create your referral link.</div>;
+  if (loadError) return <div className="card-glow mt-8 text-slate-400"><p role="alert">{loadError}</p><button type="button" onClick={load} className="mt-3 text-names-accent underline">Retry balance check</button></div>;
   if (!data) return <div className="card-glow mt-8 text-slate-400">Loading Share & Earn…</div>;
   if (!data.settings?.enabled) return <div className="card-glow mt-8 text-center text-slate-400">Share & Earn is currently paused.</div>;
   if (!data.profile) return <><ReferralActivation handles={handles} onActivate={activate} loading={loading}/>{activationError && <p className="mt-3 text-sm text-red-300">{activationError}</p>}</>;
