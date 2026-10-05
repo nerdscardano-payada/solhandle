@@ -7,7 +7,7 @@ import ResolveWizardSetup from '@/components/solhandle/resolve/ResolveWizardSetu
 const methods = [
   { id: 'members', title: 'Show names for members', description: 'Recommended for platforms. Display primary @names for wallets already used in member profiles, comments or leaderboards.' },
   { id: 'javascript', title: 'Look up payment recipients', description: 'Let users enter an @name in your existing recipient form. Your platform remains responsible for payments and approval.' },
-  { id: 'website', title: 'Add a standalone lookup', description: 'A downloadable demo search box. It does not connect to your members or automatically replace their wallet labels.' }
+  { id: 'website', title: 'Try a lookup demo', description: 'A downloadable demo search box. It does not connect to your members or automatically replace their wallet labels.' }
 ];
 const steps = ['Choose your goal', 'Add your integration', 'Try your lookup'];
 const lessons = [
