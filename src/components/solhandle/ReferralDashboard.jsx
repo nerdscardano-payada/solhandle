@@ -20,7 +20,7 @@ export default function ReferralDashboard({ wallet, handles = [] }) {
   if (!data) return <div className="card-glow mt-8 text-slate-400">Loading Share & Earn…</div>;
   if (!data.settings?.enabled) return <div className="card-glow mt-8 text-center text-slate-400">Share & Earn is currently paused.</div>;
   if (!data.profile) return <><ReferralActivation handles={handles} onActivate={activate} loading={loading}/>{activationError && <p className="mt-3 text-sm text-red-300">{activationError}</p>}</>;
-  return <section className="mt-5 rounded-2xl border border-border bg-card p-4 lg:p-6">
+  return <section className="dark mt-5 rounded-2xl border border-border bg-card p-4 text-card-foreground lg:p-6">
     <h3 className="text-xl font-semibold">Your Share & Earn account</h3>
     <EarnNetworkStatus settings={data.settings} profile={data.profile}/>
     <ReferralShareActions code={data.profile.referral_code} handle={data.profile.display_handle} wallet={wallet}/>
