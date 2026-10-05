@@ -1,0 +1,6 @@
+export const widgetOptions = [
+  { id: 'search', title: 'Search & Claim', label: 'Recommended', description: 'Give your community a name on Solana.', benefit: 'Visitors check availability, then continue to SolHandle to claim. No wallet connection on your website.', heading: 'Your next identity starts here.', prompt: 'Find a name that feels like you.', button: 'Check availability' },
+  { id: 'lookup', title: '@Name Lookup', label: 'Useful tool', description: 'An @name in. A wallet address out.', benefit: 'Add a handy address finder to your community or wallet tools. Visitors can copy the current address.', heading: 'Less guessing. More @names.', prompt: 'Look up the current wallet behind a SolHandle.', button: 'Look up wallet' },
+  { id: 'identity', title: 'Wallet Identity Card', label: 'For profiles', description: 'Put a name next to a wallet.', benefit: 'Embed a card for a fixed wallet. For member profiles, your website must pass each member’s wallet address.', heading: 'A wallet with a name.', prompt: 'The preferred @name set by its owner on SolHandle.', button: 'Look up @name' }
+];
+export const widgetOrigin = 'https://solhandle.io';

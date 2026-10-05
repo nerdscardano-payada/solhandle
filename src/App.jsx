@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -30,6 +30,7 @@ import Fun from '@/pages/Fun';
 import Developers from '@/pages/Developers';
 import PartnerMintPlan from '@/pages/PartnerMintPlan';
 import SolHandleResolve from '@/pages/SolHandleResolve';
+import SolHandleWidgetPage from '@/pages/SolHandleWidgetPage';
 import TokenHandlesPlan from '@/pages/TokenHandlesPlan';
 import PartnerMint from '@/pages/PartnerMint';
 import Integrations from '@/pages/Integrations';
@@ -63,6 +64,8 @@ import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
 
 const AuthenticatedApp = () => {
+  const { pathname } = useLocation();
+  const isWidget = pathname.startsWith('/widgets/');
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
@@ -97,6 +100,7 @@ const AuthenticatedApp = () => {
         <Route path="/developers" element={<Developers />} />
         <Route path="/developers/partner-mint" element={<PartnerMintPlan />} />
         <Route path="/developers/resolve" element={<SolHandleResolve />} />
+        <Route path="/widgets/:type" element={<SolHandleWidgetPage />} />
         <Route path="/developers/token-handles" element={<TokenHandlesPlan />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`} replace />} />}>
           <Route path="/mint" element={<PartnerMint />} />
@@ -147,8 +151,8 @@ const AuthenticatedApp = () => {
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      <Footer />
-      <AttoChat />
+      {!isWidget && <Footer />}
+      {!isWidget && <AttoChat />}
     </>
   );
 };
