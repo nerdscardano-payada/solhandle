@@ -20,7 +20,7 @@ export default function ResolveDocsContent() {
       </dl>}
       {section.id === 'api' && <div className="mt-5 space-y-2 text-sm text-muted-foreground"><p><strong className="text-foreground">200:</strong> verified result. <strong className="text-foreground">404:</strong> handle not found. <strong className="text-foreground">400:</strong> invalid input, verification failure or a resolver/RPC error.</p><p>Errors return JSON with an error string. Treat network failures and non-200 responses as unresolved, never as a wallet address. An unresolved request does not prove a name is available to mint.</p><p>The hosted API depends on SolHandle availability and its RPC provider. No unlimited throughput or uptime guarantee is implied. Use the direct SDK with your own RPC when you need independent resolution.</p></div>}
     </section>)}
-    <section id="safety" className="scroll-mt-6 rounded-2xl border border-names-warning/30 bg-card p-4 lg:p-6"><h2 className="text-xl font-semibold">6. Integration safety checklist</h2>
+    <section id="safety" className="scroll-mt-6 rounded-2xl border border-names-warning/30 bg-card p-4 lg:p-6"><h2 className="text-xl font-semibold">Integration safety checklist</h2>
       <ul className="mt-3 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground">
         <li>Solana is the source of truth: canonical registry → official Metaplex Core asset → current owner. The hosted resolver reads Mainnet at confirmed commitment, not from a database-only ownership claim.</li>
         <li>Display the resolved @handle and full wallet address. A handle can change owners after an NFT transfer; do not hardcode or indefinitely cache the destination.</li>
