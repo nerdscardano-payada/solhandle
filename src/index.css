@@ -106,6 +106,14 @@
   }
 }
 
+.solhandle-search-widget {
+  --background: 230 70% 4%;
+  --foreground: 210 40% 98%;
+  --card: 229 48% 9%;
+  --border: 220 25% 20%;
+  --muted-foreground: 215 20% 65%;
+}
+
 .solhandle-mascot-blend {
   mix-blend-mode: lighten;
   filter: contrast(1.5);
