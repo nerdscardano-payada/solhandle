@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/solhandle/Header";
 import ReferralDashboard from "@/components/solhandle/ReferralDashboard";
-import ReferralExplainer from "@/components/solhandle/ReferralExplainer";
-import ReferralRewardExamples from "@/components/solhandle/ReferralRewardExamples";
-import ReferralGettingStarted from "@/components/solhandle/ReferralGettingStarted";
-import EarnMascot from "@/components/solhandle/EarnMascot";
-import EarnEmbedExplainer from "@/components/solhandle/EarnEmbedExplainer";
+import EarnWays from "@/components/solhandle/EarnWays";
 import { base44 } from "@/api/base44Client";
-
-const campaignStats = [["20–50%", "Mint commission by $HANDLE tier"], ["50%", "Of secondary royalty received"], ["50%", "Of creator fees received"]];
 
 export default function Earn() {
   const [wallet, setWallet] = useState(() => localStorage.getItem("solhandle_wallet") || ""); const [handles, setHandles] = useState([]);
   useEffect(() => { if (wallet) base44.functions.invoke("getOwnerHandles", { wallet }).then((res) => setHandles(res.data.handles || [])).catch(() => setHandles([])); else setHandles([]); }, [wallet]);
-  return <main className="min-h-screen overflow-hidden bg-[#050811] text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header onConnected={setWallet}/><section className="relative px-5 py-14 md:px-9"><div className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-3xl"/><div className="relative mx-auto max-w-4xl text-center"><p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">SolHandle Earn Network · Pre-launch</p><h1 className="mt-4 text-4xl font-semibold sm:text-6xl">Your @ becomes a revenue channel.</h1><p className="mx-auto mt-5 max-w-2xl text-lg text-slate-300">Own a SolHandle, build your network and earn from the economic activity you generate after the $HANDLE token launches.</p><div className="mt-7 flex flex-wrap items-center justify-center gap-3"><button onClick={() => document.getElementById("ambassador-dashboard")?.scrollIntoView({ behavior: "smooth" })} className="rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 px-6 py-3 font-semibold text-slate-950">Become an Ambassador</button><Link to="/leaderboard" className="rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-6 py-3 font-semibold text-cyan-200">View Leaderboard</Link><Link to="/earn-litepaper" className="rounded-lg border border-violet-300/30 bg-violet-300/10 px-6 py-3 font-semibold text-violet-200">Read Litepaper</Link></div><EarnMascot/></div><div className="relative mt-10 grid gap-3 md:grid-cols-3">{campaignStats.map(([value, label]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur"><b className="text-2xl text-cyan-200">{value}</b><p className="mt-2 text-sm text-slate-400">{label}</p></div>)}</div><ReferralRewardExamples/><ReferralGettingStarted/><EarnEmbedExplainer/><div id="ambassador-dashboard"><ReferralDashboard wallet={wallet} handles={handles}/></div><ReferralExplainer/><p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-slate-500">Refer a mint once. Build its economic lifecycle. Earnings only come from confirmed activity and revenue actually received by SolHandle.</p></section></div></main>;
+  return <main className="dark min-h-screen bg-background font-body text-foreground"><div className="mx-auto min-h-screen max-w-7xl border-x border-border"><Header onConnected={setWallet}/>
+    <div className="mx-auto max-w-5xl px-4 py-8 lg:px-9 lg:py-12">
+      <header className="max-w-2xl"><p className="text-xs font-semibold uppercase tracking-widest text-names-accent">SolHandle · Share & Earn</p><h1 className="mt-4 text-3xl font-semibold tracking-tight lg:text-5xl">Earn with your own @handle.</h1><p className="mt-4 text-base leading-7 text-muted-foreground lg:text-lg">Turn your SolHandle into a personal referral link. Invite people to claim their own @name, and earn commission on eligible mints when the program is live.</p></header>
+      <EarnWays/>
+      <p className="mt-5 text-sm leading-6 text-muted-foreground">Start in 3 steps: connect your wallet, choose your @handle, then share your link or add the embed. The same reward rules apply to both.</p>
+      <section id="ambassador-dashboard" className="mt-10 scroll-mt-24"><h2 className="text-2xl font-semibold">Your handle. Your referral link.</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Connect using the wallet that owns your SolHandle to activate your link and manage your earnings.</p><ReferralDashboard wallet={wallet} handles={handles}/></section>
+      <footer className="mt-8 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm text-muted-foreground"><Link to="/referral-terms" className="text-names-accent">Reward rules →</Link><Link to="/earn-litepaper">Full program details →</Link><Link to="/leaderboard">Leaderboard →</Link></footer>
+    </div>
+  </div></main>;
 }

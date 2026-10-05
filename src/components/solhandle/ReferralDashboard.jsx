@@ -16,9 +16,19 @@ export default function ReferralDashboard({ wallet, handles = [] }) {
   useEffect(() => { if (wallet) load(); else setData(null); }, [wallet]);
   const activate = async (handle) => { setLoading(true); setActivationError(""); try { await base44.functions.invoke("referralPortal", { action: "activate", wallet, handle }); await load(); } catch (error) { setActivationError(error.response?.data?.error || "Handle ownership could not be verified."); } finally { setLoading(false); } };
   const payout = async () => { setLoading(true); setMessage(""); try { const res = await base44.functions.invoke("referralPortal", { action: "request_payout", wallet }); setMessage(`Payout of ${res.data.amountSol.toFixed(3)} SOL requested.`); await load(); } catch (error) { setMessage(error.response?.data?.error || "Payout request is not available."); } finally { setLoading(false); } };
-  if (!wallet) return <div className="card-glow mt-8 text-center text-slate-400">Connect your Solana wallet to become an ambassador.</div>;
+  if (!wallet) return <div className="card-glow mt-8 text-center text-slate-400">Connect your wallet using the button in the menu above. Then choose your @handle to create your referral link.</div>;
   if (!data) return <div className="card-glow mt-8 text-slate-400">Loading Share & Earn…</div>;
   if (!data.settings?.enabled) return <div className="card-glow mt-8 text-center text-slate-400">Share & Earn is currently paused.</div>;
   if (!data.profile) return <><ReferralActivation handles={handles} onActivate={activate} loading={loading}/>{activationError && <p className="mt-3 text-sm text-red-300">{activationError}</p>}</>;
-  return <section className="card-glow mt-8"><p className="text-sm text-cyan-300">Your Earn Network Dashboard</p><h2 className="mt-2 text-2xl font-semibold text-white">Own your identity. Build your network.</h2><p className="mt-2 text-sm text-slate-400">Your first confirmed referred mint permanently links that wallet and asset to your origin handle.</p><EarnNetworkStatus settings={data.settings} profile={data.profile}/><ReferralShareActions code={data.profile.referral_code} handle={data.profile.display_handle} wallet={wallet}/><ReferralWidgetEmbed code={data.profile.referral_code}/><EarnRevenueStreams network={data.network}/><ReferralStats profile={data.profile} mode={data.settings.mode} minimumPayout={data.settings.minimumPayoutSol} onPayout={payout} loading={loading}/>{message && <p className="mt-3 text-sm text-cyan-200">{message}</p>}<ReferralNotifications items={data.notifications}/><ReferralHistory conversions={data.conversions}/><ReferralPayoutHistory payouts={data.payouts}/></section>;
+  return <section className="mt-5 rounded-2xl border border-border bg-card p-4 lg:p-6">
+    <h3 className="text-xl font-semibold">Your Share & Earn account</h3>
+    <EarnNetworkStatus settings={data.settings} profile={data.profile}/>
+    <ReferralShareActions code={data.profile.referral_code} handle={data.profile.display_handle} wallet={wallet}/>
+    <ReferralWidgetEmbed code={data.profile.referral_code}/>
+    <details className="mt-5 rounded-xl border border-border p-4"><summary className="cursor-pointer font-semibold">Your earnings & activity</summary>
+      <ReferralStats profile={data.profile} mode={data.settings.mode} minimumPayout={data.settings.minimumPayoutSol} onPayout={payout} loading={loading}/>
+      {message && <p className="mt-3 text-sm text-names-accent">{message}</p>}
+      <EarnRevenueStreams network={data.network}/><ReferralNotifications items={data.notifications}/><ReferralHistory conversions={data.conversions}/><ReferralPayoutHistory payouts={data.payouts}/>
+    </details>
+  </section>;
 }
