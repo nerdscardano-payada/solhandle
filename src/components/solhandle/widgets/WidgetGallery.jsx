@@ -21,9 +21,9 @@ export default function WidgetGallery() {
   const snippet = createWidgetEmbed(url, `SolHandle ${option.title}`, embedHeight);
   return <section id="widgets" className="mt-8">
 
-    <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
-      <div className="rounded-2xl border border-names-accent/20 bg-names-accent/5 p-4 lg:p-6"><p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-names-accent"><MousePointer2 size={15}/>Try it · real lookups, not sample results</p><SolHandleWidget type="search" referralCode={referralCode} showClaimed={showClaimed} showMarket={showMarket}/></div>
-      <div className="rounded-2xl border border-border bg-card p-5 lg:p-6"><p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-names-secondary"><Code2 size={15}/>Make it yours</p><h3 className="mt-3 text-2xl font-semibold">A small embed. A useful addition.</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{option.benefit}</p>
+    <div className="mt-6 grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-6">
+      <div className="min-w-0 rounded-2xl border border-names-accent/20 bg-names-accent/5 p-2 lg:p-6"><p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-names-accent"><MousePointer2 size={15}/>Try it · real lookups, not sample results</p><SolHandleWidget type="search" referralCode={referralCode} showClaimed={showClaimed} showMarket={showMarket}/></div>
+      <div className="min-w-0 rounded-2xl border border-border bg-card p-3 lg:p-6"><p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-names-secondary"><Code2 size={15}/>Make it yours</p><h3 className="mt-3 text-2xl font-semibold">A small embed. A useful addition.</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{option.benefit}</p>
         <WidgetExtrasOptions showClaimed={showClaimed} showMarket={showMarket} onClaimedChange={setShowClaimed} onMarketChange={setShowMarket}/>
         <WidgetAffiliateSetup onVerified={setReferralCode} verifiedCode={referralCode}/>
         <ol className="mt-5 space-y-3 text-sm text-muted-foreground"><li><strong className="text-foreground">1. Copy</strong> the embed below.</li><li><strong className="text-foreground">2. Paste</strong> it into your website’s HTML/embed block.</li><li><strong className="text-foreground">3. Publish</strong> your page and try the widget.</li></ol>
