@@ -1,11 +1,10 @@
 import { ArrowRight, LoaderCircle, Search } from 'lucide-react';
-import { Image } from '@/components/ui/image';
+
 import MintBackground from '@/components/solhandle/MintBackground';
 import WidgetResult from '@/components/solhandle/widgets/WidgetResult';
 import { widgetOrigin } from '@/components/solhandle/widgets/widgetOptions';
 export default function SearchWidget({ lookup, inputId, referralCode }) {
-  return <div className="solhandle-search-widget relative w-full pt-16 text-foreground">
-    <div className="pointer-events-none absolute right-6 top-0 h-20 w-28 overflow-hidden" aria-hidden="true"><Image src="https://base44.app/api/apps/6a86b7e4bcec5dfac8ee9a44/files/mp/public/6a86b7e4bcec5dfac8ee9a44/375ff3e7b_solhandle-original-GrowthGoalMascot-cap.png" alt="" className="solhandle-mascot-blend absolute -top-2 h-36 w-28" fittingType="fit"/></div>
+  return <div className="solhandle-search-widget relative w-full text-foreground">
     <section aria-label="SolHandle Search & Claim widget" className="relative overflow-hidden rounded-2xl border border-names-accent/60 bg-background p-5 shadow-xl shadow-names-accent/15">
       <MintBackground/>
       <div className="relative z-10">
