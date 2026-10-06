@@ -1,11 +1,11 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
-import { VersionedTransaction, PublicKey } from 'npm:@solana/web3.js@1.98.4';
-import nacl from 'npm:tweetnacl@1.0.3';
+import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
+import { validateWeekendSignedTransaction } from '../../shared/weekendSignedTransaction.ts';
 import bs58 from 'npm:bs58@5.0.0';
 import { rpc } from '../../shared/solanaRpc.ts';
 import { CAMPAIGN, campaignQuery, weekendSnapshot } from '../../shared/weekendCampaign.ts';
-import { prepareWeekendTokens, from64 } from '../../shared/weekendTokenPrepare.ts';
+import { prepareWeekendTokens } from '../../shared/weekendTokenPrepare.ts';
 import { confirmWeekendSettlement } from '../../shared/weekendSettlementConfirm.ts';
 import { requireWeekendMainnet } from '../../shared/weekendMainnet.ts';
 export default async function(req: Request): Promise<Response> {
@@ -67,11 +67,7 @@ export default async function(req: Request): Promise<Response> {
     const intent = await client.entities.WeekendMintIntent.get(body.intent_id);
     if (!intent || intent.campaign !== CAMPAIGN || intent.admin_id !== user.id) return Response.json({ error: 'Invalid settlement access.' }, { status: 403 });
     if (body.action === 'confirm') return Response.json(await confirmWeekendSettlement(client, url, intent));
-    if (typeof body.signed !== 'string' || body.signed.length > 3000) throw new Error('Invalid signed transaction.');
-    const signed = VersionedTransaction.deserialize(from64(body.signed)), expected = VersionedTransaction.deserialize(from64(intent.unsigned));
-    const message = signed.message.serialize(), expectedMessage = expected.message.serialize();
-    if (message.length !== expectedMessage.length || !message.every((b, i) => b === expectedMessage[i])) throw new Error('Wallet changed the approved transaction. No transaction was sent.');
-    if (signed.signatures.length !== 1 || !nacl.sign.detached.verify(message, signed.signatures[0], new PublicKey(intent.wallet).toBytes())) throw new Error('Invalid wallet signature.');
+    const signed = validateWeekendSignedTransaction(body.signed, intent);
     const signature = bs58.encode(signed.signatures[0]);
     if (intent.signature && intent.signature !== signature) throw new Error('Settlement already has a different signed transaction.');
     if (intent.status === 'confirmed') return Response.json({ status: 'confirmed', signature: intent.signature, intent_id: intent.id });
