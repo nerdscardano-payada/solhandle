@@ -3,6 +3,8 @@ import { ArrowRight, X } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import IntroJourney from '@/components/solhandle/intro/IntroJourney';
 import IntroSteps from '@/components/solhandle/intro/IntroSteps';
+import IntroMintExample from '@/components/solhandle/intro/IntroMintExample';
+import IntroPayExample from '@/components/solhandle/intro/IntroPayExample';
 import '@/components/solhandle/intro/intro.css';
 
 export default function SolHandleIntro({ onContinue }) {
@@ -20,6 +22,11 @@ export default function SolHandleIntro({ onContinue }) {
       <div className="my-auto pb-4 pt-8 text-center min-[768px]:pt-6">
         <h1 id="intro-title" className="sr-only">From 44 characters to your @name. The same wallet, a recognizable identity.</h1>
         <IntroJourney/><IntroSteps/>
+        <section aria-labelledby="intro-examples-title" className="mx-auto mt-10 max-w-4xl">
+          <h2 id="intro-examples-title" className="font-heading text-2xl font-semibold text-foreground">One @name. Two everyday uses.</h2>
+          <p className="mx-auto mt-2 max-w-lg text-xs leading-5 text-muted-foreground">Illustrative examples only. No NFT is minted and no payment is sent in this intro. The address shown is not @ansem's actual wallet.</p>
+          <div className="mt-5 grid gap-4 min-[768px]:grid-cols-2"><IntroMintExample/><IntroPayExample/></div>
+        </section>
         <button type="button" onClick={onContinue} className="mt-8 inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-names-accent to-names-secondary px-8 py-4 font-semibold text-background transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-names-accent">Discover SolHandle<ArrowRight className="h-5 w-5"/></button>
         <p className="mt-3 text-[11px] text-muted-foreground">No account needed. You stay in control of your wallet.</p>
       </div>
