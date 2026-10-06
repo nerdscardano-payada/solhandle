@@ -6,7 +6,7 @@ const mainLinks = [["Search handles", "/#search-handles"], ["Names", "/names"], 
 const groups = [
   ["Utility", [["Share & Earn (Referrals)", "/earn"], ["Pay", "/pay"], ["Integrations", "/live-integrations"]]],
   ["Discover", [["Premium Directory", "/directory"], ["Handle Wheel", "/fun"]]],
-  ["Growth", [["Share & Earn (Referrals)", "/earn"], ["Mint Weekend", "/mint-weekend"], ["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
+  ["Growth", [["Share & Earn (Referrals)", "/earn"], ["Mint Weekend · Proof archive", "/mint-weekend"], ["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
   ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["SolHandle EMBED", "/developers/resolve"], ["Partner Mint Plan", "/developers/partner-mint"], ["Documentation", "/docs"]]],
   ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
 ];
