@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import Home from '@/pages/Home';
+import HomeEntrance from '@/components/solhandle/intro/HomeEntrance';
 import Search from '@/pages/Search';
 import MintWeekend from '@/pages/MintWeekend';
 import MyHandles from '@/pages/MyHandles';
@@ -92,7 +93,7 @@ const AuthenticatedApp = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
         <Route path="/search" element={<Search />} />
         <Route path="/mint-weekend" element={<MintWeekend />} />
         <Route path="/my-handles" element={<MyHandles />} />

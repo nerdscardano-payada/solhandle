@@ -1,0 +1,20 @@
+.solhandle-intro, .dark .solhandle-intro {
+  --background: 225 55% 4%;
+  --foreground: 210 40% 98%;
+  --card: 226 43% 9%;
+  --border: 223 25% 22%;
+  --muted-foreground: 218 18% 66%;
+  color-scheme: dark;
+}
+.solhandle-intro::backdrop { background: hsl(var(--background)); }
+.solhandle-intro .intro-aura {
+  background: radial-gradient(ellipse at 15% 20%, hsl(var(--names-accent) / .1), transparent 45%), radial-gradient(ellipse at 85% 65%, hsl(var(--names-secondary) / .12), transparent 45%);
+}
+.solhandle-intro .grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.solhandle-intro .intro-identity { box-shadow: 0 0 70px hsl(var(--names-secondary) / .13), inset 0 0 40px hsl(var(--names-accent) / .025); animation: intro-arrive 1.2s ease-out both; }
+.solhandle-intro .intro-character { animation: intro-character 5s ease-in-out infinite; }
+.solhandle-intro .intro-connector { animation: intro-flow 3s ease-in-out infinite; }
+@keyframes intro-arrive { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes intro-character { 0%, 70%, 100% { color: hsl(var(--muted-foreground)); } 25%, 40% { color: hsl(var(--names-accent)); } }
+@keyframes intro-flow { 0%, 100% { opacity: .45; } 50% { opacity: 1; filter: drop-shadow(0 0 10px hsl(var(--names-accent) / .6)); } }
+@media (prefers-reduced-motion: reduce) { .solhandle-intro .intro-identity, .solhandle-intro .intro-character, .solhandle-intro .intro-connector { animation: none; } }
