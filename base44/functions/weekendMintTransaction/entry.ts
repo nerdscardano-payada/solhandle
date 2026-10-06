@@ -46,7 +46,7 @@ export default async function(req: Request): Promise<Response> {
       const id = seed.records[0].id, lock = crypto.randomUUID(), now = new Date().toISOString();
       const height = await rpc(url, 'getBlockHeight', [{ commitment: 'finalized' }]);
       await client.entities.WeekendMintIntent.updateMany({ id, $or: [
-        { status: { $exists: false } }, { status: { $in: ['expired','failed'] } },
+        { status: { $exists: false } }, { status: null }, { status: { $in: ['expired','failed'] } },
         { status: 'prepared', last_valid_height: { $lt: height } },
         { status: 'preparing', lease_until: { $lt: now } }
       ] }, { $set: { status: 'preparing', lock_token: lock, lease_until: new Date(Date.now() + 300000).toISOString(), wallet, admin_id: user.id } });
