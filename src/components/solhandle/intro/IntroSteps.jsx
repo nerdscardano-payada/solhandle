@@ -1,7 +1,7 @@
 import { AtSign, Link2, Send } from 'lucide-react';
 const steps = [
   { icon: AtSign, title: 'Kies je @naam', text: 'Zoek een beschikbare naam en claim je eigen SolHandle.' },
-  { icon: Link2, title: 'Bezít je identiteit', text: 'Je handle is een NFT in je wallet, niet een account bij ons.' },
+  { icon: Link2, title: 'Bezit je identiteit', text: 'Je handle is een NFT in je wallet, niet een account bij ons.' },
   { icon: Send, title: 'Gebruik je @naam', text: 'Zoek een wallet op of ontvang betalingen via SolHandle Pay.' }
 ];
 export default function IntroSteps() {
