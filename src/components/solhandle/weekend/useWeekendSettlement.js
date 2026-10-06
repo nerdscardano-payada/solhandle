@@ -16,16 +16,16 @@ export default function useWeekendSettlement(refresh) {
     try { const result = await call({ action: 'confirm', intent_id: pending.intent_id }); if (['confirmed','expired','failed'].includes(result.status)) { save(null); refresh(); setError(result.status === 'confirmed' ? '' : `Transaction ${result.status}; no confirmed payment was recorded.`); } else if (result.status === 'prepared') setError(previous => previous || 'Payment has not been broadcast. Use Resend same signed transaction; do not approve a second payment.'); }
     catch (e) { setError(previous => previous || e.response?.data?.error || e.message); } finally { inFlight.current = false; setBusy(false); }
   };
-  useEffect(() => { if (!pending || busy || error) return; const timer = setInterval(confirm, 5000); return () => clearInterval(timer); }, [pending, busy, error]);
+  useEffect(() => { if (!pending || busy || error) return; const timer = setInterval(resend, 10000); return () => clearInterval(timer); }, [pending, busy, error]);
   const approve = async (kind, recipient = '') => {
     if (!publicKey || !signTransaction) { setError('Connect the funded payout wallet first.'); return; }
     if (pending) { setError('Confirm the pending settlement before starting another.'); return; }
     if (inFlight.current) return;
     inFlight.current = true; setBusy(true); setError('');
     try {
-      const prepared = await call({ action: 'prepare', kind, recipient, wallet: publicKey.toBase58() });
-      const accepted = window.confirm(kind === 'reward' ? `Send 100,000 $HANDLE to ${recipient}? Your wallet pays token-account rent if needed and network fees.` : `Permanently burn ${prepared.tokens.toLocaleString('en-US')} $HANDLE from your connected wallet? This cannot be undone.`);
+      const accepted = window.confirm(kind === 'reward' ? `Send 100,000 $HANDLE to ${recipient}? Your wallet pays token-account rent if needed and network fees.` : 'Permanently burn $HANDLE from your connected wallet? This cannot be undone. Review the amount in your wallet.');
       if (!accepted) return;
+      const prepared = await call({ action: 'prepare', kind, recipient, wallet: publicKey.toBase58() });
       const signed = await signTransaction(VersionedTransaction.deserialize(Uint8Array.from(atob(prepared.unsigned), c => c.charCodeAt(0))));
       const saved = { intent_id: prepared.intent_id, signed: btoa(String.fromCharCode(...signed.serialize())), wallet: publicKey.toBase58() }; save(saved);
       const result = await call({ action: 'submit', ...saved });

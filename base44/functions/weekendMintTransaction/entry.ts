@@ -36,9 +36,13 @@ export default async function(req: Request): Promise<Response> {
         if (result.status === 'submitted') throw new Error('A transaction is pending for this settlement. Confirm it before preparing another.');
         existing = { ...existing, status: result.status };
       }
-      if (existing?.status === 'prepared' && await rpc(url, 'getBlockHeight', [{ commitment: 'finalized' }]) <= existing.last_valid_height) {
-        if (existing.wallet !== wallet || existing.admin_id !== user.id) throw new Error('Another wallet has an active preparation for this settlement. Wait until it expires.');
-        return Response.json({ intent_id: existing.id, unsigned: existing.unsigned, tokens, kind, recipient });
+      if (existing?.status === 'prepared') {
+        const currentHeight = await rpc(url, 'getBlockHeight', [{ commitment: 'finalized' }]);
+        if (currentHeight <= existing.last_valid_height) {
+          if (existing.wallet !== wallet || existing.admin_id !== user.id) throw new Error('Another wallet has an active preparation for this settlement. Wait until it expires.');
+          if (existing.last_valid_height - currentHeight >= 100) return Response.json({ intent_id: existing.id, unsigned: existing.unsigned, tokens, kind, recipient });
+          await client.entities.WeekendMintIntent.updateMany({ id: existing.id, status: 'prepared', unsigned: existing.unsigned, signature: '' }, { $set: { status: 'expired' } });
+        }
       }
       if (existing?.status === 'confirmed') throw new Error('This settlement has already been finalized.');
       // Upsert immutable identity only. Never overwrite another request's signed transaction.
@@ -80,7 +84,7 @@ export default async function(req: Request): Promise<Response> {
     await client.entities.WeekendMintIntent.updateMany({ id: intent.id, unsigned: intent.unsigned, status: { $in: ['prepared','submitted'] } }, { $set: { signature, status: 'submitted' } });
     const locked = await client.entities.WeekendMintIntent.get(intent.id);
     if (locked.signature !== signature || locked.unsigned !== intent.unsigned || !['submitted','confirmed'].includes(locked.status)) throw new Error('Settlement changed while signing; no transaction was sent.');
-    await rpc(url, 'sendTransaction', [body.signed, { encoding: 'base64', skipPreflight: false, preflightCommitment: 'confirmed', maxRetries: 3 }]);
+    await rpc(url, 'sendTransaction', [body.signed, { encoding: 'base64', skipPreflight: false, preflightCommitment: 'confirmed', maxRetries: 20 }]);
     return Response.json(await confirmWeekendSettlement(client, url, { ...intent, signature, status: 'submitted' }));
   } catch (error) { return Response.json({ error: error.message }, { status: 400 }); }
 }
