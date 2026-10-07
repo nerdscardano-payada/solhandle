@@ -1,10 +1,4 @@
-@font-face {
-  font-family: 'SolHandle Hero';
-  src: url('https://media.base44.com/files/public/builder-assets/wix-fonts/helvetica-700-normal.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -40,7 +34,7 @@
     --font-heading: ui-sans-serif, system-ui, sans-serif;
     --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-display: ui-sans-serif, system-ui, sans-serif;
-    --font-hero: 'SolHandle Hero', 'Arial Black', Arial, sans-serif;
+    --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
     --names-accent: 189 94% 67%;
     --names-secondary: 263 90% 78%;
     --names-success: 160 84% 69%;
@@ -60,7 +54,7 @@
   }
 
   .dark {
-    --font-hero: 'SolHandle Hero', 'Arial Black', Arial, sans-serif;
+    --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
     --names-accent: 189 94% 67%;
     --names-secondary: 263 90% 78%;
     --names-success: 160 84% 69%;
