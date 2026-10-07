@@ -35,6 +35,11 @@
     --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-display: ui-sans-serif, system-ui, sans-serif;
     --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
+    --hero-cyan: 180 100% 50%;
+    --hero-blue: 214 100% 58%;
+    --hero-violet: 273 100% 60%;
+    --hero-pink: 291 100% 66%;
+    --hero-surface: 225 58% 6%;
     --names-accent: 189 94% 67%;
     --names-secondary: 263 90% 78%;
     --names-success: 160 84% 69%;
@@ -55,6 +60,11 @@
 
   .dark {
     --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
+    --hero-cyan: 180 100% 50%;
+    --hero-blue: 214 100% 58%;
+    --hero-violet: 273 100% 60%;
+    --hero-pink: 291 100% 66%;
+    --hero-surface: 225 58% 6%;
     --names-accent: 189 94% 67%;
     --names-secondary: 263 90% 78%;
     --names-success: 160 84% 69%;

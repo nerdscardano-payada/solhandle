@@ -6,9 +6,11 @@ export default function HomeHeroArtwork() {
     <Image
       src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/a0becf818_image.png"
       alt="SolHandle identity illustration with a smartphone, handle search panel and glowing cyan-purple @ symbols"
-      className="relative aspect-square w-full overflow-hidden [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
-      fittingType="fit"
+      className="relative aspect-[6/5] w-full overflow-hidden [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
+      fittingType="fill"
+      focalPointX={0.5}
+      focalPointY={0.48}
     />
-    <figcaption className="mt-2 text-center text-xs text-muted-foreground">Illustrative SolHandle identity</figcaption>
+    <figcaption className="sr-only">Illustrative SolHandle identity</figcaption>
   </figure>;
 }

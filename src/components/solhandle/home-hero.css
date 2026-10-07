@@ -1,0 +1,31 @@
+.hero-claim-gradient {
+  background-image: linear-gradient(150deg, hsl(var(--foreground)) 60%, hsl(var(--hero-cyan)) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero-solana-gradient {
+  background-image: linear-gradient(25deg, hsl(var(--hero-violet)) 0%, hsl(var(--hero-pink) / .95) 14%, transparent 58%), linear-gradient(90deg, hsl(var(--foreground)) 5%, hsl(var(--hero-cyan)) 78%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero-search-shell {
+  border: 1px solid transparent;
+  background: linear-gradient(hsl(var(--hero-surface)), hsl(var(--hero-surface))) padding-box, linear-gradient(100deg, hsl(var(--hero-cyan)), hsl(var(--hero-blue)) 52%, hsl(var(--hero-pink))) border-box;
+  box-shadow: 0 0 20px hsl(var(--hero-cyan) / .12), 8px 0 24px hsl(var(--hero-violet) / .18);
+}
+.hero-search-button {
+  background: linear-gradient(100deg, hsl(var(--hero-cyan)) 5%, hsl(var(--hero-cyan)) 25%, hsl(var(--hero-blue)) 58%, hsl(var(--hero-violet)) 82%, hsl(var(--hero-pink)) 100%);
+  box-shadow: inset 0 0 0 1px hsl(var(--foreground) / .35), 0 0 24px hsl(var(--hero-violet) / .45);
+}
+.hero-mint-button {
+  border: 1px solid transparent;
+  background: linear-gradient(hsl(var(--hero-surface)), hsl(var(--hero-surface))) padding-box, linear-gradient(100deg, hsl(var(--hero-blue)), hsl(var(--hero-violet)), hsl(var(--hero-pink))) border-box;
+}
+.hero-brand-gradient {
+  background-image: linear-gradient(90deg, hsl(var(--hero-cyan)) 15%, hsl(var(--foreground)) 54%, hsl(var(--hero-pink)) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
