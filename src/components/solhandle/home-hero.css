@@ -29,13 +29,15 @@
   -webkit-background-clip: text;
   color: transparent;
 }
-.hero-stage::before {
-  content: '';
-  position: absolute;
-  inset: -2rem -3rem;
-  z-index: -20;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 55% 42%, hsl(var(--hero-cyan) / .07), transparent 65%), radial-gradient(ellipse at 78% 65%, hsl(var(--hero-violet) / .1), transparent 60%);
+.hero-title-logo {
+  mix-blend-mode: screen;
+  border-radius: 50%;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(circle at center, black 48%, transparent 71%);
+  mask-image: radial-gradient(circle at center, black 48%, transparent 71%);
+}
+.hero-title-logo img {
+  mix-blend-mode: screen;
 }
 .hero-artwork-image {
   mix-blend-mode: screen;

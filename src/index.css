@@ -35,6 +35,7 @@
     --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-display: ui-sans-serif, system-ui, sans-serif;
     --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
+    --hero-canvas: 225 50% 3%;
     --hero-cyan: 180 100% 50%;
     --hero-blue: 214 100% 58%;
     --hero-violet: 273 100% 60%;
@@ -60,6 +61,7 @@
 
   .dark {
     --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
+    --hero-canvas: 225 50% 3%;
     --hero-cyan: 180 100% 50%;
     --hero-blue: 214 100% 58%;
     --hero-violet: 273 100% 60%;
