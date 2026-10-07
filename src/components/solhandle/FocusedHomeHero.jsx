@@ -14,7 +14,7 @@ export default function FocusedHomeHero({ wallet }) {
       <section>
         <p className="mb-5 inline-flex rounded-full border border-names-accent/30 bg-names-accent/5 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-names-accent">On Solana</p>
         <HeroClaimTitle/>
-        <p className="mt-6 max-w-lg text-lg leading-8 text-muted-foreground">Search, mint, and own a human-readable @handle instead of a long wallet address.</p>
+        <p className="mt-6 max-w-xl text-xl leading-8 text-muted-foreground">Search, mint, and own a human-readable @handle instead of a long wallet address.</p>
         <div id="search-handles" className="mt-6 scroll-mt-8">
           <HeroSearch wallet={wallet}/>
         </div>
