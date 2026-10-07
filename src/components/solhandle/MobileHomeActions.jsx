@@ -23,6 +23,11 @@ export default function MobileHomeActions() {
       <div className="min-w-0 flex-1"><span className="block font-semibold">Pay</span><span className="text-xs text-burn-accent">Send and receive SOL with your @handle</span></div>
       <ArrowRight className="h-4 w-4 shrink-0 text-burn-accent" />
     </Link>
+    <Link to="/earn" className="flex items-center gap-3 rounded-xl border border-names-secondary/30 bg-names-secondary/10 p-4">
+      <Coins className="h-5 w-5 shrink-0 text-names-secondary" />
+      <div className="min-w-0 flex-1"><span className="block font-semibold">Earn</span><span className="text-xs text-names-secondary">Share SolHandle and earn referral rewards</span></div>
+      <ArrowRight className="h-4 w-4 shrink-0 text-names-secondary" />
+    </Link>
     <Link to="/developers" className="flex items-center gap-3 rounded-xl border border-names-warning/30 bg-names-warning/10 p-4">
       <Code2 className="h-5 w-5 shrink-0 text-names-warning" />
       <div className="min-w-0 flex-1"><span className="block font-semibold">Developers / SDK</span><span className="text-xs text-names-warning">Build with SolHandle’s SDK and API</span></div>
