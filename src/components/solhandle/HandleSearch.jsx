@@ -13,11 +13,11 @@ import MintReadinessDialog from "@/components/solhandle/MintReadinessDialog";
 import OfficialClaimDialog from "@/components/solhandle/OfficialClaimDialog";
 import HandleTokenClaimButton from "@/components/solhandle/HandleTokenClaimButton";
 
-export default function HandleSearch({ wallet }) {
+export default function HandleSearch({ wallet, initialHandle = '' }) {
   const urlParams = new URLSearchParams(window.location.search);
   const pendingClaim = normalizeHandle(urlParams.get("claim") || "");
   const resumeClaimId = urlParams.get("official_claim") || "";
-  const [input, setInput] = useState(pendingClaim || ""); const [result, setResult] = useState(null); const [showClaim, setShowClaim] = useState(false); const [showOfficialClaim, setShowOfficialClaim] = useState(false); const handle = normalizeHandle(input);
+  const [input, setInput] = useState(pendingClaim || initialHandle || ""); const [result, setResult] = useState(null); const [showClaim, setShowClaim] = useState(false); const [showOfficialClaim, setShowOfficialClaim] = useState(false); const handle = normalizeHandle(input);
   const launch = useMintLaunch();
   const client = useQueryClient();
   const userInput = useRef(null);
@@ -40,11 +40,11 @@ export default function HandleSearch({ wallet }) {
     }
   };
   useEffect(() => {
-    if (pendingClaim) return;
+    if (pendingClaim || initialHandle) return;
     invokeWithRetry("getRandomAvailablePremium", {})
       .then((res) => { if (res.data?.handle) setInput((current) => current || res.data.handle); })
       .catch(() => null);
-  }, [pendingClaim]);
+  }, [pendingClaim, initialHandle]);
   useEffect(() => {
     const invalid = validateHandle(handle);
     if (invalid) {
