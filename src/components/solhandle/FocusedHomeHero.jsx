@@ -1,5 +1,5 @@
 import HandleSearch from '@/components/solhandle/HandleSearch';
-import HomeIdentityPreview from '@/components/solhandle/HomeIdentityPreview';
+
 import MainnetContracts from '@/components/solhandle/MainnetContracts';
 import AmbassadorBanner from '@/components/solhandle/AmbassadorBanner';
 import PayMilestoneCard from '@/components/solhandle/PayMilestoneCard';
@@ -15,7 +15,7 @@ export default function FocusedHomeHero({ wallet }) {
           <HandleSearch wallet={wallet}/>
         </div>
       </section>
-      <div className="mx-auto w-full max-w-sm"><HomeIdentityPreview/><PayMilestoneCard/></div>
+      <div className="mx-auto w-full max-w-sm"><PayMilestoneCard/></div>
     </div>
     <div className="mt-12"><MainnetContracts/><AmbassadorBanner/></div>
   </div>;
