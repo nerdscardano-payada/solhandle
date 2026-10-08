@@ -31,9 +31,9 @@
   .home-funnel .home-available-tile{grid-template-columns:144px minmax(0,1fr)}
   .home-funnel .home-available-tile .home-tile-artwork{width:144px}
   .platform-home .home-funnel .solhandle-platform-header>nav{gap:14px;white-space:nowrap}
-  .platform-home .home-funnel .solhandle-menu-brand-prominent{gap:18px}
-  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-mark{width:96px;height:96px}
-  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-wordmark{width:300px}
+  .platform-home .home-funnel .solhandle-menu-brand-prominent{gap:12px}
+  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-mark{width:64px;height:64px}
+  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-wordmark{width:220px}
   .platform-home .home-funnel .solhandle-platform-header,
   .home-funnel .home-hero-layout,
   .platform-home .home-funnel .home-content{width:100%;max-width:1416px;margin-left:auto;margin-right:auto;padding-left:48px;padding-right:48px}

@@ -20,7 +20,7 @@ export default function Header({ onConnected, funnel = false }) {
   const tokenIsLive = Boolean(tokenMint);
   return <header className="solhandle-platform-header relative mx-auto flex max-w-7xl items-center justify-between border-b border-white/10 px-5 py-4 lg:px-9">
     <Brand prominent />
-    <HomeDesktopNavigation/>
+    <HomeDesktopNavigation funnel={funnel}/>
     <div className="flex items-center gap-3">{funnel ? <button aria-label="Search a handle" onClick={() => { document.getElementById('search-handles')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById('home-handle-input')?.focus(); }} className="hidden text-names-accent lg:block"><Search className="h-5 w-5"/></button> : <HeaderExternalLinks/>}{!funnel && <><MarketplaceNotificationBell wallet={wallet} bids={notifications.bids} sales={notifications.sales} onRefresh={notifications.refresh}/><AdminTradeBell/></>}<WalletButton onConnected={onConnected} /><button type="button" onClick={() => setMenuOpen((open) => !open)} className="text-slate-300 lg:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
     {menuOpen && <MobileNavigation onNavigate={() => setMenuOpen(false)} tokenIsLive={tokenIsLive} />}
   </header>;
