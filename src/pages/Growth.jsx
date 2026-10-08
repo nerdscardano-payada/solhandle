@@ -9,7 +9,6 @@ import GrowthProgressBar from '@/components/solhandle/GrowthProgressBar';
 import GrowthMilestones from '@/components/solhandle/GrowthMilestones';
 import GrowthPriceMeter from '@/components/solhandle/GrowthPriceMeter';
 import GrowthHowTo from '@/components/solhandle/GrowthHowTo';
-import GrowthGoalMascot from '@/components/solhandle/GrowthGoalMascot';
 import { base44 } from '@/api/base44Client';
 import useDexScreenerMarket from '@/hooks/useDexScreenerMarket';
 
@@ -45,7 +44,7 @@ export default function Growth() {
   const next = [20, 40, 60, 80, 100].find(n => n > (officialProgress ?? 0));
   return <main className="min-h-screen bg-slate-950 text-white"><div className="mx-auto min-h-screen max-w-7xl border-x border-white/10"><Header/><GrowthMobileView data={data} error={error} refreshing={refreshing} checkedAt={checkedAt} load={load} cycle={c} newHolders={newHolders} handles={handles} holders={holders} marketCap={displayedCap} targetCap={targetCap} capProgress={capProgress} liveProgress={liveProgress} officialProgress={officialProgress} next={next} source={marketCap === null ? 'snapshot' : marketStatus === 'unavailable' ? 'stale' : 'live'}/><section className="mx-auto hidden max-w-6xl px-5 py-12 sm:block sm:py-20">
     <p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">Community growth · Mainnet</p>
-    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><h1 className="min-w-0 text-4xl font-semibold sm:text-5xl">$HANDLE × <span className="bg-gradient-to-r from-cyan-200 via-white to-violet-300 bg-clip-text text-transparent">SolHandle Growth Curve</span></h1><GrowthGoalMascot/></div>
+    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><h1 className="min-w-0 text-4xl font-semibold sm:text-5xl">$HANDLE × <span className="bg-gradient-to-r from-cyan-200 via-white to-violet-300 bg-clip-text text-transparent">SolHandle Growth Curve</span></h1></div>
     <p className="mt-3 text-slate-400">More handles, more holders, and sustained market interest bring the next reward closer.</p>
     <Link to="/growth/handle-mint-payments" className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-cyan-300/25 bg-slate-900/60 p-4 text-sm transition-colors hover:border-cyan-300/50"><span><strong className="block text-white">Mint with $HANDLE</strong><span className="mt-1 block text-slate-400">Proposed discount and 50% token burn · In progress</span></span><span className="font-medium text-cyan-300">Learn more →</span></Link>
     <Link to="/growth/burn" className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-burn-accent/25 bg-slate-900/60 p-4 text-sm hover:border-burn-accent/50"><span><strong className="block text-burn-highlight">Burn Dashboard</strong><span className="mt-1 block text-slate-400">Recorded $HANDLE burns, sources and on-chain transaction proof</span></span><span className="font-medium text-burn-accent">View burns →</span></Link>

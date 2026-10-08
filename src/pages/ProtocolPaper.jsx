@@ -1,7 +1,6 @@
 import Header from "@/components/solhandle/Header";
 import ProtocolPaperNav from "@/components/solhandle/ProtocolPaperNav";
 import ProtocolPaperSection from "@/components/solhandle/ProtocolPaperSection";
-import ProtocolPaperMascot from "@/components/solhandle/ProtocolPaperMascot";
 import { protocolPaperMeta, protocolSections } from "@/lib/protocolPaperContent";
 
 export default function ProtocolPaper() {
@@ -10,7 +9,7 @@ export default function ProtocolPaper() {
       <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wider"><span className="rounded-full border border-cyan-300/25 bg-cyan-300/5 px-3 py-1 text-cyan-200">Version {protocolPaperMeta.version}</span><span className="rounded-full border border-white/10 px-3 py-1 text-slate-400">{protocolPaperMeta.date}</span></div>
       <p className="mt-8 text-sm font-medium uppercase tracking-[0.2em] text-violet-300">{protocolPaperMeta.tagline}</p><h1 className="mt-3 text-4xl font-semibold tracking-tight md:text-6xl">{protocolPaperMeta.title} <span className="text-cyan-300">v{protocolPaperMeta.version}</span></h1><p className="mt-5 text-xl text-slate-300 md:text-2xl">{protocolPaperMeta.subtitle}</p>
       <p className="mt-7 max-w-3xl leading-relaxed text-slate-400">A concise specification of SolHandle’s ownership, resolution, marketplace, integration and security model, with the verified relationship between the identity protocol, $HANDLE community launch and Earn Network. It includes no market forecasts or price predictions.</p>
-    </div><ProtocolPaperMascot /></div></header>
+    </div></div></header>
     <div className="grid gap-10 px-5 py-12 md:px-9 lg:grid-cols-[230px_minmax(0,1fr)]"><ProtocolPaperNav sections={protocolSections} /><article className="max-w-3xl">{protocolSections.map((section) => <ProtocolPaperSection key={section.id} section={section} />)}<p className="border-t border-white/10 pt-8 text-xs leading-relaxed text-slate-500">This document is technical information, not financial, investment, tax or legal advice. Mainnet state, the official token address and the current published protocol and Earn Network configuration remain authoritative.</p></article></div>
   </div></main>;
 }

@@ -1,13 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatMintDate, shortenWallet } from "@/lib/protocolDisplay";
-import { Image } from "@/components/ui/image";
 
 export default function MyHandlesCard({ wallet, state, handles }) {
   return <section className="card-glow flex flex-col md:col-span-6 lg:col-span-4">
     <div className="flex items-center justify-between"><h3 className="text-sm font-semibold uppercase tracking-wider">My Handles</h3><Link to="/my-handles" className="text-xs text-cyan-300">View all</Link></div>
     <div className="min-h-40 flex-1">
-      {!wallet && <div className="mt-3 flex items-center gap-3"><Image src="https://base44.app/api/apps/6a86b7e4bcec5dfac8ee9a44/files/mp/public/6a86b7e4bcec5dfac8ee9a44/b35a3a97d_solhandle-original-HandleList-cap.png" alt="SolHandle mascot holding an empty identity card" className="solhandle-mascot-blend h-28 w-28 shrink-0" fittingType="fit"/><p className="text-sm text-slate-400">Connect your wallet to view your handles.</p></div>}
+      {!wallet && <div className="mt-3 flex items-center gap-3"><p className="text-sm text-slate-400">Connect your wallet to view your handles.</p></div>}
       {wallet && state === "loading" && <p className="mt-5 text-sm text-slate-400">Loading your handles…</p>}
       {wallet && state === "error" && <p className="mt-5 text-sm text-rose-300">Handles could not be loaded.</p>}
       {wallet && state === "ready" && !handles.length && <p className="mt-5 text-sm text-slate-400">No handles found in this wallet.</p>}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Menu, X, Search } from "lucide-react";
-import HomeNavigation from '@/components/solhandle/home/HomeNavigation';
 import HomeDesktopNavigation from '@/components/solhandle/home/HomeDesktopNavigation';
 import Brand from "@/components/solhandle/Brand";
 import HeaderExternalLinks from "@/components/solhandle/HeaderExternalLinks";
@@ -23,6 +22,6 @@ export default function Header({ onConnected, funnel = false }) {
     <Brand prominent />
     <HomeDesktopNavigation/>
     <div className="flex items-center gap-3">{funnel ? <button aria-label="Search a handle" onClick={() => { document.getElementById('search-handles')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById('home-handle-input')?.focus(); }} className="hidden text-names-accent lg:block"><Search className="h-5 w-5"/></button> : <HeaderExternalLinks/>}{!funnel && <><MarketplaceNotificationBell wallet={wallet} bids={notifications.bids} sales={notifications.sales} onRefresh={notifications.refresh}/><AdminTradeBell/></>}<WalletButton onConnected={onConnected} /><button type="button" onClick={() => setMenuOpen((open) => !open)} className="text-slate-300 lg:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
-    {menuOpen && (funnel ? <HomeNavigation mobile onNavigate={() => setMenuOpen(false)}/> : <MobileNavigation onNavigate={() => setMenuOpen(false)} tokenIsLive={tokenIsLive} />)}
+    {menuOpen && <MobileNavigation onNavigate={() => setMenuOpen(false)} tokenIsLive={tokenIsLive} />}
   </header>;
 }

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import AttoAvatar from '@/components/solhandle/AttoAvatar';
 import ResolverDemo from '@/components/solhandle/ResolverDemo';
 import ReverseResolverDemo from '@/components/solhandle/resolve/ReverseResolverDemo';
 import ResolveWizardSetup from '@/components/solhandle/resolve/ResolveWizardSetup';
@@ -19,7 +18,7 @@ export default function ResolveWizard() {
   const [step, setStep] = useState(0);
   const [method, setMethod] = useState('members');
   return <section aria-label="Atto integration wizard" className="my-6 rounded-2xl border border-names-accent/30 bg-card p-4 lg:p-6">
-    <div className="flex items-start gap-4"><AttoAvatar className="h-16 w-16"/><div><p className="text-xs font-semibold uppercase tracking-wider text-names-secondary">Learn with Atto</p><p aria-live="polite" className="mt-2 text-sm leading-7 text-foreground">{lessons[step]}</p></div></div>
+    <div className="flex items-start gap-4"><div><p className="text-xs font-semibold uppercase tracking-wider text-names-secondary">Learn with Atto</p><p aria-live="polite" className="mt-2 text-sm leading-7 text-foreground">{lessons[step]}</p></div></div>
     <ol className="my-6 grid grid-cols-3 gap-2" aria-label="Your progress">{steps.map((label, index) => <li key={label} aria-current={index === step ? 'step' : undefined} className={`rounded-lg border p-3 text-xs lg:text-sm ${index === step ? 'border-names-accent text-names-accent' : 'border-border text-muted-foreground'}`}><span className="block font-semibold">{index + 1}</span>{label}</li>)}</ol>
     <div aria-live="polite"><h2 className="mb-4 text-xl font-semibold">{steps[step]}</h2>
       {step === 0 && <fieldset><legend className="mb-3 text-sm text-muted-foreground">What do you want your platform to do? Select one goal.</legend><div className="grid gap-3 lg:grid-cols-3">{methods.map(option => <label key={option.id} className={`cursor-pointer rounded-xl border p-4 ${method === option.id ? 'border-names-accent bg-names-accent/5' : 'border-border'}`}><span className="flex items-center gap-2"><input type="radio" name="resolve-method" value={option.id} checked={method === option.id} onChange={() => setMethod(option.id)}/><span className="font-semibold">{option.title}</span></span><span className="mt-3 block text-sm leading-6 text-muted-foreground">{option.description}</span></label>)}</div></fieldset>}

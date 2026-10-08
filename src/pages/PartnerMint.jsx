@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Header from '@/components/solhandle/Header';
 import { useAuth } from '@/lib/AuthContext';
 import PartnerDevnetProvider from '@/components/solhandle/partner-mint/PartnerDevnetProvider';
 import PartnerMintCheckout from '@/components/solhandle/partner-mint/PartnerMintCheckout';
@@ -6,7 +7,7 @@ import PartnerRegistryAdmin from '@/components/solhandle/partner-mint/PartnerReg
 import PartnerMintReadiness from '@/components/solhandle/partner-mint/PartnerMintReadiness';
 export default function PartnerMint() {
   const { user } = useAuth();
-  return <main className="dark min-h-screen bg-background text-foreground"><section className="mx-auto max-w-2xl px-5 py-12">
+  return <main className="dark min-h-screen bg-background text-foreground"><Header/><section className="mx-auto max-w-2xl px-5 py-12">
     <Link to="/developers/partner-mint" className="text-sm text-names-accent">← Partner Mint plan</Link>
     <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-names-warning">Devnet only · administrator pilot</p>
     <h1 className="mt-3 font-heading text-3xl">Partner Mint</h1>

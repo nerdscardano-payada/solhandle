@@ -11,7 +11,8 @@
   .platform-inner .platform-page-content>main>div>:is(section,div):is(.max-w-4xl,.max-w-5xl,.max-w-6xl,.max-w-7xl){width:100%;max-width:none}
   .platform-inner .platform-page-content>main>div>section.grid>article.max-w-3xl{max-width:none}
   .platform-shell .solhandle-platform-header{max-width:1416px;width:100%;margin-left:auto;margin-right:auto;gap:20px;padding:8px 48px;background:hsl(var(--hero-canvas)/.6);border-bottom-color:hsl(var(--names-accent)/.12);backdrop-filter:blur(14px)}
-  .platform-shell .solhandle-platform-header>nav{gap:20px}
+  .platform-shell .solhandle-platform-header>nav{gap:14px;white-space:nowrap}
+  @media(max-width:1439px){.platform-shell .solhandle-platform-header{flex-wrap:wrap}.platform-shell .solhandle-platform-header>nav{order:3;flex-basis:100%;justify-content:center}}
   .platform-inner h1{font-family:var(--font-hero);font-weight:900;font-size:clamp(40px,3.6vw,64px);letter-spacing:-.045em;line-height:1.1}
   .platform-inner h2{font-family:var(--font-heading);letter-spacing:-.025em}
   .platform-inner :is(.card-glow,[class*="rounded"][class*="border"][class*="bg-slate-9"],.bg-card){background:hsl(var(--hero-surface)/.85);border-color:hsl(var(--names-accent)/.2);border-radius:14px;backdrop-filter:blur(8px)}
