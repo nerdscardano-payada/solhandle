@@ -4,20 +4,20 @@
   .platform-shell .dark{--background:225 50% 3%;--card:225 58% 6%;--border:189 35% 20%;--muted-foreground:215 20% 70%}
   .platform-backdrop{display:block;position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
   .platform-backdrop-image{position:absolute!important;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.55;mix-blend-mode:screen}
-  .platform-backdrop-tint{position:absolute;inset:0;background:linear-gradient(90deg,hsl(var(--hero-canvas)/.25),transparent 40%,hsl(var(--hero-canvas)/.08)),linear-gradient(0deg,hsl(var(--hero-canvas)/.8),transparent 15%)}
+  .platform-backdrop-tint{position:absolute;inset:0;background:linear-gradient(90deg,hsl(var(--hero-canvas)/.25),transparent 40%,hsl(var(--hero-canvas)/.08)),linear-gradient(0deg,hsl(var(--hero-canvas)/.8),transparent 15%),linear-gradient(180deg,transparent 300px,hsl(var(--hero-canvas)/.5) 600px,hsl(var(--hero-canvas)/.6))}
   .platform-inner .platform-page-content>main{min-height:100vh;background:transparent!important}
-  .platform-inner .platform-page-content>main>div:is(.mx-auto){width:100%;max-width:none;border-left:0;border-right:0}
-  .platform-inner .platform-page-content>main>div>:is(section,div):is(.px-5,.px-4){padding-left:5vw;padding-right:5vw}
+  .platform-inner .platform-page-content>main>div:is(.mx-auto){width:100%;max-width:1416px;margin-left:auto;margin-right:auto;border-left:0;border-right:0}
+  .platform-inner .platform-page-content>main>div>:is(section,div):is(.px-5,.px-4){padding-left:48px;padding-right:48px}
   .platform-inner .platform-page-content>main>div>:is(section,div):is(.max-w-4xl,.max-w-5xl,.max-w-6xl,.max-w-7xl){width:100%;max-width:none}
   .platform-inner .platform-page-content>main>div>section.grid>article.max-w-3xl{max-width:none}
-  .platform-shell .solhandle-platform-header{max-width:none;width:100%;gap:20px;padding:8px 5vw;background:hsl(var(--hero-canvas)/.6);border-bottom-color:hsl(var(--names-accent)/.12);backdrop-filter:blur(14px)}
+  .platform-shell .solhandle-platform-header{max-width:1416px;width:100%;margin-left:auto;margin-right:auto;gap:20px;padding:8px 48px;background:hsl(var(--hero-canvas)/.6);border-bottom-color:hsl(var(--names-accent)/.12);backdrop-filter:blur(14px)}
   .platform-shell .solhandle-platform-header>nav{gap:20px}
   .platform-inner h1{font-family:var(--font-hero);font-weight:900;font-size:clamp(40px,3.6vw,64px);letter-spacing:-.045em;line-height:1.1}
   .platform-inner h2{font-family:var(--font-heading);letter-spacing:-.025em}
   .platform-inner :is(.card-glow,[class*="rounded"][class*="border"][class*="bg-slate-9"],.bg-card){background:hsl(var(--hero-surface)/.85);border-color:hsl(var(--names-accent)/.2);border-radius:14px;backdrop-filter:blur(8px)}
   .platform-inner :is(button,a)[class*="bg-gradient-to-r"]{background-image:linear-gradient(100deg,hsl(var(--hero-cyan)),hsl(var(--hero-blue)) 45%,hsl(var(--hero-pink)))}
   .platform-inner :is(input,textarea,select){border-color:hsl(var(--names-accent)/.2)}
-  .platform-shell .platform-page-content>footer{background:hsl(var(--hero-canvas)/.8);padding-left:5vw;padding-right:5vw;border-top-color:hsl(var(--names-accent)/.2)}
-  .platform-shell .platform-page-content>footer>div.mx-auto{max-width:none}
+  .platform-shell .platform-page-content>footer{background:hsl(var(--hero-canvas)/.8);padding-left:48px;padding-right:48px;border-top-color:hsl(var(--names-accent)/.2)}
+  .platform-shell .platform-page-content>footer>div.mx-auto{max-width:1320px}
   .platform-shell .platform-page-content>footer>.pointer-events-none{display:none}
 }
