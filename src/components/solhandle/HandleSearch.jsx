@@ -17,7 +17,7 @@ import AvailableHandlePreview from '@/components/solhandle/AvailableHandlePrevie
 import HomeMintSearch from '@/components/solhandle/home/HomeMintSearch';
 import { base44 } from '@/api/base44Client';
 
-export default function HandleSearch({ wallet, initialHandle = '', compact = false, personalSearch = false, funnel = false }) {
+export default function HandleSearch({ wallet, initialHandle = '', compact = false, personalSearch = false, funnel = false, onPreviewHandle }) {
   const urlParams = new URLSearchParams(window.location.search);
   const pendingClaim = normalizeHandle(urlParams.get("claim") || "");
   const resumeClaimId = urlParams.get("official_claim") || "";
@@ -26,6 +26,9 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
   const client = useQueryClient();
   const userInput = useRef(null);
   useConfirmedHandleSearch(handle, result, userInput.current === handle);
+  useEffect(() => {
+    onPreviewHandle?.(result?.available && result.handle === handle && !result.state ? handle : '');
+  }, [result, handle, onPreviewHandle]);
   const [checkVersion, setCheckVersion] = useState(0);
   const [homeMintHandle, setHomeMintHandle] = useState('');
   const [pendingSolClaim, setPendingSolClaim] = useState('');
