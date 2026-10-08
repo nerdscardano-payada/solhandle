@@ -2,8 +2,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
 export default async function(req: Request): Promise<Response> {
   try {
-    const { limit = 6, namePool = false } = await req.json();
+    const { limit = 6, namePool = false, recentlySearched = false } = await req.json();
     const base44 = createClientFromRequest(req);
+    if (recentlySearched === true) {
+      const searched = await base44.asServiceRole.entities.SearchAnalytics.aggregate({ query: { handle: { $regex: '^[a-z0-9]{1,20}$' } }, groupBy: 'handle', max: 'created_date', sort: '-max_created_date', limit: Math.min(Math.max(Number(limit) || 3, 1), 12) });
+      return Response.json({ handles: searched.rows.map(row => ({ handle: row.handle, searchedAt: row.max_created_date })) });
+    }
     if (namePool === true) {
       const [searched, claimed] = await Promise.all([
         base44.asServiceRole.entities.SearchAnalytics.aggregate({ groupBy: 'handle', max: 'created_date', sort: '-max_created_date', limit: 20 }),

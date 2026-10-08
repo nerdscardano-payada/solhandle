@@ -12,6 +12,7 @@ export default function useConfirmedHandleSearch(handle, result, userEntered) {
       if (response.recorded) {
         client.invalidateQueries({ queryKey: ['names'] });
         client.invalidateQueries({ queryKey: ['name-interest'] });
+        client.invalidateQueries({ queryKey: ['homepage-recent-searches'] });
       }
       if (response.recorded && !response.duplicate) {
         base44.analytics.track({ eventName: 'referral_handle_searched', properties: { available: payload.available } });

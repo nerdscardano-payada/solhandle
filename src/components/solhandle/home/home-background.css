@@ -28,6 +28,8 @@
   .home-funnel .home-available-tile,.home-funnel .home-market-tile{display:grid;grid-template-columns:108px minmax(0,1fr);align-items:center;gap:18px;padding:16px}
   .home-funnel .home-tile-artwork{width:108px;min-width:0}
   .home-funnel .home-tile-artwork>div{width:100%;margin:0}
+  .home-funnel .home-available-tile{grid-template-columns:144px minmax(0,1fr)}
+  .home-funnel .home-available-tile .home-tile-artwork{width:144px}
   .platform-home .home-funnel .solhandle-platform-header>nav{gap:14px;white-space:nowrap}
   .platform-home .home-funnel .solhandle-menu-brand-prominent{gap:18px}
   .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-mark{width:96px;height:96px}
