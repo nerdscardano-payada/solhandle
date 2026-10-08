@@ -1,0 +1,12 @@
+.home-full-backdrop{display:none}
+@media(min-width:1280px){
+  .home-funnel{position:relative;isolation:isolate}
+  .home-full-backdrop{display:block;position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .home-full-backdrop-image{position:absolute!important;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.55;mix-blend-mode:screen}
+  .home-full-backdrop-tint{position:absolute;inset:0;background:linear-gradient(90deg,hsl(var(--hero-canvas)/.25),transparent 40%,hsl(var(--hero-canvas)/.08)),linear-gradient(0deg,hsl(var(--hero-canvas)/.8),transparent 15%);}
+  .home-funnel .home-hero-scenery,.home-funnel .home-hero-shade{display:none}
+  .home-funnel .home-mint-hero{isolation:auto;background:transparent}
+  .home-funnel header{background:hsl(var(--hero-canvas)/.6);backdrop-filter:blur(14px)}
+  .home-funnel .home-content{background:transparent}
+  .home-funnel .home-info-card,.home-funnel .home-name-tile{background:hsl(var(--hero-surface)/.78);backdrop-filter:blur(8px)}
+}
