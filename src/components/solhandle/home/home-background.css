@@ -32,7 +32,9 @@
   .home-funnel .home-product-visual{min-height:410px;gap:24px}
   .home-funnel .home-phone{width:240px}
   .home-funnel .home-floating-names{width:230px}
-  .home-funnel .home-content{position:relative;isolation:isolate}
+  .home-funnel .home-content{position:relative;isolation:isolate;display:flex;flex-direction:column}
+  .home-funnel .home-hero-layout{padding-bottom:16px}
+  .home-funnel .home-content>.home-discover-section{order:-1;padding-top:12px}
   .home-funnel .home-content::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,hsl(var(--hero-canvas)/.5) 120px,hsl(var(--hero-canvas)/.6))}
   .home-funnel .home-content-section{padding-top:28px;padding-bottom:28px}
   .home-funnel .home-section-title{margin-bottom:18px}
