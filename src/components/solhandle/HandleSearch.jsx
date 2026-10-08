@@ -14,8 +14,10 @@ import OfficialClaimDialog from "@/components/solhandle/OfficialClaimDialog";
 import HandleTokenClaimButton from "@/components/solhandle/HandleTokenClaimButton";
 import CompactDisclosure from "@/components/solhandle/CompactDisclosure";
 import AvailableHandlePreview from '@/components/solhandle/AvailableHandlePreview';
+import HomeMintSearch from '@/components/solhandle/home/HomeMintSearch';
+import { base44 } from '@/api/base44Client';
 
-export default function HandleSearch({ wallet, initialHandle = '', compact = false, personalSearch = false }) {
+export default function HandleSearch({ wallet, initialHandle = '', compact = false, personalSearch = false, funnel = false }) {
   const urlParams = new URLSearchParams(window.location.search);
   const pendingClaim = normalizeHandle(urlParams.get("claim") || "");
   const resumeClaimId = urlParams.get("official_claim") || "";
@@ -24,7 +26,18 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
   const client = useQueryClient();
   const userInput = useRef(null);
   useConfirmedHandleSearch(handle, result, userInput.current === handle);
-  const updateInput = value => { userInput.current = normalizeHandle(value); setInput(value); };
+  const [checkVersion, setCheckVersion] = useState(0);
+  const [homeMintHandle, setHomeMintHandle] = useState('');
+  const [pendingSolClaim, setPendingSolClaim] = useState('');
+  const searchStarted = useRef(false);
+  const searchReported = useRef('');
+  const updateInput = value => { userInput.current = normalizeHandle(value); setInput(value); if (funnel && value && !searchStarted.current) { searchStarted.current = true; base44.analytics.track({ eventName: 'handle_search_started' }); } };
+  useEffect(() => {
+    if (!funnel) return;
+    const select = event => { updateInput(event.detail.handle); setHomeMintHandle(event.detail.handle); };
+    window.addEventListener('solhandle:home-select', select);
+    return () => window.removeEventListener('solhandle:home-select', select);
+  }, [funnel]);
   const [claimMethod, setClaimMethod] = useState(urlParams.get("payment") === "HANDLE" ? "HANDLE" : "SOL");
   const [pendingTokenClaim, setPendingTokenClaim] = useState("");
   useEffect(() => {
@@ -61,6 +74,10 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
       try {
         const data = await client.fetchQuery({ queryKey: ['handle-availability', handle], queryFn: async () => (await invokeWithRetry('getHandleAvailability', { handle })).data, staleTime: 15000, retry: false });
         if (active && data?.handle === handle) setResult(data);
+        if (funnel && data?.status === 'CLAIMED') {
+          const listing = await client.fetchQuery({ queryKey: ['home-name-listing', handle], queryFn: async () => (await base44.entities.NativeListing.filter({ handle, status: 'ACTIVE' }, { limit: 1, fields: ['handle', 'price_lamports'] })).items[0] || null, staleTime: 30000 }).catch(() => null);
+          if (active && data.handle === handle) setResult({ ...data, listing });
+        }
       } catch {
         if (active) setResult({ handle, display: `@${handle}`, available: false, status: "UNAVAILABLE", state: "unavailable" });
       }
@@ -70,7 +87,7 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
       active = false;
       clearTimeout(timer);
     };
-  }, [handle, client, personalSearch]);
+  }, [handle, client, personalSearch, funnel, checkVersion]);
   useEffect(() => {
     if (!launch.isLive || !pendingClaim || !wallet || !result?.available || result.handle !== pendingClaim) return;
     setShowClaim(true);
@@ -80,7 +97,31 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
     if (!resumeClaimId || !pendingClaim || result?.status !== "RESERVED" || result.handle !== pendingClaim) return;
     setShowOfficialClaim(true);
   }, [resumeClaimId, pendingClaim, result]);
+  const requestHomeMint = () => {
+    if (!launch.isLive || !result?.available || result.handle !== handle) return;
+    setClaimMethod('SOL'); localStorage.setItem('solhandle_pending_handle', handle); trackFunnel('CLAIM_CLICK', handle);
+    base44.analytics.track({ eventName: 'mint_clicked', properties: { handle_length: handle.length, price_sol: lamportsToSol(result.priceLamports), payment_method: 'SOL' } });
+    if (wallet) setShowClaim(true);
+    else { setPendingSolClaim(handle); base44.analytics.track({ eventName: 'wallet_connect_started' }); window.dispatchEvent(new CustomEvent('solhandle:connect-wallet', { detail: { action: 'claim', handle } })); }
+  };
+  useEffect(() => {
+    if (!funnel || !homeMintHandle || result?.handle !== homeMintHandle || handle !== homeMintHandle || result?.state) return;
+    setHomeMintHandle('');
+    if (result.available) requestHomeMint();
+  }, [funnel, homeMintHandle, result, handle, launch.isLive, wallet]);
+  useEffect(() => {
+    if (!pendingSolClaim || !wallet || !launch.isLive || !result?.available || result.handle !== pendingSolClaim || handle !== pendingSolClaim) return;
+    setPendingSolClaim(''); setClaimMethod('SOL'); setShowClaim(true); base44.analytics.track({ eventName: 'wallet_connected' });
+  }, [pendingSolClaim, wallet, launch.isLive, result, handle]);
+  useEffect(() => {
+    if (!funnel || !userInput.current || result?.handle !== handle || result?.state || searchReported.current === handle) return;
+    searchReported.current = handle;
+    const properties = { handle_length: handle.length, available: Boolean(result.available), price_sol: lamportsToSol(result.priceLamports) };
+    base44.analytics.track({ eventName: 'handle_search_completed', properties });
+    if (result.available) base44.analytics.track({ eventName: 'handle_available', properties });
+  }, [funnel, result, handle]);
   const available = result?.available; const reserved = result?.status === "RESERVED"; const claimed = result?.status === "CLAIMED"; const price = lamportsToSol(result?.priceLamports);
   const rarity = handle.length === 1 ? "Legendary" : handle.length === 2 ? "Ultra Rare" : handle.length === 3 ? "Rare" : handle.length === 4 ? "Uncommon" : handle.length >= 5 ? "Standard" : "";
+  if (funnel) return <><HomeMintSearch input={input} onChange={updateInput} handle={handle} result={result} launch={launch} onMint={requestHomeMint} onTokenMint={claimWithToken} onCheck={() => { client.invalidateQueries({ queryKey: ['handle-availability', handle] }); setCheckVersion(value => value + 1); }}/><MintReadinessDialog open={showClaim} onOpenChange={setShowClaim} wallet={wallet} result={result} initialPaymentMethod={claimMethod}/><OfficialClaimDialog open={showOfficialClaim} onOpenChange={setShowOfficialClaim} handle={handle} restriction={result?.restriction} resumeRequestId={resumeClaimId}/></>;
   return <><section className="relative overflow-hidden rounded-2xl border border-cyan-300/60 bg-slate-950/75 p-5 shadow-2xl shadow-cyan-400/20 backdrop-blur-xl">{!compact && <MintBackground />}<div className="relative z-10"><div className="mb-4 flex flex-wrap items-center justify-between gap-2"><h2 className="text-xl font-semibold text-white"><span className="sm:hidden">Find your @handle</span><span className="hidden sm:inline">Find your SolHandle</span></h2><Link to="/directory" className="text-sm font-medium text-cyan-300 hover:text-cyan-200">Browse Premium Directory →</Link></div>{personalSearch && <p className="mb-3 text-sm text-inherit">Is your name still available? Try your name, nickname, or brand.</p>}<HandleSearchInput input={input} onChange={updateInput} placeholder={personalSearch ? 'Your name or nickname' : ''}/><div className="mt-4 rounded-xl border border-white/10 bg-slate-900/60 p-4">{result?.state === 'empty' ? <p className="text-sm text-inherit">Enter a name to see its availability, price, and your future identity.</p> : result?.state === "checking" ? <div className="flex items-center gap-3 text-slate-400"><LoaderCircle className="animate-spin"/> Checking on-chain index…</div> : result?.state === "invalid" ? <div className="flex gap-3 text-rose-300"><ShieldAlert/> {result.message}</div> : <div className="flex items-center justify-between"><div className="flex gap-3"><span className={`grid h-10 w-10 place-items-center rounded-full ${available ? "bg-emerald-400/15 text-emerald-300" : "bg-violet-400/15 text-violet-300"}`}>{available ? <Check/> : <ShieldAlert/>}</span><div><b className="block text-lg text-white">@{handle || "—"}</b><span className={available ? "text-emerald-300" : "text-violet-300"}>{available ? "is available!" : result?.status === "RESERVED" ? "is reserved for an official claim" : result?.status === "PROTECTED" ? "is a protected brand name" : result?.status === "UNAVAILABLE" ? "could not be verified" : "is already claimed"}</span>{(rarity || result?.nameClass === "Premium") && <div className="mt-2 flex flex-wrap items-center gap-2">{rarity && <span className="inline-flex h-6 items-center rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2.5 text-[11px] font-semibold tracking-wide text-cyan-200">✦ {rarity.replaceAll("_", " ")}</span>}{result?.nameClass === "Premium" && <span className="inline-flex h-6 items-center rounded-full border border-violet-300/40 bg-violet-400/10 px-2.5 text-[11px] font-semibold tracking-wide text-violet-200 shadow-[0_0_12px_rgba(167,139,250,.2)]">◆ PREMIUM</span>}</div>}</div></div>{available && <div className="text-right"><span className="block text-xs text-slate-400">Price</span><b className="text-lg text-white">{price} SOL</b></div>}</div>}</div>{personalSearch && available && result?.handle === handle && <AvailableHandlePreview handle={handle} wallet={wallet}/>}{result?.assetAddress && <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-cyan-300/20 bg-cyan-300/[0.05] px-3 py-2 text-xs"><span className="text-slate-400">Metaplex Core asset</span><a href={`https://explorer.solana.com/address/${result.assetAddress}`} target="_blank" rel="noreferrer" className="font-mono text-cyan-200 underline decoration-cyan-300/30 underline-offset-4 hover:text-cyan-100">{shortenAddress(result.assetAddress)} ↗</a></div>}{(result?.categories?.length > 0 || Boolean(result?.handleScore)) && <CompactDisclosure compact={compact} label="Handle details">{result?.categories?.length > 0 && <div className="mt-3 flex flex-wrap items-center gap-2"><span className="text-xs text-slate-500">Categories</span>{result.categories.map((category)=><span key={category} className="rounded-full border border-white/10 px-2 py-1 text-xs capitalize text-slate-300">{category}</span>)}{result.handleScore && <span className="ml-auto text-xs text-cyan-200">Handle Score {result.handleScore}/100</span>}</div>}{result?.handleScore && <p className="mt-2 text-xs text-slate-500">Handle Score reflects memorability and relevance, not financial value.</p>}</CompactDisclosure>}{!launch.isLive && !reserved && !claimed && <div className="mt-4 rounded-xl border border-cyan-300/20 bg-cyan-300/[0.06] px-4 py-3 text-center"><span className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-200"><Clock3 className="h-4 w-4"/>Public mint launches in</span><b className="mt-1 block font-mono text-lg text-white">{launch.days}d {launch.hours}h {launch.minutes}m {launch.seconds}s</b><span className="text-xs text-slate-400">{launch.launchLabel} · your local time</span></div>}{reserved ? <button onClick={() => setShowOfficialClaim(true)} className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-400 to-violet-500 py-3 font-semibold text-slate-950"><ShieldAlert className="h-4 w-4"/>Request official claim</button> : claimed ? <Link to={`/${handle}`} className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-cyan-300/30 bg-cyan-300/10 py-3 font-semibold text-cyan-100">View @{handle}</Link> : <button disabled={!available || !launch.isLive} onClick={() => { if (!launch.isLive) return; setClaimMethod("SOL"); setPendingTokenClaim(""); localStorage.setItem("solhandle_pending_handle", handle); trackFunnel("CLAIM_CLICK", handle); wallet ? setShowClaim(true) : window.dispatchEvent(new CustomEvent("solhandle:connect-wallet", { detail: { action: "claim", handle } })); }} className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-300 via-cyan-400 to-violet-500 py-3 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"><Wallet className="h-4 w-4"/>{!launch.isLive ? "Minting opens at launch" : available ? `Claim @${handle} · ${price} SOL` : "Handle unavailable"}</button>}{available && launch.isLive && !reserved && !claimed && <CompactDisclosure compact={compact} label="Prefer to pay with $HANDLE?"><HandleTokenClaimButton handle={handle} enabled={result?.handle === handle && available && launch.isLive} onClaim={claimWithToken}/></CompactDisclosure>}<p className="mt-3 text-center text-xs text-slate-400">One-time payment. No renewals. Yours until you transfer it.</p></div></section><MintReadinessDialog open={showClaim} onOpenChange={setShowClaim} wallet={wallet} result={result} initialPaymentMethod={claimMethod}/><OfficialClaimDialog open={showOfficialClaim} onOpenChange={setShowOfficialClaim} handle={handle} restriction={result?.restriction} resumeRequestId={resumeClaimId}/></>;
 }

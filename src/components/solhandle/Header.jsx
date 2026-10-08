@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
+import HomeNavigation from '@/components/solhandle/home/HomeNavigation';
 import Brand from "@/components/solhandle/Brand";
 import DiscoverMenu from "@/components/solhandle/DiscoverMenu";
 import UtilityMenu from "@/components/solhandle/UtilityMenu";
@@ -18,7 +19,7 @@ import useTokenLaunchSettings from "@/hooks/useTokenLaunchSettings";
 
 const links = [["Market", "/market"], ["$HANDLE", "/upcoming/token-launch"]];
 
-export default function Header({ onConnected }) {
+export default function Header({ onConnected, funnel = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { publicKey } = useWallet();
   const wallet = publicKey?.toBase58() || "";
@@ -28,8 +29,8 @@ export default function Header({ onConnected }) {
   const linkClass = ({ isActive }) => `border-b-2 pb-1 text-sm ${isActive ? "border-emerald-300 text-white" : "border-transparent text-slate-400 hover:text-white"}`;
   return <header className="relative mx-auto flex max-w-7xl items-center justify-between border-b border-white/10 px-5 py-4 lg:px-9">
     <Brand />
-    <nav className="hidden items-center gap-6 lg:flex xl:gap-7"><DiscoverMenu />{links.map(([label, path]) => <NavLink key={path} to={path} className={({ isActive }) => path === "/upcoming/token-launch" && tokenIsLive ? "inline-flex animate-pulse items-center gap-1.5 border-b-2 border-emerald-300 pb-1 text-sm font-semibold text-emerald-300" : linkClass({ isActive })}>{label}{path === "/upcoming/token-launch" && tokenIsLive && <span className="rounded bg-emerald-400/15 px-1.5 py-0.5 text-[9px] tracking-wider text-emerald-200">LIVE</span>}</NavLink>)}<UtilityMenu /><GrowthMenu /><DevelopersMenu /><MoreMenu /></nav>
-    <div className="flex items-center gap-3"><HeaderExternalLinks/><MarketplaceNotificationBell wallet={wallet} bids={notifications.bids} sales={notifications.sales} onRefresh={notifications.refresh}/><AdminTradeBell/><WalletButton onConnected={onConnected} /><button type="button" onClick={() => setMenuOpen((open) => !open)} className="text-slate-300 lg:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
-    {menuOpen && <MobileNavigation onNavigate={() => setMenuOpen(false)} tokenIsLive={tokenIsLive} />}
+    {funnel ? <HomeNavigation/> : <nav className="hidden items-center gap-6 lg:flex xl:gap-7"><DiscoverMenu />{links.map(([label, path]) => <NavLink key={path} to={path} className={({ isActive }) => path === "/upcoming/token-launch" && tokenIsLive ? "inline-flex animate-pulse items-center gap-1.5 border-b-2 border-emerald-300 pb-1 text-sm font-semibold text-emerald-300" : linkClass({ isActive })}>{label}{path === "/upcoming/token-launch" && tokenIsLive && <span className="rounded bg-emerald-400/15 px-1.5 py-0.5 text-[9px] tracking-wider text-emerald-200">LIVE</span>}</NavLink>)}<UtilityMenu /><GrowthMenu /><DevelopersMenu /><MoreMenu /></nav>}
+    <div className="flex items-center gap-3">{funnel ? <button aria-label="Search a handle" onClick={() => { document.getElementById('search-handles')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById('home-handle-input')?.focus(); }} className="hidden text-names-accent lg:block"><Search className="h-5 w-5"/></button> : <HeaderExternalLinks/>}{!funnel && <><MarketplaceNotificationBell wallet={wallet} bids={notifications.bids} sales={notifications.sales} onRefresh={notifications.refresh}/><AdminTradeBell/></>}<WalletButton onConnected={onConnected} /><button type="button" onClick={() => setMenuOpen((open) => !open)} className="text-slate-300 lg:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
+    {menuOpen && (funnel ? <HomeNavigation mobile onNavigate={() => setMenuOpen(false)}/> : <MobileNavigation onNavigate={() => setMenuOpen(false)} tokenIsLive={tokenIsLive} />)}
   </header>;
 }
