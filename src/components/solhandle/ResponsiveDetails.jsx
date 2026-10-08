@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 export default function ResponsiveDetails({ label, children }) {
-  const [open, setOpen] = useState(() => window.matchMedia('(min-width:1280px)').matches);
+  const [open, setOpen] = useState(() => window.matchMedia('(min-width:768px)').matches);
   useEffect(() => {
-    const media = window.matchMedia('(min-width:1280px)');
+    const media = window.matchMedia('(min-width:768px)');
     const update = event => setOpen(event.matches);
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);

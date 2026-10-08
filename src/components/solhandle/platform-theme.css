@@ -1,5 +1,5 @@
 .platform-backdrop{display:none}
-@media(min-width:1280px){
+@media(min-width:768px){
   .platform-shell{position:relative;isolation:isolate;min-height:100vh;background:hsl(var(--hero-canvas));color:hsl(var(--foreground));--background:225 50% 3%;--foreground:0 0% 98%;--card:225 58% 6%;--card-foreground:0 0% 98%;--border:189 35% 20%;--muted:225 35% 12%;--muted-foreground:215 20% 70%}
   .platform-shell .dark{--background:225 50% 3%;--card:225 58% 6%;--border:189 35% 20%;--muted-foreground:215 20% 70%}
   .platform-backdrop{display:block;position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}

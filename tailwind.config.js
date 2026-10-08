@@ -3,12 +3,12 @@ module.exports = {
     darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
-    // Tablets retain the mobile layout; desktop variants start together.
+    // Tablets and desktops share the web layout from 768px.
     screens: {
-      sm: '1280px',
-      md: '1280px',
-      lg: '1280px',
-      xl: '1280px',
+      sm: '768px',
+      md: '768px',
+      lg: '768px',
+      xl: '768px',
       '2xl': '1536px',
     },
   	extend: {

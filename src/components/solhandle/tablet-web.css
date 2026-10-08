@@ -1,0 +1,31 @@
+@media (min-width:768px) and (max-width:1279px){
+  .platform-shell .solhandle-platform-header,
+  .platform-home .home-funnel .solhandle-platform-header{padding:12px 24px;gap:16px;flex-wrap:wrap}
+  .platform-shell .solhandle-platform-header>nav,
+  .platform-home .home-funnel .solhandle-platform-header>nav{order:3;flex-basis:100%;justify-content:center;flex-wrap:wrap;gap:12px}
+  .platform-shell .solhandle-menu-brand-prominent,
+  .platform-home .home-funnel .solhandle-menu-brand-prominent{gap:10px}
+  .platform-shell .solhandle-menu-brand-prominent .solhandle-menu-mark,
+  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-mark{width:52px;height:52px}
+  .platform-shell .solhandle-menu-brand-prominent .solhandle-menu-wordmark,
+  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-wordmark{width:180px}
+  .platform-inner .platform-page-content>main>div>:is(section,div):is(.px-5,.px-4),
+  .platform-shell .platform-page-content>footer,
+  .platform-home .home-funnel .home-content{padding-left:24px;padding-right:24px}
+  .platform-home .home-funnel .home-hero-layout{padding:28px 24px;gap:24px;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+  .platform-home .home-funnel .home-claim-title{font-size:clamp(30px,4.1vw,50px)}
+  .platform-home .home-funnel .home-hero-layout>div:first-child>p:nth-of-type(2){font-size:16px}
+  .platform-home .home-funnel .home-product-visual{min-height:0}
+  .platform-home .home-funnel .home-iphone .home-iphone-screen{min-height:0;padding:12px 14px 26px}
+  .platform-home .home-funnel .home-iphone-content .home-iphone-artwork{max-width:200px}
+  .platform-home .home-funnel .home-iphone-content .space-y-3{gap:6px}
+  .platform-home .home-funnel .home-iphone-content .space-y-3>div{padding:12px 5px;font-size:10px}
+  .platform-home .home-funnel .home-handle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .platform-home .home-funnel .home-available-tile,
+  .platform-home .home-funnel .home-market-tile{grid-template-columns:minmax(0,1fr);gap:12px}
+}
+@media (min-width:768px) and (max-width:1023px){
+  .platform-home .home-funnel .home-search-form{flex-direction:column}
+  .platform-home .home-funnel .home-four-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .platform-home .home-funnel .home-activity-cards{grid-template-columns:minmax(0,1fr)}
+}

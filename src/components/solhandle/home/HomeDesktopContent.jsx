@@ -6,7 +6,7 @@ import HomeTokenFlywheel from '@/components/solhandle/home/HomeTokenFlywheel';
 import { useSyncExternalStore } from 'react';
 import HomeMobileContent from '@/components/solhandle/home/HomeMobileContent';
 
-const mobileQuery = window.matchMedia('(max-width:1279px)');
+const mobileQuery = window.matchMedia('(max-width:767px)');
 const subscribe = callback => {
   mobileQuery.addEventListener('change', callback);
   return () => mobileQuery.removeEventListener('change', callback);

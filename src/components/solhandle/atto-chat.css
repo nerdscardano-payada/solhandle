@@ -1,4 +1,4 @@
-@media(max-width:1279px){
+@media(max-width:767px){
   .atto-chat-anchor{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
   .has-app-navigation .atto-chat-anchor{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
   .atto-chat-anchor>button{width:44px;height:44px;min-height:44px;padding:0;justify-content:center}

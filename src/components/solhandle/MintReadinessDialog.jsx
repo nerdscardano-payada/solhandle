@@ -58,7 +58,7 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
         setPhase('');
         return;
       }
-      const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction, onReviewCosts: reviewCosts && window.matchMedia('(min-width:1280px)').matches ? async costs => { setPhase('review'); await costReview.review(costs); setPhase('wallet'); } : undefined });
+      const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction, onReviewCosts: reviewCosts && window.matchMedia('(min-width:768px)').matches ? async costs => { setPhase('review'); await costReview.review(costs); setPhase('wallet'); } : undefined });
       setSignature(mintResult.signature);
       setPhase("confirmed");
       trackFunnel("MINT_CONFIRMED", handle);

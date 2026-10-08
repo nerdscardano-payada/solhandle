@@ -30,4 +30,4 @@
 @keyframes promoOwn { 0%,54% { opacity:0; transform:scale(.96) } 61%,79% { opacity:1; transform:scale(1) } 85%,100% { opacity:0; transform:scale(1.03) } }
 @keyframes promoOutro { 0%,79% { opacity:0; transform:scale(.92) } 86%,100% { opacity:1; transform:scale(1) } }
 @keyframes promoFloat { 50% { transform:translateY(-1.5%) } }
-@media (max-width: 1279px) { .promo-stage { aspect-ratio: 9 / 16; } .promo-search, .promo-own { flex-direction:column; justify-content:center; } .promo-copy, .promo-own > div:last-child { width:90%; text-align:center; } .promo-home-card { width:96%; height:38%; border-radius:1rem; } .promo-gallery-card { width:96%; border-radius:1rem; } .promo-logo { width:78vw; } }
+@media (max-width: 767px) { .promo-stage { aspect-ratio: 9 / 16; } .promo-search, .promo-own { flex-direction:column; justify-content:center; } .promo-copy, .promo-own > div:last-child { width:90%; text-align:center; } .promo-home-card { width:96%; height:38%; border-radius:1rem; } .promo-gallery-card { width:96%; border-radius:1rem; } .promo-logo { width:78vw; } }

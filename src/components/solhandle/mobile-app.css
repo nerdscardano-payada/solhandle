@@ -1,4 +1,4 @@
-@media(max-width:1279px){
+@media(max-width:767px){
   .platform-shell{--background:225 50% 3%;--foreground:0 0% 98%;--card:225 58% 6%;--card-foreground:0 0% 98%;--border:189 35% 20%;--muted:225 35% 12%;--muted-foreground:215 20% 70%;position:relative;isolation:isolate;background:hsl(var(--hero-canvas));color:hsl(var(--foreground));min-height:100dvh}
   .platform-shell.has-app-navigation{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .platform-shell :is(button,a,summary,input,select,textarea){touch-action:manipulation}

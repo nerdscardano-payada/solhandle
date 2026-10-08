@@ -3,6 +3,7 @@ import { Image } from '@/components/ui/image';
 import MobileAppNavigation from '@/components/solhandle/MobileAppNavigation';
 import '@/components/solhandle/platform-theme.css';
 import '@/components/solhandle/mobile-app.css';
+import '@/components/solhandle/tablet-web.css';
 
 export default function PlatformSurface({ children }) {
   const { pathname } = useLocation();
