@@ -1,0 +1,4 @@
+Contact: https://solhandle.io/contact
+Expires: 2027-10-08T00:00:00Z
+Preferred-Languages: en, nl
+Policy: https://solhandle.io/contact#security
