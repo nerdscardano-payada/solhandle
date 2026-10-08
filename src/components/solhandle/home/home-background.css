@@ -34,7 +34,7 @@
   .home-funnel .home-floating-names{width:230px}
   .home-funnel .home-content{position:relative;isolation:isolate;display:flex;flex-direction:column}
   .home-funnel .home-hero-layout{padding-bottom:16px}
-  .home-funnel .home-claim-title{font-size:clamp(48px,3.8vw,64px)}
+  .home-funnel .home-claim-title{display:block;font-size:clamp(64px,5.4vw,84px);font-weight:900;line-height:1.04}
   .home-funnel .home-hero-benefits{display:none}
   .home-funnel .home-content>.home-discover-section{order:-1;padding-top:12px}
   .home-funnel .home-content::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,hsl(var(--hero-canvas)/.5) 120px,hsl(var(--hero-canvas)/.6))}
