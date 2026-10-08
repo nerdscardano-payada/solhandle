@@ -24,6 +24,16 @@ const MAX_RESERVED_FOR_LENGTH: usize = 80;
 
 declare_id!("B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf");
 
+#[cfg(not(feature = "no-entrypoint"))]
+solana_security_txt::security_txt! {
+    name: "SolHandle",
+    project_url: "https://solhandle.io",
+    contacts: "link:https://solhandle.io/contact",
+    policy: "https://solhandle.io/contact#security",
+    preferred_languages: "en,nl",
+    source_code: "https://github.com/nerdscardano-payada/solhandle"
+}
+
 #[program]
 pub mod solhandle {
     use super::*;
