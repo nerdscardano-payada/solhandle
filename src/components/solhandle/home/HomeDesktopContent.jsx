@@ -1,9 +1,9 @@
 import HomeAvailableNames from '@/components/solhandle/home/HomeAvailableNames';
 import HomeUseExample from '@/components/solhandle/home/HomeUseExample';
 import HomeProof from '@/components/solhandle/home/HomeProof';
-import HomeMarketplacePreview from '@/components/solhandle/home/HomeMarketplacePreview';
+import HomeActions from '@/components/solhandle/home/HomeActions';
 import HomeFaq from '@/components/solhandle/home/HomeFaq';
 
 export default function HomeDesktopContent() {
-  return <><HomeAvailableNames/><HomeUseExample/><HomeProof/><HomeMarketplacePreview/><HomeFaq/></>;
+  return <><HomeAvailableNames/><HomeUseExample/><HomeProof/><HomeActions/><HomeFaq/></>;
 }
