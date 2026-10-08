@@ -11,7 +11,7 @@ export default function HomeMintSearch({ input, onChange, handle, result, launch
   const reserved = !checking && ['RESERVED', 'PROTECTED'].includes(result?.status);
   return <div id="search-handles" className="home-mint-search scroll-mt-8">
     <form onSubmit={(event) => {event.preventDefault();onCheck();}} className="home-search-form">
-      <label className="flex min-w-0 flex-1 items-center gap-3 px-4 py-4"><span className="text-2xl text-names-accent">@</span><input id="home-handle-input" value={input.replace(/^@+/, '')} onChange={(event) => onChange(event.target.value.replace(/^@+/, ''))} placeholder="yourname" aria-label="Search your @ name" autoComplete="off" spellCheck={false} className="min-w-0 w-full bg-transparent text-foreground outline-none text-3xl capitalize" /></label>
+      <label className="flex min-w-0 flex-1 items-center gap-3 px-4 py-4"><span className="text-2xl text-names-accent">@</span><input id="home-handle-input" value={input.replace(/^@+/, '')} onChange={(event) => onChange(event.target.value.replace(/^@+/, ''))} placeholder="yourname" aria-label="Search your @ name" autoComplete="off" spellCheck={false} className="min-w-0 w-full bg-transparent text-foreground outline-none text-3xl" /></label>
       <button disabled={Boolean(validateHandle(handle))} className="home-primary-button">Check availability <ArrowRight className="h-4 w-4" /></button>
     </form>
     <div aria-live="polite" className="mt-4">

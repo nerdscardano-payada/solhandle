@@ -25,9 +25,16 @@
   .home-funnel header{background:hsl(var(--hero-canvas)/.6);backdrop-filter:blur(14px)}
   .home-funnel .home-content{background:transparent}
   .home-funnel .home-info-card,.home-funnel .home-name-tile{background:hsl(var(--hero-surface)/.78);backdrop-filter:blur(8px)}
+  .home-funnel .home-available-tile,.home-funnel .home-market-tile{display:grid;grid-template-columns:108px minmax(0,1fr);align-items:center;gap:18px;padding:16px}
+  .home-funnel .home-tile-artwork{width:108px;min-width:0}
+  .home-funnel .home-tile-artwork>div{width:100%;margin:0}
+  .platform-home .home-funnel .solhandle-platform-header>nav{gap:14px;white-space:nowrap}
+  .platform-home .home-funnel .solhandle-menu-brand-prominent{gap:18px}
+  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-mark{width:96px;height:96px}
+  .platform-home .home-funnel .solhandle-menu-brand-prominent .solhandle-menu-wordmark{width:300px}
   .platform-home .home-funnel .solhandle-platform-header,
   .home-funnel .home-hero-layout,
-  .home-funnel .home-content{width:100%;max-width:1416px;margin-left:auto;margin-right:auto;padding-left:48px;padding-right:48px}
+  .platform-home .home-funnel .home-content{width:100%;max-width:1416px;margin-left:auto;margin-right:auto;padding-left:48px;padding-right:48px}
   .home-funnel .home-hero-layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;padding-top:32px;padding-bottom:40px}
   .home-funnel .home-product-visual{min-height:410px;gap:24px}
   .home-funnel .home-phone{width:240px}
