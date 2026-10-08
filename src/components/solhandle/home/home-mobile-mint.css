@@ -4,4 +4,5 @@
   .home-funnel .home-content-section>details>summary{min-height:48px}
   .home-funnel .home-content-section:last-child>.home-primary-button{width:100%;min-height:52px}
   .home-funnel #search-handles{scroll-margin-top:16px}
+  .home-funnel .home-claim-title .home-gradient-text{background-image:linear-gradient(100deg,hsl(var(--names-accent)),hsl(var(--names-secondary)))}
 }
