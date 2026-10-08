@@ -18,7 +18,7 @@
 @media(min-width:1280px){
   .home-funnel{position:relative;isolation:isolate}
   .home-full-backdrop{display:block;position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-  .home-full-backdrop-image{position:absolute!important;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.55;mix-blend-mode:screen}
+  .home-full-backdrop-image{position:absolute!important;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.32;mix-blend-mode:screen}
   .home-full-backdrop-tint{position:absolute;inset:0;background:linear-gradient(90deg,hsl(var(--hero-canvas)/.25),transparent 40%,hsl(var(--hero-canvas)/.08)),linear-gradient(0deg,hsl(var(--hero-canvas)/.8),transparent 15%);}
   .home-funnel .home-hero-scenery,.home-funnel .home-hero-shade{display:none}
   .home-funnel .home-mint-hero{isolation:auto;background:transparent}
@@ -34,6 +34,8 @@
   .home-funnel .home-floating-names{width:230px}
   .home-funnel .home-content{position:relative;isolation:isolate;display:flex;flex-direction:column}
   .home-funnel .home-hero-layout{padding-bottom:16px}
+  .home-funnel .home-claim-title{font-size:clamp(48px,3.8vw,64px)}
+  .home-funnel .home-hero-benefits{display:none}
   .home-funnel .home-content>.home-discover-section{order:-1;padding-top:12px}
   .home-funnel .home-content::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,hsl(var(--hero-canvas)/.5) 120px,hsl(var(--hero-canvas)/.6))}
   .home-funnel .home-content-section{padding-top:28px;padding-bottom:28px}

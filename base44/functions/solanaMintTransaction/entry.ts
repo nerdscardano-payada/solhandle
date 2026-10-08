@@ -158,7 +158,12 @@ export default async function(req: Request): Promise<Response> {
       if (systemInstructions.length > 0) return Response.json({ error: "Unexpected external payment instruction." }, { status: 400 });
 
       if (body.action === "simulate") {
-        const simulation = await rpc(rpcUrl, "simulateTransaction", [body.transaction_base64, { encoding: "base64", sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed" }]);
+        const includeCosts = body.include_costs === true;
+        const payer = transaction.feePayer.toBase58();
+        const [simulation, before] = await Promise.all([
+          rpc(rpcUrl, "simulateTransaction", [body.transaction_base64, { encoding: "base64", sigVerify: false, replaceRecentBlockhash: true, commitment: "confirmed", ...(includeCosts ? { accounts: { encoding: 'base64', addresses: [payer] } } : {}) }]),
+          includeCosts ? rpc(rpcUrl, 'getBalance', [payer, { commitment: 'confirmed' }]) : Promise.resolve(null)
+        ]);
         if (!simulation?.value) return Response.json({ error: "Unable to check this mint safely. Please retry. Do not bypass wallet warnings." }, { status: 503 });
         if (simulation.value.err) {
           const logs = simulation.value.logs || [];
@@ -166,7 +171,20 @@ export default async function(req: Request): Promise<Response> {
           const insufficient = logs.some(line => /insufficient (lamports|funds)/i.test(line)) || simulation.value.err === "InsufficientFundsForFee";
           return Response.json({ error: insufficient ? "Not enough SOL to complete this mint. Your wallet must cover the handle price, NFT account creation and network fees. Add SOL and try again. No transaction was sent." : "This mint did not pass the on-chain check. No transaction was sent. Refresh the handle and try again; do not bypass wallet warnings." }, { status: 422 });
         }
-        return Response.json({ ok: true, blockhash: simulation.value.replacementBlockhash?.blockhash || transaction.recentBlockhash });
+        const blockhash = simulation.value.replacementBlockhash?.blockhash || transaction.recentBlockhash;
+        let costs;
+        if (includeCosts) {
+          transaction.recentBlockhash = blockhash;
+          const message = btoa(String.fromCharCode(...transaction.serializeMessage()));
+          const fee = await rpc(rpcUrl, 'getFeeForMessage', [message, { commitment: 'confirmed' }]);
+          const afterLamports = simulation.value.accounts?.[0]?.lamports;
+          if (!Number.isSafeInteger(before?.value) || !Number.isSafeInteger(afterLamports) || !Number.isSafeInteger(fee?.value)) return Response.json({ error: 'Unable to estimate the total safely. No transaction was sent.' }, { status: 503 });
+          const totalLamports = before.value - afterLamports;
+          const accountCostsLamports = totalLamports - pricing.finalPriceLamports - fee.value;
+          if (accountCostsLamports < 0) return Response.json({ error: 'Wallet balance changed during estimation. Please retry. No transaction was sent.' }, { status: 409 });
+          costs = { priceLamports: pricing.finalPriceLamports, networkFeeLamports: fee.value, accountCostsLamports, totalLamports };
+        }
+        return Response.json({ ok: true, blockhash, ...(costs ? { costs } : {}) });
       }
 
       const mintIntent = await lockReferralMintIntent(base44, { mintIntentId: String(body.mint_intent_id || ""), buyerWallet: transaction.feePayer.toBase58(), handle: mintData.handle, totalPriceLamports: pricing.finalPriceLamports });

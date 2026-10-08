@@ -71,7 +71,7 @@ export async function claimRestrictedSolHandle({ handle, uri, recipientWallet, w
   return { signature: submitted.data.signature, asset: asset.toBase58() };
 }
 
-export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, signTransaction }) {
+export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, signTransaction, onReviewCosts }) {
   base44.analytics.track({ eventName: "referral_mint_started", properties: { handle } });
   const prepared = await base44.functions.invoke("solanaMintTransaction", { action: "prepare", handle, wallet: wallet.toBase58(), attribution_id: getReferralAttributionId() });
   const protocol = prepared.data;
@@ -101,9 +101,17 @@ export async function mintSolHandle({ handle, uri, maxPriceLamports, wallet, sig
   const transaction = new Transaction({ feePayer: wallet, recentBlockhash: protocol.blockhash }).add(instruction);
   if (protocol.initializePrimary) transaction.add(buildSetPrimaryInstruction(handle, wallet));
   const unsignedBase64 = btoa(String.fromCharCode(...transaction.serialize({ requireAllSignatures: false, verifySignatures: false })));
-  const checked = await base44.functions.invoke("solanaMintTransaction", { action: "simulate", transaction_base64: unsignedBase64 });
+  const checked = await base44.functions.invoke("solanaMintTransaction", { action: "simulate", transaction_base64: unsignedBase64, include_costs: Boolean(onReviewCosts) });
   if (!checked.data?.ok) throw new Error("Unable to check this mint safely. Do not bypass wallet warnings.");
   transaction.recentBlockhash = checked.data.blockhash;
+  if (onReviewCosts) {
+    if (!checked.data.costs) throw new Error('The total cost could not be verified. No transaction was sent.');
+    await onReviewCosts(checked.data.costs);
+    const refreshedBase64 = btoa(String.fromCharCode(...transaction.serialize({ requireAllSignatures: false, verifySignatures: false })));
+    const refreshed = await base44.functions.invoke('solanaMintTransaction', { action: 'simulate', transaction_base64: refreshedBase64, include_costs: true });
+    if (!refreshed.data?.ok || !refreshed.data.costs || refreshed.data.costs.totalLamports > checked.data.costs.totalLamports) throw new Error('The transaction cost changed. Please retry and review the updated total. No transaction was sent.');
+    transaction.recentBlockhash = refreshed.data.blockhash;
+  }
   const signed = await signTransaction(transaction);
   const transactionBase64 = btoa(String.fromCharCode(...signed.serialize()));
   base44.analytics.track({ eventName: "referral_mint_submitted", properties: { handle } });

@@ -4,6 +4,6 @@ import IPhoneIdentityPreview from '@/components/solhandle/home/IPhoneIdentityPre
 export default function HomeProductVisual({ previewHandle }) {
   return <div className="home-product-visual" aria-label="Example of a SolHandle wallet identity">
     <IPhoneIdentityPreview handle={previewHandle}/>
-    <HomeIdentityExplanation/>
+    <div className="lg:hidden"><HomeIdentityExplanation/></div>
   </div>;
 }
