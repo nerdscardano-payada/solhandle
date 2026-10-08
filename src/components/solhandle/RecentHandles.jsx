@@ -4,9 +4,10 @@ import invokeWithRetry from "@/lib/invokeWithRetry";
 import RecentHandleActivityCard from "@/components/solhandle/RecentHandleActivityCard";
 import useHomeHandleLimit from "@/components/solhandle/useHomeHandleLimit";
 
-export default function RecentHandles() {
+export default function RecentHandles({ limit: requestedLimit } = {}) {
   const [handles, setHandles] = useState(null);
-  const limit = useHomeHandleLimit();
+  const defaultLimit = useHomeHandleLimit();
+  const limit = requestedLimit ?? defaultLimit;
   useEffect(() => { let active = true; const load = () => invokeWithRetry("getRecentHandles", { limit }).then(({ data }) => active && setHandles(data.handles || [])).catch(() => active && setHandles([])); load(); const timer = setInterval(load, 30000); return () => { active = false; clearInterval(timer); }; }, [limit]);
   if (handles !== null && !handles.length) return null;
   return <section className="rounded-xl border border-white/10 bg-[#11161f] p-4 shadow-xl shadow-black/20">
