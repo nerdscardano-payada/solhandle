@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight, Flame, ArrowLeftRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ResponsiveDetails from '@/components/solhandle/ResponsiveDetails';
+import TokenContractAddress from '@/components/solhandle/TokenContractAddress';
+import useTokenLaunchSettings from '@/hooks/useTokenLaunchSettings';
 
 export default function HomeTokenFlywheel() {
+  const { tokenMint } = useTokenLaunchSettings();
   const { data, isLoading, isError } = useQuery({
     queryKey: ['home-token-burn-total'],
     queryFn: async () => {
@@ -25,6 +28,7 @@ export default function HomeTokenFlywheel() {
           <p className="mt-3 text-sm leading-relaxed text-foreground">Claim and use @handles. Protocol activity contributes to buyback budgets, while confirmed $HANDLE burns permanently reduce token supply.</p>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Buyback budgets are not executed purchases. This total includes recorded, confirmed burns, including burns from $HANDLE-paid mints.</p>
         </ResponsiveDetails>
+        {tokenMint && <div className="mt-4"><p className="mb-2 text-xs font-semibold text-names-accent">Official $HANDLE contract address</p><TokenContractAddress tokenMint={tokenMint} className=""/></div>}
         <div className="mt-5 flex flex-col gap-3 lg:flex-row">
           <Link to="/upcoming/token-launch" className="home-primary-button"><ArrowLeftRight className="h-4 w-4" aria-hidden="true"/>Trade $HANDLE</Link>
           <Link to="/flywheel" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-names-secondary/40 px-5 py-3 text-sm font-semibold text-names-secondary hover:bg-names-secondary/10">Explore the flywheel<ArrowUpRight className="h-4 w-4" aria-hidden="true"/></Link>
