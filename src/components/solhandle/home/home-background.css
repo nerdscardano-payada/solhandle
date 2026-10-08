@@ -1,5 +1,19 @@
 .home-activity-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}.home-activity-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 @media(min-width:1280px){.home-activity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-activity-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.home-activity-grid>.home-content-section{min-width:0}.home-activity-grid .home-section-title{font-size:20px}.home-activity-grid>p{grid-column:1/-1}}
+.home-iphone-screen,.home-iphone-content{display:contents}
+.home-iphone-status,.home-iphone-side,.home-iphone-home{display:none}
+@media(min-width:1280px){
+  .home-funnel .home-product-visual .home-iphone{position:relative;width:240px;padding:5px;border:1px solid hsl(var(--foreground)/.55);border-radius:39px;background:linear-gradient(115deg,hsl(var(--foreground)/.7),hsl(var(--foreground)/.2) 18%,hsl(var(--foreground)/.5) 48%,hsl(var(--foreground)/.16) 78%,hsl(var(--foreground)/.6));transform:rotate(-7deg) rotateY(-8deg);box-shadow:2px 1px 0 hsl(var(--foreground)/.3),5px 3px 0 hsl(var(--hero-canvas)),14px 20px 30px hsl(var(--hero-canvas)/.7),0 0 25px hsl(var(--hero-blue)/.1)}
+  .home-iphone .home-iphone-screen{display:block;position:relative;isolation:isolate;overflow:hidden;border:3px solid hsl(var(--hero-canvas));border-radius:33px;background:radial-gradient(ellipse at 50% 32%,hsl(var(--hero-blue)/.12),transparent 60%),hsl(var(--hero-surface));padding:14px 13px 30px;min-height:455px}
+  .home-iphone-screen::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,hsl(var(--foreground)/.09),transparent 24%,transparent 66%,hsl(var(--foreground)/.025));box-shadow:inset 0 0 0 1px hsl(var(--foreground)/.1)}
+  .home-iphone-status{display:flex;align-items:center;justify-content:space-between;height:17px;margin:0 1px 28px;font-size:10px;font-weight:700;color:hsl(var(--foreground))}
+  .home-iphone-status>div{display:flex;align-items:center;gap:3px}.home-iphone-status svg{width:11px;height:11px}.home-iphone-status svg:last-child{width:17px;height:13px}
+  .home-iphone .home-iphone-island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:73px;height:22px;margin:0;border-radius:20px;background:hsl(var(--hero-canvas));box-shadow:inset 0 0 0 1px hsl(var(--foreground)/.035)}
+  .home-iphone-island>span{position:absolute;right:9px;top:7px;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,hsl(var(--hero-blue)/.5),hsl(var(--hero-canvas)) 70%);box-shadow:0 0 0 1px hsl(var(--foreground)/.05)}
+  .home-iphone-content{display:block}.home-iphone .home-phone-logo{width:80px;height:80px;filter:drop-shadow(0 0 10px hsl(var(--hero-blue)/.25))}.home-iphone-content .text-3xl{font-size:24px}.home-iphone-content .mt-8{margin-top:22px}.home-iphone-content .space-y-3>div{padding:11px 9px;font-size:11px}.home-iphone-content .space-y-3 svg{width:16px;height:16px}
+  .home-iphone-side{display:block;position:absolute;width:3px;border:1px solid hsl(var(--foreground)/.25);border-radius:2px;background:linear-gradient(90deg,hsl(var(--foreground)/.2),hsl(var(--foreground)/.55))}.home-iphone-action{left:-3px;top:66px;height:16px}.home-iphone-volume{left:-3px;top:104px;height:53px;background:linear-gradient(180deg,hsl(var(--foreground)/.4) 46%,hsl(var(--hero-canvas)) 46% 54%,hsl(var(--foreground)/.4) 54%)}.home-iphone-power{right:-3px;top:112px;height:45px}
+  .home-iphone-home{display:block;position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:76px;height:4px;border-radius:8px;background:hsl(var(--foreground)/.75)}
+}
 .home-full-backdrop{display:none}
 @media(min-width:1280px){
   .home-funnel{position:relative;isolation:isolate}
