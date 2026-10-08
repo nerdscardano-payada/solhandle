@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { mobileGroups as groups } from '@/components/solhandle/navigationLinks';
+import CommunityLinks from '@/components/solhandle/CommunityLinks';
 
-const mainLinks = [["Search handles", "/#search-handles"], ["Names", "/names"], ["Market", "/market"], ["$HANDLE Token", "/upcoming/token-launch"]];
-const groups = [
-  ["Utility", [["Share & Earn (Referrals)", "/earn"], ["Pay", "/pay"], ["Integrations", "/live-integrations"]]],
-  ["Discover", [["Premium Directory", "/directory"], ["Handle Wheel", "/fun"]]],
-  ["Growth", [["Share & Earn (Referrals)", "/earn"], ["Mint Weekend · Proof archive", "/mint-weekend"], ["Growth Curve", "/growth"], ["Burn Dashboard", "/growth/burn"], ["Flywheel", "/flywheel"]]],
-  ["Developers", [["Integrate SolHandle", "/integrations"], ["SDK / API", "/developers"], ["SolHandle EMBED", "/developers/resolve"], ["Partner Mint Plan", "/developers/partner-mint"], ["Documentation", "/docs"]]],
-  ["More", [["Earn Litepaper", "/earn-litepaper"], ["Brand Protection", "/protected-brands"], ["About / How it works", "/about"], ["FAQ", "/faq"]]],
-];
+const mainLinks = [["Search handles", "/search"], ["Discover names", "/names"], ["Marketplace", "/market"], ["My Handles", "/my-handles"], ["$HANDLE Token", "/upcoming/token-launch"]];
 
 export default function MobileNavigation({ onNavigate, tokenIsLive }) {
   const [expanded, setExpanded] = useState({});
@@ -22,5 +17,6 @@ export default function MobileNavigation({ onNavigate, tokenIsLive }) {
         {expanded[title] && <div className="pb-2">{items.map(([label, path]) => <NavLink key={path} to={path} onClick={onNavigate} className={({ isActive }) => `block border-l-2 py-2 pl-7 text-sm ${isActive ? "border-emerald-300 text-white" : "border-transparent text-slate-400"}`}>{label}</NavLink>)}</div>}
       </div>)}
     </div>
+    <div className="mt-3 border-t border-white/10 pt-4"><p className="mb-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Community</p><CommunityLinks onNavigate={onNavigate}/></div>
   </nav>;
 }
