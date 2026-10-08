@@ -9,7 +9,6 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from '@/pages/Home';
 import HomeEntrance from '@/components/solhandle/intro/HomeEntrance';
 import Search from '@/pages/Search';
-import MintWeekend from '@/pages/MintWeekend';
 import MyHandles from '@/pages/MyHandles';
 import Docs from '@/pages/Docs';
 import Legal from '@/pages/Legal';
@@ -96,7 +95,7 @@ const AuthenticatedApp = () => {
       <Routes>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
         <Route path="/search" element={<Search />} />
-        <Route path="/mint-weekend" element={<MintWeekend />} />
+        <Route path="/mint-weekend" element={<Navigate to="/" replace />} />
         <Route path="/my-handles" element={<MyHandles />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
