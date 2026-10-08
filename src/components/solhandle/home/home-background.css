@@ -38,3 +38,6 @@
   .home-funnel .home-section-title{margin-bottom:18px}
   .platform-home .platform-page-content>footer>div.mx-auto{max-width:1320px}
 }
+@keyframes home-identity-zoom{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.home-iphone-artwork img:not([aria-hidden="true"]){animation:home-identity-zoom .45s ease-out both}
+@media(prefers-reduced-motion:reduce){.home-iphone-artwork img:not([aria-hidden="true"]){animation:none}}
