@@ -29,7 +29,7 @@
   .home-funnel .home-hero-layout,
   .home-funnel .home-content{width:100%;max-width:1416px;margin-left:auto;margin-right:auto;padding-left:48px;padding-right:48px}
   .home-funnel .home-hero-layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;padding-top:32px;padding-bottom:40px}
-  .home-funnel .home-product-visual{min-height:410px;gap:8px}
+  .home-funnel .home-product-visual{min-height:410px;gap:24px}
   .home-funnel .home-phone{width:240px}
   .home-funnel .home-floating-names{width:230px}
   .home-funnel .home-content{position:relative;isolation:isolate}
