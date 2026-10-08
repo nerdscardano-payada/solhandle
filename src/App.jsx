@@ -63,6 +63,7 @@ import BurnDashboard from '@/pages/BurnDashboard';
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
+import PlatformSurface from '@/components/solhandle/PlatformSurface';
 
 const AuthenticatedApp = () => {
   const { pathname } = useLocation();
@@ -91,7 +92,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <>
+    <PlatformSurface>
       <Routes>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
         <Route path="/search" element={<Search />} />
@@ -154,7 +155,7 @@ const AuthenticatedApp = () => {
       </Routes>
       {!isWidget && <Footer />}
       {!isWidget && <AttoChat />}
-    </>
+    </PlatformSurface>
   );
 };
 
