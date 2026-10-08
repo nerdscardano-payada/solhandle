@@ -4,4 +4,4 @@
 .solhandle-menu-wordmark{width:112px;aspect-ratio:468/95}
 .solhandle-menu-mark-image{position:absolute!important;width:243.8095%;height:137.1429%;left:-19.0476%;top:-15.4762%;max-width:none}
 .solhandle-menu-wordmark-image{position:absolute!important;width:218.8034%;height:606.3158%;left:-110.2564%;top:-257.8947%;max-width:none}
-@media(min-width:768px){.solhandle-menu-brand-prominent{gap:18px}.solhandle-menu-brand-prominent .solhandle-menu-mark{width:96px;height:96px}.solhandle-menu-wordmark{width:160px}.solhandle-menu-brand-prominent .solhandle-menu-wordmark{width:300px}}
+@media(min-width:768px){.solhandle-menu-brand-prominent{gap:12px}.solhandle-menu-brand-prominent .solhandle-menu-mark{width:64px;height:64px}.solhandle-menu-wordmark{width:160px}.solhandle-menu-brand-prominent .solhandle-menu-wordmark{width:220px}}
