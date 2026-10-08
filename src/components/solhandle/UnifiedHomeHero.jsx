@@ -11,8 +11,11 @@ export default function UnifiedHomeHero({ wallet }) {
         <div>
         <p className="text-xs font-semibold uppercase tracking-widest text-names-accent">NFT-native identity on Solana</p>
         <h1 className="mt-4 text-6xl font-semibold leading-tight tracking-tight">Claim your @ <span className="bg-gradient-to-r from-names-success via-names-accent to-names-secondary bg-clip-text text-transparent">on Solana.</span></h1>
-        <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-foreground">Give your wallet a name people can remember. Find your unique @handle and own it as an NFT directly in your Solana wallet.</p>
-        <p className="mt-3 text-sm text-foreground">One-time payment. No renewals. Yours until you transfer it.</p>
+        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-foreground">Your wallet has an address. Give it a name people can remember.</p>
+        <p className="mt-3 max-w-3xl text-base leading-relaxed text-foreground">A SolHandle is a unique @handle that resolves to your Solana wallet. Search for a name, claim it, and own it as an NFT directly in your wallet.</p>
+        <p className="mt-4 flex items-center gap-4" aria-label="From a wallet address to @ansem"><span className="font-mono text-foreground">7xKp…9mWq</span><span className="text-names-accent" aria-hidden="true">→</span><span className="font-semibold text-names-accent">@ansem</span></p>
+        <p className="mt-4 text-sm text-foreground">One-time payment. No renewal fees.</p>
+        <p className="mt-2 text-sm text-foreground">Send SOL to an @handle with SolHandle Pay.</p>
         </div>
         <Image src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/57d22a75c_solhandlelogo.png" alt="SolHandle logo — Your identity. Yours." className="h-48 w-48" fittingType="fit"/>
       </div>
