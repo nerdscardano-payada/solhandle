@@ -45,5 +45,6 @@
   "startHere": "BEGIN HIER",
   "pasteFlow": "VOEG TOE AAN JE PROCES",
   "safety": "VEILIGHEID",
-  "testSuite": "TESTSUITE"
+  "testSuite": "TESTSUITE",
+  "mainnetLive": "Mainnet-protocol actief:"
 }

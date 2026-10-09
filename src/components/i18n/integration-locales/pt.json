@@ -45,5 +45,6 @@
   "startHere": "COMECE AQUI",
   "pasteFlow": "ADICIONE AO SEU FLUXO",
   "safety": "SEGURANÇA",
-  "testSuite": "CONJUNTO DE TESTES"
+  "testSuite": "CONJUNTO DE TESTES",
+  "mainnetLive": "Protocolo Mainnet ativo:"
 }

@@ -45,5 +45,6 @@
   "startHere": "BURADAN BAŞLAYIN",
   "pasteFlow": "AKIŞINIZA EKLEYİN",
   "safety": "GÜVENLİK",
-  "testSuite": "TEST PAKETİ"
+  "testSuite": "TEST PAKETİ",
+  "mainnetLive": "Mainnet protokolü aktif:"
 }

@@ -45,5 +45,6 @@
   "startHere": "COMMENCEZ ICI",
   "pasteFlow": "AJOUTEZ À VOTRE PROCESSUS",
   "safety": "SÉCURITÉ",
-  "testSuite": "SUITE DE TESTS"
+  "testSuite": "SUITE DE TESTS",
+  "mainnetLive": "Protocole Mainnet actif :"
 }

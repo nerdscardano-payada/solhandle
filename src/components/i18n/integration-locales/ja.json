@@ -45,5 +45,6 @@
   "startHere": "ここから開始",
   "pasteFlow": "処理フローに追加",
   "safety": "安全性",
-  "testSuite": "テストスイート"
+  "testSuite": "テストスイート",
+  "mainnetLive": "Mainnetプロトコル稼働中："
 }

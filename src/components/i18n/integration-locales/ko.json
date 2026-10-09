@@ -45,5 +45,6 @@
   "startHere": "여기서 시작",
   "pasteFlow": "처리 흐름에 추가",
   "safety": "안전성",
-  "testSuite": "테스트 모음"
+  "testSuite": "테스트 모음",
+  "mainnetLive": "Mainnet 프로토콜 운영 중:"
 }

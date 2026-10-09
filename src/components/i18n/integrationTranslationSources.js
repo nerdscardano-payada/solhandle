@@ -1,4 +1,5 @@
 export default {
+  mainnetLive: 'Mainnet protocol live:',
   startHere: 'START HERE',
   pasteFlow: 'PASTE INTO YOUR FLOW',
   safety: 'SAFETY',
