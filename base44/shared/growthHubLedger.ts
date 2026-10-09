@@ -19,12 +19,12 @@ export async function publishedQuest(entities, slug) {
   if ((q.starts_at && Date.parse(q.starts_at) > now) || (q.ends_at && Date.parse(q.ends_at) <= now)) throw new Error('Quest valt buiten het actieve tijdsvenster.');
   return q;
 }
-export async function creditPilotXP(entities, profile, quest) {
+export async function creditPilotXP(entities, profile, quest, evidence = null) {
   const completion_key = `${profile.wallet}:${quest.slug}:LIFETIME`;
   const existing = await entities.GrowthHubXP.filter({ completion_key }, { sort: 'credited_at', limit: 1 });
   if (existing.items.length) return { completed: true, already_completed: true, xp: existing.items[0].delta };
   const season = await activeSeason(entities);
-  await entities.GrowthHubXP.create({ completion_key, wallet: profile.wallet, quest_id: quest.id, quest_slug: quest.slug, quest_title: quest.title, quest_version: quest.version, season_id: season?.id || '', delta: quest.xp, reward_eligible_delta: 0, source_id: `${quest.handler}:${profile.wallet}`, reason: 'Server-gecontroleerde pilotquest', credited_at: new Date().toISOString(), mode: 'PILOT' });
+  await entities.GrowthHubXP.create({ completion_key, wallet: profile.wallet, quest_id: quest.id, quest_slug: quest.slug, quest_title: quest.title, quest_version: quest.version, season_id: season?.id || '', delta: quest.xp, reward_eligible_delta: 0, source_id: evidence ? `solana:mainnet-beta:${evidence.signature}:${evidence.kind}` : `${quest.handler}:${profile.wallet}`, reason: evidence ? 'Finalized on-chain bewijs, server-gecontroleerde pilotquest' : 'Server-gecontroleerde pilotquest', ...(evidence ? { chain_evidence: evidence } : {}), credited_at: new Date().toISOString(), mode: 'PILOT' });
   return { completed: true, already_completed: false, xp: quest.xp };
 }
 export async function personalOverview(entities, profile) {

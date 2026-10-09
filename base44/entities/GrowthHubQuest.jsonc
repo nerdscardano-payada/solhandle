@@ -15,14 +15,18 @@
       "type": "string",
       "enum": [
         "GETTING_STARTED",
-        "KNOWLEDGE"
+        "KNOWLEDGE",
+        "USE_PRODUCT"
       ]
     },
     "handler": {
       "type": "string",
       "enum": [
         "PROFILE",
-        "KNOWLEDGE_QUIZ"
+        "KNOWLEDGE_QUIZ",
+        "ON_CHAIN_MINT",
+        "ON_CHAIN_TOKEN_MINT",
+        "ON_CHAIN_PAY"
       ]
     },
     "xp": {
@@ -57,6 +61,11 @@
     },
     "ends_at": {
       "type": "string"
+    },
+    "min_amount_lamports": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
     }
   },
   "required": [

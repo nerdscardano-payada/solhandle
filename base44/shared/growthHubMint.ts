@@ -1,0 +1,30 @@
+import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
+import bs58 from 'npm:bs58@5.0.0';
+import { rpc, PROGRAM_ID, deriveHandleAccountAddresses, parseHandleRecord } from './solanaRpc.ts';
+import { COLLECTION_ID, MPL_CORE_ID } from './solhandleResolver.ts';
+import { weekendMintEvents } from './weekendMintEvents.ts';
+import { transactionKeys, transactionSigner } from './growthHubTransaction.ts';
+const digest = async text => new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))).slice(0, 8);
+export async function verifyGrowthMint(url, tx, wallet, tokenOnly) {
+  const keys = transactionKeys(tx), discriminators = await Promise.all(['mint_handle', 'mint_handle_with_token'].map(name => digest(`global:${name}`)));
+  const instructions = tx.transaction.message.instructions.filter(ix => keys[ix.programIdIndex] === PROGRAM_ID).map(ix => ({ ix, data: bs58.decode(ix.data) }));
+  const matching = instructions.filter(({ data }) => discriminators.some(disc => disc.every((byte, i) => data[i] === byte)));
+  if (matching.length !== 1 || !transactionSigner(tx, wallet)) throw new Error('Precies één officiële, door jouw wallet ondertekende mint is vereist; een aankoop of NFT-overdracht telt niet.');
+  const { ix, data } = matching[0], token = discriminators[1].every((byte, i) => data[i] === byte);
+  if (tokenOnly && !token) throw new Error('Deze quest vereist een daadwerkelijke mint betaald met $HANDLE.');
+  if (data.length < 12) throw new Error('Mintinstructie is onvolledig.');
+  const length = new DataView(data.buffer, data.byteOffset, data.byteLength).getUint32(8, true);
+  const handle = new TextDecoder().decode(data.slice(12, 12 + length));
+  if (length < 1 || length > 20 || !/^[a-z0-9]{1,20}$/.test(handle) || keys[ix.accounts[0]] !== wallet || keys[ix.accounts[token ? 9 : 8]] !== COLLECTION_ID) throw new Error('Minter, handle of officiële collectie komt niet overeen.');
+  const event = weekendMintEvents(tx).find(e => e.handle === handle && e.owner === wallet);
+  if (!event) throw new Error('Geen geldig publiek mint-event van het officiële SolHandle-programma gevonden.');
+  const recordAddress = deriveHandleAccountAddresses(handle).record;
+  if (keys[ix.accounts[token ? 3 : 2]] !== recordAddress || keys[ix.accounts[token ? 4 : 3]] !== event.assetAddress) throw new Error('Mintaccounts wijken af van de officiële PDAs.');
+  const accounts = await rpc(url, 'getMultipleAccounts', [[recordAddress, event.assetAddress, COLLECTION_ID], { encoding: 'base64', commitment: 'finalized', minContextSlot: tx.slot }]);
+  const [record, asset, collection] = accounts?.value || [], raw = record?.data?.[0] ? Uint8Array.from(atob(record.data[0]), c => c.charCodeAt(0)) : new Uint8Array();
+  const offset = 12 + length + 32, disc = await digest('account:HandleRecord');
+  if (record?.owner !== PROGRAM_ID || raw.length < offset + 41 || !disc.every((byte, i) => raw[i] === byte) || new PublicKey(raw.slice(offset, offset + 32)).toBase58() !== wallet || raw[offset + 40] !== 0) throw new Error('Het originele mintrecord kon niet worden bewezen; officiële grants tellen niet mee.');
+  const parsed = parseHandleRecord(record.data[0]), core = asset?.data?.[0] ? Uint8Array.from(atob(asset.data[0]), c => c.charCodeAt(0)) : new Uint8Array();
+  if (parsed.handle !== handle || parsed.assetAddress !== event.assetAddress || asset?.owner !== MPL_CORE_ID || asset.executable || core.length < 66 || core[0] !== 1 || core[33] !== 2 || new PublicKey(core.slice(34, 66)).toBase58() !== COLLECTION_ID || collection?.owner !== MPL_CORE_ID) throw new Error('De NFT behoort niet aantoonbaar tot de officiële SolHandle-collectie.');
+  return { handle, asset_address: event.assetAddress, collection: COLLECTION_ID, original_minter: wallet, program: PROGRAM_ID, token, instruction: ix };
+}

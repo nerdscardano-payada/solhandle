@@ -45,6 +45,60 @@
       "enum": [
         "PILOT"
       ]
+    },
+    "chain_evidence": {
+      "type": "object",
+      "properties": {
+        "signature": {
+          "type": "string"
+        },
+        "network": {
+          "type": "string"
+        },
+        "slot": {
+          "type": "integer"
+        },
+        "occurred_at": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "program": {
+          "type": "string"
+        },
+        "handle": {
+          "type": "string"
+        },
+        "asset_address": {
+          "type": "string"
+        },
+        "collection": {
+          "type": "string"
+        },
+        "original_minter": {
+          "type": "string"
+        },
+        "recipient": {
+          "type": "string"
+        },
+        "amount_lamports": {
+          "type": "integer"
+        },
+        "token_mint": {
+          "type": "string"
+        },
+        "amount_raw": {
+          "type": "string"
+        },
+        "burned_raw": {
+          "type": "string"
+        },
+        "treasury_raw": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "required": [

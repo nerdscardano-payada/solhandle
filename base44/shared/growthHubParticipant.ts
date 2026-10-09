@@ -1,6 +1,8 @@
 import { getProfile, requireProfile, verifiedWallet } from './growthHubIdentity.ts';
 import { creditPilotXP, personalOverview, publishedQuest } from './growthHubLedger.ts';
 import { gradeQuiz, publicQuiz } from './growthHubQuiz.ts';
+import { chainHandlers } from './growthHubTransaction.ts';
+import { verifyGrowthChain } from './growthHubChain.ts';
 export async function growthParticipant(entities, body) {
   if (body.action === 'join') {
     const wallet = await verifiedWallet(entities, body.proof); let profile = await getProfile(entities, wallet);
@@ -22,6 +24,11 @@ export async function growthParticipant(entities, body) {
     const quest = await publishedQuest(entities, String(body.slug || ''));
     if (body.action === 'start') return { quest, questions: quest.handler === 'KNOWLEDGE_QUIZ' ? publicQuiz() : [], version: quest.version };
     if (Number(body.version) !== quest.version) throw new Error('De questregels zijn gewijzigd. Open de quest opnieuw.');
+    if (chainHandlers.includes(quest.handler)) {
+      const result = await verifyGrowthChain(entities, profile, quest, body.transaction_signature);
+      if (result.pending) return { completed: false, ...result };
+      return { ...await creditPilotXP(entities, profile, quest, result.evidence), overview: await personalOverview(entities, profile) };
+    }
     if (quest.handler === 'KNOWLEDGE_QUIZ') {
       if (profile.last_quiz_at && Date.now() - Date.parse(profile.last_quiz_at) < 30000) throw new Error('Wacht 30 seconden voordat je opnieuw indient.');
       const score = gradeQuiz(body.answers);

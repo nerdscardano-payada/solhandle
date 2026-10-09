@@ -5,7 +5,7 @@ export async function issueChallenge(entities, value) {
   const recent = await entities.GrowthHubChallenge.count({ wallet, created_date: { $gte: new Date(Date.now() - 15 * 60000).toISOString() } });
   if (recent >= 12) throw new Error('Te veel verificatieaanvragen. Probeer over 15 minuten opnieuw.');
   const nonce = crypto.randomUUID(), issued = new Date(), expires = new Date(Date.now() + 15 * 60000);
-  const message = `solhandle.io wants you to sign in with your Solana account:\n${wallet}\n\nSolHandle Growth Hub pilot. View my profile and submit knowledge quests. No transactions or access to funds.\n\nURI: https://solhandle.io/quests\nVersion: 1\nNonce: ${nonce}\nIssued At: ${issued.toISOString()}\nExpiration Time: ${expires.toISOString()}`;
+  const message = `solhandle.io wants you to sign in with your Solana account:\n${wallet}\n\nSolHandle Growth Hub pilot. View my profile and submit quest evidence for server verification. No transactions or access to funds.\n\nURI: https://solhandle.io/quests\nVersion: 1\nNonce: ${nonce}\nIssued At: ${issued.toISOString()}\nExpiration Time: ${expires.toISOString()}`;
   const row = await entities.GrowthHubChallenge.create({ wallet, nonce, message, expires_at: expires.toISOString() });
   return { challenge_id: row.id, message, expires_at: row.expires_at, wallet };
 }
