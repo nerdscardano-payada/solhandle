@@ -25,7 +25,12 @@ export async function growthReviewAdmin(entities, user, body) {
   if (before.status === 'APPROVING' && Date.parse(before.lease_until) > Date.now()) throw new Error('Een beheerbeslissing wordt al verwerkt. Probeer later opnieuw.');
   if (body.action === 'reopen_review') {
     if (before.status !== 'REJECTED') throw new Error('Alleen afgewezen reviews kunnen worden heropend.');
-    const after = await entities.GrowthHubReview.update(before.id, { status:'PENDING', decision_note:note, decided_by:user.id, decided_at:new Date().toISOString() });
+    const profile = await getProfile(entities,before.wallet), quest = await publishedQuest(entities,before.quest_slug);
+    if (!profile) throw new Error('Deelnemersprofiel niet gevonden.');
+    const refreshed = await questProof(entities,profile,quest,before.signature);
+    if (refreshed.pending) throw new Error('Wacht eerst op finalized bewijs voordat je heropent.');
+    const risk = await questRisk(entities,before.wallet,refreshed.evidence,refreshed.conversion_id);
+    const after = await entities.GrowthHubReview.update(before.id, { status:'PENDING', quest_id:quest.id, quest_version:quest.version, quest_title:quest.title, evidence:refreshed.evidence || {}, reasons:[...(quest.handler === 'REFERRAL_MINT' ? ['REFERRAL_MANUAL_REVIEW'] : []),...risk.reasons], decision_note:note, decided_by:user.id, decided_at:new Date().toISOString() });
     await audit(entities,user,before,after,body.action); return {ok:true};
   }
   if (!['PENDING','APPROVING'].includes(before.status)) throw new Error('Heropen eerst de afgewezen review.');
@@ -35,7 +40,7 @@ export async function growthReviewAdmin(entities, user, body) {
     profile = await getProfile(entities, before.wallet);
     if (!profile || profile.status !== 'ACTIVE') throw new Error('Dit profiel staat niet actief; hef de hold eerst gemotiveerd op.');
     quest = await publishedQuest(entities, before.quest_slug);
-    if (quest.id !== before.quest_id || quest.version !== before.quest_version) throw new Error('De questversie is gewijzigd; dit bewijs kan niet onder de nieuwe regels worden goedgekeurd.');
+    if (quest.id !== before.quest_id || quest.version !== before.quest_version) throw new Error('De questversie is gewijzigd. Wijs de oude review af en heropen onder de actuele regels om opnieuw te verifiëren.');
     result = await questProof(entities, profile, quest, before.signature);
     if (result.pending) throw new Error('Finalized bewijs ontbreekt nog. Er is geen XP toegekend.');
     await questRisk(entities, before.wallet, result.evidence, result.conversion_id);

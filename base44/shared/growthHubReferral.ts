@@ -14,7 +14,7 @@ export async function verifyGrowthReferral(entities, profile, quest, signature) 
   const [origin, intent, firstOrigin] = await Promise.all([
     entities.OriginReferral.get(String(conversion.origin_referral_id || '')),
     entities.MintIntent.get(conversion.mint_intent_id),
-    entities.OriginReferral.filter({ referred_wallet: conversion.buyer_wallet, status: 'LOCKED' }, { sort: 'locked_at', limit: 1 })
+    entities.OriginReferral.filter({ referred_wallet: conversion.buyer_wallet }, { sort: 'locked_at', limit: 1 })
   ]);
   if (!origin || origin.status !== 'LOCKED' || firstOrigin.items[0]?.id !== origin.id || origin.origin_profile_id !== promoter.id || origin.referred_wallet !== conversion.buyer_wallet || origin.mint_signature !== signature || origin.referred_handle !== conversion.minted_handle || !intent || intent.referral_profile_id !== promoter.id || intent.buyer_wallet !== conversion.buyer_wallet || intent.handle !== conversion.minted_handle || intent.transaction_signature !== signature || !['CONFIRMED','PROCESSING','PROCESSED'].includes(intent.status)) throw new Error('De oorspronkelijke referral, koper en mintregistratie komen niet overeen. Alleen de eerste vastgelegde referral-mint van deze wallet telt.');
   const url = secrets.get('SOLANA_RPC_URL');
