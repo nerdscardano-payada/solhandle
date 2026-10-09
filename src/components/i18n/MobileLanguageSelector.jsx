@@ -8,7 +8,7 @@ export default function MobileLanguageSelector() {
   const { language, setLanguage, t } = useLanguage();
   const currentLabel = languages.find(([code]) => code === language)?.[1];
   return <DropdownMenu>
-    <DropdownMenuTrigger aria-label={`${t('Language')}: ${currentLabel}`} title={t('Language')} className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-xl text-foreground lg:hidden">
+    <DropdownMenuTrigger aria-label={`${t('Language')}: ${currentLabel}`} title={t('Language')} className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-xl text-foreground">
       <span aria-hidden="true">{flags[language]}</span>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end" className="dark max-h-80 overflow-y-auto border-border bg-card text-card-foreground">
