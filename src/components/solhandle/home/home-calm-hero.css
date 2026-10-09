@@ -1,0 +1,14 @@
+@media (min-width: 768px) {
+  .platform-home .home-funnel .home-mint-hero .home-claim-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(30px, 3.7vw, 48px);
+    line-height: 1.16;
+    letter-spacing: -.025em;
+    color: hsl(var(--foreground) / .92);
+  }
+  .home-funnel .home-mint-hero .home-claim-title > .home-gradient-text { background: none; color: inherit; }
+  .home-funnel .home-mint-hero .home-claim-title > span > .home-gradient-text { background-image: linear-gradient(100deg, hsl(var(--names-accent)), hsl(var(--names-secondary))); }
+  .home-funnel .home-mint-hero .home-search-form { border-color: hsl(var(--names-accent) / .3); box-shadow: none; }
+  .home-funnel .home-mint-hero .home-primary-button { background: linear-gradient(100deg, hsl(var(--names-accent)), hsl(var(--names-secondary))); box-shadow: none; font-weight: 600; }
+}

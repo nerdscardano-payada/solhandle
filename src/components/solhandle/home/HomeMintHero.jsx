@@ -4,6 +4,7 @@ import HandleSearch from '@/components/solhandle/HandleSearch';
 import HomeProductVisual from '@/components/solhandle/home/HomeProductVisual';
 import HomeTrustLine from '@/components/solhandle/home/HomeTrustLine';
 import HomeMobileTrust from '@/components/solhandle/home/HomeMobileTrust';
+import '@/components/solhandle/home/home-calm-hero.css';
 
 export default function HomeMintHero({ wallet }) {
   const [previewHandle, setPreviewHandle] = useState('');
