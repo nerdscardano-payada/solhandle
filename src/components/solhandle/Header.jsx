@@ -22,7 +22,7 @@ export default function Header({ onConnected, funnel = false }) {
   return <header className="solhandle-platform-header relative mx-auto flex max-w-7xl items-center justify-between border-b border-white/10 px-5 py-4 lg:px-9">
     <Brand prominent />
     <HomeDesktopNavigation funnel={funnel}/>
-    <div className="flex items-center gap-3">{funnel && <Link to="/search" aria-label="Search a handle" className="hidden text-names-accent lg:block"><Search className="h-5 w-5"/></Link>}{!funnel && <><MarketplaceNotificationBell wallet={wallet} bids={notifications.bids} sales={notifications.sales} onRefresh={notifications.refresh}/><AdminTradeBell/></>}<MobileLanguageSelector/><WalletButton onConnected={onConnected} /><button type="button" onClick={() => setMenuOpen((open) => !open)} className="text-slate-300 lg:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
+    <div className="flex items-center gap-3"><Link to="/search" aria-label="Search a handle" className="hidden text-names-accent lg:block"><Search className="h-5 w-5"/></Link>{!funnel && <><MarketplaceNotificationBell wallet={wallet} bids={notifications.bids} sales={notifications.sales} onRefresh={notifications.refresh}/><AdminTradeBell/></>}<MobileLanguageSelector/><WalletButton onConnected={onConnected} /><button type="button" onClick={() => setMenuOpen((open) => !open)} className="text-slate-300 lg:hidden" aria-label="Toggle navigation" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
     {menuOpen && <MobileNavigation onNavigate={() => setMenuOpen(false)} tokenIsLive={tokenIsLive} />}
   </header>;
 }
