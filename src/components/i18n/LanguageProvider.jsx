@@ -8,6 +8,7 @@ import pageTranslations from '@/components/i18n/pageTranslations';
 
 const emptyTranslations = Object.freeze({});
 const translationCache = new Map();
+const translationLoaders = import.meta.glob('./locales/*.json', { import: 'default' });
 const LanguageContext = createContext({ language: 'en', setLanguage: () => {}, t: text => text, staticTranslations: emptyTranslations });
 export const useLanguage = () => useContext(LanguageContext);
 export default function LanguageProvider({ children }) {
@@ -22,10 +23,7 @@ export default function LanguageProvider({ children }) {
     if (language === 'en') { setLoaded({ language, texts: emptyTranslations }); return; }
     let active = true;
     if (!translationCache.has(language)) {
-      translationCache.set(language, fetch(`/locales/solhandle/${language}.json`).then(response => {
-        if (!response.ok) throw new Error('Unable to load platform translations');
-        return response.json();
-      }));
+      translationCache.set(language, translationLoaders[`./locales/${language}.json`]());
     }
     translationCache.get(language).then(texts => { if (active) setLoaded({ language, texts }); });
     return () => { active = false; };
