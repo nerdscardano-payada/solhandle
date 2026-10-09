@@ -5,6 +5,9 @@ import homeTranslations from '@/components/i18n/homeTranslations';
 import homeStatusTranslations from '@/components/i18n/homeStatusTranslations';
 import relativeTime from '@/components/i18n/relativeTime';
 import pageTranslations from '@/components/i18n/pageTranslations';
+import integrationTranslationSources from '@/components/i18n/integrationTranslationSources';
+
+const integrationLocales = import.meta.glob('./integration-locales/*.json', { import: 'default', eager: true });
 
 const emptyTranslations = Object.freeze({});
 const translationCache = new Map();
@@ -23,7 +26,10 @@ export default function LanguageProvider({ children }) {
     if (language === 'en') { setLoaded({ language, texts: emptyTranslations }); return; }
     let active = true;
     if (!translationCache.has(language)) {
-      translationCache.set(language, translationLoaders[`./locales/${language}.json`]());
+      translationCache.set(language, translationLoaders[`./locales/${language}.json`]().then(texts => {
+        const additions = integrationLocales[`./integration-locales/${language}.json`] || {};
+        return { ...texts, ...Object.fromEntries(Object.entries(integrationTranslationSources).map(([key, source]) => [source, additions[key] || source])) };
+      }));
     }
     translationCache.get(language).then(texts => { if (active) setLoaded({ language, texts }); });
     return () => { active = false; };

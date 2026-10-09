@@ -17,7 +17,8 @@ export default function StaticTextLocalization() {
       const key = attribute || 'text';
       const previous = stored[key];
       const source = previous?.output === value ? previous.source : value;
-      const output = translate(source);
+      const element = attribute ? target : target.parentElement;
+      const output = translate(source, Boolean(element?.closest('[data-localize-slots]')));
       stored[key] = { source, output };
       originals.current.set(target, stored);
       if (value !== output) {
