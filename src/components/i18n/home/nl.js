@@ -1,0 +1,20 @@
+export default {
+  searchTitle: 'Zoek en koop @handles', searchText: 'Vind je naam en maak hem van jou.',
+  sellTitle: 'Verkoop @handles', sellText: 'Bied je handles aan op de marktplaats.',
+  payTitle: 'Betaal via @handles', payText: 'Verstuur en ontvang SOL met een handle.', tradeText: 'Koop en verkoop de communitytoken.',
+  before: 'Voordat je claimt', allQuestions: 'Alle vragen', faqMint: 'Wat krijg ik als ik mint?',
+  faqMintAnswer: 'Een unieke @naam als NFT in de officiële SolHandle-collectie, direct gemint in je wallet. De huidige NFT-eigenaar beheert de naam. Er zijn geen verlengingskosten.',
+  faqUse: 'Waar kan ik mijn @naam gebruiken?',
+  faqUseAnswer: 'Gebruik hem in SolHandle Pay en in apps die SolHandle integreren, waaronder de publiek aangekondigde MMO Alpha Terminal-integratie. Niet elke Solana-wallet of app ondersteunt SolHandle automatisch.',
+  faqTransfer: 'Kan ik mijn naam verkopen of overdragen?',
+  faqTransferAnswer: 'Ja. Je kunt de officiële NFT overdragen of je naam aanbieden op de marktplaats. Het beheer volgt de huidige on-chain eigenaar, dus de koper of ontvanger wordt eigenaar van de naam.',
+  walletName: 'Geef je wallet een naam.', ready: 'Zoek eerst. Verbind je wallet zodra je klaar bent om te claimen.', find: 'Vind je @naam',
+  communityToken: '$HANDLE · De SolHandle-communitytoken', power: 'De motor achter het SolHandle-vliegwiel.', connects: 'Hoe het vliegwiel samenhangt',
+  flywheelText: 'Claim en gebruik @handles. Protocolactiviteit draagt bij aan terugkoopbudgetten, terwijl bevestigde $HANDLE-burns het tokenaanbod permanent verminderen.',
+  burnNote: 'Terugkoopbudgetten zijn geen uitgevoerde aankopen. Dit totaal bevat geregistreerde, bevestigde burns, waaronder burns van mints die met $HANDLE zijn betaald.',
+  contract: 'Officieel $HANDLE-contractadres', explore: 'Ontdek het vliegwiel', totalBurned: 'Totaal verbrande $HANDLE', loading: 'Laden…', unavailable: 'Tijdelijk niet beschikbaar', removed: '$HANDLE permanent uit het aanbod verwijderd', proofs: 'Bekijk burnbewijzen',
+  activity: 'On-chain activiteit', recent: 'Recent geclaimd', live: 'Live', allHandles: 'Bekijk alle handles', latest: 'Laatst toegevoegd', listings: 'Marktplaatsaanbiedingen', market: 'Bekijk marktplaats', native: 'Native aanbieding', emptyMarket: 'Er zijn nog geen actieve marktplaatsaanbiedingen.',
+  claimed: 'Geclaimd', owner: 'Eigenaar', standard: 'Standaard', uncommon: 'Ongewoon', rare: 'Zeldzaam', ultraRare: 'Zeer zeldzaam', legendary: 'Legendarisch', premium: 'Premium',
+  cardUnavailable: 'Kaart niet beschikbaar', rendering: 'Kaart genereren…', preview: 'Voorbeeld van je walletidentiteit', enter: 'Voer een handle in om te zoeken.', length: 'Handles mogen maximaal 20 tekens bevatten.', characters: 'Gebruik alleen kleine letters en cijfers.', mint: 'Mint',
+  talkAtto: 'Praat met Atto', closeAtto: 'Sluit Atto', chatAtto: 'Chat met Atto', guide: 'Je SolHandle-gids', newConversation: 'Nieuw gesprek', closeChat: 'Sluit de Atto-chat', ask: 'Stel Atto een vraag', askPlaceholder: 'Vraag Atto alles…', send: 'Bericht versturen', watchlist: 'Mijn volglijst', earnings: 'Verwijzingen / Verdiensten', unknown: 'Onbekend'
+};

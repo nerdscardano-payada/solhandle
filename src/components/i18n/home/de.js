@@ -1,0 +1,17 @@
+export default {
+  searchTitle: '@Handles suchen und kaufen', searchText: 'Finde deinen Namen und mache ihn zu deinem.', sellTitle: '@Handles verkaufen', sellText: 'Biete deine Handles auf dem Marktplatz an.', payTitle: 'An @Handles bezahlen', payText: 'Sende und empfange SOL mit einem Handle.', tradeText: 'Kaufe und verkaufe den Community-Token.',
+  before: 'Vor dem Beanspruchen', allQuestions: 'Alle Fragen', faqMint: 'Was erhalte ich beim Minten?',
+  faqMintAnswer: 'Einen einzigartigen @Namen als NFT in der offiziellen SolHandle-Kollektion, direkt in deine Wallet gemintet. Der aktuelle NFT-Eigentümer kontrolliert den Namen. Es gibt keine Verlängerungsgebühren.',
+  faqUse: 'Wo kann ich meinen @Namen verwenden?',
+  faqUseAnswer: 'Nutze ihn in SolHandle Pay und in Apps, die SolHandle integrieren, einschließlich der öffentlich angekündigten MMO Alpha Terminal-Integration. Nicht jede Solana-Wallet oder App unterstützt SolHandle automatisch.',
+  faqTransfer: 'Kann ich meinen Namen verkaufen oder übertragen?',
+  faqTransferAnswer: 'Ja. Du kannst das offizielle NFT übertragen oder deinen Namen auf dem Marktplatz anbieten. Die Kontrolle folgt dem aktuellen On-Chain-Eigentümer. Käufer oder Empfänger werden somit Eigentümer des Namens.',
+  walletName: 'Gib deiner Wallet einen Namen.', ready: 'Suche zuerst. Verbinde deine Wallet, wenn du bereit zum Beanspruchen bist.', find: 'Finde deinen @Namen',
+  communityToken: '$HANDLE · Der SolHandle-Community-Token', power: 'Der Antrieb des SolHandle-Wachstumskreislaufs.', connects: 'So funktioniert der Wachstumskreislauf',
+  flywheelText: 'Beanspruche und nutze @Handles. Protokollaktivität trägt zu Rückkaufbudgets bei, während bestätigte $HANDLE-Burns das Token-Angebot dauerhaft reduzieren.',
+  burnNote: 'Rückkaufbudgets sind keine ausgeführten Käufe. Diese Summe umfasst dokumentierte, bestätigte Burns, einschließlich Burns aus mit $HANDLE bezahlten Mints.',
+  contract: 'Offizielle $HANDLE-Vertragsadresse', explore: 'Entdecke den Wachstumskreislauf', totalBurned: 'Insgesamt verbrannte $HANDLE', loading: 'Laden…', unavailable: 'Vorübergehend nicht verfügbar', removed: '$HANDLE dauerhaft aus dem Angebot entfernt', proofs: 'Burn-Nachweise ansehen',
+  activity: 'On-Chain-Aktivität', recent: 'Kürzlich beansprucht', live: 'Live', allHandles: 'Alle Handles ansehen', latest: 'Zuletzt hinzugefügt', listings: 'Marktplatzangebote', market: 'Marktplatz ansehen', native: 'Natives Angebot', emptyMarket: 'Noch keine aktiven Marktplatzangebote.',
+  claimed: 'Beansprucht', owner: 'Eigentümer', standard: 'Standard', uncommon: 'Ungewöhnlich', rare: 'Selten', ultraRare: 'Sehr selten', legendary: 'Legendär', premium: 'Premium', cardUnavailable: 'Karte nicht verfügbar', rendering: 'Karte wird erstellt…', preview: 'Vorschau der Wallet-Identität', enter: 'Gib einen Handle zum Suchen ein.', length: 'Handles dürfen bis zu 20 Zeichen enthalten.', characters: 'Verwende nur Kleinbuchstaben und Zahlen.', mint: 'Minten',
+  talkAtto: 'Sprich mit Atto', closeAtto: 'Atto schließen', chatAtto: 'Chat mit Atto', guide: 'Dein SolHandle-Begleiter', newConversation: 'Neues Gespräch', closeChat: 'Atto-Chat schließen', ask: 'Stelle Atto eine Frage', askPlaceholder: 'Frag Atto alles…', send: 'Nachricht senden', watchlist: 'Meine Beobachtungsliste', earnings: 'Empfehlungen / Einnahmen', unknown: 'Unbekannt'
+};

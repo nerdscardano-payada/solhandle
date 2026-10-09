@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/components/i18n/LanguageProvider';
 import { Search, Tag, Send, ArrowLeftRight, ArrowUpRight } from 'lucide-react';
 
 const actions = [
@@ -9,6 +10,7 @@ const actions = [
 ];
 
 export default function HomeActions() {
+  const { t } = useLanguage();
   return <section className="home-content-section" aria-label="Explore SolHandle">
     <div className="home-four-grid">
       {actions.map(({ title, description, to, icon: Icon }) => <Link key={to} to={to} className="home-name-tile">
@@ -16,8 +18,8 @@ export default function HomeActions() {
           <Icon className="h-7 w-7" aria-hidden="true"/>
           <ArrowUpRight className="h-5 w-5" aria-hidden="true"/>
         </div>
-        <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>
-        <p className="mt-3 text-sm leading-relaxed text-foreground/70">{description}</p>
+        <h2 className="text-xl font-bold tracking-tight text-foreground">{t(title)}</h2>
+        <p className="mt-3 text-sm leading-relaxed text-foreground/70">{t(description)}</p>
       </Link>)}
     </div>
   </section>;

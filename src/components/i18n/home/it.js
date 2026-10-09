@@ -1,0 +1,17 @@
+export default {
+  searchTitle: 'Cerca e acquista @handle', searchText: 'Trova il tuo nome e rendilo tuo.', sellTitle: 'Vendi @handle', sellText: 'Metti in vendita i tuoi handle sul mercato.', payTitle: 'Paga gli @handle', payText: 'Invia e ricevi SOL usando un handle.', tradeText: 'Acquista e vendi il token della community.',
+  before: 'Prima di rivendicare', allQuestions: 'Tutte le domande', faqMint: 'Cosa ottengo facendo mint?',
+  faqMintAnswer: 'Un @nome unico rappresentato da un NFT della collezione ufficiale SolHandle, creato direttamente nel tuo wallet. Il proprietario attuale dell’NFT controlla il nome. Non ci sono costi di rinnovo.',
+  faqUse: 'Dove posso usare il mio @nome?',
+  faqUseAnswer: 'Usalo in SolHandle Pay e nelle app che integrano SolHandle, inclusa l’integrazione MMO Alpha Terminal annunciata pubblicamente. Il supporto non è automatico in ogni wallet o app Solana.',
+  faqTransfer: 'Posso vendere o trasferire il mio nome?',
+  faqTransferAnswer: 'Sì. Puoi trasferire l’NFT ufficiale o mettere il tuo nome in vendita sul mercato. Il controllo segue il proprietario attuale on-chain, quindi l’acquirente o il destinatario diventa proprietario del nome.',
+  walletName: 'Dai un nome al tuo wallet.', ready: 'Cerca prima. Collega il wallet quando sei pronto a rivendicare il nome.', find: 'Trova il tuo @nome',
+  communityToken: '$HANDLE · Il token della community SolHandle', power: 'Il motore del ciclo di crescita SolHandle.', connects: 'Come funziona il ciclo di crescita',
+  flywheelText: 'Rivendica e usa @handle. L’attività del protocollo contribuisce ai budget di riacquisto, mentre i burn confermati di $HANDLE riducono permanentemente l’offerta del token.',
+  burnNote: 'I budget di riacquisto non sono acquisti eseguiti. Questo totale include burn registrati e confermati, compresi quelli dei mint pagati con $HANDLE.',
+  contract: 'Indirizzo ufficiale del contratto $HANDLE', explore: 'Esplora il ciclo di crescita', totalBurned: 'Totale di $HANDLE bruciati', loading: 'Caricamento…', unavailable: 'Temporaneamente non disponibile', removed: '$HANDLE rimossi permanentemente dall’offerta', proofs: 'Vedi prove dei burn',
+  activity: 'Attività on-chain', recent: 'Rivendicati di recente', live: 'In diretta', allHandles: 'Vedi tutti gli handle', latest: 'Ultimi aggiunti', listings: 'Annunci del mercato', market: 'Vedi mercato', native: 'Annuncio nativo', emptyMarket: 'Non ci sono ancora annunci attivi sul mercato.',
+  claimed: 'Rivendicato', owner: 'Proprietario', standard: 'Standard', uncommon: 'Non comune', rare: 'Raro', ultraRare: 'Molto raro', legendary: 'Leggendario', premium: 'Premium', cardUnavailable: 'Carta non disponibile', rendering: 'Creazione della carta…', preview: 'Anteprima dell’identità del wallet', enter: 'Inserisci un handle da cercare.', length: 'Gli handle possono contenere fino a 20 caratteri.', characters: 'Usa solo lettere minuscole e numeri.', mint: 'Crea NFT',
+  talkAtto: 'Parla con Atto', closeAtto: 'Chiudi Atto', chatAtto: 'Chat con Atto', guide: 'La tua guida SolHandle', newConversation: 'Nuova conversazione', closeChat: 'Chiudi la chat di Atto', ask: 'Fai una domanda ad Atto', askPlaceholder: 'Chiedi qualsiasi cosa ad Atto…', send: 'Invia messaggio', watchlist: 'La mia lista di osservazione', earnings: 'Referral / Guadagni', unknown: 'Sconosciuto'
+};

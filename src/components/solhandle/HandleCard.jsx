@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useLanguage } from '@/components/i18n/LanguageProvider';
 import { Link } from "react-router-dom";
 import { buildHandlePngBlob } from "@/lib/buildHandlePng";
 
 // The canonical SolHandle card design, rendered at a web-optimized resolution.
 // Minting still uses the full-resolution version of the same renderer.
 export default function HandleCard({ handle, display, to, className }) {
+  const { t } = useLanguage();
   const clean = String(handle || "").replace(/^@/, "").toLowerCase();
   const [url, setUrl] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -38,7 +40,7 @@ export default function HandleCard({ handle, display, to, className }) {
         <img src={url} alt={`SolHandle NFT card for ${label}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       ) : (
         <div className="absolute inset-0 grid place-items-center text-sm text-slate-500">
-          {failed ? "Card unavailable" : "Rendering card…"}
+          {t(failed ? 'Card unavailable' : 'Rendering card…')}
         </div>
       )}
     </div>
