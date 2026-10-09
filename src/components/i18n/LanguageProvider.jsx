@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { languages, translations } from '@/components/i18n/translations';
+import coreTranslations from '@/components/i18n/coreTranslations';
 
 const LanguageContext = createContext({ language: 'en', setLanguage: () => {}, t: text => text });
 export const useLanguage = () => useContext(LanguageContext);
@@ -13,6 +14,6 @@ export default function LanguageProvider({ children }) {
     localStorage.setItem('solhandle_language', language);
     document.documentElement.lang = language;
   }, [language]);
-  const t = text => translations[language]?.[text] || text;
+  const t = text => coreTranslations[language]?.[text] || translations[language]?.[text] || text;
   return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>;
 }
