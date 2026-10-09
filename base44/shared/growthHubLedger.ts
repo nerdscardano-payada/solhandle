@@ -28,8 +28,8 @@ export async function creditPilotXP(entities, profile, quest, evidence = null) {
   return { completed: true, already_completed: false, xp: quest.xp };
 }
 export async function personalOverview(entities, profile) {
-  const [lifetime, season, history] = await Promise.all([xpTotals(entities, { wallet: profile.wallet }), activeSeason(entities), entities.GrowthHubXP.filter({ wallet: profile.wallet }, { sort: '-credited_at', limit: 50 })]);
+  const [lifetime, season, history, reviews] = await Promise.all([xpTotals(entities, { wallet: profile.wallet }), activeSeason(entities), entities.GrowthHubXP.filter({ wallet: profile.wallet }, { sort: '-credited_at', limit: 50 }), entities.GrowthHubReview.filter({ wallet:profile.wallet }, {sort:'-submitted_at',limit:50,fields:['quest_slug','quest_title','status','submitted_at','decided_at']})]);
   const lifetime_xp = lifetime.reduce((total, row) => total + Number(row.max_delta || 0), 0);
   const current = season ? await xpTotals(entities, { wallet: profile.wallet, season_id: season.id }) : [];
-  return { profile: { wallet: profile.wallet, show_on_leaderboard: profile.show_on_leaderboard, joined_at: profile.joined_at }, lifetime_xp, season_xp: current.reduce((total, row) => total + Number(row.max_delta || 0), 0), reward_eligible_xp: 0, level: levelFor(lifetime_xp), completed_keys: lifetime.map(row => row.completion_key), season, history, mode: 'PILOT', payouts_enabled: false };
+  return { profile: { wallet: profile.wallet, status: profile.status, show_on_leaderboard: profile.show_on_leaderboard, joined_at: profile.joined_at }, reviews, lifetime_xp, season_xp: current.reduce((total, row) => total + Number(row.max_delta || 0), 0), reward_eligible_xp: 0, level: levelFor(lifetime_xp), completed_keys: lifetime.map(row => row.completion_key), season, history, mode: 'PILOT', payouts_enabled: false };
 }

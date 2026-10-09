@@ -1,4 +1,6 @@
+import { growthReviewAdmin } from './growthHubReviewAdmin.ts';
 export async function growthAdmin(entities, user, body) {
+  if (['review_queue','approve_review','reject_review','reopen_review','profile_status'].includes(body.action)) return growthReviewAdmin(entities, user, body);
   if (body.action === 'overview') {
     const [quests, seasons, audits, participants, credits] = await Promise.all([entities.GrowthHubQuest.filter({}, { sort: 'created_date', limit: 50 }), entities.GrowthHubSeason.filter({}, { sort: '-created_date', limit: 20 }), entities.GrowthHubAudit.filter({}, { sort: '-occurred_at', limit: 20 }), entities.GrowthHubProfile.count({ status: 'ACTIVE' }), entities.GrowthHubXP.aggregate({ countDistinct: 'completion_key' })]);
     return { quests: quests.items, seasons: seasons.items, audits: audits.items, participants, completions: credits.rows[0]?.count_distinct_completion_key || 0, payouts_enabled: false };
@@ -14,7 +16,7 @@ export async function growthAdmin(entities, user, body) {
     after = await entities.GrowthHubQuest.update(before.id, { title, description, xp, min_amount_lamports: minimum, version: before.version + 1, status: 'DRAFT' });
   } else if (body.action === 'quest_status') {
     before = await entities.GrowthHubQuest.get(String(body.id));
-    if (!before || !['PUBLISHED', 'PAUSED'].includes(body.status) || !['PROFILE', 'KNOWLEDGE_QUIZ', 'ON_CHAIN_MINT', 'ON_CHAIN_TOKEN_MINT', 'ON_CHAIN_PAY'].includes(before.handler)) throw new Error('Ongeldige questwijziging.');
+    if (!before || !['PUBLISHED', 'PAUSED'].includes(body.status) || !['PROFILE', 'KNOWLEDGE_QUIZ', 'ON_CHAIN_MINT', 'ON_CHAIN_TOKEN_MINT', 'ON_CHAIN_PAY', 'REFERRAL_MINT'].includes(before.handler)) throw new Error('Ongeldige questwijziging.');
     if (body.status === 'PUBLISHED' && before.handler === 'ON_CHAIN_PAY' && (!Number.isSafeInteger(before.min_amount_lamports) || before.min_amount_lamports < 1)) throw new Error('Publicatie vereist een vastgelegd minimaal betaalbedrag.');
     after = await entities.GrowthHubQuest.update(before.id, { status: body.status });
   } else if (body.action === 'save_season') {

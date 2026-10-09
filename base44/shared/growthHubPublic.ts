@@ -2,7 +2,7 @@ import { xpTotals, levelFor } from './growthHubLedger.ts';
 export async function growthPublic(entities, body) {
   if (body.action === 'catalog') {
     const query = { status: 'PUBLISHED' };
-    if (body.category && ['GETTING_STARTED', 'KNOWLEDGE', 'USE_PRODUCT'].includes(body.category)) query.category = body.category;
+    if (body.category && ['GETTING_STARTED', 'KNOWLEDGE', 'USE_PRODUCT', 'REFERRALS'].includes(body.category)) query.category = body.category;
     if (body.search) query.title = { $regex: String(body.search).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
     const [quests, seasons, participants] = await Promise.all([entities.GrowthHubQuest.filter(query, { sort: 'created_date', limit: 20, cursor: body.cursor || undefined, fields: ['slug', 'title', 'description', 'category', 'handler', 'xp', 'status', 'version', 'frequency', 'starts_at', 'ends_at', 'retroactive_allowed', 'min_amount_lamports'] }), entities.GrowthHubSeason.filter({}, { sort: '-created_date', limit: 20, fields: ['slug', 'name', 'status', 'duration_days', 'proposed_budget_tokens', 'rules_version', 'starts_at', 'ends_at', 'payouts_enabled'] }), entities.GrowthHubProfile.count({ status: 'ACTIVE' })]);
     return { quests, seasons: seasons.items, participants, mode: 'PILOT', payouts_enabled: false };

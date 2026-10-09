@@ -1,0 +1,101 @@
+{
+  "name": "GrowthHubReview",
+  "type": "object",
+  "properties": {
+    "review_key": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "quest_id": {
+      "type": "string"
+    },
+    "quest_slug": {
+      "type": "string"
+    },
+    "quest_title": {
+      "type": "string"
+    },
+    "quest_version": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "APPROVING",
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "signature": {
+      "type": "string"
+    },
+    "conversion_id": {
+      "type": "string"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "object"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decided_at": {
+      "type": "string"
+    },
+    "decided_by": {
+      "type": "string"
+    },
+    "decision_note": {
+      "type": "string"
+    },
+    "processing_token": {
+      "type": "string"
+    },
+    "lease_until": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "review_key",
+    "wallet",
+    "quest_id",
+    "quest_slug",
+    "quest_title",
+    "quest_version",
+    "status",
+    "signature",
+    "reasons",
+    "submitted_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -16,7 +16,8 @@
       "enum": [
         "GETTING_STARTED",
         "KNOWLEDGE",
-        "USE_PRODUCT"
+        "USE_PRODUCT",
+        "REFERRALS"
       ]
     },
     "handler": {
@@ -26,7 +27,8 @@
         "KNOWLEDGE_QUIZ",
         "ON_CHAIN_MINT",
         "ON_CHAIN_TOKEN_MINT",
-        "ON_CHAIN_PAY"
+        "ON_CHAIN_PAY",
+        "REFERRAL_MINT"
       ]
     },
     "xp": {
