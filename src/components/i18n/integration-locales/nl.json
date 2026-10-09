@@ -41,5 +41,9 @@
   "uiWhy": "Gebruikers en downstream-clients moeten het opgeloste adres kunnen verifiëren zonder dat de bestaande adresgebaseerde flow verloren gaat.",
   "securityWhere": "Voeg controles voor 'not-found' en verificatie toe direct na de SDK-aanroep in {0}, voordat een geverifieerde identiteit wordt weergegeven of het adres wordt gebruikt. Forceer bij elke native-SOL verzend-flow safeForNativeSol voordat de overdracht-instructie wordt opgebouwd, en los daarna opnieuw op voordat de transactie wordt geconstrueerd. Toon een geblokkeerd of niet-gevonden resultaat in dezelfde ontvanger- of identiteitscomponent.",
   "securityWhy": "Validatie moet plaatsvinden voordat het opgeloste adres de UI of transactie kan beïnvloeden; het tonen van een waarschuwing na constructie is te laat.",
-  "testsWhere": "Voeg de onderstaande controles toe aan de integratie- of end-to-end testsuite van je project en voer deze uit tegen de ontvanger-, zoek- of identiteits-flow die in de vorige stappen is aangepast. Houd de resultaten reproduceerbaar met het exacte build-versienummer. Voor verificatie, verstrek de staging-URL of build, integratieversie en technisch contactpersoon; Mainnet-controles gebruiken verse test-wallets en handles."
+  "testsWhere": "Voeg de onderstaande controles toe aan de integratie- of end-to-end testsuite van je project en voer deze uit tegen de ontvanger-, zoek- of identiteits-flow die in de vorige stappen is aangepast. Houd de resultaten reproduceerbaar met het exacte build-versienummer. Voor verificatie, verstrek de staging-URL of build, integratieversie en technisch contactpersoon; Mainnet-controles gebruiken verse test-wallets en handles.",
+  "startHere": "BEGIN HIER",
+  "pasteFlow": "VOEG TOE AAN JE PROCES",
+  "safety": "VEILIGHEID",
+  "testSuite": "TESTSUITE"
 }

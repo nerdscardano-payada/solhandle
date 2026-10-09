@@ -41,5 +41,9 @@
   "uiWhy": "Kullanıcılar ve alt istemciler, mevcut adres tabanlı akışı kaybetmeden çözümlenen adresi doğrulayabilmelidir.",
   "securityWhere": "{0} içindeki SDK çağrısından hemen sonra, doğrulanmış bir kimliği görüntülemeden veya adresi kullanmadan önce not-found ve doğrulama kontrollerini ekleyin. Herhangi bir yerel SOL gönderim akışında, transfer talimatını oluşturmadan önce safeForNativeSol kuralını zorunlu tutun ve ardından işlem oluşturmadan önce tekrar çözümleme yapın. Engellenen veya bulunamayan sonucu, aynı alıcı veya kimlik bileşeninde gösterin.",
   "securityWhy": "Doğrulama, çözümlenen adres UI'yı veya işlemi etkilemeden önce çalışmalıdır; işlem oluşturulduktan sonra uyarı göstermek için çok geçtir.",
-  "testsWhere": "Aşağıdaki kontrolleri projenizin entegrasyon veya uçtan uca test paketine ekleyin ve önceki adımlarda değiştirilen alıcı, arama veya kimlik akışına karşı çalıştırın. Tam yapı sürümü ile tekrarlanabilir sonuçlar elde edin. Doğrulama için; hazırlık URL'sini veya yapısını, entegrasyon sürümünü ve teknik irtibat kişisini sağlayın; Mainnet kontrolleri yeni test cüzdanları ve handle'ları kullanır."
+  "testsWhere": "Aşağıdaki kontrolleri projenizin entegrasyon veya uçtan uca test paketine ekleyin ve önceki adımlarda değiştirilen alıcı, arama veya kimlik akışına karşı çalıştırın. Tam yapı sürümü ile tekrarlanabilir sonuçlar elde edin. Doğrulama için; hazırlık URL'sini veya yapısını, entegrasyon sürümünü ve teknik irtibat kişisini sağlayın; Mainnet kontrolleri yeni test cüzdanları ve handle'ları kullanır.",
+  "startHere": "BURADAN BAŞLAYIN",
+  "pasteFlow": "AKIŞINIZA EKLEYİN",
+  "safety": "GÜVENLİK",
+  "testSuite": "TEST PAKETİ"
 }

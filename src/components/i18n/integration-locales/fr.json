@@ -41,5 +41,9 @@
   "uiWhy": "Les utilisateurs et les clients en aval doivent pouvoir vérifier l'adresse résolue sans perdre le flux basé sur les adresses existant.",
   "securityWhere": "Ajoutez des contrôles de non-trouvé et de vérification immédiatement après l'appel SDK dans {0}, avant d'afficher une identité vérifiée ou d'utiliser l'adresse. Dans tout flux d'envoi native-SOL, appliquez safeForNativeSol avant de construire l'instruction de transfert, puis re-résolvez avant la construction de la transaction. Affichez un résultat bloqué ou non-trouvé dans le même composant de destinataire ou d'identité.",
   "securityWhy": "La validation doit être effectuée avant que l'adresse résolue ne puisse affecter l'interface utilisateur ou la transaction ; afficher un avertissement après la construction est trop tard.",
-  "testsWhere": "Ajoutez les contrôles ci-dessous à la suite de tests d'intégration ou de bout en bout de votre projet et exécutez-les sur le flux de destinataire, de recherche ou d'identité modifié aux étapes précédentes. Conservez des résultats reproductibles avec la version exacte du build. Pour la vérification, fournissez l'URL de staging ou le build, la version d'intégration et le contact technique ; les contrôles Mainnet utilisent des portefeuilles et des handles de test frais."
+  "testsWhere": "Ajoutez les contrôles ci-dessous à la suite de tests d'intégration ou de bout en bout de votre projet et exécutez-les sur le flux de destinataire, de recherche ou d'identité modifié aux étapes précédentes. Conservez des résultats reproductibles avec la version exacte du build. Pour la vérification, fournissez l'URL de staging ou le build, la version d'intégration et le contact technique ; les contrôles Mainnet utilisent des portefeuilles et des handles de test frais.",
+  "startHere": "COMMENCEZ ICI",
+  "pasteFlow": "AJOUTEZ À VOTRE PROCESSUS",
+  "safety": "SÉCURITÉ",
+  "testSuite": "SUITE DE TESTS"
 }

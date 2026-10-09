@@ -41,5 +41,9 @@
   "uiWhy": "Gli utenti e i client a valle devono essere in grado di verificare l'indirizzo risolto senza perdere il flusso esistente basato sull'indirizzo.",
   "securityWhere": "Aggiungi i controlli not-found e di verifica immediatamente dopo la chiamata SDK in {0}, prima di mostrare un'identità verificata o utilizzare l'indirizzo. In qualsiasi flusso di invio native-SOL, applica safeForNativeSol prima di creare l'istruzione di trasferimento, quindi risolvi nuovamente prima della costruzione della transazione. Mostra un risultato bloccato o not-found nello stesso componente destinatario o identità.",
   "securityWhy": "La convalida deve essere eseguita prima che l'indirizzo risolto possa influenzare l'interfaccia utente o la transazione; mostrare un avviso dopo la costruzione è troppo tardi.",
-  "testsWhere": "Aggiungi i controlli sottostanti alla suite di test di integrazione o end-to-end del tuo progetto ed eseguili rispetto al flusso di destinatario, ricerca o identità modificato nei passaggi precedenti. Mantieni risultati riproducibili con l'esatta versione di build. Per la verifica, fornisci l'URL di staging o la build, la versione di integrazione e un contatto tecnico; i controlli Mainnet utilizzano wallet e handle di test freschi."
+  "testsWhere": "Aggiungi i controlli sottostanti alla suite di test di integrazione o end-to-end del tuo progetto ed eseguili rispetto al flusso di destinatario, ricerca o identità modificato nei passaggi precedenti. Mantieni risultati riproducibili con l'esatta versione di build. Per la verifica, fornisci l'URL di staging o la build, la versione di integrazione e un contatto tecnico; i controlli Mainnet utilizzano wallet e handle di test freschi.",
+  "startHere": "INIZIA QUI",
+  "pasteFlow": "AGGIUNGI AL TUO FLUSSO",
+  "safety": "SICUREZZA",
+  "testSuite": "SUITE DI TEST"
 }

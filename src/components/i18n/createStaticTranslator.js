@@ -9,13 +9,14 @@ export default function createStaticTranslator(dictionary) {
     }).join('');
     return { pattern: new RegExp(`^${pattern}$`), slots, translated };
   });
+  const scopedTemplates = [...templates].sort((a, b) => b.pattern.source.length - a.pattern.source.length);
   const caseInsensitive = new Map(Object.entries(dictionary).map(([key, value]) => [key.toLowerCase(), value]));
   const translate = (value, recursive = false, depth = 0) => {
     if (typeof value !== 'string' || depth > 5) return value;
     const normalized = value.replace(/\s+/g, ' ').trim();
     let output = dictionary[normalized] || (recursive ? caseInsensitive.get(normalized.toLowerCase()) : undefined);
     if (!output) {
-      for (const template of templates) {
+      for (const template of recursive ? scopedTemplates : templates) {
         const match = normalized.match(template.pattern);
         if (!match) continue;
         output = template.translated.replace(/\{(\d+)\}/g, (_, slot) => {

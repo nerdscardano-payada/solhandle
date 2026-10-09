@@ -1,4 +1,8 @@
 export default {
+  startHere: 'START HERE',
+  pasteFlow: 'PASTE INTO YOUR FLOW',
+  safety: 'SAFETY',
+  testSuite: 'TEST SUITE',
   productGuide: 'View product guide',
   productBadge: 'Product-type guide',
   examplesLabel: 'APP-SPECIFIC EXAMPLES',

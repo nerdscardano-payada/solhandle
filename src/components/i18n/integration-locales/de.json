@@ -41,5 +41,9 @@
   "uiWhy": "Benutzer und nachgelagerte Clients müssen die aufgelöste Adresse verifizieren können, ohne den bestehenden adressbasierten Ablauf zu verlieren.",
   "securityWhere": "Füge direkt nach dem SDK Aufruf in {0} Prüfungen auf Nicht-Existenz und Verifizierung hinzu, bevor eine verifizierte Identität angezeigt oder die Adresse verwendet wird. Erzwinge in jedem nativen SOL-Sendeablauf safeForNativeSol vor der Erstellung der Transfer-Instruktion und führe vor der Transaktionskonstruktion eine erneute Auflösung durch. Zeige ein blockiertes oder nicht gefundenes Ergebnis in derselben Empfänger- oder Identitätskomponente an.",
   "securityWhy": "Die Validierung muss ausgeführt werden, bevor die aufgelöste Adresse die UI oder die Transaktion beeinflussen kann; eine Warnung nach der Konstruktion anzuzeigen, ist zu spät.",
-  "testsWhere": "Füge die unten stehenden Prüfungen zur Integrations- oder End-to-End-Testsuite deines Projekts hinzu und führe sie gegen den Empfänger-, Such- oder Identitätsablauf aus, der in den vorherigen Schritten modifiziert wurde. Halte reproduzierbare Ergebnisse mit der exakten Build-Version fest. Für die Verifizierung stelle die Staging-URL oder den Build, die Integrationsversion und den technischen Ansprechpartner bereit; Mainnet-Prüfungen verwenden frische Test-Wallets und Handles."
+  "testsWhere": "Füge die unten stehenden Prüfungen zur Integrations- oder End-to-End-Testsuite deines Projekts hinzu und führe sie gegen den Empfänger-, Such- oder Identitätsablauf aus, der in den vorherigen Schritten modifiziert wurde. Halte reproduzierbare Ergebnisse mit der exakten Build-Version fest. Für die Verifizierung stelle die Staging-URL oder den Build, die Integrationsversion und den technischen Ansprechpartner bereit; Mainnet-Prüfungen verwenden frische Test-Wallets und Handles.",
+  "startHere": "HIER STARTEN",
+  "pasteFlow": "IN DEINEN ABLAUF EINFÜGEN",
+  "safety": "SICHERHEIT",
+  "testSuite": "TESTSUITE"
 }

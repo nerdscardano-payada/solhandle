@@ -41,5 +41,9 @@
   "uiWhy": "Người dùng và các ứng dụng hạ nguồn phải có khả năng xác minh địa chỉ đã phân giải mà không làm mất luồng dựa trên địa chỉ hiện có.",
   "securityWhere": "Thêm các kiểm tra không tìm thấy và xác minh ngay sau lệnh gọi SDK trong {0}, trước khi hiển thị danh tính đã xác minh hoặc sử dụng địa chỉ. Trong bất kỳ luồng gửi native-SOL nào, hãy thực thi safeForNativeSol trước khi tạo lệnh chuyển tiền, sau đó phân giải lại trước khi khởi tạo giao dịch. Hiển thị kết quả bị chặn hoặc không tìm thấy trong cùng thành phần người nhận hoặc danh tính.",
   "securityWhy": "Việc xác thực phải được chạy trước khi địa chỉ đã phân giải có thể ảnh hưởng đến UI hoặc giao dịch; hiển thị cảnh báo sau khi đã khởi tạo giao dịch là quá muộn.",
-  "testsWhere": "Thêm các kiểm tra dưới đây vào bộ kiểm tra tích hợp hoặc kiểm tra đầu cuối của dự án và chạy chúng dựa trên luồng người nhận, tìm kiếm hoặc danh tính đã sửa đổi ở các bước trước. Giữ lại kết quả có thể tái lập với đúng phiên bản build. Để xác minh, hãy cung cấp URL hoặc bản build thử nghiệm (staging), phiên bản tích hợp và liên hệ kỹ thuật; các kiểm tra trên Mainnet sử dụng ví và handle thử nghiệm mới."
+  "testsWhere": "Thêm các kiểm tra dưới đây vào bộ kiểm tra tích hợp hoặc kiểm tra đầu cuối của dự án và chạy chúng dựa trên luồng người nhận, tìm kiếm hoặc danh tính đã sửa đổi ở các bước trước. Giữ lại kết quả có thể tái lập với đúng phiên bản build. Để xác minh, hãy cung cấp URL hoặc bản build thử nghiệm (staging), phiên bản tích hợp và liên hệ kỹ thuật; các kiểm tra trên Mainnet sử dụng ví và handle thử nghiệm mới.",
+  "startHere": "BẮT ĐẦU TẠI ĐÂY",
+  "pasteFlow": "THÊM VÀO LUỒNG XỬ LÝ",
+  "safety": "AN TOÀN",
+  "testSuite": "BỘ KIỂM THỬ"
 }

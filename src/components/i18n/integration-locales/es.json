@@ -41,5 +41,9 @@
   "uiWhy": "Los usuarios y clientes intermedios deben poder verificar la dirección resuelta sin perder el flujo basado en direcciones existente.",
   "securityWhere": "Añada verificaciones de no encontrado y de validación inmediatamente después de la llamada al SDK en {0}, antes de mostrar una identidad verificada o utilizar la dirección. En cualquier flujo de envío de SOL nativo, aplique safeForNativeSol antes de construir la instrucción de transferencia, luego vuelva a resolver antes de la construcción de la transacción. Muestre un resultado de bloqueado o no encontrado en el mismo componente de destinatario o identidad.",
   "securityWhy": "La validación debe ejecutarse antes de que la dirección resuelta pueda afectar a la UI o a la transacción; mostrar una advertencia después de la construcción es demasiado tarde.",
-  "testsWhere": "Añada las verificaciones siguientes a la suite de pruebas de integración o de extremo a extremo de su proyecto y ejecútelas contra el flujo de destinatario, búsqueda o identidad modificado en los pasos anteriores. Mantenga resultados reproducibles con la versión exacta de la compilación. Para la verificación, proporcione la URL o compilación de ensayo, la versión de integración y un contacto técnico; las comprobaciones de Mainnet utilizan billeteras y handles de prueba nuevos."
+  "testsWhere": "Añada las verificaciones siguientes a la suite de pruebas de integración o de extremo a extremo de su proyecto y ejecútelas contra el flujo de destinatario, búsqueda o identidad modificado en los pasos anteriores. Mantenga resultados reproducibles con la versión exacta de la compilación. Para la verificación, proporcione la URL o compilación de ensayo, la versión de integración y un contacto técnico; las comprobaciones de Mainnet utilizan billeteras y handles de prueba nuevos.",
+  "startHere": "EMPIEZA AQUÍ",
+  "pasteFlow": "AÑADE A TU PROCESO",
+  "safety": "SEGURIDAD",
+  "testSuite": "CONJUNTO DE PRUEBAS"
 }
