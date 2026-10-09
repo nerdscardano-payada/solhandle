@@ -4,7 +4,7 @@
 @media (min-width: 768px) {
   .platform-home .home-funnel .home-mint-hero .home-claim-title {
     font-family: var(--font-heading);
-    font-weight: 600;
+    font-weight: 700;
     font-size: clamp(30px, 3.7vw, 48px);
     line-height: 1.16;
     letter-spacing: -.025em;
