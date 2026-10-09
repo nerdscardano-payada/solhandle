@@ -65,6 +65,7 @@ import AttoChat from '@/components/solhandle/AttoChat';
 import PlatformSurface from '@/components/solhandle/PlatformSurface';
 import LanguageProvider from '@/components/i18n/LanguageProvider';
 import StaticTextLocalization from '@/components/i18n/StaticTextLocalization';
+import NativeDialogLocalization from '@/components/i18n/NativeDialogLocalization';
 
 const AuthenticatedApp = () => {
   const { pathname } = useLocation();
@@ -168,6 +169,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <StaticTextLocalization />
+          <NativeDialogLocalization />
           <ScrollToTop />
           <ProtocolPageTracker />
           <AuthenticatedApp />

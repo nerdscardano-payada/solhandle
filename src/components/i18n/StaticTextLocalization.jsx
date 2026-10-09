@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
+import createStaticTranslator from '@/components/i18n/createStaticTranslator';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 
 const ignored = 'script,style,pre,code,textarea,input,[data-no-translate]';
@@ -6,6 +7,7 @@ const attributes = ['aria-label', 'title', 'placeholder', 'alt'];
 export default function StaticTextLocalization() {
   const { staticTranslations } = useLanguage();
   const originals = useRef(new WeakMap());
+  const translate = useMemo(() => createStaticTranslator(staticTranslations), [staticTranslations]);
   useLayoutEffect(() => {
     const root = document.getElementById('root');
     if (!root) return;
@@ -15,9 +17,7 @@ export default function StaticTextLocalization() {
       const key = attribute || 'text';
       const previous = stored[key];
       const source = previous?.output === value ? previous.source : value;
-      const normalized = source.replace(/\s+/g, ' ').trim();
-      const translation = staticTranslations[normalized];
-      const output = translation ? source.match(/^\s*/)[0] + translation + source.match(/\s*$/)[0] : source;
+      const output = translate(source);
       stored[key] = { source, output };
       originals.current.set(target, stored);
       if (value !== output) {
@@ -41,6 +41,6 @@ export default function StaticTextLocalization() {
     observer.observe(root, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: attributes });
     scan();
     return () => { observer.disconnect(); if (frame !== null) cancelAnimationFrame(frame); };
-  }, [staticTranslations]);
+  }, [translate]);
   return null;
 }
