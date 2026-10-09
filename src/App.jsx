@@ -63,6 +63,7 @@ import BurnDashboard from '@/pages/BurnDashboard';
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
 import PlatformSurface from '@/components/solhandle/PlatformSurface';
+import LanguageProvider from '@/components/i18n/LanguageProvider';
 
 const AuthenticatedApp = () => {
   const { pathname } = useLocation();
@@ -162,7 +163,7 @@ const AuthenticatedApp = () => {
 function App() {
 
   return (
-    <AuthProvider>
+    <LanguageProvider><AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ScrollToTop />
@@ -171,7 +172,7 @@ function App() {
         </Router>
         <Toaster />
       </QueryClientProvider>
-    </AuthProvider>
+    </AuthProvider></LanguageProvider>
   )
 }
 
