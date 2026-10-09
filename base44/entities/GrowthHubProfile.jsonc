@@ -1,0 +1,56 @@
+{
+  "name": "GrowthHubProfile",
+  "type": "object",
+  "properties": {
+    "wallet": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "HELD"
+      ],
+      "default": "ACTIVE"
+    },
+    "show_on_leaderboard": {
+      "type": "boolean",
+      "default": false
+    },
+    "joined_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_quiz_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "wallet",
+    "status",
+    "joined_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

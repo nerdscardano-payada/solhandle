@@ -1,0 +1,55 @@
+{
+  "name": "GrowthHubAudit",
+  "type": "object",
+  "properties": {
+    "admin_id": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "before": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "after": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "admin_id",
+    "action",
+    "target_id",
+    "occurred_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

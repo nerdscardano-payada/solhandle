@@ -59,6 +59,15 @@ import Flywheel from '@/pages/Flywheel';
 import AdminBurn from '@/pages/AdminBurn';
 import HandleMintPayments from '@/pages/HandleMintPayments';
 import BurnDashboard from '@/pages/BurnDashboard';
+import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
+import GrowthHub from '@/pages/GrowthHub';
+import GrowthHubDashboard from '@/pages/GrowthHubDashboard';
+import GrowthHubExplore from '@/pages/GrowthHubExplore';
+import GrowthHubQuest from '@/pages/GrowthHubQuest';
+import GrowthHubSeasons from '@/pages/GrowthHubSeasons';
+import GrowthHubLeaderboard from '@/pages/GrowthHubLeaderboard';
+import GrowthHubRules from '@/pages/GrowthHubRules';
+import AdminGrowthHub from '@/pages/AdminGrowthHub';
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
@@ -115,6 +124,18 @@ const AuthenticatedApp = () => {
         <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
         <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
+        <Route element={<GrowthHubLayout />}>
+          <Route path="/quests" element={<GrowthHub />} />
+          <Route path="/quests/dashboard" element={<GrowthHubDashboard />} />
+          <Route path="/quests/explore" element={<GrowthHubExplore />} />
+          <Route path="/quests/quest/:slug" element={<GrowthHubQuest />} />
+          <Route path="/quests/seasons" element={<GrowthHubSeasons />} />
+          <Route path="/quests/leaderboard" element={<GrowthHubLeaderboard />} />
+          <Route path="/quests/rules" element={<GrowthHubRules />} />
+        </Route>
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fgrowth" replace />} />}>
+          <Route path="/admin/growth" element={<AdminGrowthHub />} />
+        </Route>
         <Route path="/earn" element={<Earn />} />
         <Route path="/earn-litepaper" element={<EarnLitepaper />} />
         <Route path="/leaderboard" element={<Leaderboard />} />

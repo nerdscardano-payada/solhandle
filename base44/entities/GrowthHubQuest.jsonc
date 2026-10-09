@@ -1,0 +1,102 @@
+{
+  "name": "GrowthHubQuest",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "GETTING_STARTED",
+        "KNOWLEDGE"
+      ]
+    },
+    "handler": {
+      "type": "string",
+      "enum": [
+        "PROFILE",
+        "KNOWLEDGE_QUIZ"
+      ]
+    },
+    "xp": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "PUBLISHED",
+        "PAUSED"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "LIFETIME"
+      ]
+    },
+    "retroactive_allowed": {
+      "type": "boolean",
+      "default": false
+    },
+    "starts_at": {
+      "type": "string"
+    },
+    "ends_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "slug",
+    "title",
+    "description",
+    "category",
+    "handler",
+    "xp",
+    "status",
+    "version",
+    "frequency"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "PUBLISHED"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

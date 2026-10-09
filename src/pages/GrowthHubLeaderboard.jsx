@@ -1,0 +1,11 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import growthHubClient from '@/components/solhandle/quests/growthHubClient';
+import { useGrowthHub } from '@/components/solhandle/quests/GrowthHubProvider';
+export default function GrowthHubLeaderboard() {
+  const { catalog } = useGrowthHub(), [season, setSeason] = useState('');
+  const query = useQuery({ queryKey: ['growth-hub-leaderboard', season], queryFn: () => growthHubClient({ action: 'leaderboard', season_id: season }), staleTime: 30000 });
+  return <><h1>Leaderboard</h1><p className="mt-4 text-muted-foreground">Alleen deelnemers die publieke zichtbaarheid inschakelen worden getoond. Pilot-XP, geen tokenrangschikking.</p><div className="my-6 flex flex-wrap gap-3"><select aria-label="Ranglijstseizoen" value={season} onChange={e => setSeason(e.target.value)} className="rounded-xl border border-input bg-card px-4 py-3"><option value="">Lifetime XP</option>{catalog.data?.seasons.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select><button onClick={() => query.refetch()} disabled={query.isFetching} className="text-sm text-names-accent">{query.isFetching ? 'Laden…' : 'Ranglijst vernieuwen'}</button></div>
+    {query.isPending ? <p>Ranglijst laden…</p> : query.isError ? <p role="alert">Ranglijst niet beschikbaar. Probeer opnieuw.</p> : <div className="overflow-x-auto rounded-2xl border border-border bg-card"><table className="w-full text-left text-sm"><thead><tr className="border-b border-border text-muted-foreground"><th className="p-4">Positie</th><th className="p-4">Wallet</th><th className="p-4">Level</th><th className="p-4">XP</th></tr></thead><tbody>{query.data.items.map((row, i) => <tr key={row.wallet} className="border-b border-border last:border-0"><td className="p-4">{i + 1}</td><td className="p-4 font-mono" title={row.wallet}>{row.wallet.slice(0, 6)}…{row.wallet.slice(-4)}</td><td className="p-4">{row.level}</td><td className="p-4 font-semibold text-names-accent">{row.xp}</td></tr>)}{!query.data.items.length && <tr><td colSpan={4} className="p-7 text-muted-foreground">Nog geen publiek zichtbare deelnemers met XP.</td></tr>}</tbody></table></div>}
+  </>;
+}
