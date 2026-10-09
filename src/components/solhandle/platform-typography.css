@@ -1,0 +1,12 @@
+.platform-shell :is(h1, h2, h3, h4, h5, h6, [role="heading"]) {
+  font-family: var(--font-heading) !important;
+  font-weight: 600 !important;
+  letter-spacing: -.025em !important;
+}
+.platform-shell :is(h1, h2, h3, h4, h5, h6, [role="heading"]) :is(.font-hero, .font-bold, .font-extrabold, .font-black, strong, b) {
+  font-family: inherit !important;
+  font-weight: inherit !important;
+}
+.platform-shell h1 {
+  line-height: 1.16 !important;
+}

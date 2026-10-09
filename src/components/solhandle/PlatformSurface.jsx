@@ -4,6 +4,7 @@ import MobileAppNavigation from '@/components/solhandle/MobileAppNavigation';
 import '@/components/solhandle/platform-theme.css';
 import '@/components/solhandle/mobile-app.css';
 import '@/components/solhandle/tablet-web.css';
+import '@/components/solhandle/platform-typography.css';
 
 export default function PlatformSurface({ children }) {
   const { pathname } = useLocation();
