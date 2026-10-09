@@ -6,19 +6,35 @@ import homeStatusTranslations from '@/components/i18n/homeStatusTranslations';
 import relativeTime from '@/components/i18n/relativeTime';
 import pageTranslations from '@/components/i18n/pageTranslations';
 
-const LanguageContext = createContext({ language: 'en', setLanguage: () => {}, t: text => text });
+const emptyTranslations = Object.freeze({});
+const translationCache = new Map();
+const LanguageContext = createContext({ language: 'en', setLanguage: () => {}, t: text => text, staticTranslations: emptyTranslations });
 export const useLanguage = () => useContext(LanguageContext);
 export default function LanguageProvider({ children }) {
   const [language, updateLanguage] = useState(() => {
     const saved = localStorage.getItem('solhandle_language');
     return languages.some(([code]) => code === saved) ? saved : 'en';
   });
+  const [loaded, setLoaded] = useState({ language: 'en', texts: emptyTranslations });
+  const staticTranslations = loaded.language === language ? loaded.texts : emptyTranslations;
   const setLanguage = code => { if (languages.some(([value]) => value === code)) updateLanguage(code); };
+  useEffect(() => {
+    if (language === 'en') { setLoaded({ language, texts: emptyTranslations }); return; }
+    let active = true;
+    if (!translationCache.has(language)) {
+      translationCache.set(language, fetch(`/locales/solhandle/${language}.json`).then(response => {
+        if (!response.ok) throw new Error('Unable to load platform translations');
+        return response.json();
+      }));
+    }
+    translationCache.get(language).then(texts => { if (active) setLoaded({ language, texts }); });
+    return () => { active = false; };
+  }, [language]);
   useEffect(() => {
     localStorage.setItem('solhandle_language', language);
     document.documentElement.lang = language;
   }, [language]);
-  const t = text => pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || text;
+  const t = text => pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || staticTranslations[text] || text;
   const formatRelativeTime = value => relativeTime(value, language, t('Unknown'));
-  return <LanguageContext.Provider value={{ language, setLanguage, t, formatRelativeTime }}>{children}</LanguageContext.Provider>;
+  return <LanguageContext.Provider value={{ language, setLanguage, t, formatRelativeTime, staticTranslations }}>{children}</LanguageContext.Provider>;
 }

@@ -64,6 +64,7 @@ import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
 import PlatformSurface from '@/components/solhandle/PlatformSurface';
 import LanguageProvider from '@/components/i18n/LanguageProvider';
+import StaticTextLocalization from '@/components/i18n/StaticTextLocalization';
 
 const AuthenticatedApp = () => {
   const { pathname } = useLocation();
@@ -166,6 +167,7 @@ function App() {
     <LanguageProvider><AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <StaticTextLocalization />
           <ScrollToTop />
           <ProtocolPageTracker />
           <AuthenticatedApp />
