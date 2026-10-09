@@ -7,7 +7,7 @@ import TokenGrowthMenu from '@/components/solhandle/TokenGrowthMenu';
 import { aboutLinks, communityLinks } from '@/components/solhandle/navigationLinks';
 import DiscoverMenu from '@/components/solhandle/DiscoverMenu';
 import DevelopersMenu from '@/components/solhandle/DevelopersMenu';
-const main = [['Marketplace', '/market'], ['Pay', '/pay'], ['Integrations', '/live-integrations'], ['My Handles', '/my-handles']];
+const main = [['Marketplace', '/market'], ['Pay', '/pay'], ['My Handles', '/my-handles']];
 const groups = [['About & Support', aboutLinks], ['Community', communityLinks]];
 export default function HomeDesktopNavigation({ funnel = false }) {
   const { t } = useLanguage();
