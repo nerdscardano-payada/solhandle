@@ -14,6 +14,6 @@ export default function Footer() {
       <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div><p className="text-base font-semibold text-white">SolHandle</p><p className="mt-3 max-w-sm leading-relaxed">{t('NFT-native identity infrastructure for Solana, live on Mainnet Beta. Claim, own and use your unique on-chain handle.')}</p></div><div><p className="mb-3 font-medium text-white">{t('Join the community')}</p><CommunityLinks iconsOnly/></div></div>
       <FooterNavigation/>
     </div>
-    <div className="relative z-10 mx-auto mt-8 flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-5 text-xs sm:flex-row sm:justify-between"><span>{t('© 2026 SolHandle. Live on Solana Mainnet.')}</span><LanguageSelector/><Link to="/contact" className="hover:text-cyan-200">{t('Contact')}</Link></div>
+    <div className="relative z-10 mx-auto mt-8 flex max-w-7xl flex-col gap-3 border-t border-white/10 pt-5 text-xs sm:flex-row sm:items-center sm:justify-between"><span>{t('© 2026 SolHandle. Live on Solana Mainnet.')}</span><div className="flex items-center justify-end gap-4"><Link to="/contact" className="hover:text-cyan-200">{t('Contact')}</Link><LanguageSelector/></div></div>
   </footer>;
 }
