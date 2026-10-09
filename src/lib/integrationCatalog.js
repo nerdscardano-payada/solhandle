@@ -29,3 +29,19 @@ export const integrations = [
 ];
 
 export const typeById = Object.fromEntries(integrationTypes.map((item) => [item.id, item]));
+
+export const productGuides = integrationTypes.map(type => ({
+  slug: type.id,
+  name: `your ${type.title.toLowerCase()} product`,
+  type: type.id,
+  generic: true,
+  description: type.description,
+  capabilities: {
+    wallet: ['Send to @', 'Primary Handle identity', 'Recipient confirmation'],
+    explorer: ['Handle search', 'Wallet labels', 'Verified reverse resolution'],
+    marketplace: ['Owner identity', 'Seller identity', 'Official asset recognition'],
+    payments: ['Pay to @', 'Recipient validation', 'Payment receipts'],
+    application: ['Profile identity', 'Recipient resolution', 'Activity labels'],
+    infrastructure: ['Forward resolution', 'Reverse lookup', 'Indexed enrichment'],
+  }[type.id],
+}));
