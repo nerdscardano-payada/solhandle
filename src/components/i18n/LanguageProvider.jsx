@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { languages, translations } from '@/components/i18n/translations';
 import coreTranslations from '@/components/i18n/coreTranslations';
 import homeTranslations from '@/components/i18n/homeTranslations';
+import bannerHeroTranslations from '@/components/i18n/bannerHeroTranslations';
 import homeStatusTranslations from '@/components/i18n/homeStatusTranslations';
 import relativeTime from '@/components/i18n/relativeTime';
 import pageTranslations from '@/components/i18n/pageTranslations';
@@ -38,7 +39,7 @@ export default function LanguageProvider({ children }) {
     localStorage.setItem('solhandle_language', language);
     document.documentElement.lang = language;
   }, [language]);
-  const t = text => pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || staticTranslations[text] || text;
+  const t = text => bannerHeroTranslations[language]?.[text] || pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || staticTranslations[text] || text;
   const formatRelativeTime = value => relativeTime(value, language, t('Unknown'));
   return <LanguageContext.Provider value={{ language, setLanguage, t, formatRelativeTime, staticTranslations }}>{children}</LanguageContext.Provider>;
 }
