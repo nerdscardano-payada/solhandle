@@ -59,6 +59,7 @@ import Flywheel from '@/pages/Flywheel';
 import AdminBurn from '@/pages/AdminBurn';
 import HandleMintPayments from '@/pages/HandleMintPayments';
 import BurnDashboard from '@/pages/BurnDashboard';
+import { growthHubVisible } from '@/components/solhandle/navigationLinks';
 import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
 import GrowthHub from '@/pages/GrowthHub';
 import GrowthHubDashboard from '@/pages/GrowthHubDashboard';
@@ -124,7 +125,7 @@ const AuthenticatedApp = () => {
         <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
         <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
-        <Route element={<GrowthHubLayout />}>
+        {growthHubVisible ? <Route element={<GrowthHubLayout />}>
           <Route path="/quests" element={<GrowthHub />} />
           <Route path="/quests/dashboard" element={<GrowthHubDashboard />} />
           <Route path="/quests/explore" element={<GrowthHubExplore />} />
@@ -132,9 +133,9 @@ const AuthenticatedApp = () => {
           <Route path="/quests/seasons" element={<GrowthHubSeasons />} />
           <Route path="/quests/leaderboard" element={<GrowthHubLeaderboard />} />
           <Route path="/quests/rules" element={<GrowthHubRules />} />
-        </Route>
+        </Route> : <Route path="/quests/*" element={<Navigate to="/" replace />} />}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fgrowth" replace />} />}>
-          <Route path="/admin/growth" element={<AdminGrowthHub />} />
+          <Route path="/admin/growth" element={growthHubVisible ? <AdminGrowthHub /> : <Navigate to="/" replace />} />
         </Route>
         <Route path="/earn" element={<Earn />} />
         <Route path="/earn-litepaper" element={<EarnLitepaper />} />
