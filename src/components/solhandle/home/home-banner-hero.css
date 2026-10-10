@@ -12,6 +12,7 @@
 .home-banner-heading .home-banner-result { white-space: nowrap; }
 .home-banner-heading .home-banner-result { display: inline-flex; align-items: center; gap: .25em; }
 .home-banner-heading .home-banner-arrow { width: .85em; height: .85em; flex-shrink: 0; }
+.home-funnel .home-example-handle { background-image: linear-gradient(100deg, hsl(var(--names-accent)), hsl(var(--names-secondary))); }
 .home-funnel .home-banner-hero .home-hero-shade {
   background: linear-gradient(90deg, hsl(var(--hero-canvas) / .55), hsl(var(--hero-canvas) / .8) 45%, hsl(var(--hero-canvas) / .3)), linear-gradient(0deg, hsl(var(--hero-canvas)), transparent 25%);
 }

@@ -9,7 +9,7 @@ export default function HomeIdentityIntro() {
     <div className="flex flex-wrap items-center gap-3 text-lg lg:text-xl">
       <span className="font-mono text-foreground/70">7xA9…N5aP</span>
       <ArrowRight className="h-5 w-5 shrink-0 text-names-accent" aria-hidden="true" />
-      <span className="home-gradient-text font-semibold">@ansem</span>
+      <span className="home-gradient-text home-example-handle font-semibold">@ansem</span>
     </div>
   </div>;
 }
