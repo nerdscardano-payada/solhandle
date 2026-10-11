@@ -1,0 +1,10 @@
+@media (max-width: 767px) {
+  .public-stats-scroll {
+    --stats-scrollbar: 0 0% 0%;
+    scrollbar-color: hsl(var(--stats-scrollbar)) hsl(var(--stats-scrollbar));
+    scrollbar-width: thin;
+  }
+  .public-stats-scroll::-webkit-scrollbar { height: 5px; }
+  .public-stats-scroll::-webkit-scrollbar-track,
+  .public-stats-scroll::-webkit-scrollbar-thumb { background: hsl(var(--stats-scrollbar)); }
+}

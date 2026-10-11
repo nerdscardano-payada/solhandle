@@ -1,14 +1,12 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
-import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { secrets } from 'base44:runtime';
-import { rpc } from '../../shared/solanaRpc.ts';
+import { tokenHolderBalances } from '../../shared/tokenHolderBalances.ts';
 const MINT = 'BLoVgMLRxxhq3X5x9s7KxaNhnQeMf5Lt7MrEpBkjpump';
 const MIN_BALANCE = 100000n;
 const MINT_TARGET = 500;
 const HOLDER_TARGET = 150;
 const MARKET_CAP_TARGET = 60000;
-const tokenPrograms = new Set(['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb']);
-const u64 = bytes => { let n = 0n; for (let i = 0; i < 8; i++) n |= BigInt(bytes[i]) << BigInt(i * 8); return n; };
+
 const chunks = (values, size = 500) => Array.from({ length: Math.ceil(values.length / size) }, (_, i) => values.slice(i * size, (i + 1) * size));
 export default async function(req: Request): Promise<Response> {
   try {
@@ -43,19 +41,7 @@ export default async function(req: Request): Promise<Response> {
     } catch (error) { feedError = error.message; }
     if (!Number.isFinite(marketCap) || marketCap <= 0) throw new Error(`Verified $HANDLE market cap unavailable (${feedError}); snapshot was not updated.`);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    const mintAccount = await rpc(rpcUrl, 'getAccountInfo', [MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
-    const decimals = mintAccount?.value?.data?.parsed?.info?.decimals;
-    if (!Number.isInteger(decimals) || decimals < 0 || decimals > 18 || !tokenPrograms.has(mintAccount.value.owner)) throw new Error('Could not verify official token mint and decimals.');
-    const accounts = await rpc(rpcUrl, 'getProgramAccounts', [mintAccount.value.owner, { commitment: 'confirmed', encoding: 'base64', filters: [{ memcmp: { offset: 0, bytes: MINT } }], dataSlice: { offset: 32, length: 40 } }]);
-    if (!Array.isArray(accounts) || accounts.length >= 5000) throw new Error('Holder scan unavailable or beyond the supported range; progress was not updated.');
-    const balances = new Map();
-    for (const account of accounts) {
-      const encoded = account.account?.data?.[0]; if (!encoded) throw new Error('Incomplete holder snapshot.');
-      const bytes = Uint8Array.from(atob(encoded), c => c.charCodeAt(0));
-      if (bytes.length !== 40) throw new Error('Incomplete token account.');
-      const wallet = new PublicKey(bytes.slice(0, 32)).toBase58();
-      balances.set(wallet, (balances.get(wallet) || 0n) + u64(bytes.slice(32, 40)));
-    }
+    const { balances, decimals } = await tokenHolderBalances(rpcUrl, MINT);
     const threshold = MIN_BALANCE * (10n ** BigInt(decimals));
     const eligible = [...balances].filter(([, balance]) => balance >= threshold).map(([wallet]) => wallet);
     const now = new Date(); const stamp = now.toISOString();
