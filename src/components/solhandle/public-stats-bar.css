@@ -1,10 +1,14 @@
-@media (max-width: 767px) {
+@media (max-width: 1366px) and (hover: none), (max-width: 767px) {
   .public-stats-scroll {
     --stats-scrollbar: 0 0% 0%;
-    scrollbar-color: hsl(var(--stats-scrollbar)) hsl(var(--stats-scrollbar));
+    --stats-scrollbar-thumb: 0 0% 45%;
+    scrollbar-color: hsl(var(--stats-scrollbar-thumb)) hsl(var(--stats-scrollbar));
     scrollbar-width: thin;
   }
   .public-stats-scroll::-webkit-scrollbar { height: 5px; }
-  .public-stats-scroll::-webkit-scrollbar-track,
-  .public-stats-scroll::-webkit-scrollbar-thumb { background: hsl(var(--stats-scrollbar)); }
+  .public-stats-scroll::-webkit-scrollbar-track { background: hsl(var(--stats-scrollbar)); }
+  .public-stats-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--stats-scrollbar-thumb));
+    border-radius: 999px;
+  }
 }
