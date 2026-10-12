@@ -1,0 +1,14 @@
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Play, Loader2 } from 'lucide-react';
+import useDemoLookup from '@/components/solhandle/demos/useDemoLookup';
+import DemoWalletComparison from '@/components/solhandle/demos/DemoWalletComparison';
+import DemoWalletProof from '@/components/solhandle/demos/DemoWalletProof';
+export default function DemoWalletShowcase({ onInputChange }) {
+  const [params, setParams] = useSearchParams(); const [input, setInput] = useState(params.get('handle') || '@demo');
+  const { result, error, stage, lookup, reset } = useDemoLookup();
+  function change(value) { setInput(value); reset(); onInputChange?.(value); setParams({ handle: value }, { replace: true }); }
+  return <section className="space-y-7"><div className="rounded-2xl border border-names-accent/30 bg-names-accent/5 p-5 md:p-7"><div className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-widest text-names-accent">Interactive wallet showcase</p><h2 className="mt-3 text-2xl font-semibold md:text-3xl">Same wallet. A completely different experience.</h2></div><span className="rounded-full border border-names-success/30 px-3 py-2 text-xs text-names-success">Real Mainnet lookup</span></div><form onSubmit={e => { e.preventDefault(); lookup(input); }} className="flex flex-wrap items-end gap-3"><label htmlFor="wallet-showcase-handle" className="min-w-0 flex-1"><span className="mb-2 block text-sm text-muted-foreground">Enter a registered @handle</span><Input id="wallet-showcase-handle" value={input} onChange={e => change(e.target.value)} placeholder="@demo" disabled={Boolean(stage)} autoComplete="off" spellCheck={false} required className="h-12 text-lg"/></label><Button type="submit" disabled={Boolean(stage) || !input.trim()} className="min-h-12 bg-names-accent px-6 text-background hover:bg-names-accent/90">{stage ? <Loader2 className="animate-spin"/> : <Play/>}{stage ? 'Verifying on Solana…' : 'Show the transformation'}</Button></form><p className="mt-3 text-xs leading-5 text-muted-foreground">Use any registered handle, not necessarily your own. @demo is an example input; it only works if minted. Nothing is bought or sent.</p>{stage && <p role="status" aria-live="polite" className="mt-3 text-sm text-names-accent">{stage}</p>}{error && <p role="alert" className="mt-3 text-sm text-names-warning">{error} Try a registered handle. No sample wallet replaces a failed lookup.</p>}</div><DemoWalletComparison identity={result}/><DemoWalletProof identity={result} input={input}/></section>;
+}

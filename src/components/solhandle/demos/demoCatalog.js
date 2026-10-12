@@ -3,7 +3,7 @@ export const demoCatalog = [
   { slug: 'reverse-resolver', title: 'Reverse Resolver', category: 'Identity', description: 'Find the verified primary handle for a wallet.', live: true },
   { slug: 'wallet-send', title: 'Wallet Send to @', category: 'Wallets', description: 'Send to a name, not 44 characters.' },
   { slug: 'wallet-receive', title: 'Wallet Receive', category: 'Wallets', description: 'Share a name with a real resolved-address QR.' },
-  { slug: 'wallet-identity', title: 'Wallet Identity', category: 'Wallets', description: 'The handle first. The address underneath.' },
+  { slug: 'wallet-identity', title: 'Wallet Transformation', category: 'Wallets', description: 'Before and after: a real wallet address becomes a human-readable identity, with on-chain proof and integration code.' },
   { slug: 'explorer', title: 'Explorer Identity', category: 'Identity', description: 'See a human identity inside a generic explorer.' },
   { slug: 'trading', title: 'Trading Terminal', category: 'Trading', description: 'Same blockchain. Better readability.' },
   { slug: 'payments', title: 'SolHandle Pay', category: 'Payments', description: 'Preview sending SOL, then open the live product.' },

@@ -1,0 +1,9 @@
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { RotateCcw, ArrowRight } from 'lucide-react';
+import DemoWalletScreen from '@/components/solhandle/demos/DemoWalletScreen';
+export default function DemoWalletComparison({ identity }) {
+  const [enabled, setEnabled] = useState(false), [replay, setReplay] = useState(0);
+  useEffect(() => { setEnabled(false); if (!identity) return; const timer = window.setTimeout(() => setEnabled(true), 650); return () => window.clearTimeout(timer); }, [identity, replay]);
+  return <div className="space-y-5"><div className="flex flex-wrap items-center justify-between gap-4"><p className="flex items-center gap-3 text-sm font-semibold"><span className="text-muted-foreground">Wallet address</span><ArrowRight size={18} className="text-names-accent"/><span className="text-names-accent">Your @identity</span></p><Button variant="outline" disabled={!identity} onClick={() => setReplay(n => n + 1)} className="min-h-11"><RotateCcw/>Replay reveal</Button></div><div className="grid items-start gap-5 md:grid-cols-2"><DemoWalletScreen identity={identity}/><DemoWalletScreen identity={identity} enhanced enabled={enabled}/></div><div className="grid gap-3 text-sm md:grid-cols-3">{['Same wallet.', 'Same Solana ownership.', 'A name people can remember.'].map(text => <p key={text} className="rounded-xl border border-border bg-card p-4 text-center">{text}</p>)}</div><p className="text-center text-xs leading-6 text-muted-foreground">Real resolved identity. Generic wallet interface. No custody, wallet connection or transaction. This does not assert a primary handle.</p></div>;
+}
