@@ -1,0 +1,12 @@
+import { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import DemoBeforeExperience from '@/components/solhandle/demos/DemoBeforeExperience';
+import DemoResult from '@/components/solhandle/demos/DemoResult';
+import demoStories from '@/components/solhandle/demos/demoStories';
+export default function DemoTransformation({ slug, result, input }) {
+  const story = demoStories[slug]; const [replay, setReplay] = useState(0), [revealed, setRevealed] = useState(false); const reduced = useReducedMotion();
+  useEffect(() => { setRevealed(false); if (!result) return; const timer = setTimeout(() => setRevealed(true), reduced ? 0 : 500); return () => clearTimeout(timer); }, [result, replay, reduced]);
+  return <section className="space-y-5"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="mb-2 text-xs font-semibold uppercase tracking-widest text-names-accent">Before → after</p><h2 className="text-2xl font-semibold md:text-3xl">{story.title}</h2></div><Button variant="outline" disabled={!result} onClick={() => setReplay(value => value + 1)} className="min-h-11"><RotateCcw/>Replay reveal</Button></div><p className="max-w-3xl text-sm leading-6 text-muted-foreground">{story.benefit}</p><div className="grid items-stretch gap-5 md:grid-cols-2"><section className="min-w-0 rounded-2xl border border-border bg-card p-5 md:p-7"><h3 className="mb-6 flex items-center gap-2 text-sm font-semibold text-muted-foreground">Without SolHandle · {story.before}</h3><DemoBeforeExperience slug={slug} result={result} input={input}/></section><section className="min-w-0 rounded-2xl border border-names-accent/40 bg-names-accent/5 p-5 md:p-7"><h3 className="mb-6 flex items-center gap-2 text-sm font-semibold text-names-accent"><ArrowRight size={16}/>With SolHandle · {story.after}</h3>{result ? <motion.div key={replay} initial={false} animate={{ opacity: revealed ? 1 : 0, y: revealed || reduced ? 0 : 12 }} transition={{ duration: reduced ? 0 : .3 }} inert={!revealed ? '' : undefined}>{<DemoResult slug={slug} result={result}/>}</motion.div> : <div className="py-16 text-center"><p className="text-xl font-semibold">Your live result appears here.</p><p className="mt-3 text-sm leading-6 text-muted-foreground">Run the lookup above. No owner, primary name, availability or successful mint is fabricated.</p></div>}</section></div></section>;
+}

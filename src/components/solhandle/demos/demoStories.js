@@ -1,0 +1,12 @@
+const demoStories = {
+  resolver: { title: 'A name in. The real owner out.', before: 'Wallet addresses only', after: 'Resolve an @identity', benefit: 'Turn a memorable name into its current, verified wallet address.' },
+  'reverse-resolver': { title: 'A wallet address becomes a recognizable identity.', before: 'An anonymous address', after: 'Its verified primary name', benefit: 'Show a wallet’s actual primary handle, never a guessed nickname.' },
+  'wallet-send': { title: 'Send to a person, not a string.', before: 'Paste an address', after: 'Enter an @handle', benefit: 'Readable recipient. The same destination underneath. No funds move in this demo.' },
+  'wallet-receive': { title: 'Share your identity. Keep your real destination.', before: 'Share a long address', after: 'Share a memorable name', benefit: 'The receive QR still points to the same resolved wallet; the name makes sharing easier.' },
+  payments: { title: 'An understandable payment, from recipient to review.', before: 'Address-based payment', after: 'Human-readable recipient', benefit: 'Preview a payment to a verified name, then open the separate live product if you choose.' },
+  explorer: { title: 'Make blockchain activity readable.', before: 'Address-based explorer', after: 'Identity-aware explorer', benefit: 'Same example activity, but a recognizable identity. Real history stays in the blockchain explorer.' },
+  trading: { title: 'Recognize the trader behind the address.', before: 'Raw address in a terminal', after: 'Readable trader identity', benefit: 'Add identity to an activity feed without pretending that illustrative trades are real.' },
+  'partner-mint': { title: 'From an app-local nickname to an on-chain identity.', before: 'Standalone app nickname', after: 'SolHandle mint checkout', benefit: 'Check real availability and price inside a partner concept. Checkout is simulated; nothing is minted.' },
+  developer: { title: 'From raw data to a verified identity.', before: 'Raw wallet address', after: 'Resolved application identity', benefit: 'Inspect an actual API or SDK response and the application experience it can power.' }
+};
+export default demoStories;
