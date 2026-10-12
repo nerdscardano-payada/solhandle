@@ -1,0 +1,8 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+export default function DemoIdentity({ identity, details = false }) {
+  const [notice, setNotice] = useState('');
+  async function copy(value) { try { await navigator.clipboard.writeText(value); setNotice('Copied.'); } catch { setNotice('Clipboard unavailable. Select and copy the text below.'); } }
+  return <div className="space-y-4"><p className="break-all font-heading text-4xl font-semibold text-names-accent">{identity.handle}</p><p className="break-all font-mono text-sm text-muted-foreground">{identity.address}</p><p className="text-sm text-names-success">✓ {identity.primary ? 'Primary SolHandle · ' : ''}Resolved on Solana Mainnet</p><div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => copy(identity.handle)}>Copy @</Button><Button variant="outline" onClick={() => copy(identity.address)}>Copy wallet</Button><Button variant="outline" asChild><Link to={`/${identity.handle.replace(/^@/, '')}`}>View details</Link></Button><Button variant="outline" asChild><a href={`https://explorer.solana.com/address/${identity.address}`} target="_blank" rel="noopener noreferrer">View on explorer</a></Button></div>{details && <dl className="space-y-2 text-sm"><dt className="text-muted-foreground">Official collection membership</dt><dd>{identity.collectionVerified ? 'Verified by resolver' : 'Not verified'}</dd><dt className="text-muted-foreground">Asset</dt><dd className="break-all font-mono">{identity.assetAddress}</dd></dl>}<p role="status" className="text-sm text-muted-foreground">{notice}</p></div>;
+}

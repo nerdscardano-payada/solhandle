@@ -1,0 +1,8 @@
+import ResolveCodeBlock from '@/components/solhandle/resolve/ResolveCodeBlock';
+const root = 'https://sol-handle-core.base44.app/functions/';
+export default function DemoCode({ input, mode, transport }) {
+  const reverse = mode === 'reverse';
+  const api = `const response = await fetch(${JSON.stringify(root + (reverse ? 'reverseResolveSolHandle' : 'resolveSolHandle'))}, {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify(${JSON.stringify({ [reverse ? 'address' : 'handle']: input })}),\n  cache: "no-store"\n});\nconst result = await response.json();\nif (!response.ok) throw new Error(result.error);\nif (!result.verified || result.network !== "mainnet-beta") {\n  throw new Error("Unverified result");\n}\nconsole.log(result.${reverse ? 'primaryHandle' : 'address'});`;
+  const sdk = `// npm install solhandle-sdk@1.0.1 @solana/web3.js@^1.98.4\nimport { Connection } from "@solana/web3.js";\nimport { ${reverse ? 'reverseResolve' : 'resolveHandle'} } from "solhandle-sdk";\n\n// Supply your own Mainnet RPC endpoint.\nconst connection = new Connection(rpcUrl, "confirmed");\nconst identity = await ${reverse ? 'reverseResolve' : 'resolveHandle'}(connection, ${JSON.stringify(input)});\nif (!identity) throw new Error("No verified identity found");\nconsole.log(identity.${reverse ? 'handle' : 'address.toBase58()'});`;
+  return <ResolveCodeBlock language={transport === 'api' ? 'JavaScript · HTTP API' : 'JavaScript · direct on-chain SDK'} code={transport === 'api' ? api : sdk}/>;
+}
