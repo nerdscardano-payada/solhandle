@@ -136,7 +136,6 @@
   "Availability and mint price are live lookup data. A simulated checkout is not proof of minting.": "Availability and mint price are live lookup data. A simulated checkout is not proof of minting.",
   "BUY": "BUY",
   "BUY · 12.5 SOL": "BUY · 12.5 SOL",
-  "Base44 provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "Base44 provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.",
   "Before": "Before",
   "Before & after · Try demo →": "Before & after · Try demo →",
   "Before and after: a real wallet address becomes a human-readable identity, with on-chain proof and integration code.": "Before and after: a real wallet address becomes a human-readable identity, with on-chain proof and integration code.",
@@ -933,5 +932,6 @@
   "· availability checked on-chain": "· availability checked on-chain",
   "· not actual wallet activity": "· not actual wallet activity",
   "· not scheduled": "· not scheduled",
-  "← Demo Lab": "← Demo Lab"
+  "← Demo Lab": "← Demo Lab",
+  "SolHandle provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "SolHandle provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge."
 }

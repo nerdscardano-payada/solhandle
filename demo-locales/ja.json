@@ -314,7 +314,6 @@
   "The two addresses above are the explicit counterparties at lookup time. A real trade still requires signed wallet control, fresh ownership checks, liquidity verification and an independently verified settlement mechanism.": "上記の2つのアドレスは、ルックアップ時の明示的な取引相手です。実際の取引には、署名付きウォレット制御、最新の所有権チェック、流動性の検証、および独立して検証された決済メカニズムが引き続き必要です。",
   "Explore how SolHandle fits into wallets, marketplaces, payments, identity, dapps, trading, DeFi and explorers. See where it belongs, what it adds, and what each application must still handle itself.": "SolHandleがウォレット、マーケットプレイス、決済、ID、dapps、取引、DeFi、エクスプローラーにどのように適合するかを探ります。その役割、付加価値、および各アプリケーションが自身で処理しなければならない範囲を確認してください。",
   "This preview does not connect a wallet, evaluate a strategy or enable copy trading. No funds, approvals or orders are involved; a real platform must enforce its own risk and execution controls.": "このプレビューでは、ウォレットの接続、戦略の評価、コピートレードの有効化は行われません。資金、承認、注文は一切関与しておらず、実際のプラットフォームでは独自の制限および実行制御を強制する必要があります。",
-  "Base44 provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "Base44が体験を提供します。SolHandle API / SDKはSolanaを真実のソースとして検証します。リゾルバーのメンバーシップ検証は、Phantomやマーケットプレイスの検証バッジではありません。",
   "Eligibility states and allocation are explicit examples, not verified results. No proof, claim contract or token account is loaded and no claim is submitted.": "資格ステータスと割り当ては明示的な例であり、検証済みの結果ではありません。証明、請求コントラクト、トークンアカウントは読み込まれず、請求も送信されません。",
   "Visitors can recognize a creator by name. The wallet remains visible. A real donation still needs a fresh lookup, destination checks and a signed payment.": "訪問者はクリエイターを名前で認識できます。ウォレットは表示されたままです。実際の寄付には、依然として最新のルックアップ、宛先チェック、署名済み支払いが必要です。",
   "The proposal, tally and vote choice are illustrative. Voting power, membership and proposal authority are not fetched or verified. No vote is submitted.": "提案、集計、投票の選択は例示です。投票権、メンバーシップ、提案権限は取得・検証されません。投票は送信されません。",
@@ -933,5 +932,6 @@
   "Side": "サイド",
   "of 3": "3のうち",
   "Add": "追加",
-  "SDK": "SDK"
+  "SDK": "SDK",
+  "SolHandle provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "SolHandleが体験を提供します。SolHandle API / SDKはSolanaを真実のソースとして検証します。リゾルバーのメンバーシップ検証は、Phantomやマーケットプレイスの検証バッジではありません。"
 }

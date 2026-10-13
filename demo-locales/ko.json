@@ -135,7 +135,6 @@
   "Availability and mint price are live lookup data. A simulated checkout is not proof of minting.": "가용성 및 민트 가격은 실시간 조회 데이터입니다. 시뮬레이션된 결제는 민팅의 증거가 아닙니다.",
   "BUY": "구매",
   "BUY · 12.5 SOL": "구매 · 12.5 SOL",
-  "Base44 provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "Base44는 경험을 제공합니다. SolHandle API / SDK는 Solana를 진실의 근원으로 확인합니다. 확인자 멤버십 검증은 Phantom 또는 마켓플레이스 검증 배지가 아닙니다.",
   "Before": "전",
   "Before & after · Try demo →": "전 & 후 · 데모 시도 →",
   "Before and after: a real wallet address becomes a human-readable identity, with on-chain proof and integration code.": "전과 후: 실제 지갑 주소가 온체인 증명 및 통합 코드를 갖춘 사람이 읽을 수 있는 ID가 됩니다.",
@@ -932,5 +931,6 @@
   "· availability checked on-chain": "· 온체인에서 가용성 확인됨",
   "· not actual wallet activity": "· 실제 지갑 활동 아님",
   "· not scheduled": "· 예정되지 않음",
-  "← Demo Lab": "← 데모 랩"
+  "← Demo Lab": "← 데모 랩",
+  "SolHandle provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "SolHandle는 경험을 제공합니다. SolHandle API / SDK는 Solana를 진실의 근원으로 확인합니다. 확인자 멤버십 검증은 Phantom 또는 마켓플레이스 검증 배지가 아닙니다."
 }

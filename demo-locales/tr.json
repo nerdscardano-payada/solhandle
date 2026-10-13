@@ -314,7 +314,6 @@
   "The two addresses above are the explicit counterparties at lookup time. A real trade still requires signed wallet control, fresh ownership checks, liquidity verification and an independently verified settlement mechanism.": "Yukarıdaki iki adres, arama anındaki açık karşı taraflardır. Gerçek bir işlem hala imzalı cüzdan kontrolü, güncel sahiplik denetimleri, likidite doğrulaması ve bağımsız olarak onaylanmış bir mutabakat mekanizması gerektirir.",
   "Explore how SolHandle fits into wallets, marketplaces, payments, identity, dapps, trading, DeFi and explorers. See where it belongs, what it adds, and what each application must still handle itself.": "SolHandle'ın cüzdanlara, pazar yerlerine, ödemelere, kimlik sistemlerine, dapp'lere, ticarete, DeFi'ye ve kaşiflere nasıl uyum sağladığını keşfedin. Nereye ait olduğunu, neler eklediğini ve her uygulamanın kendi başına neleri yönetmesi gerektiğini görün.",
   "This preview does not connect a wallet, evaluate a strategy or enable copy trading. No funds, approvals or orders are involved; a real platform must enforce its own risk and execution controls.": "Bu önizleme bir cüzdan bağlamaz, bir stratejiyi değerlendirmez veya kopyalayarak ticaret yapmayı etkinleştirmez. Hiçbir fon, onay veya emir söz konusu değildir; gerçek bir platform kendi risk ve yürütme kontrollerini uygulamalıdır.",
-  "Base44 provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "Base44 deneyimi sağlar. SolHandle API / SDK, Solana'yı gerçeklik kaynağı olarak doğrular. Çözümleyici üyelik doğrulaması, bir Phantom veya pazar yeri doğrulama rozeti değildir.",
   "Eligibility states and allocation are explicit examples, not verified results. No proof, claim contract or token account is loaded and no claim is submitted.": "Uygunluk durumları ve tahsisatlar doğrulanmış sonuçlar değil, açık örneklerdir. Hiçbir kanıt, talep sözleşmesi veya token hesabı yüklenmez ve hiçbir talep gönderilmez.",
   "Visitors can recognize a creator by name. The wallet remains visible. A real donation still needs a fresh lookup, destination checks and a signed payment.": "Ziyaretçiler bir içerik oluşturucuyu isminden tanıyabilir. Cüzdan görünür kalır. Gerçek bir bağış hala yeni bir arama, hedef kontrolleri ve imzalı bir ödeme gerektirir.",
   "The proposal, tally and vote choice are illustrative. Voting power, membership and proposal authority are not fetched or verified. No vote is submitted.": "Teklif, sayım ve oy tercihi örnektir. Oy gücü, üyelik ve teklif yetkisi getirilmez veya doğrulanmaz. Hiçbir oy gönderilmez.",
@@ -933,5 +932,6 @@
   "Side": "Taraf",
   "of 3": "3 taneden",
   "Add": "Ekle",
-  "SDK": "SDK"
+  "SDK": "SDK",
+  "SolHandle provides the experience. SolHandle API / SDK verifies Solana as the source of truth. Resolver membership verification is not a Phantom or marketplace verification badge.": "SolHandle deneyimi sağlar. SolHandle API / SDK, Solana'yı gerçeklik kaynağı olarak doğrular. Çözümleyici üyelik doğrulaması, bir Phantom veya pazar yeri doğrulama rozeti değildir."
 }
