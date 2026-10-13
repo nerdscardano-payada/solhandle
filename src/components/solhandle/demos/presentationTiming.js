@@ -1,0 +1,2 @@
+export const SCENE_SECONDS = 9;
+export const PRESENTATION_SECONDS = SCENE_SECONDS * 4;

@@ -2,8 +2,9 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ShieldCheck } from 'lucide-react';
 import DemoPresentationCard from '@/components/solhandle/demos/DemoPresentationCard';
 import demoStories from '@/components/solhandle/demos/demoStories';
+import { SCENE_SECONDS } from '@/components/solhandle/demos/presentationTiming';
 export default function DemoPresentationScene({ slug, result, input, elapsed, mode, rpcUrl }) {
-  const reduced = useReducedMotion(), step = Math.min(3, Math.floor(Math.max(0, elapsed) / 6)), story = demoStories[slug], mint = mode === 'availability';
+  const reduced = useReducedMotion(), step = Math.min(3, Math.floor(Math.max(0, elapsed) / SCENE_SECONDS)), story = demoStories[slug], mint = mode === 'availability';
   const headings = [story.before, 'Real lookup. Verified before playback.', story.after, 'Inspect the real evidence.'];
   const captions = ['Start with the address-only experience, or an app-local nickname. Nothing is created or sent.', `${rpcUrl ? 'The SDK' : 'The API'} retrieved this result before the presentation started. This scene explains that completed lookup.`, story.benefit, mint ? 'Live availability does not mean a mint happened. No name was reserved or assigned.' : 'The identity is real. Example balances, trades and payments are not blockchain records.'];
   const fields = mint ? [['Handle', result.display], ['Availability', result.status], ['Source', result.verificationSource]] : [['Handle', result.handle], ['Current owner', result.address], ['NFT asset', result.assetAddress], ['Collection membership', result.collectionVerified ? 'Verified' : 'Not verified']];
