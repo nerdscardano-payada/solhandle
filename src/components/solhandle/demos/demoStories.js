@@ -1,4 +1,5 @@
 const demoStories = {
+  'wallet-identity': { title: 'Same wallet. A completely different experience.', before: 'An address-only wallet', after: 'A wallet with your @identity', benefit: 'Same account, same ownership. A verified name makes the wallet recognizable; the example balances are unchanged.' },
   resolver: { title: 'A name in. The real owner out.', before: 'Wallet addresses only', after: 'Resolve an @identity', benefit: 'Turn a memorable name into its current, verified wallet address.' },
   'reverse-resolver': { title: 'A wallet address becomes a recognizable identity.', before: 'An anonymous address', after: 'Its verified primary name', benefit: 'Show a wallet’s actual primary handle, never a guessed nickname.' },
   'wallet-send': { title: 'Send to a person, not a string.', before: 'Paste an address', after: 'Enter an @handle', benefit: 'Readable recipient. The same destination underneath. No funds move in this demo.' },

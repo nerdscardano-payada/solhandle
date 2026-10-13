@@ -1,0 +1,6 @@
+import { Pause, Play, RotateCcw, Square } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+export default function DemoPresentationControls({ elapsed, paused, ready, onPause, onReplay, onClose }) {
+  const finished = elapsed >= 24;
+  return <footer className="space-y-3 border-t border-border pt-4"><div className="h-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Presentation progress" aria-valuemin={0} aria-valuemax={24} aria-valuenow={Math.floor(Math.max(0, elapsed))}><div className="h-full bg-names-accent" style={{ width: `${Math.max(0, elapsed) / 24 * 100}%` }}/></div><div className="flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-muted-foreground">{finished ? 'Presentation complete' : elapsed < 0 && ready ? `Starts in ${Math.ceil(-elapsed)}…` : `${Math.floor(Math.max(0, elapsed))} / 24 seconds`} · Screen recording is manual.</p><div className="flex gap-2"><Button variant="outline" disabled={!ready || finished} onClick={onPause} className="min-h-11">{paused ? <Play/> : <Pause/>}{paused ? 'Resume' : 'Pause'}</Button><Button variant="outline" disabled={!ready} onClick={onReplay} className="min-h-11"><RotateCcw/>Replay</Button><Button variant="outline" onClick={onClose} className="min-h-11"><Square/>Stop</Button></div></div></footer>;
+}
