@@ -1,0 +1,11 @@
+const demoCategories = [
+  { name: 'Wallets', id: 'wallets', icon: 'Wallet', where: 'Send, receive and account screens', benefit: 'Replace difficult addresses with recognizable names, keeping the actual wallet underneath.', boundary: 'SolHandle does not hold funds or replace wallet signing.' },
+  { name: 'Marketplaces', id: 'marketplaces', icon: 'ShoppingBag', where: 'Seller profiles, listing cards and offer inboxes', benefit: 'Recognize sellers and bidders without hiding their actual wallet addresses.', boundary: 'A name is not a seller reputation score or authenticity badge.' },
+  { name: 'Payments', id: 'payments', icon: 'CreditCard', where: 'Checkout, invoices, donations and payment reviews', benefit: 'Identify who is being paid and resolve their name to a wallet destination.', boundary: 'A resolver does not execute or confirm a payment.' },
+  { name: 'Identity', id: 'identity', icon: 'UserRound', where: 'Profiles, creator pages and primary identity labels', benefit: 'Carry a wallet-owned name across applications that choose to support it.', boundary: 'An on-chain name is not KYC or proof of a real-world identity.' },
+  { name: 'Dapps', id: 'dapps', icon: 'PanelsTopLeft', where: 'Account headers, member directories and embedded mint checkout', benefit: 'Use identity inside an application instead of showing an anonymous account string.', boundary: 'Authentication, roles and access policies stay with the application.' },
+  { name: 'DeFi', id: 'defi', icon: 'ChartNoAxesCombined', where: 'Trading, portfolio labels and withdrawal review screens', benefit: 'Make financial interfaces readable without changing the underlying protocols.', boundary: 'A name does not provide yield, security guarantees or financial data.' },
+  { name: 'Explorers', id: 'explorers', icon: 'ScanSearch', where: 'Address pages, activity tables and transaction details', benefit: 'Annotate blockchain data with recognizable identities and keep the evidence visible.', boundary: 'Current identity is not proof of historical wallet ownership.' },
+  { name: 'Developers', id: 'developers', icon: 'Code2', where: 'API and SDK integration', benefit: 'Build these experiences with forward resolution and verified primary-name lookup.', boundary: 'Every application must handle changing ownership and failed lookups.' }
+];
+export default demoCategories;
