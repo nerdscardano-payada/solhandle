@@ -6,7 +6,7 @@ export const demoCatalog = [
   { slug: 'wallet-receive', title: 'Wallet Receive', category: 'Wallets', description: 'Share a name with a real resolved-address QR.' },
   { slug: 'wallet-identity', title: 'Wallet Transformation', category: 'Wallets', description: 'Before and after: a real wallet address becomes a human-readable identity, with on-chain proof and integration code.' },
   { slug: 'explorer', title: 'Explorer Identity', category: 'Explorers', description: 'See a human identity inside a generic explorer.' },
-  { slug: 'trading', title: 'Trading Terminal', category: 'DeFi', description: 'Same blockchain. Better readability.' },
+  { slug: 'trading', title: 'Trading Terminal', category: 'Trading', description: 'Same blockchain. Better readability.' },
   { slug: 'payments', title: 'SolHandle Pay', category: 'Payments', description: 'Preview sending SOL, then open the live product.' },
   { slug: 'partner-mint', title: 'Partner Mint', category: 'Dapps', description: 'Real availability inside a simulated partner app.' },
   { slug: 'developer', title: 'API / SDK Playground', category: 'Developers', description: 'Run real lookups and copy integration code.', live: true },
