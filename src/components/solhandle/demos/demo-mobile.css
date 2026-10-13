@@ -1,0 +1,66 @@
+@media (max-width: 767px) {
+  /* Scope touch targets and intrinsic sizing to Demo Lab, including its portal. */
+  :is([data-demo-page], [data-demo-presentation]) {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  :is([data-demo-page], [data-demo-presentation]) :is(section, div, form, header, footer, dl, p, h1, h2, h3) {
+    min-width: 0;
+    max-width: 100%;
+  }
+  :is([data-demo-page], [data-demo-presentation]) :is(button, a[href]) {
+    min-height: 48px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    touch-action: manipulation;
+  }
+  :is([data-demo-page], [data-demo-presentation]) button {
+    height: auto;
+    padding-block: 10px;
+  }
+  :is([data-demo-page], [data-demo-presentation]) pre {
+    min-width: 0;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  [data-demo-page] .grid { grid-template-columns: minmax(0, 1fr); }
+  [data-demo-page] .grid.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-demo-presentation] {
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  [data-demo-presentation] > header { flex: 0 0 auto; padding-right: 48px; }
+  [data-demo-presentation] > div {
+    flex: 1 1 0%;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  [data-demo-presentation] > div > div { justify-content: flex-start; }
+  [data-demo-presentation] > button:last-child {
+    top: calc(8px + env(safe-area-inset-top, 0px));
+    right: 8px;
+    width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  [data-demo-controls] { flex: 0 0 auto; max-height: 35dvh; overflow-y: auto; }
+  [data-demo-controls] > div.flex { gap: 8px; }
+  [data-demo-controls] > div.flex > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+  [data-demo-controls] button { width: 100%; padding-inline: 8px; }
+}

@@ -5,6 +5,7 @@ import '@/components/solhandle/platform-theme.css';
 import '@/components/solhandle/mobile-app.css';
 import '@/components/solhandle/tablet-web.css';
 import '@/components/solhandle/platform-typography.css';
+import '@/components/solhandle/demos/demo-mobile.css';
 
 export default function PlatformSurface({ children }) {
   const { pathname } = useLocation();
