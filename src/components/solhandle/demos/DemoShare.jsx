@@ -9,7 +9,7 @@ export default function DemoShare({ title, description = '', category, slug }) {
     const hashtags = demoShareHashtags(category, slug).map(tag => `#${tag}`).join(' ');
     const intro = '🔥 Solana needs names. Not 44 characters.';
     const pitch = demoSharePitch(slug, category, description);
-    const ending = `\n\n🚀 See what we're building:\n${window.location.href}\n\n${hashtags}`;
+    const ending = `\n\n🚀 See what we're building. Try the demo:\n${window.location.href}\n\n${hashtags}`;
     // X counts each URL as 23 characters; leave room for emoji weighting.
     const budget = Math.max(0, 270 - (intro.length + 2 + ending.length - window.location.href.length + 23));
     const explanation = pitch.length > budget
