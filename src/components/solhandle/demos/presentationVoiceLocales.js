@@ -1,0 +1,2 @@
+const presentationVoiceLocales = { en: 'en-GB', nl: 'nl-NL', es: 'es-ES', pt: 'pt-BR', ja: 'ja-JP', de: 'de-DE', fr: 'fr-FR', tr: 'tr-TR', it: 'it-IT', vi: 'vi-VN', ko: 'ko-KR' };
+export default presentationVoiceLocales;

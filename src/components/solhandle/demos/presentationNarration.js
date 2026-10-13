@@ -12,12 +12,12 @@ const benefits = {
   'partner-mint': 'Real availability inside a partner concept. This preview does not mint anything.',
   developer: 'A real API or SDK response powers a human readable application identity.'
 };
-export default function presentationNarration(slug, mode, result, rpcUrl) {
+export default function presentationNarration(slug, mode, result, rpcUrl, translate = text => text) {
   const mint = mode === 'availability';
   return [
     mint ? 'An app nickname stays inside one app. Compare it with an on chain identity.' : 'A long wallet address is hard to recognize. Watch the identity become readable.',
     mint ? 'Live availability was checked on the blockchain before playback. This is the actual result.' : `${rpcUrl ? 'The SDK' : 'The API'} verified ${mode === 'reverse' ? 'the primary name and its owner' : 'the current owner'} before playback. This is real lookup data.`,
     mint && !result?.available ? 'This name is not available to claim. No successful mint is simulated.' : benefits[slug],
     mint ? 'This evidence proves availability, not a completed mint. No transaction was signed.' : 'The identity is verified. Example balances and activity are illustrative. No transaction was signed.'
-  ].map(text => text.replace(/\bAPI\b/g, 'A P I').replace(/\bSDK\b/g, 'S D K'));
+  ].map(text => translate(text).replace(/\bAPI\b/g, 'A P I').replace(/\bSDK\b/g, 'S D K'));
 }

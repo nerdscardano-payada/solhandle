@@ -28,18 +28,21 @@ export default function StaticTextLocalization() {
     };
     const scan = () => {
       frame = null;
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-      while (walker.nextNode()) {
-        const node = walker.currentNode;
-        if (!node.parentElement?.closest(ignored)) localize(node, node.nodeValue);
-      }
-      root.querySelectorAll(attributes.map(name => `[${name}]`).join(',')).forEach(element => {
-        if (element.closest('script,style,pre,code,[data-no-translate]')) return;
-        attributes.forEach(name => { if (element.hasAttribute(name)) localize(element, element.getAttribute(name), name); });
+      const surfaces = [root, ...document.querySelectorAll('[data-demo-localization]')].filter((element, index, all) => !all.slice(0, index).some(other => other.contains(element)));
+      surfaces.forEach(surface => {
+        const walker = document.createTreeWalker(surface, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          if (!node.parentElement?.closest(ignored)) localize(node, node.nodeValue);
+        }
+        surface.querySelectorAll(attributes.map(name => `[${name}]`).join(',')).forEach(element => {
+          if (element.closest('script,style,pre,code,[data-no-translate]')) return;
+          attributes.forEach(name => { if (element.hasAttribute(name)) localize(element, element.getAttribute(name), name); });
+        });
       });
     };
     const observer = new MutationObserver(() => { if (frame === null) frame = requestAnimationFrame(scan); });
-    observer.observe(root, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: attributes });
+    observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: attributes });
     scan();
     return () => { observer.disconnect(); if (frame !== null) cancelAnimationFrame(frame); };
   }, [translate]);
