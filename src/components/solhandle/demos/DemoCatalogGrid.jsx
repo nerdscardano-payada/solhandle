@@ -1,0 +1,7 @@
+import { Link } from 'react-router-dom';
+import DemoBadge from '@/components/solhandle/demos/DemoBadge';
+import { demoCatalog, demoPath } from '@/components/solhandle/demos/demoCatalog';
+import demoCategories from '@/components/solhandle/demos/demoCategories';
+export default function DemoCatalogGrid({ handle }) {
+  return <div className="space-y-12">{demoCategories.map(category => <section key={category.id} id={`demo-${category.id}`} className="scroll-mt-8 space-y-5"><header className="space-y-3"><h2 className="text-2xl font-semibold">{category.name}</h2><p className="text-sm text-names-accent">{category.where}</p><p className="max-w-3xl text-sm leading-6 text-muted-foreground">{category.benefit}</p><p className="max-w-3xl text-xs leading-6 text-muted-foreground">{category.boundary}</p></header><div className="grid gap-4 md:grid-cols-2">{demoCatalog.filter(demo => demo.category === category.name).map(demo => <Link key={demo.slug} to={demoPath(demo.slug, handle || '@demo')} className="group space-y-4 rounded-2xl border border-names-accent/20 bg-card p-6 transition-colors hover:border-names-accent/60 focus-visible:outline focus-visible:outline-names-accent"><DemoBadge live={demo.live}/><h3 className="text-xl font-semibold">{demo.title}</h3><p className="text-sm leading-6 text-muted-foreground">{demo.description}</p><span className="inline-block text-sm text-names-accent">Before & after · Try demo →</span></Link>)}</div></section>)}</div>;
+}

@@ -1,6 +1,9 @@
 import { Wallet, ShieldCheck, ArrowUpRight, ArrowDownLeft, Activity, ShoppingBag, Code2 } from 'lucide-react';
 import DemoQR from '@/components/solhandle/demos/DemoQR';
+import DemoIntegrationPreview from '@/components/solhandle/demos/DemoIntegrationPreview';
+import integrationDemoScenarios from '@/components/solhandle/demos/integrationDemoScenarios';
 export default function DemoPresentationCard({ slug, result, input, enhanced }) {
+  if (integrationDemoScenarios[slug]) return <div className="w-full max-w-2xl rounded-3xl border border-border bg-card p-5 md:p-7"><DemoIntegrationPreview slug={slug} identity={result} enhanced={enhanced} presentation/></div>;
   const mint = slug === 'partner-mint', receive = slug === 'wallet-receive', send = ['wallet-send', 'payments'].includes(slug), feed = ['explorer', 'trading'].includes(slug), wallet = slug === 'wallet-identity';
   const Icon = mint ? ShoppingBag : receive ? ArrowDownLeft : send ? ArrowUpRight : feed ? Activity : slug === 'developer' ? Code2 : Wallet;
   const title = mint ? 'Partner mint preview' : receive ? 'Receive SOL' : send ? 'Payment review preview' : slug === 'explorer' ? 'Explorer identity' : slug === 'trading' ? 'Trading terminal' : wallet ? 'My wallet' : 'Application identity';

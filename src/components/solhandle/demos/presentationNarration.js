@@ -1,4 +1,6 @@
+import integrationDemoScenarios from '@/components/solhandle/demos/integrationDemoScenarios';
 const benefits = {
+  ...Object.fromEntries(Object.entries(integrationDemoScenarios).map(([slug, scenario]) => [slug, scenario.narration])),
   'wallet-identity': 'Same wallet. Same ownership. A verified name makes your identity recognizable.',
   resolver: 'A memorable name resolves to its current, verified wallet owner.',
   'reverse-resolver': 'This wallet has a verified primary name, not a guessed nickname.',

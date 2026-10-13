@@ -5,7 +5,10 @@ import DemoWallet from '@/components/solhandle/demos/DemoWallet';
 import DemoExplorer from '@/components/solhandle/demos/DemoExplorer';
 import DemoTrading from '@/components/solhandle/demos/DemoTrading';
 import DemoPartnerMint from '@/components/solhandle/demos/DemoPartnerMint';
+import DemoIntegrationPreview from '@/components/solhandle/demos/DemoIntegrationPreview';
+import integrationDemoScenarios from '@/components/solhandle/demos/integrationDemoScenarios';
 export default function DemoResult({ slug, result }) {
+  if (integrationDemoScenarios[slug]) return <DemoIntegrationPreview slug={slug} identity={result}/>;
   if (slug === 'partner-mint') return <DemoPartnerMint availability={result}/>;
   if (slug === 'wallet-send' || slug === 'payments') return <DemoSend identity={result} payment={slug === 'payments'}/>;
   if (slug === 'wallet-receive') return <DemoReceive identity={result}/>;
