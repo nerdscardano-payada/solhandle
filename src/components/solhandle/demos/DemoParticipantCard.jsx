@@ -1,0 +1,4 @@
+import { UserRound } from 'lucide-react';
+export default function DemoParticipantCard({ role, identity, enhanced = true }) {
+  return <section className="min-w-0 space-y-3 rounded-xl border border-border bg-background p-4"><p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground"><UserRound size={15}/>{role}</p><p className={identity && enhanced ? 'break-all text-xl font-semibold text-names-accent' : 'break-all font-mono text-xs leading-6'}>{identity ? enhanced ? identity.handle : identity.address : 'Not resolved'}</p>{identity && enhanced && <p className="break-all font-mono text-xs text-muted-foreground">{identity.address}</p>}<p className="text-xs leading-5 text-muted-foreground">{identity ? enhanced ? 'Current name-to-wallet lookup · not proof of wallet control' : 'Underlying wallet address' : 'Resolve this participant independently.'}</p></section>;
+}

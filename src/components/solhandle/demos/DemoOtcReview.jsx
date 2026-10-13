@@ -1,0 +1,19 @@
+import { useEffect, useState } from 'react';
+import { ArrowRightLeft, ShieldAlert } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import DemoParticipantCard from '@/components/solhandle/demos/DemoParticipantCard';
+import DemoCounterpartyLookup from '@/components/solhandle/demos/DemoCounterpartyLookup';
+export default function DemoOtcReview({ identity, enhanced, presentation }) {
+  const [buyer, setBuyer] = useState(null), [sell, setSell] = useState('1'), [receive, setReceive] = useState('100'), [reviewed, setReviewed] = useState(false);
+  useEffect(() => setReviewed(false), [identity?.address, buyer, sell, receive]);
+  const same = Boolean(identity && buyer && identity.address === buyer.address), valid = [sell, receive].every(value => Number.isFinite(Number(value)) && Number(value) > 0);
+  return <section className="space-y-5"><header className="flex items-center justify-between gap-3"><h3 className="flex items-center gap-2 font-semibold"><ArrowRightLeft className="h-5 w-5 text-names-accent"/>P2P / OTC deal desk</h3><span className="text-xs text-names-secondary">Review only</span></header><div className="grid gap-3"><DemoParticipantCard role="Example seller" identity={identity} enhanced={enhanced}/><div className="flex justify-center"><ArrowRightLeft size={20} className="text-muted-foreground"/></div><DemoParticipantCard role="Example buyer" identity={buyer} enhanced={enhanced}/></div>
+    {enhanced && !presentation && <DemoCounterpartyLookup role="Buyer" onIdentity={setBuyer}/>}
+    <div className="grid grid-cols-2 gap-3 rounded-xl border border-border p-4"><label className="space-y-2 text-sm"><span>Seller sends · SOL</span>{!presentation ? <Input type="number" min="0.01" step="0.01" value={sell} onChange={event => setSell(event.target.value)} className="min-h-11"/> : <p className="text-2xl font-semibold">{sell}</p>}</label><label className="space-y-2 text-sm"><span>Buyer sends · USDC</span>{!presentation ? <Input type="number" min="0.01" step="0.01" value={receive} onChange={event => setReceive(event.target.value)} className="min-h-11"/> : <p className="text-2xl font-semibold">{receive}</p>}</label><p className="col-span-2 text-xs leading-6 text-muted-foreground">User-defined example amounts, not a market quote. No exchange rate or funds are checked.</p></div>
+    {same && <p role="status" className="text-sm text-names-warning">Both handles resolve to the same wallet. Choose a different counterparty for this two-party example.</p>}{!valid && <p role="status" className="text-sm text-names-warning">Use positive example amounts.</p>}
+    {enhanced && !presentation && <Button variant="outline" className="min-h-11" disabled={!identity || !buyer || same || !valid} onClick={() => setReviewed(value => !value)}>{reviewed ? 'Close review' : 'Review example trade'}</Button>}
+    {reviewed && identity && buyer && !same && valid && <div role="status" className="space-y-3 rounded-xl border border-names-accent/30 bg-names-accent/5 p-4"><h4 className="font-semibold">Example terms reviewed. Nothing submitted.</h4><p className="text-sm">{identity.handle} would send {Number(sell).toLocaleString('en-US')} SOL. {buyer.handle} would send {Number(receive).toLocaleString('en-US')} USDC.</p><p className="text-xs leading-6 text-muted-foreground">The two addresses above are the explicit counterparties at lookup time. A real trade still requires signed wallet control, fresh ownership checks, liquidity verification and an independently verified settlement mechanism.</p></div>}
+    <p className="flex items-start gap-2 text-xs leading-6 text-names-warning"><ShieldAlert className="mt-1 h-4 w-4 shrink-0"/>A recognizable name is not a trusted counterparty. No escrow, quote, signature or settlement is created here.</p>
+  </section>;
+}
