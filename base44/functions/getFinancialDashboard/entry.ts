@@ -24,14 +24,20 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
     if (user.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
     const body = await req.json().catch(() => ({})); const { start, end } = periodBounds(body.period || "month", body.startDate, body.endDate);
+    const warnings = [];
     const [allTransactions, premiumHandles, configs, currentSolEur] = await Promise.all([
       base44.asServiceRole.entities.FinancialTransaction.filter({ status: "completed" }, "-timestamp", 5000),
       base44.asServiceRole.entities.PremiumHandle.list("-created_date", 5000),
       base44.asServiceRole.entities.ProtocolStatus.list("-last_sync", 1),
-      getCurrentSolEur()
+      getCurrentSolEur().catch(() => { warnings.push('The live SOL/EUR rate is temporarily unavailable. Historical revenue is unaffected.'); return null; })
     ]);
     const transactions = allTransactions.filter((row) => { const time = new Date(row.timestamp); return (!start || time >= start) && (!end || time <= end); });
-    const config = configs[0]; const balanceFor = async (address) => address ? (await rpc(secrets.get("SOLANA_RPC_URL"), "getBalance", [address, { commitment: "confirmed" }]))?.value ?? null : null;
+    const config = configs[0];
+    const balanceFor = async (address) => {
+      if (!address) return null;
+      try { return (await rpc(secrets.get("SOLANA_RPC_URL"), "getBalance", [address, { commitment: "confirmed" }]))?.value ?? null; }
+      catch { warnings.push('A live wallet balance is temporarily unavailable. Confirmed sales are unaffected.'); return null; }
+    };
     const [treasuryLamports, rewardsLamports] = await Promise.all([balanceFor(config?.treasury), balanceFor(config?.rewards_vault)]);
     const premium = transactions.filter((row) => row.premium_status); const premiumSoldLifetime = new Set(allTransactions.filter((row) => row.premium_status).map((row) => row.handle)).size;
     const lengths = [
@@ -40,9 +46,9 @@ export default async function(req: Request): Promise<Response> {
       { label: "5+ character", test: (n) => n >= 5 }
     ].map((group) => { const rows = transactions.filter((row) => group.test(row.character_length)); return { label: group.label, mints: rows.length, revenueLamports: sum(rows, "base_price_lamports") }; });
     return Response.json({
-      transactions, currentSolEur, treasuryLamports, rewardsLamports,
-      treasuryCurrentEur: treasuryLamports === null ? null : treasuryLamports / 1e9 * currentSolEur,
-      rewardsCurrentEur: rewardsLamports === null ? null : rewardsLamports / 1e9 * currentSolEur,
+      transactions, currentSolEur, treasuryLamports, rewardsLamports, warnings,
+      treasuryCurrentEur: treasuryLamports === null || currentSolEur === null ? null : treasuryLamports / 1e9 * currentSolEur,
+      rewardsCurrentEur: rewardsLamports === null || currentSolEur === null ? null : rewardsLamports / 1e9 * currentSolEur,
       summary: { totalMints: transactions.length, baseLamports: sum(transactions, "base_price_lamports"), premiumLamports: sum(transactions, "premium_surcharge_lamports"), grossLamports: sum(transactions, "total_paid_lamports"), historicalEur: sum(transactions, "total_value_eur"), partnerFeesLamports: sum(transactions, "partner_fee_lamports"), netLamports: sum(transactions, "net_solhandle_lamports") },
       premium: { supply: premiumHandles.length, sold: premiumSoldLifetime, remaining: Math.max(0, premiumHandles.length - premiumSoldLifetime), periodBaseLamports: sum(premium, "base_price_lamports"), periodSurchargeLamports: sum(premium, "premium_surcharge_lamports"), periodTotalLamports: sum(premium, "total_paid_lamports"), periodHistoricalEur: sum(premium, "total_value_eur") },
       lengths
