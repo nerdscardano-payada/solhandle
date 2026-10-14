@@ -7,7 +7,7 @@ import PartnerMintDirectRecovery from '@/components/solhandle/partner-mint/Partn
 export default function PartnerMintReport({ partnerId, refreshKey }) {
   const { query, recovery, receipts, totals, checkedAt } = usePartnerMintReport(partnerId, refreshKey);
   const busy = query.isFetching || recovery.isPending;
-  return <section className="mt-8 rounded-xl border border-names-secondary/30 bg-card p-5">
+  return <section id="partner-report" tabIndex={-1} className="mt-8 scroll-mt-6 rounded-xl border border-names-secondary/30 bg-card p-5">
     <p className="text-xs font-semibold uppercase tracking-wider text-names-warning">Devnet only · admin reporting</p>
     <h2 className="mt-2 font-heading text-xl">Verified partner mint activity</h2>
     <p className="mt-2 text-sm text-muted-foreground">Partner: {partnerId}. Only chain-verified finalized receipts count. Network fees and account costs are excluded. Devnet totals are test activity, not production revenue.</p>
