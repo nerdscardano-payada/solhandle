@@ -1,3 +1,16 @@
+@media (max-width: 767px) {
+  .home-funnel .home-claim-panel {
+    padding: 20px 16px;
+    border: 1px solid hsl(var(--names-accent) / .14);
+    border-radius: 20px;
+    background: linear-gradient(145deg, hsl(var(--hero-surface) / .88), hsl(var(--hero-canvas) / .76));
+  }
+  .home-funnel .home-claim-panel .home-claim-action {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid hsl(var(--foreground) / .1);
+  }
+}
 @media (min-width: 768px) {
   .home-funnel .home-claim-panel {
     padding: clamp(22px, 2.3vw, 36px);
