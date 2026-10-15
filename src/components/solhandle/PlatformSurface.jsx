@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import { Image } from '@/components/ui/image';
-import MobileAppNavigation from '@/components/solhandle/MobileAppNavigation';
 import '@/components/solhandle/platform-theme.css';
 import '@/components/solhandle/mobile-app.css';
 import '@/components/solhandle/tablet-web.css';
@@ -18,6 +17,5 @@ export default function PlatformSurface({ children }) {
       <div className="platform-backdrop-tint"/>
     </div>}
     <div className="platform-page-content">{children}</div>
-    {appNavigation && <MobileAppNavigation/>}
   </div>;
 }
