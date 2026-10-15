@@ -1,76 +1,80 @@
+import { lazy, Suspense } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import PageNotFound from './lib/PageNotFound';
+const PageNotFound = lazy(() => import('@/lib/PageNotFound'));
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
-import Home from '@/pages/Home';
-import Demos from '@/pages/Demos';
-import DemoDetail from '@/pages/DemoDetail';
 import HomeEntrance from '@/components/solhandle/intro/HomeEntrance';
-import Search from '@/pages/Search';
-import MyHandles from '@/pages/MyHandles';
-import Docs from '@/pages/Docs';
-import Legal from '@/pages/Legal';
-import Privacy from '@/pages/Privacy';
-import Faq from '@/pages/Faq';
-import Contact from '@/pages/Contact';
 import Footer from '@/components/solhandle/Footer';
-import Admin from '@/pages/Admin';
-import AdminMainnetTests from '@/pages/AdminMainnetTests';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import HandlePage from '@/pages/HandlePage';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import ForgotPassword from '@/pages/ForgotPassword';
-import ResetPassword from '@/pages/ResetPassword';
-import ProtectedBrands from '@/pages/ProtectedBrands';
-import Explore from '@/pages/Explore';
-import Fun from '@/pages/Fun';
-import Developers from '@/pages/Developers';
-import PartnerMintPlan from '@/pages/PartnerMintPlan';
-import SolHandleResolve from '@/pages/SolHandleResolve';
-import SolHandleWidgetPage from '@/pages/SolHandleWidgetPage';
-import TokenHandlesPlan from '@/pages/TokenHandlesPlan';
-import PartnerMint from '@/pages/PartnerMint';
-import Integrations from '@/pages/Integrations';
-import LiveIntegrations from '@/pages/LiveIntegrations';
-import IntegrationGuide from '@/pages/IntegrationGuide';
-import MintSuccess from '@/pages/MintSuccess';
-import Financials from '@/pages/Financials';
-import AdminReferrals from '@/pages/AdminReferrals';
-import Roadmap from '@/pages/Roadmap';
-import ProtocolPaper from '@/pages/ProtocolPaper';
-import Earn from '@/pages/Earn';
-import EarnLitepaper from '@/pages/EarnLitepaper';
-import Leaderboard from '@/pages/Leaderboard';
-import ReferralTerms from '@/pages/ReferralTerms';
-import AdminAnalytics from '@/pages/AdminAnalytics';
-import About from '@/pages/About';
-import PremiumDirectory from '@/pages/PremiumDirectory';
-import DiscordVerify from '@/pages/DiscordVerify';
-import UpcomingProjects from '@/pages/UpcomingProjects';
-import TokenLaunchPreview from '@/pages/TokenLaunchPreview';
-import Market from '@/pages/Market';
-import Promo from '@/pages/Promo';
-import Pay from '@/pages/Pay';
-import Growth from '@/pages/Growth';
-import Flywheel from '@/pages/Flywheel';
-import AdminBurn from '@/pages/AdminBurn';
-import HandleMintPayments from '@/pages/HandleMintPayments';
-import BurnDashboard from '@/pages/BurnDashboard';
 import { growthHubVisible } from '@/components/solhandle/navigationLinks';
 import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
-import GrowthHub from '@/pages/GrowthHub';
-import GrowthHubDashboard from '@/pages/GrowthHubDashboard';
-import GrowthHubExplore from '@/pages/GrowthHubExplore';
-import GrowthHubQuest from '@/pages/GrowthHubQuest';
-import GrowthHubSeasons from '@/pages/GrowthHubSeasons';
-import GrowthHubLeaderboard from '@/pages/GrowthHubLeaderboard';
-import GrowthHubRules from '@/pages/GrowthHubRules';
-import AdminGrowthHub from '@/pages/AdminGrowthHub';
+
+const Home = lazy(() => import('@/pages/Home'));
+const Demos = lazy(() => import('@/pages/Demos'));
+const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
+const Search = lazy(() => import('@/pages/Search'));
+const MyHandles = lazy(() => import('@/pages/MyHandles'));
+const Docs = lazy(() => import('@/pages/Docs'));
+const Legal = lazy(() => import('@/pages/Legal'));
+const Privacy = lazy(() => import('@/pages/Privacy'));
+const Faq = lazy(() => import('@/pages/Faq'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const Admin = lazy(() => import('@/pages/Admin'));
+const AdminMainnetTests = lazy(() => import('@/pages/AdminMainnetTests'));
+const HandlePage = lazy(() => import('@/pages/HandlePage'));
+const Login = lazy(() => import('@/pages/Login'));
+const Register = lazy(() => import('@/pages/Register'));
+const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
+const ProtectedBrands = lazy(() => import('@/pages/ProtectedBrands'));
+const Explore = lazy(() => import('@/pages/Explore'));
+const Fun = lazy(() => import('@/pages/Fun'));
+const Developers = lazy(() => import('@/pages/Developers'));
+const PartnerMintPlan = lazy(() => import('@/pages/PartnerMintPlan'));
+const SolHandleResolve = lazy(() => import('@/pages/SolHandleResolve'));
+const SolHandleWidgetPage = lazy(() => import('@/pages/SolHandleWidgetPage'));
+const TokenHandlesPlan = lazy(() => import('@/pages/TokenHandlesPlan'));
+const PartnerMint = lazy(() => import('@/pages/PartnerMint'));
+const Integrations = lazy(() => import('@/pages/Integrations'));
+const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
+const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
+const MintSuccess = lazy(() => import('@/pages/MintSuccess'));
+const Financials = lazy(() => import('@/pages/Financials'));
+const AdminReferrals = lazy(() => import('@/pages/AdminReferrals'));
+const Roadmap = lazy(() => import('@/pages/Roadmap'));
+const ProtocolPaper = lazy(() => import('@/pages/ProtocolPaper'));
+const Earn = lazy(() => import('@/pages/Earn'));
+const EarnLitepaper = lazy(() => import('@/pages/EarnLitepaper'));
+const Leaderboard = lazy(() => import('@/pages/Leaderboard'));
+const ReferralTerms = lazy(() => import('@/pages/ReferralTerms'));
+const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
+const About = lazy(() => import('@/pages/About'));
+const PremiumDirectory = lazy(() => import('@/pages/PremiumDirectory'));
+const DiscordVerify = lazy(() => import('@/pages/DiscordVerify'));
+const UpcomingProjects = lazy(() => import('@/pages/UpcomingProjects'));
+const TokenLaunchPreview = lazy(() => import('@/pages/TokenLaunchPreview'));
+const Market = lazy(() => import('@/pages/Market'));
+const Promo = lazy(() => import('@/pages/Promo'));
+const Pay = lazy(() => import('@/pages/Pay'));
+const Growth = lazy(() => import('@/pages/Growth'));
+const Flywheel = lazy(() => import('@/pages/Flywheel'));
+const AdminBurn = lazy(() => import('@/pages/AdminBurn'));
+const HandleMintPayments = lazy(() => import('@/pages/HandleMintPayments'));
+const BurnDashboard = lazy(() => import('@/pages/BurnDashboard'));
+const GrowthHub = lazy(() => import('@/pages/GrowthHub'));
+const GrowthHubDashboard = lazy(() => import('@/pages/GrowthHubDashboard'));
+const GrowthHubExplore = lazy(() => import('@/pages/GrowthHubExplore'));
+const GrowthHubQuest = lazy(() => import('@/pages/GrowthHubQuest'));
+const GrowthHubSeasons = lazy(() => import('@/pages/GrowthHubSeasons'));
+const GrowthHubLeaderboard = lazy(() => import('@/pages/GrowthHubLeaderboard'));
+const GrowthHubRules = lazy(() => import('@/pages/GrowthHubRules'));
+const AdminGrowthHub = lazy(() => import('@/pages/AdminGrowthHub'));
 
 import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
@@ -80,7 +84,10 @@ import StaticTextLocalization from '@/components/i18n/StaticTextLocalization';
 import NativeDialogLocalization from '@/components/i18n/NativeDialogLocalization';
 
 const AuthenticatedApp = () => {
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
+  const isMobile = useIsMobile();
+  const reducedMotion = useReducedMotion();
   const isWidget = pathname.startsWith('/widgets/');
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -107,7 +114,10 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <PlatformSurface>
-      <Routes>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div key={pathname} className="min-w-0" initial={isMobile && !isWidget && !reducedMotion ? { x: 20, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} exit={isMobile && !isWidget && !reducedMotion ? { x: -16, opacity: 0 } : undefined} transition={{ duration: isMobile && !reducedMotion ? 0.18 : 0 }}>
+          <Suspense fallback={<div role="status" aria-label="Loading page" className="flex min-h-[50dvh] items-center justify-center"><span className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-names-accent"/></div>}>
+      <Routes location={location}>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
         <Route path="/search" element={<Search />} />
         <Route path="/demos" element={<Demos />} />
@@ -181,7 +191,10 @@ const AuthenticatedApp = () => {
         <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      {!isWidget && <Footer />}
+          </Suspense>
+        </motion.div>
+      </AnimatePresence>
+      {!isWidget && <div className="hidden md:block"><Footer /></div>}
       {!isWidget && <AttoChat />}
     </PlatformSurface>
   );

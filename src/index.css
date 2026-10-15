@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body { overscroll-behavior: none; }
+* { -webkit-tap-highlight-color: transparent; }
+
+@media (max-width: 767px) {
+  .solhandle-platform-header { padding-top: calc(1rem + env(safe-area-inset-top, 0px)); }
+  .mobile-app-navigation { padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 60; }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
