@@ -4,6 +4,7 @@ import { Menu, TrendingUp, Store, Blocks, Info, ExternalLink } from 'lucide-reac
 import { Sheet, SheetTrigger, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 import useTokenLaunchSettings from '@/hooks/useTokenLaunchSettings';
+import CommunityLinks from '@/components/solhandle/CommunityLinks';
 
 const links = [['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['About us', '/about', Info]];
 const card = 'flex min-h-24 min-w-0 flex-col items-start justify-center gap-2 rounded-xl border border-names-accent/20 bg-card p-4 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-names-accent';
@@ -23,6 +24,10 @@ export default function MobileAppMore() {
         {tokenMint ? <a href={`https://dexscreener.com/solana/${tokenMint}`} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} className={card}><TrendingUp className="h-5 w-5 text-names-accent"/><span className="flex items-center gap-2">{t('Trade')}<ExternalLink className="h-3.5 w-3.5" aria-hidden="true"/></span><span className="text-xs font-normal text-muted-foreground">DexScreener</span></a> : <button type="button" disabled className={`${card} opacity-50`}><TrendingUp className="h-5 w-5"/>{t('Trade')}<span className="text-xs font-normal">{t(loading ? 'Loading…' : 'Not available')}</span></button>}
         {links.map(([label, path, Icon]) => <Link key={path} to={path} onClick={() => setOpen(false)} aria-current={pathname === path ? 'page' : undefined} className={card}><Icon className="h-5 w-5 text-names-accent"/>{t(label)}</Link>)}
       </nav>
+      <div className="mt-5 border-t border-border pt-4">
+        <h3 className="mb-3 text-sm font-semibold text-foreground">{t('Community')}</h3>
+        <CommunityLinks onNavigate={() => setOpen(false)} />
+      </div>
     </SheetContent>
   </Sheet>;
 }
