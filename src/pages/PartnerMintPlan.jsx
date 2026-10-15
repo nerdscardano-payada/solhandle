@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
 import Header from '@/components/solhandle/Header';
 import PartnerMintPhases from '@/components/solhandle/partner-mint/PartnerMintPhases';
 import PartnerMintMarkdown from '@/components/solhandle/partner-mint/PartnerMintMarkdown';
@@ -8,6 +9,7 @@ import PartnerMintWalletExample from '@/components/solhandle/partner-mint/Partne
 import { partnerMintSections } from '@/components/solhandle/partner-mint/partnerMintPlan';
 
 export default function PartnerMintPlan() {
+  const { user } = useAuth();
   const contents = <nav aria-label="Partner Mint plan contents" className="space-y-3">{partnerMintSections.map(section => <a key={section.id} href={`#${section.id}`} className="block text-sm text-muted-foreground hover:text-names-accent">{section.title}</a>)}</nav>;
   return <main className="dark min-h-screen bg-background font-body text-foreground"><div className="mx-auto min-h-screen max-w-7xl border-x border-border"><Header/>
     <div className="px-5 py-8 sm:px-9 sm:py-12">
@@ -15,7 +17,7 @@ export default function PartnerMintPlan() {
       <p className="mt-7 text-xs font-semibold uppercase tracking-widest text-names-secondary">Technical plan · planned, not live</p>
       <h1 className="mt-3 text-3xl font-semibold sm:text-5xl">SolHandle Partner Mint</h1>
       <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">Your interface. Our protocol. Shared revenue. A devnet-first, non-custodial integration plan for approved partners, with a 50/50 split on SOL mint fees only.</p>
-      <Link to="/mint?partner=devnet-testpartner" className="mt-6 inline-flex min-h-11 items-center rounded-lg border border-names-accent/40 bg-names-accent/10 px-5 py-3 text-sm font-semibold text-names-accent">Begin hier: fase 1 stappenplan · Devnet · alleen beheerders →</Link>
+      {user?.role === 'admin' && <Link to="/mint?partner=devnet-testpartner" className="mt-6 inline-flex min-h-11 items-center rounded-lg border border-names-accent/40 bg-names-accent/10 px-5 py-3 text-sm font-semibold text-names-accent">Begin hier: fase 1 stappenplan · Devnet · alleen beheerders →</Link>}
       <PartnerEmbedPreview/>
       <PartnerMintWebsiteExample/>
       <PartnerMintPhases showLink={false}/>
