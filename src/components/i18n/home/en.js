@@ -1,4 +1,6 @@
 export default {
+  mintPurposeTitle: 'Why mint a handle?',
+  mintPurposeText: 'Turn a long wallet address into a memorable @name. Your identity on Solana, owned by you.',
   searchTitle: 'Search & buy @handles', searchText: 'Find your name and make it yours.',
   sellTitle: 'Sell @handles', sellText: 'List your handles on the marketplace.',
   payTitle: 'Pay @handles', payText: 'Send and receive SOL using a handle.',
