@@ -62,6 +62,7 @@ const TokenLaunchPreview = lazy(() => import('@/pages/TokenLaunchPreview'));
 const Market = lazy(() => import('@/pages/Market'));
 const Promo = lazy(() => import('@/pages/Promo'));
 const Pay = lazy(() => import('@/pages/Pay'));
+const Receive = lazy(() => import('@/pages/Receive'));
 const Growth = lazy(() => import('@/pages/Growth'));
 const Flywheel = lazy(() => import('@/pages/Flywheel'));
 const AdminBurn = lazy(() => import('@/pages/AdminBurn'));
@@ -92,7 +93,7 @@ const AuthenticatedApp = () => {
   const reducedMotion = useReducedMotion();
   const isWidget = pathname.startsWith('/widgets/');
   const showMobileTabs = !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
-  const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/quests', '/earn', '/explore', '/names'].includes(pathname);
+  const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/earn', '/explore', '/names'].includes(pathname);
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
@@ -189,6 +190,7 @@ const AuthenticatedApp = () => {
         <Route path="/mint-success" element={<MintSuccess />} />
         <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/pay" element={<Pay />} />
+        <Route path="/receive" element={<Receive />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
         <Route path="/growth/burn" element={<BurnDashboard />} />
