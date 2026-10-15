@@ -1,7 +1,7 @@
 import * as React from "react"
 
-// Phones and touch tablets, including iPad Pro in landscape.
-const APP_MEDIA_QUERY = '(max-width: 767px), (max-width: 1366px) and (pointer: coarse)'
+// Phones and tablets, including landscape and tablet browser previews.
+const APP_MEDIA_QUERY = '(max-width: 1366px)'
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(() => window.matchMedia(APP_MEDIA_QUERY).matches)

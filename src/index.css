@@ -17,7 +17,7 @@ html, body { overscroll-behavior: none; }
   user-select: text;
 }
 
-@media (max-width: 767px), (max-width: 1366px) and (pointer: coarse) {
+@media (max-width: 1366px) {
   .solhandle-platform-header { padding-top: calc(1rem + env(safe-area-inset-top, 0px)); }
   .mobile-app-navigation { padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 60; }
   .mobile-app-navigation .mobile-app-tabs-four { grid-template-columns: repeat(4, minmax(0, 1fr)); }

@@ -3,12 +3,12 @@ module.exports = {
     darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
-    // Match useIsMobile: touch tablets use the app, mouse-driven desktops keep the web layout.
+    // Match useIsMobile: tablet widths use the same app layout as phones.
     screens: {
-      sm: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
-      md: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
-      lg: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
-      xl: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
+      sm: '1367px',
+      md: '1367px',
+      lg: '1367px',
+      xl: '1367px',
       '2xl': '1536px',
     },
   	extend: {

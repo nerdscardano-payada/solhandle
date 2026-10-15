@@ -2,7 +2,6 @@ import { useLocation } from 'react-router-dom';
 import { Image } from '@/components/ui/image';
 import '@/components/solhandle/platform-theme.css';
 import '@/components/solhandle/mobile-app.css';
-import '@/components/solhandle/tablet-web.css';
 import '@/components/solhandle/tablet-app.css';
 import '@/components/solhandle/platform-typography.css';
 import '@/components/solhandle/demos/demo-mobile.css';
