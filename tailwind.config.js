@@ -3,12 +3,12 @@ module.exports = {
     darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
-    // Tablets and desktops share the web layout from 768px.
+    // Match useIsMobile: touch tablets use the app, mouse-driven desktops keep the web layout.
     screens: {
-      sm: '768px',
-      md: '768px',
-      lg: '768px',
-      xl: '768px',
+      sm: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
+      md: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
+      lg: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
+      xl: { raw: '(min-width: 768px) and (pointer: fine), (min-width: 1367px)' },
       '2xl': '1536px',
     },
   	extend: {
@@ -103,5 +103,12 @@ module.exports = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // Preserve arbitrary width variants alongside the input-aware app breakpoints.
+    function ({ matchVariant }) {
+      matchVariant('width-min', value => `@media (min-width: ${value})`, { values: {}, sort: (a, b) => parseFloat(a.value) - parseFloat(b.value) });
+      matchVariant('width-max', value => `@media not all and (min-width: ${value})`, { values: {}, sort: (a, b) => parseFloat(b.value) - parseFloat(a.value) });
+    },
+  ],
 }

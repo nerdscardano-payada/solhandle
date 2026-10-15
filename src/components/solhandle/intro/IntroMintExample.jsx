@@ -1,7 +1,7 @@
 import { AtSign, ArrowDown, BadgeCheck, Wallet } from 'lucide-react';
 
 export default function IntroMintExample() {
-  return <article aria-labelledby="intro-mint-title" className="rounded-2xl border border-names-accent/25 bg-card/80 p-5 text-left min-[768px]:p-6">
+  return <article aria-labelledby="intro-mint-title" className="rounded-2xl border border-names-accent/25 bg-card/80 p-5 text-left width-min-[768px]:p-6">
     <div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold uppercase tracking-widest text-names-accent">SolHandle Mint</span><span className="rounded-full border border-border px-2 py-1 text-[10px] text-muted-foreground">Illustration</span></div>
     <h3 id="intro-mint-title" className="mt-4 font-heading text-xl font-semibold text-foreground">Claim a name. Own the NFT.</h3>
     <p className="mt-2 text-xs leading-5 text-muted-foreground">Choose your @handle and approve the mint in your wallet.</p>

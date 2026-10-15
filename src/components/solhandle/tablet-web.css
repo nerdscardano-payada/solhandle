@@ -1,4 +1,4 @@
-@media (min-width:768px) and (max-width:1279px){
+@media (min-width:768px) and (max-width:1279px) and (pointer:fine) {
   .platform-shell .solhandle-platform-header,
   .platform-home .home-funnel .solhandle-platform-header{padding:12px 24px;gap:16px;flex-wrap:wrap}
   .platform-shell .solhandle-platform-header>nav,
@@ -24,7 +24,7 @@
   .platform-home .home-funnel .home-available-tile,
   .platform-home .home-funnel .home-market-tile{grid-template-columns:minmax(0,1fr);gap:12px}
 }
-@media (min-width:768px) and (max-width:1023px){
+@media (min-width:768px) and (max-width:1023px) and (pointer:fine) {
   .platform-home .home-funnel .home-search-form{flex-direction:column}
   .platform-home .home-funnel .home-four-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .platform-home .home-funnel .home-activity-cards{grid-template-columns:minmax(0,1fr)}

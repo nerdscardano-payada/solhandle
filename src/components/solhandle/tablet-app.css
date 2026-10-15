@@ -1,0 +1,13 @@
+/* The same app shell on iPad portrait and landscape; desktop stays unchanged. */
+@media (min-width:768px) and (max-width:1366px) and (pointer:coarse) {
+  .platform-shell .solhandle-platform-header,
+  .platform-home .home-funnel .solhandle-platform-header {
+    flex-wrap:nowrap;
+    gap:16px;
+    padding:calc(1rem + env(safe-area-inset-top, 0px)) 24px 1rem;
+  }
+  .mobile-child-page .solhandle-platform-header { padding-top:1rem; }
+  .mobile-app-tabs { padding:8px 24px; }
+  .mobile-app-tab { font-size:12px; min-height:60px!important; }
+  .platform-shell.has-app-navigation { padding-bottom:calc(84px + env(safe-area-inset-bottom,0px)); }
+}

@@ -27,7 +27,7 @@ export default function TokenBurnStatistics() {
   return <section className="mt-8" aria-label={t('$HANDLE and burns')}>
     <h2 className="text-xl font-semibold text-foreground">{t('$HANDLE and burns')}</h2>
     <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t('Price from DexScreener. Total supply is on-chain supply, not circulating supply. Burns show recorded, confirmed transactions.')}</p>
-    <dl className="mt-4 grid grid-cols-2 gap-3 min-[768px]:grid-cols-3">{metrics.map(([label, value]) => <div key={label} className="min-w-0 rounded-xl border border-names-secondary/20 bg-card p-4"><dt className="text-xs leading-relaxed text-muted-foreground">{t(label)}</dt><dd className="mt-2 break-words text-xl font-semibold tabular-nums text-names-secondary">{value}</dd></div>)}</dl>
+    <dl className="mt-4 grid grid-cols-2 gap-3 width-min-[768px]:grid-cols-3">{metrics.map(([label, value]) => <div key={label} className="min-w-0 rounded-xl border border-names-secondary/20 bg-card p-4"><dt className="text-xs leading-relaxed text-muted-foreground">{t(label)}</dt><dd className="mt-2 break-words text-xl font-semibold tabular-nums text-names-secondary">{value}</dd></div>)}</dl>
     {(burns.isError || holders.isError || status === 'unavailable' || supplyStatus === 'unavailable' && tokenMint) && <p role="status" className="mt-3 text-xs text-muted-foreground">{t('Some statistics are temporarily unavailable. Data refreshes automatically.')}</p>}
     <Link to="/growth/burn" className="mt-4 inline-flex min-h-11 items-center text-sm text-names-accent">{t('View burn transactions')} →</Link>
   </section>;

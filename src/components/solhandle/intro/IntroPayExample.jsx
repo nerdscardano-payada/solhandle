@@ -1,7 +1,7 @@
 import { ArrowDown, CheckCircle2, Send, Wallet } from 'lucide-react';
 
 export default function IntroPayExample() {
-  return <article aria-labelledby="intro-pay-title" className="rounded-2xl border border-names-secondary/25 bg-card/80 p-5 text-left min-[768px]:p-6">
+  return <article aria-labelledby="intro-pay-title" className="rounded-2xl border border-names-secondary/25 bg-card/80 p-5 text-left width-min-[768px]:p-6">
     <div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold uppercase tracking-widest text-names-secondary">SolHandle Pay</span><span className="rounded-full border border-border px-2 py-1 text-[10px] text-muted-foreground">Illustration</span></div>
     <h3 id="intro-pay-title" className="mt-4 font-heading text-xl font-semibold text-foreground">Send to a name, not a long address.</h3>
     <p className="mt-2 text-xs leading-5 text-muted-foreground">Use an @handle to find the recipient's wallet before approving your payment.</p>

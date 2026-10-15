@@ -5,7 +5,7 @@ import GrowthQuestCard from '@/components/solhandle/quests/GrowthQuestCard';
 export default function GrowthHub() {
   const { catalog } = useGrowthHub(), data = catalog.data, season = data?.seasons[0];
   return <>
-    <section className="grid gap-8 py-5 min-[1100px]:grid-cols-[1.4fr_1fr]">
+    <section className="grid gap-8 py-5 width-min-[1100px]:grid-cols-[1.4fr_1fr]">
       <div><p className="text-sm text-names-secondary">{season?.name || 'Growth Hub'} · gecontroleerde pilot</p><h1 className="mt-5">Build. Earn. Grow.</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">Help SolHandle groeien. Voltooi betekenisvolle quests, verdien XP en leer je on-chain identiteit écht gebruiken.</p>
         <Link to="/quests/dashboard" className="mt-7 inline-flex items-center gap-3 rounded-xl border border-names-accent/40 bg-names-accent/10 px-6 py-3 font-semibold text-names-accent">Start jouw reis<ArrowRight className="h-4 w-4"/></Link>
       </div>
