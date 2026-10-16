@@ -8,7 +8,7 @@ import { aboutLinks } from '@/components/solhandle/navigationLinks';
 import CommunityLinks from '@/components/solhandle/CommunityLinks';
 import DiscoverMenu from '@/components/solhandle/DiscoverMenu';
 import DevelopersMenu from '@/components/solhandle/DevelopersMenu';
-const main = [['Marketplace', '/market'], ['Pay', '/pay'], ['My Handles', '/my-handles']];
+const main = [['Marketplace', '/market'], ['Pay', '/pay'], ['My Contacts', '/contacts'], ['My Handles', '/my-handles']];
 const groups = [['Activity', [['Statistics', '/statistics'], ['Last minted', '/last-minted']]], ['About & Support', aboutLinks]];
 export default function HomeDesktopNavigation({ funnel = false }) {
   const { t } = useLanguage();

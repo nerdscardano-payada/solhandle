@@ -65,6 +65,7 @@ const Statistics = lazy(() => import('@/pages/Statistics'));
 const LastMinted = lazy(() => import('@/pages/LastMinted'));
 const Promo = lazy(() => import('@/pages/Promo'));
 const Pay = lazy(() => import('@/pages/Pay'));
+const MyContacts = lazy(() => import('@/pages/MyContacts'));
 const Receive = lazy(() => import('@/pages/Receive'));
 const Growth = lazy(() => import('@/pages/Growth'));
 const Flywheel = lazy(() => import('@/pages/Flywheel'));
@@ -197,6 +198,7 @@ const AuthenticatedApp = () => {
         <Route path="/mint-success" element={<MintSuccess />} />
         <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/pay" element={<Pay />} />
+        <Route path="/contacts" element={<MyContacts />} />
         <Route path="/receive" element={<Receive />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
