@@ -1,0 +1,56 @@
+{
+  "name": "WalletContact",
+  "type": "object",
+  "properties": {
+    "contact_key": {
+      "type": "string"
+    },
+    "owner_wallet": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "handle": {
+      "type": "string"
+    },
+    "recipient_wallet": {
+      "type": "string"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "contact_key",
+    "owner_wallet",
+    "name",
+    "handle",
+    "recipient_wallet",
+    "verified_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

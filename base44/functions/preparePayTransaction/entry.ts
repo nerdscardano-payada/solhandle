@@ -3,6 +3,7 @@ import { ComputeBudgetProgram, PublicKey, SystemInstruction, SystemProgram, Tran
 import { secrets } from 'base44:runtime';
 import { resolveOnChain, reverseOnChain, normalizeHandle } from '../../shared/solhandleResolver.ts';
 import { rpc } from '../../shared/solanaRpc.ts';
+import { resolveContactPayment } from '../../shared/contactPayment.ts';
 
 function bytes64(bytes) { return btoa(Array.from(bytes, b => String.fromCharCode(b)).join('')); }
 function decode64(value) { return Uint8Array.from(atob(value), c => c.charCodeAt(0)); }
@@ -35,6 +36,8 @@ export default async function(req: Request): Promise<Response> {
     const sender = new PublicKey(String(body.senderWallet || '')).toBase58();
     const amount = Number(body.amountLamports);
     if (!Number.isSafeInteger(amount) || amount <= 0) return fail('Enter a valid SOL amount.');
+    if (body.contactId && body.requestId) return fail('Choose either a saved contact or a payment link, not both.');
+    const recipient = () => body.contactId ? resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, sender) : resolveOnChain(rpcUrl, handle);
     let link = null;
     if (body.requestId != null) {
       if (typeof body.requestId !== 'string' || !/^[a-f0-9]{24}$/.test(body.requestId)) return fail('Invalid payment link.');
@@ -43,7 +46,7 @@ export default async function(req: Request): Promise<Response> {
       if (!link || link.handle !== handle) return fail('This payment link is invalid. Request a new link.', 409);
     }
     if (body.action === 'prepare') {
-      const resolved = await resolveOnChain(rpcUrl, handle);
+      const resolved = await recipient();
       if (link && resolved?.address !== link.recipient_wallet_at_creation) return fail('This @handle has changed ownership since this payment link was created. For your safety, this link can no longer be used.', 409);
       if (!resolved) return fail('Handle not found.', 404);
       if (!resolved.safeForNativeSol) return fail('This address cannot safely receive native SOL. Do not send.');
@@ -59,7 +62,7 @@ export default async function(req: Request): Promise<Response> {
       if (!Number.isFinite(networkFeeEstimate)) return fail('Network fee unavailable. Try again.', 503);
       const balance = await rpc(rpcUrl, 'getBalance', [sender, { commitment: 'confirmed' }]);
       if (Number(balance?.value || 0) < amount + networkFeeEstimate) return fail('Insufficient SOL for the amount and network fee.', 422);
-      return Response.json({ serializedTransaction: bytes64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })), destinationAddress: resolved.address, displayHandle: resolved.handle, networkFeeEstimate });
+      return Response.json({ serializedTransaction: bytes64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })), destinationAddress: resolved.address, displayHandle: resolved.handle, networkFeeEstimate, savedContact: !!resolved.savedContact, handleChanged: !!resolved.handleChanged });
     }
     if (body.action !== 'submit' && body.action !== 'recover') return fail('Unsupported action.');
     let signature = String(body.signature || '');
@@ -75,7 +78,7 @@ export default async function(req: Request): Promise<Response> {
       const fee = await rpc(rpcUrl, 'getFeeForMessage', [bytes64(tx.serializeMessage()), { commitment: 'confirmed' }]);
       if (!Number.isFinite(Number(fee?.value)) || Number(fee.value) > 105000) return fail('The network fee changed too much. Review the payment again.');
       if (transfer.fromPubkey.toBase58() !== sender || transfer.lamports !== BigInt(amount)) return fail('Signed amount or sender changed.');
-      const resolved = await resolveOnChain(rpcUrl, handle);
+      const resolved = await recipient();
       if (link && resolved?.address !== link.recipient_wallet_at_creation) return fail('This @handle has changed ownership since this payment link was created. For your safety, this link can no longer be used.', 409);
       if (!resolved || !resolved.safeForNativeSol || transfer.toPubkey.toBase58() !== resolved.address) return fail('The handle owner or recipient changed. Review the payment again before signing.', 409);
       signature = await rpc(rpcUrl, 'sendTransaction', [body.signedTransaction, { encoding: 'base64', preflightCommitment: 'confirmed' }]);
@@ -91,7 +94,7 @@ export default async function(req: Request): Promise<Response> {
                  const ix = transfers[0];
                  const info = ix?.parsed?.info;
                  if (transfers.length !== 1 || instructions.some(ix => !isAllowedProgram(ix.programId)) || ix.parsed?.type !== 'transfer' || !keys[0]?.signer || keys[0]?.pubkey !== sender || info?.source !== sender || info?.lamports !== amount) return fail('Transaction does not match this payment.', 403);
-        const resolved = await resolveOnChain(rpcUrl, handle);
+        const resolved = await recipient();
         if (link ? info.destination !== link.recipient_wallet_at_creation : (!resolved || info.destination !== resolved.address)) return fail('The handle owner changed before this payment could be recorded. Your transfer is on-chain; check Explorer.', 409);
         const payment = await saveConfirmed(base44, rpcUrl, signature, handle, sender, info.destination, amount);
         return Response.json({ signature, payment });
@@ -107,6 +110,6 @@ export default async function(req: Request): Promise<Response> {
     return Response.json({ signature, pending: true, error: 'Still awaiting on-chain confirmation. Check this signature on Explorer before signing a new payment.' }, { status: 202 });
   } catch (error) {
     if (/blockhash not found/i.test(error.message || '')) return fail('The blockhash expired. If this transaction was submitted earlier, check its signature on Explorer before signing a new payment.', 409);
-    return Response.json({ error: error.message || 'Payment could not be completed.' }, { status: 500 });
+    return Response.json({ error: error.message || 'Payment could not be completed.' }, { status: error.status || 500 });
   }
 }

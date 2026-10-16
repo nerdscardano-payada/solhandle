@@ -24,7 +24,7 @@ function decodeCoreAsset(encoded: string) {
   if (bytes.length < 66 || bytes[0] !== 1) throw new Error("Invalid Metaplex Core asset.");
   return { owner: key(bytes.slice(1, 33)), collection: bytes[33] === 2 ? key(bytes.slice(34, 66)) : null };
 }
-async function classifyNativeSolDestination(rpcUrl: string, address: string) {
+export async function classifyNativeSolDestination(rpcUrl: string, address: string) {
   const publicKey = new PublicKey(address); const account = await rpc(rpcUrl, "getAccountInfo", [address, { encoding: "base64", commitment: "confirmed" }]);
   const onCurve = PublicKey.isOnCurve(publicKey.toBytes());
   if (!account?.value) return { safeForNativeSol: onCurve, destinationType: onCurve ? "UNFUNDED_WALLET" : "REJECTED_PDA" };
