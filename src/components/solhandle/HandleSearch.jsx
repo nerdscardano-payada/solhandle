@@ -18,7 +18,7 @@ import AvailableHandlePreview from '@/components/solhandle/AvailableHandlePrevie
 import HomeMintSearch from '@/components/solhandle/home/HomeMintSearch';
 import { base44 } from '@/api/base44Client';
 
-export default function HandleSearch({ wallet, initialHandle = '', compact = false, personalSearch = false, funnel = false, officialClaims = false, hideEmptyHint = false, onPreviewHandle }) {
+export default function HandleSearch({ wallet, initialHandle = '', compact = false, personalSearch = false, funnel = false, officialClaims = false, hideEmptyHint = false, onPreviewHandle, refreshVersion = 0 }) {
   const { t, language } = useLanguage();
   const urlParams = new URLSearchParams(window.location.search);
   const pendingClaim = normalizeHandle(urlParams.get("claim") || "");
@@ -92,7 +92,7 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
       active = false;
       clearTimeout(timer);
     };
-  }, [handle, client, personalSearch, funnel, checkVersion]);
+  }, [handle, client, personalSearch, funnel, checkVersion, refreshVersion]);
   useEffect(() => {
     if (!launch.isLive || !pendingClaim || !wallet || !result?.available || result.handle !== pendingClaim) return;
     setShowClaim(true);

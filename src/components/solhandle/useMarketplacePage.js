@@ -27,7 +27,7 @@ export default function useMarketplacePage({ search, maxPrice, rarity, sort }) {
     return { items, has_more: length >= 1 && length <= 20, next_cursor: { length } };
   }});
   const stats = useQuery({ queryKey: ['market-stats'], queryFn: () => base44.entities.NativeListing.aggregate({ query: { status: 'ACTIVE' }, min: 'price_lamports' }) });
-  const refresh = () => { listings.refetch(); stats.refetch(); };
+  const refresh = () => Promise.all([listings.refetch(), stats.refetch()]);
   return { listings: listings.data?.items || [], loading: listings.isPending, error: listings.error, busy: listings.isFetching,
     floor: stats.data?.rows?.[0]?.min_price_lamports, total: stats.data?.rows?.[0]?.count,
     page: nav.index + 1, hasNext: Boolean(listings.data?.has_more), refresh,
