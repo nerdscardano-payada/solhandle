@@ -18,6 +18,14 @@
         "issued",
         "used"
       ]
+    },
+    "session_days": {
+      "type": "integer",
+      "enum": [
+        7,
+        30
+      ],
+      "default": 7
     }
   },
   "required": [

@@ -22,10 +22,10 @@ export async function contactRequest(action, wallet, extra = {}) {
   try { return (await base44.functions.invoke('walletContacts', { ...extra, action, wallet, contactsToken: session.token })).data; }
   catch (error) { if (error.response?.status === 401) storeContactAccess(wallet, null); throw error; }
 }
-export async function unlockContacts(publicKey, signMessage) {
+export async function unlockContacts(publicKey, signMessage, rememberDevice = false) {
   if (!publicKey || !signMessage) throw new Error('Connect a wallet that supports message signing.');
   const wallet = publicKey.toBase58();
-  const { data } = await base44.functions.invoke('walletContacts', { action: 'challenge', wallet });
+  const { data } = await base44.functions.invoke('walletContacts', { action: 'challenge', wallet, rememberDevice: rememberDevice === true });
   const signature = btoa(Array.from(await signMessage(new TextEncoder().encode(data.message)), b => String.fromCharCode(b)).join(''));
   const response = await base44.functions.invoke('walletContacts', { action: 'verify', wallet, challengeId: data.challengeId, signature });
   storeContactAccess(wallet, response.data);

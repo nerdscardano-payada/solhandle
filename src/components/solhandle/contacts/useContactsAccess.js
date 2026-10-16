@@ -15,9 +15,9 @@ export default function useContactsAccess() {
     return () => { clearInterval(interval); window.removeEventListener('storage', sync); window.removeEventListener('solhandle-contacts-access', sync); };
   }, [wallet]);
   const unlocked = session?.wallet === wallet && Date.parse(session?.expires_at) > Date.now();
-  const unlock = async () => {
+  const unlock = async (rememberDevice = false) => {
     setBusy(true); setError('');
-    try { await unlockContacts(publicKey, signMessage); } catch (e) { setError(contactMessage(e)); } finally { setBusy(false); }
+    try { await unlockContacts(publicKey, signMessage, rememberDevice); } catch (e) { setError(contactMessage(e)); } finally { setBusy(false); }
   };
   const lock = async () => {
     setBusy(true); setError('');

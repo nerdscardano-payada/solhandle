@@ -13,11 +13,13 @@ export async function contactAccess(client, body) {
   const wallet = new PublicKey(String(body.wallet || '')).toBase58();
   if (!PublicKey.isOnCurve(new PublicKey(wallet).toBytes())) throw contactError('Use a wallet that supports message signing.');
   if (body.action === 'challenge') {
+    if (body.rememberDevice !== undefined && typeof body.rememberDevice !== 'boolean') throw contactError('Invalid remember-device choice.');
+    const sessionDays = body.rememberDevice === true ? 30 : 7;
     const now = new Date(), expires_at = new Date(now.getTime() + 5 * 60000).toISOString();
     const recent = await client.entities.ContactsChallenge.count({ wallet, created_date: { $gt: new Date(now.getTime() - 60000).toISOString() } });
     if (recent >= 5) throw contactError('Please wait a minute before requesting another signature.', 429);
-    const message = `SolHandle My Contacts\nDomain: solhandle.io\nWallet: ${wallet}\nAuthorize private contact synchronization for 30 days on this device.\nNo transactions, funds, or blockchain fees.\nNonce: ${crypto.randomUUID()}\nIssued: ${now.toISOString()}\nChallenge expires: ${expires_at}`;
-    const record = await client.entities.ContactsChallenge.create({ wallet, message, expires_at, status: 'issued' });
+    const message = `SolHandle My Contacts\nDomain: solhandle.io\nWallet: ${wallet}\nSign in once to start a ${sessionDays}-day private contact synchronization session on this device.\nNo transactions, funds, or blockchain fees.\nNonce: ${crypto.randomUUID()}\nIssued: ${now.toISOString()}\nChallenge expires: ${expires_at}`;
+    const record = await client.entities.ContactsChallenge.create({ wallet, message, expires_at, status: 'issued', session_days: sessionDays });
     return { challengeId: record.id, message, expires_at };
   }
   if (body.action !== 'verify') throw contactError('Unsupported access action.');
@@ -31,7 +33,8 @@ export async function contactAccess(client, body) {
   const claimed = await client.entities.ContactsChallenge.updateMany({ id: challenge.id, wallet, status: 'issued', expires_at: { $gt: new Date().toISOString() } }, { $set: { status: 'used' } });
   if (claimed.updated !== 1) throw contactError('This verification request was already used.', 401);
   const token = hex(crypto.getRandomValues(new Uint8Array(32)));
-  const expires_at = new Date(Date.now() + 30 * 86400000).toISOString();
+  const sessionDays = challenge.session_days === 30 ? 30 : 7;
+  const expires_at = new Date(Date.now() + sessionDays * 86400000).toISOString();
   await client.entities.ContactsSession.create({ wallet, token_hash: await hashContactToken(token), expires_at });
   return { wallet, token, expires_at };
 }
