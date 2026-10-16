@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -11,7 +12,7 @@ export default function AccountDeletion() {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  if (!user) return null;
+  if (!user) return <section id="account-settings" className="mt-10 scroll-mt-20 border-t border-border pt-6"><h2 className="font-heading text-lg font-semibold">Account settings</h2><p className="mt-2 text-sm text-muted-foreground">A connected wallet is not a SolHandle sign-in account. If you have a sign-in account, sign in to permanently delete it. Your wallet and on-chain handles remain yours.</p><Link to="/login?returnTo=%2Fmy-handles%23account-settings" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-names-accent">Sign in to manage or delete my account</Link></section>;
   async function removeAccount(event) {
     event.preventDefault(); setBusy(true); setError('');
     try {
@@ -23,7 +24,7 @@ export default function AccountDeletion() {
     localStorage.removeItem('solhandle_wallet');
     try { await disconnect(); } finally { base44.auth.logout('/'); }
   }
-  return <section className="mt-10 border-t border-border pt-6">
+  return <section id="account-settings" className="mt-10 scroll-mt-20 border-t border-border pt-6">
     <h2 className="font-heading text-lg font-semibold">Account settings</h2>
     <p className="mt-2 text-sm text-muted-foreground">Manage your SolHandle sign-in account.</p>
     <AlertDialog open={open} onOpenChange={value => { if (!busy) { setOpen(value); setError(''); } }}>

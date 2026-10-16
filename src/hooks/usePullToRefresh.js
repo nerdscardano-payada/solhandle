@@ -3,11 +3,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { blockedTouch, PULL_THRESHOLD, scrollOwner } from '@/hooks/pullGesture';
 
 export default function usePullToRefresh(onRefresh, enabled = true) {
-  const mobile = useIsMobile(), ref = useRef(null), callback = useRef(onRefresh), locked = useRef(false);
+  const mobile = useIsMobile(), callback = useRef(onRefresh), locked = useRef(false);
+  const [panel, ref] = useState(null);
   callback.current = onRefresh;
   const [refreshing, setRefreshing] = useState(false), [distance, setDistance] = useState(0);
   useEffect(() => {
-    const panel = ref.current;
     if (!mobile || !enabled || !panel) { setDistance(0); return; }
     let origin = null, pulled = 0, alive = true;
     const cancel = () => { origin = null; pulled = 0; if (alive) setDistance(0); };
@@ -24,7 +24,8 @@ export default function usePullToRefresh(onRefresh, enabled = true) {
       if (dx > 12 && dx > Math.abs(dy)) return cancel();
       if (dy <= 0) return cancel();
       if (dy < 8 || dy < dx * 1.5) return;
-      if (event.cancelable) event.preventDefault();
+      if (!event.cancelable) return cancel();
+      event.preventDefault();
       pulled = Math.min(110, dy * 0.55); setDistance(pulled);
     };
     const end = async event => {
@@ -38,6 +39,6 @@ export default function usePullToRefresh(onRefresh, enabled = true) {
     panel.addEventListener('touchmove', move, { passive: false });
     panel.addEventListener('touchend', end); panel.addEventListener('touchcancel', cancel);
     return () => { alive = false; panel.removeEventListener('touchstart', start); panel.removeEventListener('touchmove', move); panel.removeEventListener('touchend', end); panel.removeEventListener('touchcancel', cancel); };
-  }, [mobile, enabled]);
+  }, [mobile, enabled, panel]);
   return { ref, refreshing, distance, ready: distance >= PULL_THRESHOLD };
 }

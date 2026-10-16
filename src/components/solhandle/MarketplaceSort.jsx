@@ -1,4 +1,5 @@
 import { useLanguage } from '@/components/i18n/LanguageProvider';
+import MobileSelect from '@/components/solhandle/MobileSelect';
 
 const options = [
   ["newest", "Newest first"],
@@ -14,15 +15,7 @@ export default function MarketplaceSort({ value, onChange }) {
   return (
     <label className="flex items-center gap-2 text-xs text-slate-400">
       <span className="hidden sm:inline">{t('Sort by')}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="rounded-lg border border-white/10 bg-[#151a23] px-3 py-2 text-sm text-white outline-none focus:border-cyan-300/60"
-      >
-        {options.map(([optionValue, label]) => (
-          <option key={optionValue} value={optionValue}>{t(label)}</option>
-        ))}
-      </select>
+      <MobileSelect label={t('Sort by')} value={value} onChange={onChange} options={options.map(([optionValue, label]) => ({ value: optionValue, label: t(label) }))} className="min-h-11 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-names-accent"/>
     </label>
   );
 }
