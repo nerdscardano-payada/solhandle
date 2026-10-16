@@ -44,6 +44,7 @@ const PartnerMint = lazy(() => import('@/pages/PartnerMint'));
 const Integrations = lazy(() => import('@/pages/Integrations'));
 const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
 const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
+const ParallaxIntegration = lazy(() => import('@/pages/ParallaxIntegration'));
 const MintSuccess = lazy(() => import('@/pages/MintSuccess'));
 const Financials = lazy(() => import('@/pages/Financials'));
 const AdminReferrals = lazy(() => import('@/pages/AdminReferrals'));
@@ -165,6 +166,7 @@ const AuthenticatedApp = () => {
         <Route path="/referral-terms" element={<ReferralTerms />} />
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/live-integrations" element={<LiveIntegrations />} />
+        <Route path="/integrations/parallax" element={<ParallaxIntegration />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/names" element={<Explore />} />
         <Route path="/fun" element={<Fun />} />
