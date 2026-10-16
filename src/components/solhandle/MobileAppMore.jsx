@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, TrendingUp, Store, Blocks, Info, ExternalLink, BarChart3, Clock, Settings } from 'lucide-react';
+import { Menu, TrendingUp, Store, Blocks, Info, ExternalLink, BarChart3, Clock } from 'lucide-react';
 import { Sheet, SheetTrigger, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 import useTokenLaunchSettings from '@/hooks/useTokenLaunchSettings';
 import CommunityLinks from '@/components/solhandle/CommunityLinks';
 
-const links = [['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['About us', '/about', Info], ['Statistics', '/statistics', BarChart3], ['Last minted', '/last-minted', Clock], ['Account settings', '/my-handles#account-settings', Settings]];
+const links = [['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['About us', '/about', Info], ['Statistics', '/statistics', BarChart3], ['Last minted', '/last-minted', Clock]];
 const card = 'flex min-h-24 min-w-0 flex-col items-start justify-center gap-2 rounded-xl border border-names-accent/20 bg-card p-4 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-names-accent';
 export default function MobileAppMore() {
   const [open, setOpen] = useState(false);
