@@ -20,7 +20,7 @@ export default function Search() {
     await client.invalidateQueries({ queryKey: ['handle-availability'], refetchType: 'all' });
     setRefreshVersion(version => version + 1);
   });
-  return <main {...pull.handlers} className="dark min-h-screen bg-background text-foreground"><PullRefreshStatus refreshing={pull.refreshing}/><div className="mx-auto min-h-screen max-w-7xl border-x border-border">
+  return <main ref={pull.ref} data-mobile-scroll-panel className="dark min-h-screen bg-background text-foreground"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><div className="mx-auto min-h-screen max-w-7xl border-x border-border">
     <Header onConnected={setWallet}/><PublicHandleMintRecovery/>
     {!isMobile ? <ReferralLandingGate><SearchDesktopHero wallet={wallet}/></ReferralLandingGate> : <div className="mx-auto max-w-6xl px-5 py-8 sm:px-9 sm:py-12">
       <Link to="/" className="text-sm text-names-accent">← {t('Back to home')}</Link>

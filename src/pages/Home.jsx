@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import usePullToRefresh from '@/hooks/usePullToRefresh';
+import PullRefreshStatus from '@/components/solhandle/PullRefreshStatus';
 import Header from '@/components/solhandle/Header';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileMintHome from '@/components/solhandle/home/MobileMintHome';
@@ -15,8 +18,14 @@ import '@/components/solhandle/home/home-funnel.css';
 export default function Home() {
   const isMobile = useIsMobile();
   const [wallet, setWallet] = useState(() => localStorage.getItem("solhandle_wallet") || "");
+  const client = useQueryClient();
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const pull = usePullToRefresh(async () => {
+    await client.invalidateQueries({ queryKey: ['handle-availability'], refetchType: 'all' });
+    setRefreshVersion(version => version + 1);
+  });
 
   useEffect(() => { captureReferralAttribution().catch(() => null); base44.analytics.track({ eventName: 'homepage_view', properties: { device: window.innerWidth < 1280 ? 'mobile' : 'desktop', source: new URLSearchParams(window.location.search).get('utm_source') || 'direct' } }); }, []);
-  if (isMobile) return <main className="home-funnel dark min-h-screen bg-hero-canvas"><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><MobileMintHome wallet={wallet}/></main>;
+  if (isMobile) return <main ref={pull.ref} data-mobile-scroll-panel className="home-funnel dark min-h-screen bg-hero-canvas"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><MobileMintHome wallet={wallet} refreshVersion={refreshVersion}/></main>;
   return <main className="home-funnel dark"><HomeBackdrop/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><HomeMintHero wallet={wallet}/><HomeHeroDemos/><div className="home-content"><HomeDesktopContent/></div></main>;
 }

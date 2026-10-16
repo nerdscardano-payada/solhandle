@@ -85,6 +85,7 @@ import AttoChat from '@/components/solhandle/AttoChat';
 import PlatformSurface from '@/components/solhandle/PlatformSurface';
 import MobileAppNavigation from '@/components/solhandle/MobileAppNavigation';
 import MobileBackHeader from '@/components/solhandle/MobileBackHeader';
+import MobileTabProvider from '@/components/solhandle/navigation/MobileTabProvider';
 import LanguageProvider from '@/components/i18n/LanguageProvider';
 import StaticTextLocalization from '@/components/i18n/StaticTextLocalization';
 import NativeDialogLocalization from '@/components/i18n/NativeDialogLocalization';
@@ -228,11 +229,13 @@ function App() {
     <LanguageProvider><AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <MobileTabProvider>
           <StaticTextLocalization />
           <NativeDialogLocalization />
           <ScrollToTop />
           <ProtocolPageTracker />
           <AuthenticatedApp />
+          </MobileTabProvider>
         </Router>
         <Toaster />
       </QueryClientProvider>

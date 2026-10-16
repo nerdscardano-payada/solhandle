@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useMobileTabs } from '@/components/solhandle/navigation/MobileTabProvider';
 import { useLocation, useNavigationType } from "react-router-dom";
 
 const getHashId = (hash) => {
@@ -14,9 +15,10 @@ const getHashId = (hash) => {
 export default function ScrollToTop() {
   const { pathname, hash } = useLocation();
   const navigationType = useNavigationType();
+  const mobileTabs = useMobileTabs();
 
   useEffect(() => {
-    if (navigationType === "POP") return;
+    if (mobileTabs?.enabled || navigationType === "POP") return;
 
     if (hash) {
       const id = getHashId(hash);
@@ -27,7 +29,7 @@ export default function ScrollToTop() {
     }
 
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [pathname, hash, navigationType]);
+  }, [pathname, hash, navigationType, mobileTabs?.enabled]);
 
   return null;
 }

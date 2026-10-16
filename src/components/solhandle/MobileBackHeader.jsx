@@ -1,12 +1,15 @@
 import { ArrowLeft } from 'lucide-react';
+import { useMobileTabs } from '@/components/solhandle/navigation/MobileTabProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 
 export default function MobileBackHeader() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const mobileTabs = useMobileTabs();
   const { t } = useLanguage();
   function goBack() {
+    if (mobileTabs?.back()) return;
     if (window.history.state?.idx > 0) navigate(-1);
     else navigate(pathname.slice(0, pathname.lastIndexOf('/')) || '/', { replace: true });
   }
