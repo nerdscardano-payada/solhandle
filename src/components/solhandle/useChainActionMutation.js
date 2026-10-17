@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-const affected = ['handle-availability', 'owner-handles', 'names', 'market-page', 'market-stats', 'home-name-listing', 'recent-handles', 'homepage-recent-mints', 'marketplace-notifications'];
+const affected = ['handle-availability', 'owner-handles', 'names', 'market-page', 'market-stats', 'home-name-listing', 'recent-handles', 'homepage-recent-mints', 'market-notifications', 'notification-owner'];
 export default function useChainActionMutation() {
   const client = useQueryClient();
   const remove = context => {
@@ -7,6 +7,7 @@ export default function useChainActionMutation() {
   };
   return useMutation({
     mutationKey: ['chain-action'],
+    retry: false,
     mutationFn: ({ execute }) => execute(),
     onMutate: async ({ action, handle, wallet, amount }) => {
       const key = ['pending-chain-actions', wallet];

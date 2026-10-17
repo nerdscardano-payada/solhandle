@@ -24,7 +24,7 @@ export default function MobileTabProvider({ children }) {
   const visit = (tab, entry, move = 'tab', reset) => {
     save();
     if (active.current) active.current.url = window.location.pathname + window.location.search + window.location.hash;
-    navigate(entry?.url || tab, { replace: move === 'reset', state: { ...entry?.state, solhandleTab: { tab, id: entry?.id, move, reset, stacks: structuredClone(stacks.current) } } });
+    navigate(entry?.url || tab, { replace: move === 'reset' || move === 'pop', state: { ...entry?.state, solhandleTab: { tab, id: entry?.id, move, reset, stacks: structuredClone(stacks.current) } } });
   };
   const selectTab = tab => {
     const now = performance.now(), doubleTap = lastTap.current?.tab === tab && now - lastTap.current.time < 350;

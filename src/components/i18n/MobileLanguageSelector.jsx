@@ -1,4 +1,6 @@
 import { languages } from '@/components/i18n/translations';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileLanguageDrawer from '@/components/i18n/MobileLanguageDrawer';
 import { Image } from '@/components/ui/image';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -8,6 +10,8 @@ const flags = { en: 'gb', es: 'es', pt: 'pt', ja: 'jp', nl: 'nl', de: 'de', fr: 
 export default function MobileLanguageSelector() {
   const { language, setLanguage, t } = useLanguage();
   const currentLabel = languages.find(([code]) => code === language)?.[1];
+  const mobile = useIsMobile();
+  if (mobile) return <MobileLanguageDrawer/>;
   return <DropdownMenu>
     <DropdownMenuTrigger aria-label={`${t('Language')}: ${currentLabel}`} title={t('Language')} className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-xl text-foreground">
       <Image src={`https://flagcdn.com/${flags[language]}.svg`} alt="" aria-hidden="true" className="h-5 w-7 object-contain" fittingType="fit" />

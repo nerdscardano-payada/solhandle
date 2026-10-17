@@ -22,6 +22,6 @@ export function updateMobileTabHistory(stacks, location, type, previous, nextId)
   const entry = stack.entries[stack.index];
   if (!entry.keys.includes(location.key)) entry.keys.push(location.key);
   entry.historyIndex = window.history.state?.idx;
-  const move = previous.tab !== tab ? 'tab' : index >= 0 && index < oldIndex ? 'pop' : type === 'POP' && previous.entry ? 'pop' : intent?.move || (type === 'REPLACE' ? 'replace' : 'push');
+  const move = previous.tab !== tab ? 'tab' : index >= 0 && index !== oldIndex ? (index < oldIndex ? 'pop' : 'push') : type === 'POP' && previous.entry ? 'pop' : intent?.move || (type === 'REPLACE' ? 'replace' : 'push');
   return { tab, entry, direction: move === 'pop' ? -1 : move === 'push' ? 1 : 0 };
 }

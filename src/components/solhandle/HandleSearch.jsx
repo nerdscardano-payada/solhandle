@@ -96,7 +96,7 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
   useEffect(() => {
     if (!launch.isLive || !pendingClaim || !wallet || !result?.available || result.handle !== pendingClaim) return;
     setShowClaim(true);
-    const url = new URL(window.location.href); url.searchParams.delete("claim"); url.searchParams.delete("payment"); window.history.replaceState({}, "", url);
+    const url = new URL(window.location.href); url.searchParams.delete("claim"); url.searchParams.delete("payment"); window.history.replaceState(window.history.state, "", url);
   }, [launch.isLive, pendingClaim, wallet, result]);
   useEffect(() => {
     if (!resumeClaimId || !pendingClaim || result?.status !== "RESERVED" || result.handle !== pendingClaim) return;

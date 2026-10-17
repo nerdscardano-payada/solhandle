@@ -21,7 +21,7 @@ export async function captureReferralAttribution() {
     document.cookie = `solhandle_ref=${encodeURIComponent(response.data.attributionId)}; expires=${new Date(response.data.expiresAt).toUTCString()}; path=/; SameSite=Lax; Secure`;
   }
   url.searchParams.delete("ref");
-  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
 export function getReferralAttributionId() {
