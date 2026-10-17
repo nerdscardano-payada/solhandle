@@ -99,7 +99,7 @@ const AuthenticatedApp = () => {
   const isWidget = pathname.startsWith('/widgets/');
   const showMobileTabs = !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
   const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/earn', '/explore', '/names'].includes(pathname);
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { user, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -130,7 +130,9 @@ const AuthenticatedApp = () => {
       <Routes location={location}>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
         <Route path="/search" element={<Search />} />
-        <Route path="/android" element={<AndroidDownload />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
+          <Route path="/android" element={user?.role === 'admin' ? <AndroidDownload /> : <Navigate to="/" replace />} />
+        </Route>
         <Route path="/demos" element={<Demos />} />
         <Route path="/demos/:slug" element={<DemoDetail />} />
         <Route path="/mint-weekend" element={<Navigate to="/" replace />} />
