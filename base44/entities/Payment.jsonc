@@ -22,7 +22,8 @@
       "enum": [
         "SOL",
         "USDC",
-        "USDT"
+        "USDT",
+        "HANDLE"
       ]
     },
     "amount_raw": {

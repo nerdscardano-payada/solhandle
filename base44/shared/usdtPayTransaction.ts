@@ -16,17 +16,18 @@ export function usdtAmount(value) {
   return BigInt(value);
 }
 export function usdtAccounts(sender, recipient, asset = 'USDT') {
-  const mint = new PublicKey(getPayToken(asset).mint), owner = new PublicKey(sender), receiver = new PublicKey(recipient);
+  const token = getPayToken(asset);
+  const mint = new PublicKey(token.mint), tokenProgram = new PublicKey(token.programId), owner = new PublicKey(sender), receiver = new PublicKey(recipient);
   if (!PublicKey.isOnCurve(owner.toBytes()) || !PublicKey.isOnCurve(receiver.toBytes()) || owner.equals(receiver)) throw payError('Choose a different, ordinary Solana wallet as recipient.');
-  return { mint, owner, receiver, source: getAssociatedTokenAddressSync(mint, owner), destination: getAssociatedTokenAddressSync(mint, receiver) };
+  return { mint, tokenProgram, owner, receiver, source: getAssociatedTokenAddressSync(mint, owner, false, tokenProgram), destination: getAssociatedTokenAddressSync(mint, receiver, false, tokenProgram) };
 }
 export function usdtTransaction(context, blockhash, createAccount) {
   const { sender, recipient, amountRaw, handle, lastValidBlockHeight } = context;
   const token = getPayToken(context.asset);
-  const { mint, owner, receiver, source, destination } = usdtAccounts(sender, recipient, token.asset);
+  const { mint, tokenProgram, owner, receiver, source, destination } = usdtAccounts(sender, recipient, token.asset);
   const tx = new Transaction({ feePayer: owner, recentBlockhash: blockhash }).add(ComputeBudgetProgram.setComputeUnitLimit({ units: 200000 }), ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 0 }));
-  if (createAccount) tx.add(createAssociatedTokenAccountIdempotentInstruction(owner, destination, receiver, mint));
-  tx.add(createTransferCheckedInstruction(source, mint, destination, owner, usdtAmount(amountRaw), token.decimals));
+  if (createAccount) tx.add(createAssociatedTokenAccountIdempotentInstruction(owner, destination, receiver, mint, tokenProgram));
+  tx.add(createTransferCheckedInstruction(source, mint, destination, owner, usdtAmount(amountRaw), token.decimals, [], tokenProgram));
   tx.add(new TransactionInstruction({ programId: MEMO, keys: [], data: Buffer.from(`SolHandle Pay ${token.asset}:@${handle}:${recipient}:${lastValidBlockHeight}`) }));
   return tx;
 }

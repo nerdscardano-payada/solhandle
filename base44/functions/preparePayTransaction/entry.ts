@@ -22,8 +22,8 @@ export default async function(req: Request): Promise<Response> {
     const body = await req.json();
     const base44 = createClientFromRequest(req);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    if (body.asset != null && !['SOL', 'USDC', 'USDT'].includes(body.asset)) return fail('Unsupported payment currency.');
-    if (body.asset === 'USDC' || body.asset === 'USDT') return await handleUsdtPayment(base44, rpcUrl, body);
+    if (body.asset != null && !['SOL', 'USDC', 'USDT', 'HANDLE'].includes(body.asset)) return fail('Unsupported payment currency.');
+    if (['USDC', 'USDT', 'HANDLE'].includes(body.asset)) return await handleUsdtPayment(base44, rpcUrl, body);
     if (body.action === 'link_status') {
       const link = await refreshPayLink(base44, rpcUrl, await findPayLink(base44.asServiceRole, body.requestId));
       const status = linkStatus(link);

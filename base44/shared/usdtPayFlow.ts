@@ -17,10 +17,12 @@ async function prepareUsdt(rpcUrl, context) {
     rpc(rpcUrl, 'getBalance', [context.sender, { commitment: 'confirmed' }]),
   ]);
   const [mint, senderToken, recipientToken] = accounts.value;
-  if (mint?.owner !== TOKEN_PROGRAM_ID.toBase58() || mint.data?.parsed?.type !== 'mint' || mint.data.parsed.info.decimals !== token.decimals || !mint.data.parsed.info.isInitialized) throw payError(`Official Solana ${token.asset} mint verification failed.`, 503);
+  if (mint?.owner !== token.programId || mint.data?.parsed?.type !== 'mint' || mint.data.parsed.info.decimals !== token.decimals || !mint.data.parsed.info.isInitialized) throw payError(`Official Solana ${token.asset} mint verification failed.`, 503);
+  if ((mint.data.parsed.info.extensions || []).some(extension => !['metadataPointer', 'tokenMetadata'].includes(extension.extension))) throw payError(`This ${token.asset} mint has unsupported token extensions. Payment blocked.`);
   const checkAccount = (account, owner) => {
     const info = account?.data?.parsed?.info;
-    if (account?.owner !== TOKEN_PROGRAM_ID.toBase58() || account.data?.parsed?.type !== 'account' || info?.mint !== token.mint || info.owner !== owner || info.state !== 'initialized' || info.tokenAmount?.decimals !== token.decimals) throw payError(`A ${token.asset} token account is invalid or frozen. Payment blocked.`);
+    if (account?.owner !== token.programId || account.data?.parsed?.type !== 'account' || info?.mint !== token.mint || info.owner !== owner || info.state !== 'initialized' || info.tokenAmount?.decimals !== token.decimals) throw payError(`A ${token.asset} token account is invalid or frozen. Payment blocked.`);
+    if ((info.extensions || []).some(extension => extension.extension !== 'immutableOwner')) throw payError(`This ${token.asset} account uses unsupported transfer restrictions. Payment blocked.`);
     return info.tokenAmount.amount;
   };
   if (!senderToken) throw payError(`No spendable ${token.asset} found in your wallet’s associated Solana ${token.asset} account.`, 422);
@@ -31,7 +33,7 @@ async function prepareUsdt(rpcUrl, context) {
   const tx = usdtTransaction(context, latest.value.blockhash, !recipientToken);
   const [fee, rent] = await Promise.all([
     rpc(rpcUrl, 'getFeeForMessage', [to64(tx.serializeMessage()), { commitment: 'confirmed' }]),
-    recipientToken ? Promise.resolve(0) : rpc(rpcUrl, 'getMinimumBalanceForRentExemption', [165, { commitment: 'confirmed' }]),
+    recipientToken ? Promise.resolve(0) : rpc(rpcUrl, 'getMinimumBalanceForRentExemption', [token.accountSize, { commitment: 'confirmed' }]),
   ]);
   if (!Number.isSafeInteger(fee?.value) || fee.value < 0 || fee.value > 105000 || !Number.isSafeInteger(rent) || rent < 0) throw payError('SOL costs could not be verified. Try again.', 503);
   if (Number(balance.value) < fee.value + rent) throw payError('Insufficient SOL for the network fee and recipient token account deposit.', 422);

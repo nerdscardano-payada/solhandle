@@ -12,5 +12,5 @@ export function formatRawAmount(value, decimals = 6, language = 'en') {
   return fraction ? `${whole}${separator}${fraction}` : whole;
 }
 export function paymentAmountLabel(payment, language = 'en') {
-  return ['USDC', 'USDT'].includes(payment.asset) ? `${formatRawAmount(payment.amount_raw, 6, language)} ${payment.asset}` : `${(payment.amount_lamports / 1e9).toLocaleString(language, { maximumFractionDigits: 9 })} SOL`;
+  return ['USDC', 'USDT', 'HANDLE'].includes(payment.asset) ? `${formatRawAmount(payment.amount_raw, 6, language)} ${payment.asset}` : `${(payment.amount_lamports / 1e9).toLocaleString(language, { maximumFractionDigits: 9 })} SOL`;
 }
