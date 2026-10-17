@@ -8,17 +8,17 @@ import { usdtPendingKey as storageKey, readUsdtPending as savedPending, usdtSign
 const to64 = bytes => btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''));
 const from64 = text => Uint8Array.from(atob(text), char => char.charCodeAt(0));
 const errorText = error => error.response?.data?.error || error.message || 'Could not complete this payment.';
-export default function useUsdtPayment({ handle, onComplete, onLockChange }) {
+export default function useUsdtPayment({ asset = 'USDT', handle, onComplete, onLockChange }) {
   const { publicKey, signTransaction, wallet } = useWallet(), address = publicKey?.toBase58() || '';
-  const [amount, setAmount] = useState(''), [quote, setQuote] = useState(null), [pending, setPending] = useState(() => savedPending(address));
+  const [amount, setAmount] = useState(''), [quote, setQuote] = useState(null), [pending, setPending] = useState(() => savedPending(address, asset));
   const [busy, setBusy] = useState(''), [error, setError] = useState('');
   const inFlight = useRef(false), currentWallet = useRef(address);
   currentWallet.current = address;
   const amountRaw = parseUsdtAmount(amount), name = handle.trim().replace(/^@/, '').toLowerCase();
-  const storePending = value => { setPending(value); if (value) localStorage.setItem(storageKey(value.senderWallet), JSON.stringify(value)); else if (address) localStorage.removeItem(storageKey(address)); };
-  useEffect(() => { setQuote(null); setError(''); setPending(savedPending(address)); }, [address]);
+  const storePending = value => { setPending(value); if (value) localStorage.setItem(storageKey(value.senderWallet, value.asset), JSON.stringify(value)); else if (address) localStorage.removeItem(storageKey(address, asset)); };
+  useEffect(() => { setQuote(null); setError(''); setPending(savedPending(address, asset)); }, [address, asset]);
   useEffect(() => { setQuote(null); }, [name, amountRaw]);
-  useEffect(() => { onLockChange(Boolean(busy || pending)); return () => onLockChange(false); }, [busy, pending, onLockChange]);
+  useEffect(() => { onLockChange(Boolean(busy || pending || quote)); return () => onLockChange(false); }, [busy, pending, quote, onLockChange]);
   const finish = (data, payload) => {
     if (currentWallet.current !== payload.senderWallet) return;
     if (data.pending) { setError(data.error); return; }
@@ -29,9 +29,9 @@ export default function useUsdtPayment({ handle, onComplete, onLockChange }) {
   const review = async () => {
     if (inFlight.current || pending) return;
     if (!address || !signTransaction) return setError('Connect a wallet capable of signing transactions.');
-    if (!amountRaw) return setError('Enter a positive USDT amount with up to 6 decimal places.');
+    if (!amountRaw) return setError(`Enter a positive ${asset} amount with up to 6 decimal places.`);
     inFlight.current = true; setBusy('review'); setError('');
-    try { const response = await base44.functions.invoke('preparePayTransaction', { action: 'prepare', asset: 'USDT', handle: name, senderWallet: address, amountRaw }); if (currentWallet.current === address) setQuote(response.data); }
+    try { const response = await base44.functions.invoke('preparePayTransaction', { action: 'prepare', asset, handle: name, senderWallet: address, amountRaw }); if (currentWallet.current === address) setQuote(response.data); }
     catch (error) { setError(errorText(error)); } finally { inFlight.current = false; setBusy(''); }
   };
   const send = async () => {
@@ -39,12 +39,12 @@ export default function useUsdtPayment({ handle, onComplete, onLockChange }) {
     inFlight.current = true; setBusy('send'); setError('');
     let payload = null;
     try {
-      const fresh = (await base44.functions.invoke('preparePayTransaction', { action: 'prepare', asset: 'USDT', handle: name, senderWallet: address, amountRaw })).data;
+      const fresh = (await base44.functions.invoke('preparePayTransaction', { action: 'prepare', asset, handle: name, senderWallet: address, amountRaw })).data;
       if (currentWallet.current !== address) throw new Error('The connected wallet changed. Review the payment again.');
-      if (fresh.destinationAddress !== quote.destinationAddress || fresh.mint !== quote.mint || fresh.amountRaw !== quote.amountRaw || fresh.networkFeeEstimate + fresh.accountCreationLamports > quote.networkFeeEstimate + quote.accountCreationLamports) { setQuote(fresh); setError('The recipient or SOL costs changed. Review the updated payment before approving.'); return; }
+      if (fresh.asset !== asset || quote.asset !== asset || fresh.destinationAddress !== quote.destinationAddress || fresh.mint !== quote.mint || fresh.amountRaw !== quote.amountRaw || fresh.networkFeeEstimate + fresh.accountCreationLamports > quote.networkFeeEstimate + quote.accountCreationLamports) { setQuote(fresh); setError('The recipient or SOL costs changed. Review the updated payment before approving.'); return; }
       const signed = await signPayTransaction(Transaction.from(from64(fresh.serializedTransaction)), wallet, publicKey, signTransaction);
       if (currentWallet.current !== address) throw new Error('The connected wallet changed. This attempt was not submitted.');
-      payload = { asset: 'USDT', handle: name, senderWallet: address, amountRaw, recipientWallet: fresh.destinationAddress, mint: fresh.mint, lastValidBlockHeight: fresh.lastValidBlockHeight, signedTransaction: to64(signed.serialize()), signature: usdtSignature(signed.signature) };
+      payload = { asset, handle: name, senderWallet: address, amountRaw, recipientWallet: fresh.destinationAddress, mint: fresh.mint, lastValidBlockHeight: fresh.lastValidBlockHeight, signedTransaction: to64(signed.serialize()), signature: usdtSignature(signed.signature) };
       storePending(payload); setQuote(fresh);
       const response = await base44.functions.invoke('preparePayTransaction', { ...payload, action: 'submit' });
       finish(response.data, payload);

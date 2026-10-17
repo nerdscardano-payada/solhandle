@@ -2,28 +2,30 @@ import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import bs58 from 'npm:bs58@6.0.0';
 import { rpc } from './solanaRpc.ts';
 import { normalizeHandle, resolveOnChain, reverseOnChain } from './solhandleResolver.ts';
-import { USDT_MINT, USDT_DECIMALS, TOKEN_PROGRAM_ID, payError, usdtAmount, usdtAccounts, usdtTransaction, validateUsdtSigned, verifyUsdtBalances, to64 } from './usdtPayTransaction.ts';
+import { TOKEN_PROGRAM_ID, payError, usdtAmount, usdtAccounts, usdtTransaction, validateUsdtSigned, verifyUsdtBalances, to64 } from './usdtPayTransaction.ts';
+import getPayToken from './payAssets.ts';
 
 async function prepareUsdt(rpcUrl, context) {
+  const token = getPayToken(context.asset);
   const resolved = await resolveOnChain(rpcUrl, context.handle);
-  if (!resolved?.safeForNativeSol) throw payError('This @handle must resolve to an ordinary Solana wallet before it can receive USDT.');
+  if (!resolved?.safeForNativeSol) throw payError(`This @handle must resolve to an ordinary Solana wallet before it can receive ${token.asset}.`);
   context.recipient = resolved.address;
-  const { source, destination } = usdtAccounts(context.sender, context.recipient);
+  const { source, destination } = usdtAccounts(context.sender, context.recipient, token.asset);
   const [accounts, latest, balance] = await Promise.all([
-    rpc(rpcUrl, 'getMultipleAccounts', [[USDT_MINT, source.toBase58(), destination.toBase58()], { encoding: 'jsonParsed', commitment: 'confirmed' }]),
+    rpc(rpcUrl, 'getMultipleAccounts', [[token.mint, source.toBase58(), destination.toBase58()], { encoding: 'jsonParsed', commitment: 'confirmed' }]),
     rpc(rpcUrl, 'getLatestBlockhash', [{ commitment: 'confirmed' }]),
     rpc(rpcUrl, 'getBalance', [context.sender, { commitment: 'confirmed' }]),
   ]);
   const [mint, senderToken, recipientToken] = accounts.value;
-  if (mint?.owner !== TOKEN_PROGRAM_ID.toBase58() || mint.data?.parsed?.type !== 'mint' || mint.data.parsed.info.decimals !== USDT_DECIMALS || !mint.data.parsed.info.isInitialized) throw payError('Official Solana USDT mint verification failed.', 503);
+  if (mint?.owner !== TOKEN_PROGRAM_ID.toBase58() || mint.data?.parsed?.type !== 'mint' || mint.data.parsed.info.decimals !== token.decimals || !mint.data.parsed.info.isInitialized) throw payError(`Official Solana ${token.asset} mint verification failed.`, 503);
   const checkAccount = (account, owner) => {
     const info = account?.data?.parsed?.info;
-    if (account?.owner !== TOKEN_PROGRAM_ID.toBase58() || account.data?.parsed?.type !== 'account' || info?.mint !== USDT_MINT || info.owner !== owner || info.state !== 'initialized' || info.tokenAmount?.decimals !== USDT_DECIMALS) throw payError('A USDT token account is invalid or frozen. Payment blocked.');
+    if (account?.owner !== TOKEN_PROGRAM_ID.toBase58() || account.data?.parsed?.type !== 'account' || info?.mint !== token.mint || info.owner !== owner || info.state !== 'initialized' || info.tokenAmount?.decimals !== token.decimals) throw payError(`A ${token.asset} token account is invalid or frozen. Payment blocked.`);
     return info.tokenAmount.amount;
   };
-  if (!senderToken) throw payError('No spendable USDT found in your wallet’s associated Solana USDT account.', 422);
+  if (!senderToken) throw payError(`No spendable ${token.asset} found in your wallet’s associated Solana ${token.asset} account.`, 422);
   const available = checkAccount(senderToken, context.sender);
-  if (BigInt(available) < usdtAmount(context.amountRaw)) throw payError('Insufficient USDT in your wallet’s associated token account.', 422);
+  if (BigInt(available) < usdtAmount(context.amountRaw)) throw payError(`Insufficient ${token.asset} in your wallet’s associated token account.`, 422);
   if (recipientToken) checkAccount(recipientToken, context.recipient);
   context.lastValidBlockHeight = latest.value.lastValidBlockHeight;
   const tx = usdtTransaction(context, latest.value.blockhash, !recipientToken);
@@ -33,32 +35,34 @@ async function prepareUsdt(rpcUrl, context) {
   ]);
   if (!Number.isSafeInteger(fee?.value) || fee.value < 0 || fee.value > 105000 || !Number.isSafeInteger(rent) || rent < 0) throw payError('SOL costs could not be verified. Try again.', 503);
   if (Number(balance.value) < fee.value + rent) throw payError('Insufficient SOL for the network fee and recipient token account deposit.', 422);
-  return { asset: 'USDT', mint: USDT_MINT, decimals: USDT_DECIMALS, amountRaw: context.amountRaw, displayHandle: resolved.handle, destinationAddress: context.recipient, destinationTokenAccount: destination.toBase58(), senderWallet: context.sender, availableRaw: available, solBalanceLamports: balance.value, networkFeeEstimate: fee.value, accountCreationLamports: rent, createsTokenAccount: !recipientToken, lastValidBlockHeight: context.lastValidBlockHeight, serializedTransaction: to64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })) };
+  return { asset: token.asset, mint: token.mint, decimals: token.decimals, amountRaw: context.amountRaw, displayHandle: resolved.handle, destinationAddress: context.recipient, destinationTokenAccount: destination.toBase58(), senderWallet: context.sender, availableRaw: available, solBalanceLamports: balance.value, networkFeeEstimate: fee.value, accountCreationLamports: rent, createsTokenAccount: !recipientToken, lastValidBlockHeight: context.lastValidBlockHeight, serializedTransaction: to64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })) };
 }
 async function confirmedUsdt(base44, rpcUrl, signature, context, details) {
-  if (details.meta?.err) return { signature, failed: true, error: 'Solana rejected this USDT payment. No USDT was transferred; a network fee may have been charged.' };
+  const token = getPayToken(context.asset);
+  if (details.meta?.err) return { signature, failed: true, error: `Solana rejected this ${token.asset} payment. No ${token.asset} was transferred; a network fee may have been charged.` };
   const chainTx = validateUsdtSigned(details.transaction[0], context);
   if (bs58.encode(chainTx.signature) !== signature) throw payError('On-chain signature mismatch.', 403);
   verifyUsdtBalances(details, context);
   const existing = await base44.asServiceRole.entities.Payment.filter({ tx_signature: signature }, { limit: 1 });
   if (existing.items[0]) {
     const payment = existing.items[0];
-    if (payment.asset !== 'USDT' || payment.token_mint !== USDT_MINT || payment.amount_raw !== context.amountRaw || payment.sender_wallet !== context.sender || payment.receiver_wallet !== context.recipient || payment.handle !== `@${context.handle}`) throw payError('This signature is already recorded for a different payment.', 409);
+    if (payment.asset !== token.asset || payment.token_mint !== token.mint || payment.amount_raw !== context.amountRaw || payment.sender_wallet !== context.sender || payment.receiver_wallet !== context.recipient || payment.handle !== `@${context.handle}`) throw payError('This signature is already recorded for a different payment.', 409);
     return { signature, payment };
   }
   let primary = '';
   try { primary = (await reverseOnChain(rpcUrl, context.sender))?.primaryHandle || ''; } catch { /* Optional display only. */ }
   const time = details.blockTime ? new Date(details.blockTime * 1000).toISOString() : new Date().toISOString();
-  const saved = await base44.asServiceRole.entities.Payment.upsert([{ handle: `@${context.handle}`, receiver_wallet: context.recipient, sender_wallet: context.sender, sender_primary_handle: primary, asset: 'USDT', token_mint: USDT_MINT, token_decimals: USDT_DECIMALS, amount_raw: context.amountRaw, tx_signature: signature, status: 'CONFIRMED', created_at: time, confirmed_at: time }], { key: 'tx_signature' });
+  const saved = await base44.asServiceRole.entities.Payment.upsert([{ handle: `@${context.handle}`, receiver_wallet: context.recipient, sender_wallet: context.sender, sender_primary_handle: primary, asset: token.asset, token_mint: token.mint, token_decimals: token.decimals, amount_raw: context.amountRaw, tx_signature: signature, status: 'CONFIRMED', created_at: time, confirmed_at: time }], { key: 'tx_signature' });
   return { signature, payment: saved.records[0] };
 }
 export async function handleUsdtPayment(base44, rpcUrl, body) {
-  if (!['prepare', 'submit', 'recover'].includes(body.action)) throw payError('Unsupported USDT payment action.');
-  if (body.requestId || body.contactId) throw payError('USDT currently supports direct @handle payments only. Payment requests remain SOL-only.');
-  if (body.mint != null && body.mint !== USDT_MINT) throw payError('Only official USDT on Solana is supported.');
+  const token = getPayToken(body.asset);
+  if (!['prepare', 'submit', 'recover'].includes(body.action)) throw payError(`Unsupported ${token.asset} payment action.`);
+  if (body.requestId || body.contactId) throw payError(`${token.asset} currently supports direct @handle payments only. Payment requests remain SOL-only.`);
+  if (body.mint != null && body.mint !== token.mint) throw payError(`Only official ${token.asset} on Solana is supported.`);
   const handle = normalizeHandle(body.handle);
   if (!/^[a-z0-9]{1,20}$/.test(handle)) throw payError('Enter a valid @handle (1–20 letters or numbers).');
-  const context = { handle, sender: new PublicKey(String(body.senderWallet || '')).toBase58(), recipient: '', amountRaw: usdtAmount(body.amountRaw).toString(), lastValidBlockHeight: Number(body.lastValidBlockHeight) };
+  const context = { asset: token.asset, handle, sender: new PublicKey(String(body.senderWallet || '')).toBase58(), recipient: '', amountRaw: usdtAmount(body.amountRaw).toString(), lastValidBlockHeight: Number(body.lastValidBlockHeight) };
   if (body.action === 'prepare') return Response.json(await prepareUsdt(rpcUrl, context));
   context.recipient = new PublicKey(String(body.recipientWallet || '')).toBase58();
   if (!Number.isSafeInteger(context.lastValidBlockHeight) || context.lastValidBlockHeight < 1) throw payError('Missing transaction expiry. Review the payment again.');
@@ -83,7 +87,7 @@ export async function handleUsdtPayment(base44, rpcUrl, body) {
   }
   const [height, statuses] = await Promise.all([rpc(rpcUrl, 'getBlockHeight', [{ commitment: 'finalized' }]), rpc(rpcUrl, 'getSignatureStatuses', [[signature], { searchTransactionHistory: true }])]);
   const status = statuses.value[0];
-  if (status?.err) return Response.json({ signature, failed: true, error: 'Solana rejected this payment. No USDT was transferred; a network fee may have been charged.' });
+  if (status?.err) return Response.json({ signature, failed: true, error: `Solana rejected this payment. No ${token.asset} was transferred; a network fee may have been charged.` });
   if (!status && height > context.lastValidBlockHeight) return Response.json({ signature, expired: true, error: 'The signed payment expired without confirmation. You can review the payment again.' });
-  return Response.json({ signature, pending: true, error: 'Still awaiting confirmation. Check this signature before signing a new USDT payment.' }, { status: 202 });
+  return Response.json({ signature, pending: true, error: `Still awaiting confirmation. Check this signature before signing a new ${token.asset} payment.` }, { status: 202 });
 }

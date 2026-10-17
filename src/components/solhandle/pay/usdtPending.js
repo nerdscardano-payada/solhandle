@@ -1,9 +1,9 @@
-export const usdtPendingKey = wallet => `solhandle_usdt_pending:${wallet}`;
-export function readUsdtPending(wallet) {
+export const usdtPendingKey = (wallet, asset = 'USDT') => `solhandle_${asset.toLowerCase()}_pending:${wallet}`;
+export function readUsdtPending(wallet, asset = 'USDT') {
   if (!wallet) return null;
-  const value = localStorage.getItem(usdtPendingKey(wallet));
+  const value = localStorage.getItem(usdtPendingKey(wallet, asset));
   if (!value) return null;
-  try { const pending = JSON.parse(value); return pending.senderWallet === wallet && pending.asset === 'USDT' ? pending : null; } catch { return null; }
+  try { const pending = JSON.parse(value); return pending.senderWallet === wallet && pending.asset === asset ? pending : null; } catch { return null; }
 }
 export function usdtSignature(bytes) {
   const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
