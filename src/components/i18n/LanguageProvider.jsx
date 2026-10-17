@@ -10,6 +10,7 @@ import pageTranslations from '@/components/i18n/pageTranslations';
 import integrationTranslationSources from '@/components/i18n/integrationTranslationSources';
 import androidTranslations from '@/components/i18n/androidTranslations';
 import payTranslations from '@/components/i18n/payTranslations';
+import mobileIdentityTranslations from '@/components/i18n/mobileIdentityTranslations';
 
 const integrationLocales = import.meta.glob('./integration-locales/*.json', { import: 'default', eager: true });
 const demoLocales = import.meta.glob('/demo-locales/??.json', { import: 'default', eager: true });
@@ -28,7 +29,8 @@ export default function LanguageProvider({ children }) {
   const [loaded, setLoaded] = useState({ language: 'en', texts: emptyTranslations });
   const demoTexts = language === 'en' ? emptyTranslations : demoLocales[`/demo-locales/${language}.json`] || emptyTranslations;
   const payTexts = payTranslations[language] || emptyTranslations;
-  const staticTranslations = useMemo(() => ({ ...(loaded.language === language ? loaded.texts : emptyTranslations), ...demoTexts, ...payTexts }), [loaded, language, demoTexts, payTexts]);
+  const identityTexts = mobileIdentityTranslations[language] || emptyTranslations;
+  const staticTranslations = useMemo(() => ({ ...(loaded.language === language ? loaded.texts : emptyTranslations), ...demoTexts, ...payTexts, ...identityTexts }), [loaded, language, demoTexts, payTexts, identityTexts]);
   const translatePay = useMemo(() => createStaticTranslator(payTexts), [payTexts]);
   const translateDemo = useMemo(() => createStaticTranslator(demoTexts), [demoTexts]);
   const setLanguage = code => { if (languages.some(([value]) => value === code)) updateLanguage(code); };
