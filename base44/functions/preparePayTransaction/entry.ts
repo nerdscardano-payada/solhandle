@@ -9,6 +9,7 @@ import bs58 from 'npm:bs58@6.0.0';
 import { PAY_MEMO, requestMemo, findPayLink, linkStatus, statusMessage, assertPayLink, transactionHasRequest, confirmedRequestMatches } from '../../shared/payRequestRules.ts';
 import { refreshPayLink, claimPayLink } from '../../shared/payRequestLifecycle.ts';
 import { saveConfirmedPayment } from '../../shared/payConfirmation.ts';
+import { handleUsdtPayment } from '../../shared/usdtPayFlow.ts';
 
 function bytes64(bytes) { return btoa(Array.from(bytes, b => String.fromCharCode(b)).join('')); }
 function decode64(value) { return Uint8Array.from(atob(value), c => c.charCodeAt(0)); }
@@ -21,6 +22,8 @@ export default async function(req: Request): Promise<Response> {
     const body = await req.json();
     const base44 = createClientFromRequest(req);
     const rpcUrl = secrets.get('SOLANA_RPC_URL');
+    if (body.asset != null && body.asset !== 'SOL' && body.asset !== 'USDT') return fail('Unsupported payment currency.');
+    if (body.asset === 'USDT') return await handleUsdtPayment(base44, rpcUrl, body);
     if (body.action === 'link_status') {
       const link = await refreshPayLink(base44, rpcUrl, await findPayLink(base44.asServiceRole, body.requestId));
       const status = linkStatus(link);
