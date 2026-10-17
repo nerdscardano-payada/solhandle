@@ -482,5 +482,8 @@
   "Return only nonce and exact message to the browser. Bind each stored challenge to its session, project, canonical handle and wallet.": "nonce와 정확한 메시지만 브라우저로 반환하세요. 저장된 각 챌린지를 세션, 프로젝트, 표준 handle 및 지갑에 바인딩하세요.",
   "Reusable link · Suggested amount": "재사용 가능한 링크 · 제안된 금액",
   "Reusable links": "재사용 가능한 링크",
-  "Reusable receiving link": "재사용 가능한 수신 링크"
+  "Reusable receiving link": "재사용 가능한 수신 링크",
+  "To": "받는 사람",
+  "Send": "전송",
+  "@identity": "@신원"
 }

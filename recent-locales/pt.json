@@ -481,5 +481,9 @@
   "Return only nonce and exact message to the browser. Bind each stored challenge to its session, project, canonical handle and wallet.": "Retorne apenas o nonce e a mensagem exata para o navegador. Vincule cada desafio armazenado à sua sessão, projeto, handle canônico e carteira.",
   "Reusable link · Suggested amount": "Link reutilizável · Valor sugerido",
   "Reusable links": "Links reutilizáveis",
-  "Reusable receiving link": "Link de recebimento reutilizável"
+  "Reusable receiving link": "Link de recebimento reutilizável",
+  "To": "Para",
+  "Send": "Enviar",
+  "@identity": "@identidade",
+  "Visible to anyone with the link.": "Visível para qualquer pessoa com o link."
 }

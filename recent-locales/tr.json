@@ -222,7 +222,7 @@
   "← Integration Center": "← Entegrasyon Merkezi",
   "PENDING": "BEKLEMEDE",
   "FAILED": "BAŞARISIZ",
-  "Visible to anyone with the link.": "Bağlantıya sahip herkes tarafından görülebilir.",
+  "Visible to anyone with the link.": "Bağlantıya sahip herkes görebilir.",
   "Save contact": "Kişiyi kaydet",
   "Save recipient as contact": "Alıcıyı kişi olarak kaydet",
   "Saved as": "Şu şekilde kaydedildi:",
@@ -482,5 +482,8 @@
   "Return only nonce and exact message to the browser. Bind each stored challenge to its session, project, canonical handle and wallet.": "Tarayıcıya yalnızca nonce ve tam mesajı döndürün. Her depolanmış sınamayı oturumuna, projesine, kanonik handle'ına ve cüzdanına bağlayın.",
   "Reusable link · Suggested amount": "Tekrar kullanılabilir bağlantı · Önerilen tutar",
   "Reusable links": "Tekrar kullanılabilir bağlantılar",
-  "Reusable receiving link": "Tekrar kullanılabilir alma bağlantısı"
+  "Reusable receiving link": "Tekrar kullanılabilir alma bağlantısı",
+  "To": "Alıcı",
+  "Send": "Gönder",
+  "@identity": "@kimlik"
 }

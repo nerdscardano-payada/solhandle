@@ -481,5 +481,9 @@
   "This request is no longer open or another payment is already being processed. Refresh the request before continuing.": "Dit verzoek is niet langer open of een andere betaling wordt al verwerkt. Vernieuw het verzoek voordat je doorgaat.",
   "This request is reserved for your signed payment. Check confirmation before trying again.": "Dit verzoek is gereserveerd voor je ondertekende betaling. Controleer de bevestiging voordat je het opnieuw probeert.",
   "This saved wallet is fixed. We check the handle and wallet safety again before signing.": "Deze opgeslagen wallet is vastgelegd. We controleren de handle en wallet-veiligheid opnieuw voordat we ondertekenen.",
-  "This signature does not match the payment being processed for this request.": "Deze handtekening komt niet overeen met de betaling die voor dit verzoek wordt verwerkt."
+  "This signature does not match the payment being processed for this request.": "Deze handtekening komt niet overeen met de betaling die voor dit verzoek wordt verwerkt.",
+  "To": "Naar",
+  "Send": "Verzenden",
+  "@identity": "@identiteit",
+  "Visible to anyone with the link.": "Zichtbaar voor iedereen met de link."
 }

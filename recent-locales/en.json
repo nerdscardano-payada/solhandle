@@ -482,5 +482,8 @@
   "✓ Verified on-chain": "✓ Verified on-chain",
   "PENDING": "PENDING",
   "FAILED": "FAILED",
-  "Visible to anyone with the link.": "Visible to anyone with the link."
+  "Visible to anyone with the link.": "Visible to anyone with the link.",
+  "To": "To",
+  "Send": "Send",
+  "@identity": "@identity"
 }

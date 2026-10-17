@@ -287,7 +287,7 @@
   "← Integration Center": "← 統合センター",
   "PENDING": "保留中",
   "FAILED": "失敗",
-  "Visible to anyone with the link.": "リンクを知っている人は誰でも閲覧可能。",
+  "Visible to anyone with the link.": "リンクを知っている人は誰でも閲覧可能です。",
   "Details & sharing": "詳細と共有",
   "Discard pending verification when the connected account changes. The server always checks the stored wallet, not a client-provided replacement.": "接続されたアカウントが変更された場合、保留中の検証を破棄します。サーバーは常に、クライアントが提供する置き換えではなく、保存されたウォレットをチェックします。",
   "Do I need a handle to pay someone?": "支払いに@handleは必要ですか？",
@@ -482,5 +482,8 @@
   "This request is no longer open or another payment is already being processed. Refresh the request before continuing.": "このリクエストは終了しているか、別の支払いが処理中です。継続する前にリクエストを更新してください。",
   "This request is reserved for your signed payment. Check confirmation before trying again.": "このリクエストはあなたの署名済み支払いのために予約されています。再試行の前に確認状況を確認してください。",
   "This saved wallet is fixed. We check the handle and wallet safety again before signing.": "この保存済みウォレットは固定されています。署名の前にhandleとウォレットの安全性を再確認します。",
-  "This signature does not match the payment being processed for this request.": "この署名は、現在処理中のリクエストの支払いと一致しません。"
+  "This signature does not match the payment being processed for this request.": "この署名は、現在処理中のリクエストの支払いと一致しません。",
+  "To": "宛先",
+  "Send": "送信",
+  "@identity": "@アイデンティティ"
 }

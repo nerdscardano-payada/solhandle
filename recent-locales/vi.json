@@ -352,7 +352,7 @@
   "← Integration Center": "← Trung tâm Tích hợp",
   "PENDING": "ĐANG CHỜ",
   "FAILED": "THẤT BẠI",
-  "Visible to anyone with the link.": "Hiển thị cho bất kỳ ai có liên kết.",
+  "Visible to anyone with the link.": "Bất kỳ ai có liên kết đều có thể xem.",
   "Details & sharing": "Chi tiết & chia sẻ",
   "Discard pending verification when the connected account changes. The server always checks the stored wallet, not a client-provided replacement.": "Loại bỏ xác minh đang chờ xử lý khi tài khoản đã kết nối thay đổi. Máy chủ luôn kiểm tra ví đã lưu, không phải ví thay thế do máy khách cung cấp.",
   "Do I need a handle to pay someone?": "Tôi có cần @handle để thanh toán cho ai đó không?",
@@ -482,5 +482,8 @@
   "Return only nonce and exact message to the browser. Bind each stored challenge to its session, project, canonical handle and wallet.": "Chỉ trả về nonce và thông báo chính xác cho trình duyệt. Ràng buộc mỗi thử thách được lưu trữ với phiên, dự án, handle chính tắc và ví của nó.",
   "Reusable link · Suggested amount": "Liên kết có thể tái sử dụng · Số tiền đề xuất",
   "Reusable links": "Các liên kết có thể tái sử dụng",
-  "Reusable receiving link": "Liên kết nhận có thể tái sử dụng"
+  "Reusable receiving link": "Liên kết nhận có thể tái sử dụng",
+  "To": "Đến",
+  "Send": "Gửi",
+  "@identity": "@danh tính"
 }

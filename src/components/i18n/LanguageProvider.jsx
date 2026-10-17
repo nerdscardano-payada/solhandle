@@ -15,6 +15,7 @@ const demoLocales = import.meta.glob('/demo-locales/??.json', { import: 'default
 const emptyTranslations = Object.freeze({});
 const translationCache = new Map();
 const translationLoaders = import.meta.glob('./locales/*.json', { import: 'default' });
+const recentTranslationLoaders = import.meta.glob('/recent-locales/??.json', { import: 'default' });
 const LanguageContext = createContext({ language: 'en', setLanguage: () => {}, t: text => text, staticTranslations: emptyTranslations });
 export const useLanguage = () => useContext(LanguageContext);
 export default function LanguageProvider({ children }) {
@@ -31,9 +32,9 @@ export default function LanguageProvider({ children }) {
     if (language === 'en') { setLoaded({ language, texts: emptyTranslations }); return; }
     let active = true;
     if (!translationCache.has(language)) {
-      translationCache.set(language, translationLoaders[`./locales/${language}.json`]().then(texts => {
+      translationCache.set(language, Promise.all([translationLoaders[`./locales/${language}.json`](), recentTranslationLoaders[`/recent-locales/${language}.json`]()]).then(([texts, recentTexts]) => {
         const additions = integrationLocales[`./integration-locales/${language}.json`] || {};
-        return { ...texts, ...Object.fromEntries(Object.entries(integrationTranslationSources).map(([key, source]) => [source, additions[key] || source])) };
+        return { ...texts, ...Object.fromEntries(Object.entries(integrationTranslationSources).map(([key, source]) => [source, additions[key] || source])), ...recentTexts };
       }));
     }
     translationCache.get(language).then(texts => { if (active) setLoaded({ language, texts }); });

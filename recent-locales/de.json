@@ -481,5 +481,9 @@
   "This request is no longer open or another payment is already being processed. Refresh the request before continuing.": "Diese Anfrage ist nicht mehr offen oder eine andere Zahlung wird bereits verarbeitet. Aktualisiere die Anfrage, bevor du fortfährst.",
   "This request is reserved for your signed payment. Check confirmation before trying again.": "Diese Anfrage ist für deine signierte Zahlung reserviert. Überprüfe die Bestätigung, bevor du es erneut versuchst.",
   "This saved wallet is fixed. We check the handle and wallet safety again before signing.": "Dieses gespeicherte Wallet ist fest. Wir überprüfen Handle und Wallet-Sicherheit erneut, bevor wir signieren.",
-  "This signature does not match the payment being processed for this request.": "Diese Signatur stimmt nicht mit der für diese Anfrage verarbeiteten Zahlung überein."
+  "This signature does not match the payment being processed for this request.": "Diese Signatur stimmt nicht mit der für diese Anfrage verarbeiteten Zahlung überein.",
+  "To": "An",
+  "Send": "Senden",
+  "@identity": "@identität",
+  "Visible to anyone with the link.": "Für jeden mit dem Link sichtbar."
 }
