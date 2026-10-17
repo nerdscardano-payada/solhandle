@@ -19,6 +19,7 @@ module.exports = {
   		},
   		colors: {
         hero: { canvas: 'hsl(var(--hero-canvas))' },
+        button: { start: 'var(--button-gradient-start)', middle: 'var(--button-gradient-middle)', end: 'var(--button-gradient-end)', foreground: 'hsl(var(--button-foreground))' },
   			names: { accent: 'hsl(var(--names-accent))', secondary: 'hsl(var(--names-secondary))', success: 'hsl(var(--names-success))', warning: 'hsl(var(--names-warning))' },
   			burn: { accent: 'hsl(var(--burn-accent))', highlight: 'hsl(var(--burn-highlight))', secondary: 'hsl(var(--burn-secondary))' },
   			background: 'hsl(var(--background))',
@@ -72,6 +73,7 @@ module.exports = {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
+      backgroundImage: { 'button-primary': 'var(--button-gradient)' },
   		fontFamily: {
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],

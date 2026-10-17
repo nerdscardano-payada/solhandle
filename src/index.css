@@ -58,6 +58,11 @@ html, body { overscroll-behavior: none; }
     --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-display: ui-sans-serif, system-ui, sans-serif;
     --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
+    --button-gradient-start: #6ee7b7;
+    --button-gradient-middle: #22d3ee;
+    --button-gradient-end: #8b5cf6;
+    --button-foreground: 0 0% 0%;
+    --button-gradient: linear-gradient(90deg, var(--button-gradient-start) 0%, var(--button-gradient-middle) 50%, var(--button-gradient-end) 100%);
     --hero-canvas: 225 50% 3%;
     --hero-cyan: 180 100% 50%;
     --hero-blue: 214 100% 58%;
@@ -84,6 +89,11 @@ html, body { overscroll-behavior: none; }
 
   .dark {
     --font-hero: 'Inter', 'Arial Black', Arial, sans-serif;
+    --button-gradient-start: #6ee7b7;
+    --button-gradient-middle: #22d3ee;
+    --button-gradient-end: #8b5cf6;
+    --button-foreground: 0 0% 0%;
+    --button-gradient: linear-gradient(90deg, var(--button-gradient-start) 0%, var(--button-gradient-middle) 50%, var(--button-gradient-end) 100%);
     --hero-canvas: 225 50% 3%;
     --hero-cyan: 180 100% 50%;
     --hero-blue: 214 100% 58%;
@@ -197,4 +207,26 @@ html, body { overscroll-behavior: none; }
   .solhandle-active-glow { animation: none; box-shadow: 0 0 24px rgba(34, 211, 238, 0.14); }
   .buyback-near-glow { animation: none; box-shadow: 0 0 22px rgba(167, 139, 250, .35); }
   .buyback-firework { animation: none; transform: translate(-50%, -50%); opacity: .25; }
+}
+
+/* Shared primary action colors, including existing desktop and mobile CTAs.
+   Exact color classes leave tinted, outline, navigation and destructive controls unchanged. */
+:root body :is(button, a, [role="button"]):is(
+  .solhandle-primary-button,
+  .home-primary-button,
+  [class~="bg-names-accent"],
+  [class~="bg-primary"],
+  [class~="bg-cyan-300"],
+  [class~="bg-cyan-400"],
+  [class~="bg-emerald-300"],
+  [class~="bg-gradient-to-r"]:is(
+    [class~="from-emerald-300"],
+    [class~="from-cyan-300"],
+    [class~="from-violet-400"],
+    [class~="from-names-success"],
+    [class~="from-names-accent"]
+  )
+) {
+  background-image: var(--button-gradient);
+  color: hsl(var(--button-foreground));
 }
