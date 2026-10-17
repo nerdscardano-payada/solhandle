@@ -1,6 +1,8 @@
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 
 const nl = {
+  'Why SolHandle?': 'Waarom SolHandle?',
+  'Make your Solana identity easy to remember. One unique @handle instead of a long wallet address, owned in your own wallet and ready to receive SOL with SolHandle Pay. Pay once, with no renewal fees. Your funds and private keys stay yours.': 'Maak je Solana-identiteit herkenbaar. Eén unieke @handle in plaats van een lang walletadres, in je eigen wallet en direct te gebruiken om SOL te ontvangen met SolHandle Pay. Je betaalt eenmalig, zonder verlengkosten. Je geld en privésleutels blijven van jou.',
   'Claim your': 'Claim je',
   '@identity': '@identiteit',
   'on Solana.': 'op Solana.',

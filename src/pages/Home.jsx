@@ -7,7 +7,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import MobileMintHome from '@/components/solhandle/home/MobileMintHome';
 import PublicHandleMintRecovery from '@/components/solhandle/PublicHandleMintRecovery';
 import HomeMintHero from '@/components/solhandle/home/HomeMintHero';
-import HomeHeroDemos from '@/components/solhandle/home/HomeHeroDemos';
+
 import HomePayStory from '@/components/solhandle/home/HomePayStory';
 import HomeBackdrop from '@/components/solhandle/home/HomeBackdrop';
 
@@ -28,5 +28,5 @@ export default function Home() {
 
   useEffect(() => { captureReferralAttribution().catch(() => null); base44.analytics.track({ eventName: 'homepage_view', properties: { device: window.innerWidth < 1280 ? 'mobile' : 'desktop', source: new URLSearchParams(window.location.search).get('utm_source') || 'direct' } }); }, []);
   if (isMobile) return <main ref={pull.ref} data-mobile-scroll-panel className="home-funnel dark min-h-screen bg-hero-canvas"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><MobileMintHome wallet={wallet} refreshVersion={refreshVersion}/></main>;
-  return <main className="home-funnel dark"><HomeBackdrop/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><HomeMintHero wallet={wallet}/><div className="home-content"><HomePayStory/></div><HomeHeroDemos/><div className="home-content"><HomeDesktopContent/></div></main>;
+  return <main className="home-funnel dark"><HomeBackdrop/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><HomeMintHero wallet={wallet}/><div className="home-content"><HomePayStory/></div><div className="home-content"><HomeDesktopContent/></div></main>;
 }
