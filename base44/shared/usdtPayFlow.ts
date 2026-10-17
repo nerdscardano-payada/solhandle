@@ -4,10 +4,10 @@ import { rpc } from './solanaRpc.ts';
 import { normalizeHandle, resolveOnChain, reverseOnChain } from './solhandleResolver.ts';
 import { TOKEN_PROGRAM_ID, payError, usdtAmount, usdtAccounts, usdtTransaction, validateUsdtSigned, verifyUsdtBalances, to64 } from './usdtPayTransaction.ts';
 import getPayToken from './payAssets.ts';
+import { resolveContactPayment } from './contactPayment.ts';
 
-async function prepareUsdt(rpcUrl, context) {
+async function prepareUsdt(rpcUrl, context, resolved) {
   const token = getPayToken(context.asset);
-  const resolved = await resolveOnChain(rpcUrl, context.handle);
   if (!resolved?.safeForNativeSol) throw payError(`This @handle must resolve to an ordinary Solana wallet before it can receive ${token.asset}.`);
   context.recipient = resolved.address;
   const { source, destination } = usdtAccounts(context.sender, context.recipient, token.asset);
@@ -37,7 +37,7 @@ async function prepareUsdt(rpcUrl, context) {
   ]);
   if (!Number.isSafeInteger(fee?.value) || fee.value < 0 || fee.value > 105000 || !Number.isSafeInteger(rent) || rent < 0) throw payError('SOL costs could not be verified. Try again.', 503);
   if (Number(balance.value) < fee.value + rent) throw payError('Insufficient SOL for the network fee and recipient token account deposit.', 422);
-  return { asset: token.asset, mint: token.mint, decimals: token.decimals, amountRaw: context.amountRaw, displayHandle: resolved.handle, destinationAddress: context.recipient, destinationTokenAccount: destination.toBase58(), senderWallet: context.sender, availableRaw: available, solBalanceLamports: balance.value, networkFeeEstimate: fee.value, accountCreationLamports: rent, createsTokenAccount: !recipientToken, lastValidBlockHeight: context.lastValidBlockHeight, serializedTransaction: to64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })) };
+  return { savedContact: !!resolved.savedContact, handleChanged: !!resolved.handleChanged, asset: token.asset, mint: token.mint, decimals: token.decimals, amountRaw: context.amountRaw, displayHandle: resolved.handle, destinationAddress: context.recipient, destinationTokenAccount: destination.toBase58(), senderWallet: context.sender, availableRaw: available, solBalanceLamports: balance.value, networkFeeEstimate: fee.value, accountCreationLamports: rent, createsTokenAccount: !recipientToken, lastValidBlockHeight: context.lastValidBlockHeight, serializedTransaction: to64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })) };
 }
 async function confirmedUsdt(base44, rpcUrl, signature, context, details) {
   const token = getPayToken(context.asset);
@@ -60,12 +60,13 @@ async function confirmedUsdt(base44, rpcUrl, signature, context, details) {
 export async function handleUsdtPayment(base44, rpcUrl, body) {
   const token = getPayToken(body.asset);
   if (!['prepare', 'submit', 'recover'].includes(body.action)) throw payError(`Unsupported ${token.asset} payment action.`);
-  if (body.requestId || body.contactId) throw payError(`${token.asset} currently supports direct @handle payments only. Payment requests remain SOL-only.`);
+  if (body.requestId) throw payError('Payment requests remain SOL-only. Choose a direct recipient or a saved contact instead.');
   if (body.mint != null && body.mint !== token.mint) throw payError(`Only official ${token.asset} on Solana is supported.`);
   const handle = normalizeHandle(body.handle);
   if (!/^[a-z0-9]{1,20}$/.test(handle)) throw payError('Enter a valid @handle (1–20 letters or numbers).');
   const context = { asset: token.asset, handle, sender: new PublicKey(String(body.senderWallet || '')).toBase58(), recipient: '', amountRaw: usdtAmount(body.amountRaw).toString(), lastValidBlockHeight: Number(body.lastValidBlockHeight) };
-  if (body.action === 'prepare') return Response.json(await prepareUsdt(rpcUrl, context));
+  const recipient = () => body.contactId ? resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, context.sender) : resolveOnChain(rpcUrl, handle);
+  if (body.action === 'prepare') return Response.json(await prepareUsdt(rpcUrl, context, await recipient()));
   context.recipient = new PublicKey(String(body.recipientWallet || '')).toBase58();
   if (!Number.isSafeInteger(context.lastValidBlockHeight) || context.lastValidBlockHeight < 1) throw payError('Missing transaction expiry. Review the payment again.');
   const signed = validateUsdtSigned(body.signedTransaction, context), signature = bs58.encode(signed.signature);
@@ -74,8 +75,8 @@ export async function handleUsdtPayment(base44, rpcUrl, body) {
   let details = await getDetails();
   if (details) return Response.json(await confirmedUsdt(base44, rpcUrl, signature, context, details));
   if (body.action === 'submit') {
-    const resolved = await resolveOnChain(rpcUrl, handle);
-    if (!resolved?.safeForNativeSol || resolved.address !== context.recipient) return Response.json({ notSubmitted: true, error: 'The @handle owner changed. Review the new recipient before signing again.' }, { status: 409 });
+    const resolved = await recipient();
+    if (!resolved?.safeForNativeSol || resolved.address !== context.recipient) return Response.json({ notSubmitted: true, error: 'The recipient changed or is no longer safe. Review the payment before signing again.' }, { status: 409 });
     const fee = await rpc(rpcUrl, 'getFeeForMessage', [to64(signed.serializeMessage()), { commitment: 'confirmed' }]);
     if (!Number.isSafeInteger(fee?.value) || fee.value > 105000) return Response.json({ notSubmitted: true, error: 'The transaction expired or its fee could not be verified. Review it again.' }, { status: 409 });
     // Sending only the exact signed bytes is idempotent. An RPC timeout is not proof of failure.
