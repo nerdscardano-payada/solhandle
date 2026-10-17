@@ -35,6 +35,12 @@
     "confirmed_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "request_description": {
+      "type": "string"
     }
   },
   "required": [

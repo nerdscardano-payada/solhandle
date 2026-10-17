@@ -14,6 +14,52 @@
     },
     "requested_amount_sol": {
       "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "REUSABLE",
+        "SINGLE_USE"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "expires_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "PROCESSING",
+        "PAID",
+        "CANCELLED",
+        "EXPIRED",
+        "INVALID"
+      ]
+    },
+    "cancelled_at": {
+      "type": "string"
+    },
+    "paid_at": {
+      "type": "string"
+    },
+    "payment_id": {
+      "type": "string"
+    },
+    "processing_signature": {
+      "type": "string"
+    },
+    "processing_sender": {
+      "type": "string"
+    },
+    "processing_amount_lamports": {
+      "type": "number"
+    },
+    "processing_blockhash": {
+      "type": "string"
     }
   },
   "required": [
