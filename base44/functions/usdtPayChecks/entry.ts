@@ -3,6 +3,8 @@ import { Keypair, PublicKey, SystemProgram, TransactionInstruction } from 'npm:@
 import { createApproveInstruction, TOKEN_PROGRAM_ID } from 'npm:@solana/spl-token@0.4.14';
 import { usdtAmount, usdtAccounts, usdtTransaction, validateUsdtSigned, verifyUsdtBalances, to64 } from '../../shared/usdtPayTransaction.ts';
 import getPayToken from '../../shared/payAssets.ts';
+import tokenPayRequestChecks from '../../shared/tokenPayRequestChecks.ts';
+import tokenRequestConfirmationChecks from '../../shared/tokenRequestConfirmationChecks.ts';
 export default async function(req: Request): Promise<Response> {
   try {
     const client = createClientFromRequest(req), user = await client.auth.me();
@@ -46,6 +48,7 @@ export default async function(req: Request): Promise<Response> {
     check('Exact confirmed sender and recipient balance changes', () => verifyUsdtBalances(details, context));
     reject('Wrong received amount', () => { const changed = structuredClone(details); changed.meta.postTokenBalances[1].uiTokenAmount.amount = '1234566'; verifyUsdtBalances(changed, context); });
     }
+    passed.push(...await tokenPayRequestChecks(), ...await tokenRequestConfirmationChecks());
     return Response.json({ passed: passed.length, assets: ['USDC', 'USDT', 'HANDLE'], checks: passed, broadcasts: 0 });
   } catch (error) { return Response.json({ error: error.message }, { status: 500 }); }
 }
