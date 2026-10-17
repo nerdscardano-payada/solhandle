@@ -1,5 +1,6 @@
-import { lazy, Suspense, useEffect } from 'react';
-import MobilePageTransition from '@/components/solhandle/navigation/MobilePageTransition';
+import { lazy, Suspense } from 'react';
+import MobileTabCache from '@/components/solhandle/navigation/MobileTabCache';
+import AndroidBackListener from '@/components/solhandle/navigation/AndroidBackListener';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -123,7 +124,7 @@ const AuthenticatedApp = () => {
   return (
     <PlatformSurface>
       {isChildPage && <MobileBackHeader />}
-      <MobilePageTransition className={isChildPage ? 'mobile-child-page min-w-0' : 'min-w-0'}>
+      <MobileTabCache className={isChildPage ? 'mobile-child-page min-w-0' : 'min-w-0'}>
           <Suspense fallback={<div role="status" aria-label="Loading page" className="flex min-h-[50dvh] items-center justify-center"><span className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-names-accent"/></div>}>
       <Routes location={location}>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
@@ -205,7 +206,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
           </Suspense>
-      </MobilePageTransition>
+      </MobileTabCache>
       {!isWidget && <div className="hidden md:block"><Footer /></div>}
       {!isWidget && <AttoChat />}
       {showMobileTabs && <MobileAppNavigation />}
@@ -215,19 +216,12 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-  useEffect(() => {
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const syncTheme = () => document.documentElement.classList.toggle('dark', systemTheme.matches);
-    syncTheme();
-    systemTheme.addEventListener('change', syncTheme);
-    return () => systemTheme.removeEventListener('change', syncTheme);
-  }, []);
-
   return (
     <LanguageProvider><AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <MobileTabProvider>
+          <AndroidBackListener />
           <StaticTextLocalization />
           <NativeDialogLocalization />
           <ScrollToTop />

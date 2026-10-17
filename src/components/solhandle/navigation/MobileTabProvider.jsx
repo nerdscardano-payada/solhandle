@@ -13,6 +13,7 @@ export default function MobileTabProvider({ children }) {
   const stacks = useRef(location.state?.solhandleTab?.stacks || emptyTabHistory());
   const selected = useRef(location.state?.solhandleTab?.tab || '/'), active = useRef(null), lastTap = useRef(null);
   const [ticket, setTicket] = useState(null);
+  const cacheVersions = useRef({});
   const enabled = mobile && allowed(location.pathname);
   const save = useTabScroll(ticket, enabled, active);
   useLayoutEffect(() => {
@@ -32,6 +33,7 @@ export default function MobileTabProvider({ children }) {
     if (doubleTap && tab === selected.current) {
       const root = { id: crypto.randomUUID(), keys: [], url: tab, state: {}, scroll: { x: 0, y: 0, panels: [] } };
       stacks.current[tab] = { entries: [root], index: 0 };
+      cacheVersions.current[tab] = root.id;
       lastTap.current = null; visit(tab, root, 'reset', root.id);
     } else if (tab !== selected.current) { const stack = getMobileTabStack(stacks.current, tab); visit(tab, stack.entries[stack.index]); }
   };
@@ -43,5 +45,5 @@ export default function MobileTabProvider({ children }) {
     else visit(selected.current, entry, 'pop');
     return true;
   };
-  return <Context.Provider value={{ enabled, direction: ticket?.direction || 0, activeTab: selected.current, selectTab, back, target: tab => { const stack = getMobileTabStack(stacks.current, tab); return stack.entries[stack.index]?.url || tab; } }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ enabled, ready: ticket?.key === location.key, cacheVersion: cacheVersions.current[selected.current] || '', direction: ticket?.direction || 0, activeTab: selected.current, selectTab, back, target: tab => { const stack = getMobileTabStack(stacks.current, tab); return stack.entries[stack.index]?.url || tab; } }}>{children}</Context.Provider>;
 }

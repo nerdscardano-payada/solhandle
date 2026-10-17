@@ -7,10 +7,11 @@ const slides = {
   center: { x: 0, opacity: 1 },
   exit: direction => ({ x: direction ? `${direction * -25}%` : 0, opacity: 0 }),
 };
-export default function MobilePageTransition({ children, className }) {
-  const location = useLocation(), mobile = useIsMobile(), reduced = useReducedMotion();
+export default function MobilePageTransition({ children, className, location: cachedLocation, active = true }) {
+  const currentLocation = useLocation(), mobile = useIsMobile(), reduced = useReducedMotion();
+  const location = cachedLocation || currentLocation;
   const navigation = useMobileTabs();
-  const animate = mobile && navigation?.enabled && !reduced;
+  const animate = active && mobile && navigation?.enabled && !reduced;
   const direction = animate ? navigation.direction : 0;
   const key = `${location.pathname}:${location.state?.solhandleTab?.reset || ''}`;
   return <div className="mobile-route-viewport min-w-0">

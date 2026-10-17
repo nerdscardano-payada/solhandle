@@ -2,9 +2,10 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 
 export default function useTabScroll(ticket, enabled, active) {
   const restoring = useRef(false);
+  const surface = () => document.querySelector('[data-mobile-tab-active="true"]') || document;
   const save = () => {
     if (!enabled || restoring.current || !active.current) return;
-    active.current.scroll = { x: window.scrollX, y: window.scrollY, panels: [...document.querySelectorAll('[data-mobile-scroll-panel]')].map(node => [node.scrollLeft, node.scrollTop]) };
+    active.current.scroll = { x: window.scrollX, y: window.scrollY, panels: [...surface().querySelectorAll('[data-mobile-scroll-panel]')].map(node => [node.scrollLeft, node.scrollTop]) };
   };
   useEffect(() => {
     if (!enabled) return;
@@ -24,10 +25,10 @@ export default function useTabScroll(ticket, enabled, active) {
       const hash = ticket.entry.url.split('#')[1];
       let id = hash;
       try { if (hash) id = decodeURIComponent(hash); } catch { /* Preserve malformed fragments as literal IDs. */ }
-      const anchor = id && document.getElementById(id);
+      const anchor = id && surface().querySelector(`#${CSS.escape(id)}`);
       if (anchor && !ticket.entry.scroll) anchor.scrollIntoView();
       else window.scrollTo({ left: position.x, top: position.y, behavior: 'instant' });
-      document.querySelectorAll('[data-mobile-scroll-panel]').forEach((node, index) => { const point = position.panels[index]; if (point) node.scrollTo({ left: point[0], top: point[1], behavior: 'instant' }); });
+      surface().querySelectorAll('[data-mobile-scroll-panel]').forEach((node, index) => { const point = position.panels[index]; if (point) node.scrollTo({ left: point[0], top: point[1], behavior: 'instant' }); });
       if (++count < 36 && !stopped) frame = requestAnimationFrame(restore);
     };
     observer.observe(document.body);
