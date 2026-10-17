@@ -5,7 +5,7 @@ import {
   registerMwa,
 } from "@solana-mobile/wallet-standard-mobile";
 
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && !window.SolHandleNative) {
   registerMwa({
     appIdentity: {
       name: "SolHandle",

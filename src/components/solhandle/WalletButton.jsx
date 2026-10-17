@@ -11,6 +11,7 @@ import { shortenAddress } from "@/lib/solhandle";
 import MobileWalletChooser from "@/components/solhandle/MobileWalletChooser";
 import { currentWalletTarget, isMobileBrowser, isWalletBrowser } from "@/lib/mobileWalletLinks";
 import { trackFunnel } from "@/lib/protocolAnalytics";
+import { isAndroidHost } from '@/components/solhandle/android/nativeTransport';
 
 export default function WalletButton({ onConnected }) {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export default function WalletButton({ onConnected }) {
   const [walletTarget, setWalletTarget] = useState("");
   const autoConnectAttempted = useRef(false);
   const openWallets = (detail) => {
-    if (isMobileBrowser() && !isWalletBrowser()) {
+    if (isMobileBrowser() && !isWalletBrowser() && !isAndroidHost()) {
       setWalletTarget(currentWalletTarget(detail));
       setMobileChooserOpen(true);
     } else setVisible(true);

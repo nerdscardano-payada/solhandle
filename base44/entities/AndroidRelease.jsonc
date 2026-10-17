@@ -1,0 +1,78 @@
+{
+  "name": "AndroidRelease",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "version_code": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "minimum_android": {
+      "type": "string",
+      "default": "8.0"
+    },
+    "apk_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "certificate_sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "withdrawn"
+      ]
+    },
+    "device_checked": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "version",
+    "version_code",
+    "minimum_android",
+    "apk_url",
+    "sha256",
+    "certificate_sha256",
+    "status",
+    "device_checked"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ import { growthHubVisible } from '@/components/solhandle/navigationLinks';
 import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
 
 const Home = lazy(() => import('@/pages/Home'));
+const AndroidDownload = lazy(() => import('@/pages/AndroidDownload'));
 const Demos = lazy(() => import('@/pages/Demos'));
 const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
 const Search = lazy(() => import('@/pages/Search'));
@@ -129,6 +130,7 @@ const AuthenticatedApp = () => {
       <Routes location={location}>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
         <Route path="/search" element={<Search />} />
+        <Route path="/android" element={<AndroidDownload />} />
         <Route path="/demos" element={<Demos />} />
         <Route path="/demos/:slug" element={<DemoDetail />} />
         <Route path="/mint-weekend" element={<Navigate to="/" replace />} />

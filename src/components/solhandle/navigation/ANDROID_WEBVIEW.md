@@ -2,7 +2,7 @@
 
 The web app registers `window.solhandleAndroidBack()`, a synchronous function returning `true` when it handles the gesture and `false` at the app root when Android should use its normal exit behavior. Listeners are removed when the app unmounts.
 
-No Android host project is included in this workspace. In that host, forward the AndroidX `OnBackPressedDispatcher` callback to this function. AndroidX routes both physical Back and completed system back gestures through the callback. Use the host's current AndroidX Activity version for predictive-back compatibility.
+The separate Android host project is now included under `src/components/solhandle/android/project/` and can be downloaded as a ZIP from `/android`. It forwards AndroidX `OnBackPressedDispatcher` to this function, includes an origin-restricted native Mobile Wallet Adapter bridge, and local signing/build scripts. The project is source, not a prebuilt APK; build and validate it on a real device before publishing a release. AndroidX routes both physical Back and completed system back gestures through the callback.
 
 Example inside the Activity, with `webView` referring to the app's existing WebView:
 
