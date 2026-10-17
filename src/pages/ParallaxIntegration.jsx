@@ -5,7 +5,7 @@ import ParallaxGuideSections from '@/components/solhandle/parallax/ParallaxGuide
 import { guideSections } from '@/components/solhandle/parallax/parallaxGuide';
 
 export default function ParallaxIntegration() {
-  return <main lang="en" data-no-translate className="dark min-h-screen bg-background text-foreground"><div className="mx-auto max-w-7xl border-x border-border"><Header/>
+  return <main className="dark min-h-screen bg-background text-foreground"><div className="mx-auto max-w-7xl border-x border-border"><Header/>
     <article className="mx-auto min-w-0 max-w-6xl px-5 py-10 lg:px-9 lg:py-16">
       <Link to="/integrations" className="text-sm text-names-accent">← Integration Center</Link>
       <header className="mt-8 border-b border-border pb-8">
