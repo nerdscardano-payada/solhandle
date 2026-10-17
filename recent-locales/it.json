@@ -485,5 +485,12 @@
   "Reusable receiving link": "Link di ricezione riutilizzabile",
   "To": "A",
   "Send": "Invia",
-  "@identity": "@identità"
+  "@identity": "@identità",
+  "Receive": "Ricevi",
+  "Ecosystem": "Ecosistema",
+  "Activity": "Attività",
+  "Trade": "Fai trading",
+  "Sort": "Ordina",
+  "Statistics": "Statistiche",
+  "Setup": "Configurazione"
 }

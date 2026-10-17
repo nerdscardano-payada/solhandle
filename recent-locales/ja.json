@@ -485,5 +485,12 @@
   "This signature does not match the payment being processed for this request.": "この署名は、現在処理中のリクエストの支払いと一致しません。",
   "To": "宛先",
   "Send": "送信",
-  "@identity": "@アイデンティティ"
+  "@identity": "@アイデンティティ",
+  "Receive": "受け取る",
+  "Ecosystem": "エコシステム",
+  "Activity": "アクティビティ",
+  "Trade": "取引",
+  "Sort": "並べ替え",
+  "Statistics": "統計",
+  "Setup": "セットアップ"
 }

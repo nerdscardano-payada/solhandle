@@ -485,5 +485,12 @@
   "This signature does not match the payment being processed for this request.": "Cette signature ne correspond pas au paiement en cours de traitement pour cette demande.",
   "To": "À",
   "Send": "Envoyer",
-  "@identity": "@identité"
+  "@identity": "@identité",
+  "Receive": "Recevoir",
+  "Ecosystem": "Écosystème",
+  "Activity": "Activité",
+  "Trade": "Trader",
+  "Sort": "Trier",
+  "Statistics": "Statistiques",
+  "Setup": "Configuration"
 }

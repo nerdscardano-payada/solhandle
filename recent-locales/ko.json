@@ -485,5 +485,12 @@
   "Reusable receiving link": "재사용 가능한 수신 링크",
   "To": "받는 사람",
   "Send": "전송",
-  "@identity": "@신원"
+  "@identity": "@신원",
+  "Receive": "받기",
+  "Ecosystem": "생태계",
+  "Activity": "활동",
+  "Trade": "거래",
+  "Sort": "정렬",
+  "Statistics": "통계",
+  "Setup": "설정"
 }

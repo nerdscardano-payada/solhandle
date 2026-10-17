@@ -485,5 +485,12 @@
   "Reusable receiving link": "Liên kết nhận có thể tái sử dụng",
   "To": "Đến",
   "Send": "Gửi",
-  "@identity": "@danh tính"
+  "@identity": "@danh tính",
+  "Receive": "Nhận",
+  "Ecosystem": "Hệ sinh thái",
+  "Activity": "Hoạt động",
+  "Trade": "Giao dịch",
+  "Sort": "Sắp xếp",
+  "Statistics": "Thống kê",
+  "Setup": "Thiết lập"
 }

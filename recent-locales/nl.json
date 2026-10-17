@@ -485,5 +485,12 @@
   "To": "Naar",
   "Send": "Verzenden",
   "@identity": "@identiteit",
-  "Visible to anyone with the link.": "Zichtbaar voor iedereen met de link."
+  "Visible to anyone with the link.": "Zichtbaar voor iedereen met de link.",
+  "Receive": "Ontvangen",
+  "Ecosystem": "Ecosysteem",
+  "Activity": "Activiteit",
+  "Trade": "Handelen",
+  "Sort": "Sorteren",
+  "Statistics": "Statistieken",
+  "Setup": "Installatie"
 }

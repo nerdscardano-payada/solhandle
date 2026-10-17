@@ -485,5 +485,12 @@
   "Reusable receiving link": "Tekrar kullanılabilir alma bağlantısı",
   "To": "Alıcı",
   "Send": "Gönder",
-  "@identity": "@kimlik"
+  "@identity": "@kimlik",
+  "Receive": "Al",
+  "Ecosystem": "Ekosistem",
+  "Activity": "Etkinlik",
+  "Trade": "Alım satım",
+  "Sort": "Sırala",
+  "Statistics": "İstatistikler",
+  "Setup": "Kurulum"
 }

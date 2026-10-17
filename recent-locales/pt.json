@@ -485,5 +485,12 @@
   "To": "Para",
   "Send": "Enviar",
   "@identity": "@identidade",
-  "Visible to anyone with the link.": "Visível para qualquer pessoa com o link."
+  "Visible to anyone with the link.": "Visível para qualquer pessoa com o link.",
+  "Receive": "Receber",
+  "Ecosystem": "Ecossistema",
+  "Activity": "Atividade",
+  "Trade": "Negociar",
+  "Sort": "Ordenar",
+  "Statistics": "Estatísticas",
+  "Setup": "Configuração"
 }
