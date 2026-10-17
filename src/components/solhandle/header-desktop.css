@@ -1,0 +1,10 @@
+@media (min-width: 1367px) {
+  /* Keep the shared header independent of each page's content container. */
+  .platform-shell .platform-page-content header.solhandle-platform-header {
+    width: min(1536px, calc(100vw - 48px));
+    max-width: none;
+    margin-inline: calc((100% - min(1536px, calc(100vw - 48px))) / 2);
+    padding: 8px 24px;
+    gap: 20px;
+  }
+}

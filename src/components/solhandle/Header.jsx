@@ -1,3 +1,4 @@
+import '@/components/solhandle/header-desktop.css';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Search } from "lucide-react";
