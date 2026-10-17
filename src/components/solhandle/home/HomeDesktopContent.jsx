@@ -13,5 +13,5 @@ const getSnapshot = () => mobileQuery.matches;
 export default function HomeDesktopContent() {
   const isMobile = useSyncExternalStore(subscribe, getSnapshot);
   if (isMobile) return <HomeMobileContent />;
-  return <><div className="home-content-section"><RecentHandles/></div><HomeFaq paymentFirst/></>;
+  return <><div className="home-content-section"><RecentHandles limit={4} fourAcross/></div><HomeFaq paymentFirst/></>;
 }
