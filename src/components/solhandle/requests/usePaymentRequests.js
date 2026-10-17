@@ -30,5 +30,6 @@ export default function usePaymentRequests(revision) {
     catch (e) { if (activeWallet.current === owner) setError(e.response?.data?.error || e.message); }
     finally { if (activeWallet.current === owner) setBusy(false); }
   };
-  return { wallet, signMessage, page, busy, error, expired, filter, setFilter, load, cancel, historyCall };
+  const changeFilter = value => { setPage(null); setFilter(value); };
+  return { wallet, signMessage, page, busy, error, expired, filter, setFilter: changeFilter, load, cancel, historyCall };
 }

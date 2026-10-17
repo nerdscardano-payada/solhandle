@@ -2,7 +2,7 @@ import { findPayLink, linkStatus, requestError, solLamports } from './payRequest
 import { refreshPayLink } from './payRequestLifecycle.ts';
 import { normalizeHandle, resolveOnChain } from './solhandleResolver.ts';
 export function paymentPurpose(body) {
-  if (body.action === 'create_link' && body.kind == null) return `create link\nHandle: ${String(body.handle || '')}\nAmount: ${String(body.amount || '')}`;
+  if (body.action === 'create_link' && body.kind == null && !body.description && !body.expiresAt) return `create link\nHandle: ${String(body.handle || '')}\nAmount: ${String(body.amount || '')}`;
   if (body.action === 'create_link') return `create request\n${JSON.stringify({ handle: String(body.handle || ''), amount: String(body.amount || ''), kind: String(body.kind || 'REUSABLE'), description: String(body.description || ''), expiresAt: String(body.expiresAt || '') })}`;
   if (body.action === 'cancel_request') return `cancel request\nRequest: ${String(body.requestId || '')}`;
   return 'history';
@@ -25,7 +25,7 @@ export async function handleRequestRecords(base44, rpcUrl, wallet, body) {
   if (body.action === 'cancel_request') {
     const link = await findPayLink(client, body.requestId);
     if (link.recipient_wallet_at_creation !== wallet) throw requestError('Request not found for this wallet.', 404);
-    const result = await client.entities.PayLink.updateMany({ id: link.id, recipient_wallet_at_creation: wallet, $or: [{ status: 'OPEN' }, { status: { $exists: false } }] }, { $set: { status: 'CANCELLED', cancelled_at: new Date().toISOString() } });
+    const result = await client.entities.PayLink.updateMany({ id: link.id, recipient_wallet_at_creation: wallet, $or: [{ status: 'OPEN' }, { status: null }, { status: { $exists: false } }] }, { $set: { status: 'CANCELLED', cancelled_at: new Date().toISOString() } });
     if (result.updated !== 1) throw requestError('Only an open request can be cancelled. A payment awaiting confirmation must be checked first.');
     return { ok: true };
   }
@@ -36,7 +36,7 @@ export async function handleRequestRecords(base44, rpcUrl, wallet, body) {
   }
   const filter = { recipient_wallet_at_creation: wallet };
   if (body.filter === 'SINGLE_USE') filter.kind = 'SINGLE_USE';
-  else if (body.filter === 'REUSABLE') filter.$or = [{ kind: 'REUSABLE' }, { kind: { $exists: false } }];
+  else if (body.filter === 'REUSABLE') filter.$or = [{ kind: 'REUSABLE' }, { kind: null }, { kind: { $exists: false } }];
   const page = await client.entities.PayLink.filter(filter, { sort: '-created_at', limit: 20, ...(body.cursor ? { cursor: body.cursor } : {}) });
   const items = [];
   for (let offset = 0; offset < page.items.length; offset += 5) items.push(...await Promise.all(page.items.slice(offset, offset + 5).map(async link => {

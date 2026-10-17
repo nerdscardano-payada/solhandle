@@ -17,7 +17,7 @@ export default function Receive() {
   const { t } = useLanguage();
   const ownership = useQuery({ queryKey: ['receive-handles', wallet], enabled: Boolean(wallet), queryFn: async () => (await base44.functions.invoke('getOwnerHandles', { wallet })).data.handles });
   const primary = useQuery({ queryKey: ['receive-primary', wallet], enabled: Boolean(wallet), queryFn: async () => (await base44.functions.invoke('reverseResolveSolHandle', { address: wallet })).data.primaryHandle });
-  const pull = usePullToRefresh(() => wallet ? Promise.all([ownership.refetch(), primary.refetch()]) : Promise.resolve());
+  const pull = usePullToRefresh(() => { setRevision(value => value + 1); return wallet ? Promise.all([ownership.refetch(), primary.refetch()]) : Promise.resolve(); });
   return <main ref={pull.ref} data-mobile-scroll-panel className="dark min-h-screen bg-hero-canvas text-foreground"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><Header/><section className="mx-auto max-w-2xl px-5 py-8 md:py-12">
     <h1 className="text-3xl font-semibold">{t('Receive SOL')}</h1>
     <p className="mt-2 text-sm text-muted-foreground">{t('Share your payment QR')}</p>

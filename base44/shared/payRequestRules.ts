@@ -26,9 +26,11 @@ export function assertPayLink(link, amount, recoverySignature = '') {
   if (link.kind === 'SINGLE_USE' && solLamports(link.requested_amount_sol) !== amount) throw requestError('The amount must match the fixed amount on this payment request.', 400);
 }
 export function transactionHasRequest(tx, link) {
-  return tx.instructions.some(ix => ix.programId.equals(new PublicKey(PAY_MEMO)) && new TextDecoder().decode(ix.data) === requestMemo(link.id));
+  const references = tx.instructions.filter(ix => ix.programId.equals(new PublicKey(PAY_MEMO))).map(ix => new TextDecoder().decode(ix.data)).filter(text => text.startsWith('SolHandle Pay request:'));
+  return references.length === 1 && references[0] === requestMemo(link.id);
 }
 export function confirmedRequestMatches(details, link) {
   const instructions = details.transaction?.message?.instructions || [];
-  return instructions.some(ix => String(ix.programId) === PAY_MEMO && ix.parsed === requestMemo(link.id));
+  const references = instructions.filter(ix => String(ix.programId) === PAY_MEMO && typeof ix.parsed === 'string' && ix.parsed.startsWith('SolHandle Pay request:'));
+  return references.length === 1 && references[0].parsed === requestMemo(link.id);
 }

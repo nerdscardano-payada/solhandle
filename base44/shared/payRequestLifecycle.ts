@@ -29,7 +29,7 @@ export async function refreshPayLink(base44, rpcUrl, link, verifyOwner = true) {
     if (!owner?.safeForNativeSol || owner.address !== link.recipient_wallet_at_creation) status = 'INVALID';
   }
   if (status !== 'OPEN') {
-    await client.entities.PayLink.updateMany({ id: link.id, $or: [{ status: 'OPEN' }, { status: { $exists: false } }] }, { $set: { status } });
+    await client.entities.PayLink.updateMany({ id: link.id, $or: [{ status: 'OPEN' }, { status: null }, { status: { $exists: false } }] }, { $set: { status } });
     return await client.entities.PayLink.get(link.id);
   }
   return link;

@@ -90,9 +90,9 @@ export default async function(req: Request): Promise<Response> {
         if (link?.kind === 'SINGLE_USE') return Response.json({ signature, pending: true, error: 'This request is reserved for your signed payment. Check confirmation before trying again.' }, { status: 202 });
         throw error;
       }
-    } else if (link) {
+    } else if (link?.kind === 'SINGLE_USE') {
       assertPayLink(link, amount, signature);
-      if (link.kind === 'SINGLE_USE' && (link.processing_signature !== signature || link.processing_sender !== sender)) return fail('This signature does not match the payment being processed for this request.', 403);
+      if (link.processing_signature !== signature || link.processing_sender !== sender) return fail('This signature does not match the payment being processed for this request.', 403);
     }
     if (!/^[1-9A-HJ-NP-Za-km-z]{64,90}$/.test(signature)) return fail('Invalid transaction signature.');
     for (let attempt = 0; attempt < 18; attempt++) {
