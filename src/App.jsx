@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { useIsMobile } from '@/hooks/use-mobile';
+import MobilePageTransition from '@/components/solhandle/navigation/MobilePageTransition';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -94,8 +93,7 @@ import NativeDialogLocalization from '@/components/i18n/NativeDialogLocalization
 const AuthenticatedApp = () => {
   const location = useLocation();
   const { pathname } = location;
-  const isMobile = useIsMobile();
-  const reducedMotion = useReducedMotion();
+
   const isWidget = pathname.startsWith('/widgets/');
   const showMobileTabs = !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
   const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/earn', '/explore', '/names'].includes(pathname);
@@ -125,8 +123,7 @@ const AuthenticatedApp = () => {
   return (
     <PlatformSurface>
       {isChildPage && <MobileBackHeader />}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div key={pathname} className={isChildPage ? 'mobile-child-page min-w-0' : 'min-w-0'} initial={isMobile && !isWidget && !reducedMotion ? { x: 20, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} exit={isMobile && !isWidget && !reducedMotion ? { x: -16, opacity: 0 } : undefined} transition={{ duration: isMobile && !reducedMotion ? 0.18 : 0 }}>
+      <MobilePageTransition className={isChildPage ? 'mobile-child-page min-w-0' : 'min-w-0'}>
           <Suspense fallback={<div role="status" aria-label="Loading page" className="flex min-h-[50dvh] items-center justify-center"><span className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-names-accent"/></div>}>
       <Routes location={location}>
         <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
@@ -208,8 +205,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
           </Suspense>
-        </motion.div>
-      </AnimatePresence>
+      </MobilePageTransition>
       {!isWidget && <div className="hidden md:block"><Footer /></div>}
       {!isWidget && <AttoChat />}
       {showMobileTabs && <MobileAppNavigation />}

@@ -3,48 +3,45 @@ import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import useTabScroll from '@/components/solhandle/navigation/useTabScroll';
 import getMobileTabStack from '@/components/solhandle/navigation/getMobileTabStack';
+import { emptyTabHistory, updateMobileTabHistory } from '@/components/solhandle/navigation/updateMobileTabHistory';
 
 const Context = createContext(null);
 export const useMobileTabs = () => useContext(Context);
-const roots = ['/', '/pay', '/receive', '/my-handles', '/contacts'];
 const allowed = path => !path.startsWith('/admin') && !path.startsWith('/widgets/') && !['/login', '/register', '/forgot-password', '/reset-password', '/mint', '/oauth-consent'].includes(path);
 export default function MobileTabProvider({ children }) {
   const location = useLocation(), navigate = useNavigate(), type = useNavigationType(), mobile = useIsMobile();
-  const stacks = useRef(Object.fromEntries(roots.map(root => [root, { entries: [], index: -1 }])));
-  const selected = useRef('/'), active = useRef(null), sequence = useRef(0);
+  const stacks = useRef(location.state?.solhandleTab?.stacks || emptyTabHistory());
+  const selected = useRef(location.state?.solhandleTab?.tab || '/'), active = useRef(null), lastTap = useRef(null);
   const [ticket, setTicket] = useState(null);
   const enabled = mobile && allowed(location.pathname);
   const save = useTabScroll(ticket, enabled, active);
   useLayoutEffect(() => {
     if (!enabled) return;
-    const intent = location.state?.solhandleTab;
-    let tab = roots.includes(location.pathname) ? location.pathname : location.pathname === '/search' ? '/' : selected.current;
-    let index = -1;
-    for (const root of roots) {
-      const found = getMobileTabStack(stacks.current, root).entries.findIndex(entry => (intent?.tab === root && entry.id === intent.id && entry.url === location.pathname + location.search + location.hash) || entry.keys.includes(location.key));
-      if (found >= 0) { tab = root; index = found; break; }
-    }
-    const stack = getMobileTabStack(stacks.current, tab), url = location.pathname + location.search + location.hash;
-    if (index >= 0) stack.index = index;
-    else {
-      const entry = { id: ++sequence.current, keys: [location.key], url, state: location.state };
-      if (type === 'REPLACE' && stack.index >= 0 && selected.current === tab) stack.entries[stack.index] = entry;
-      else { stack.entries = stack.entries.slice(0, stack.index + 1); stack.entries.push(entry); stack.index = stack.entries.length - 1; }
-    }
-    selected.current = tab; active.current = stack.entries[stack.index];
-    if (!active.current.keys.includes(location.key)) active.current.keys.push(location.key);
-    setTicket({ entry: active.current, key: location.key });
+    const next = updateMobileTabHistory(stacks.current, location, type, { tab: selected.current, entry: active.current }, () => crypto.randomUUID());
+    selected.current = next.tab; active.current = next.entry;
+    setTicket({ ...next, key: location.key });
   }, [location, type, enabled]);
-  const visit = (tab, entry) => {
+  const visit = (tab, entry, move = 'tab', reset) => {
     save();
     if (active.current) active.current.url = window.location.pathname + window.location.search + window.location.hash;
-    navigate(entry?.url || tab, { state: { ...entry?.state, solhandleTab: { tab, id: entry?.id } } });
+    navigate(entry?.url || tab, { replace: move === 'reset', state: { ...entry?.state, solhandleTab: { tab, id: entry?.id, move, reset, stacks: structuredClone(stacks.current) } } });
   };
-  const selectTab = tab => { if (tab !== selected.current) { const stack = getMobileTabStack(stacks.current, tab); visit(tab, stack.entries[stack.index]); } };
+  const selectTab = tab => {
+    const now = performance.now(), doubleTap = lastTap.current?.tab === tab && now - lastTap.current.time < 350;
+    lastTap.current = { tab, time: now };
+    if (doubleTap && tab === selected.current) {
+      const root = { id: crypto.randomUUID(), keys: [], url: tab, state: {}, scroll: { x: 0, y: 0, panels: [] } };
+      stacks.current[tab] = { entries: [root], index: 0 };
+      lastTap.current = null; visit(tab, root, 'reset', root.id);
+    } else if (tab !== selected.current) { const stack = getMobileTabStack(stacks.current, tab); visit(tab, stack.entries[stack.index]); }
+  };
   const back = () => {
     const stack = getMobileTabStack(stacks.current, selected.current);
     if (!enabled || stack.index <= 0) return false;
-    visit(selected.current, stack.entries[stack.index - 1]); return true;
+    const entry = stack.entries[stack.index - 1], delta = entry.historyIndex - window.history.state?.idx;
+    if (Number.isFinite(delta) && delta < 0) { save(); navigate(delta); }
+    else visit(selected.current, entry, 'pop');
+    return true;
   };
-  return <Context.Provider value={{ enabled, activeTab: selected.current, selectTab, back, target: tab => { const stack = getMobileTabStack(stacks.current, tab); return stack.entries[stack.index]?.url || tab; } }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ enabled, direction: ticket?.direction || 0, activeTab: selected.current, selectTab, back, target: tab => { const stack = getMobileTabStack(stacks.current, tab); return stack.entries[stack.index]?.url || tab; } }}>{children}</Context.Provider>;
 }
