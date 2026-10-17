@@ -9,6 +9,7 @@ import relativeTime from '@/components/i18n/relativeTime';
 import pageTranslations from '@/components/i18n/pageTranslations';
 import integrationTranslationSources from '@/components/i18n/integrationTranslationSources';
 import androidTranslations from '@/components/i18n/androidTranslations';
+import payTranslations from '@/components/i18n/payTranslations';
 
 const integrationLocales = import.meta.glob('./integration-locales/*.json', { import: 'default', eager: true });
 const demoLocales = import.meta.glob('/demo-locales/??.json', { import: 'default', eager: true });
@@ -26,7 +27,9 @@ export default function LanguageProvider({ children }) {
   });
   const [loaded, setLoaded] = useState({ language: 'en', texts: emptyTranslations });
   const demoTexts = language === 'en' ? emptyTranslations : demoLocales[`/demo-locales/${language}.json`] || emptyTranslations;
-  const staticTranslations = useMemo(() => ({ ...(loaded.language === language ? loaded.texts : emptyTranslations), ...demoTexts }), [loaded, language, demoTexts]);
+  const payTexts = payTranslations[language] || emptyTranslations;
+  const staticTranslations = useMemo(() => ({ ...(loaded.language === language ? loaded.texts : emptyTranslations), ...demoTexts, ...payTexts }), [loaded, language, demoTexts, payTexts]);
+  const translatePay = useMemo(() => createStaticTranslator(payTexts), [payTexts]);
   const translateDemo = useMemo(() => createStaticTranslator(demoTexts), [demoTexts]);
   const setLanguage = code => { if (languages.some(([value]) => value === code)) updateLanguage(code); };
   useEffect(() => {
@@ -45,7 +48,7 @@ export default function LanguageProvider({ children }) {
     localStorage.setItem('solhandle_language', language);
     document.documentElement.lang = language;
   }, [language]);
-  const t = text => { const demoText = translateDemo(text, true); return demoText !== text ? demoText : androidTranslations[language]?.[text] || bannerHeroTranslations[language]?.[text] || pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || staticTranslations[text] || text; };
+  const t = text => { const demoText = translateDemo(text, true); return demoText !== text ? demoText : androidTranslations[language]?.[text] || bannerHeroTranslations[language]?.[text] || pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || staticTranslations[text] || translatePay(text); };
   const formatRelativeTime = value => relativeTime(value, language, t('Unknown'));
   return <LanguageContext.Provider value={{ language, setLanguage, t, formatRelativeTime, staticTranslations }}>{children}</LanguageContext.Provider>;
 }
