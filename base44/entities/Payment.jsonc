@@ -30,6 +30,9 @@
       "type": "string",
       "pattern": "^[0-9]+$"
     },
+    "amount_tokens": {
+      "type": "number"
+    },
     "token_mint": {
       "type": "string"
     },

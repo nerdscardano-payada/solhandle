@@ -19,7 +19,7 @@ export default function Receive() {
   const primary = useQuery({ queryKey: ['receive-primary', wallet], enabled: Boolean(wallet), queryFn: async () => (await base44.functions.invoke('reverseResolveSolHandle', { address: wallet })).data.primaryHandle });
   const pull = usePullToRefresh(() => { setRevision(value => value + 1); return wallet ? Promise.all([ownership.refetch(), primary.refetch()]) : Promise.resolve(); });
   return <main ref={pull.ref} data-mobile-scroll-panel className="dark min-h-screen bg-hero-canvas text-foreground"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><Header/><section className="mx-auto max-w-2xl px-5 py-8 md:py-12">
-    <h1 className="text-3xl font-semibold">{t('Receive SOL')}</h1>
+    <h1 className="text-3xl font-semibold">{t('Receive SOL, USDC, USDT or HANDLE')}</h1>
     <p className="mt-2 text-sm text-muted-foreground">{t('Share your payment QR')}</p>
     {wallet && ownership.isError ? <div role="alert" className="mt-6 rounded-xl border border-destructive p-4 text-sm"><p>{t('Could not verify your handles. Please try again.')}</p><button type="button" onClick={() => ownership.refetch()} className="mt-2 text-names-accent">{t('Retry')}</button></div> : <PayLinkGenerator key={wallet} handles={ownership.data || []} wallet={wallet} primaryHandle={primary.data || ''} loading={Boolean(wallet) && ownership.isPending} onCreated={() => setRevision(value => value + 1)}/>}
     {wallet && ownership.isSuccess && !ownership.data.length && <Link to="/" className="mt-5 inline-flex items-center text-sm text-names-accent">{t('Mint a Handle')} →</Link>}

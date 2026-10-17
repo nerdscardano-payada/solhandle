@@ -3,6 +3,7 @@ import { getAssociatedTokenAddressSync, createAssociatedTokenAccountIdempotentIn
 import { Buffer } from 'node:buffer';
 import walletAssertionInstruction from './walletAssertionInstruction.ts';
 import getPayToken from './payAssets.ts';
+import { requestMemo } from './payRequestRules.ts';
 
 // Official Solana USDt mint: https://tether.to/en/supported-protocols/
 export const USDT_MINT = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB';
@@ -29,6 +30,7 @@ export function usdtTransaction(context, blockhash, createAccount) {
   if (createAccount) tx.add(createAssociatedTokenAccountIdempotentInstruction(owner, destination, receiver, mint, tokenProgram));
   tx.add(createTransferCheckedInstruction(source, mint, destination, owner, usdtAmount(amountRaw), token.decimals, [], tokenProgram));
   tx.add(new TransactionInstruction({ programId: MEMO, keys: [], data: Buffer.from(`SolHandle Pay ${token.asset}:@${handle}:${recipient}:${lastValidBlockHeight}`) }));
+  if (context.requestId) tx.add(new TransactionInstruction({ programId: MEMO, keys: [], data: Buffer.from(requestMemo(context.requestId)) }));
   return tx;
 }
 const same = (a, b) => a.programId.equals(b.programId) && Buffer.from(a.data).equals(Buffer.from(b.data)) && a.keys.length === b.keys.length && a.keys.every((key, i) => key.pubkey.equals(b.keys[i].pubkey));

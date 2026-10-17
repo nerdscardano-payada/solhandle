@@ -5,6 +5,10 @@ import { normalizeHandle, resolveOnChain, reverseOnChain } from './solhandleReso
 import { TOKEN_PROGRAM_ID, payError, usdtAmount, usdtAccounts, usdtTransaction, validateUsdtSigned, verifyUsdtBalances, to64 } from './usdtPayTransaction.ts';
 import getPayToken from './payAssets.ts';
 import { resolveContactPayment } from './contactPayment.ts';
+import { findPayLink, assertPayLink } from './payRequestRules.ts';
+import { refreshPayLink, claimPayLink } from './payRequestLifecycle.ts';
+import { matchTokenPayRequest } from './payRequestAmounts.ts';
+import confirmedTokenPayment from './tokenPayConfirmation.ts';
 
 async function prepareUsdt(rpcUrl, context, resolved) {
   const token = getPayToken(context.asset);
@@ -39,46 +43,45 @@ async function prepareUsdt(rpcUrl, context, resolved) {
   if (Number(balance.value) < fee.value + rent) throw payError('Insufficient SOL for the network fee and recipient token account deposit.', 422);
   return { savedContact: !!resolved.savedContact, handleChanged: !!resolved.handleChanged, asset: token.asset, mint: token.mint, decimals: token.decimals, amountRaw: context.amountRaw, displayHandle: resolved.handle, destinationAddress: context.recipient, destinationTokenAccount: destination.toBase58(), senderWallet: context.sender, availableRaw: available, solBalanceLamports: balance.value, networkFeeEstimate: fee.value, accountCreationLamports: rent, createsTokenAccount: !recipientToken, lastValidBlockHeight: context.lastValidBlockHeight, serializedTransaction: to64(tx.serialize({ requireAllSignatures: false, verifySignatures: false })) };
 }
-async function confirmedUsdt(base44, rpcUrl, signature, context, details) {
-  const token = getPayToken(context.asset);
-  if (details.meta?.err) return { signature, failed: true, error: `Solana rejected this ${token.asset} payment. No ${token.asset} was transferred; a network fee may have been charged.` };
-  const chainTx = validateUsdtSigned(details.transaction[0], context);
-  if (bs58.encode(chainTx.signature) !== signature) throw payError('On-chain signature mismatch.', 403);
-  verifyUsdtBalances(details, context);
-  const existing = await base44.asServiceRole.entities.Payment.filter({ tx_signature: signature }, { limit: 1 });
-  if (existing.items[0]) {
-    const payment = existing.items[0];
-    if (payment.asset !== token.asset || payment.token_mint !== token.mint || payment.amount_raw !== context.amountRaw || payment.sender_wallet !== context.sender || payment.receiver_wallet !== context.recipient || payment.handle !== `@${context.handle}`) throw payError('This signature is already recorded for a different payment.', 409);
-    return { signature, payment };
-  }
-  let primary = '';
-  try { primary = (await reverseOnChain(rpcUrl, context.sender))?.primaryHandle || ''; } catch { /* Optional display only. */ }
-  const time = details.blockTime ? new Date(details.blockTime * 1000).toISOString() : new Date().toISOString();
-  const saved = await base44.asServiceRole.entities.Payment.upsert([{ handle: `@${context.handle}`, receiver_wallet: context.recipient, sender_wallet: context.sender, sender_primary_handle: primary, asset: token.asset, token_mint: token.mint, token_decimals: token.decimals, amount_raw: context.amountRaw, tx_signature: signature, status: 'CONFIRMED', created_at: time, confirmed_at: time }], { key: 'tx_signature' });
-  return { signature, payment: saved.records[0] };
-}
 export async function handleUsdtPayment(base44, rpcUrl, body) {
   const token = getPayToken(body.asset);
   if (!['prepare', 'submit', 'recover'].includes(body.action)) throw payError(`Unsupported ${token.asset} payment action.`);
-  if (body.requestId) throw payError('Payment requests remain SOL-only. Choose a direct recipient or a saved contact instead.');
+  if (body.requestId && body.contactId) throw payError('Choose either a saved contact or a payment link, not both.');
   if (body.mint != null && body.mint !== token.mint) throw payError(`Only official ${token.asset} on Solana is supported.`);
   const handle = normalizeHandle(body.handle);
   if (!/^[a-z0-9]{1,20}$/.test(handle)) throw payError('Enter a valid @handle (1–20 letters or numbers).');
   const context = { asset: token.asset, handle, sender: new PublicKey(String(body.senderWallet || '')).toBase58(), recipient: '', amountRaw: usdtAmount(body.amountRaw).toString(), lastValidBlockHeight: Number(body.lastValidBlockHeight) };
-  const recipient = () => body.contactId ? resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, context.sender) : resolveOnChain(rpcUrl, handle);
-  if (body.action === 'prepare') return Response.json(await prepareUsdt(rpcUrl, context, await recipient()));
+  let link = body.requestId != null ? await findPayLink(base44.asServiceRole, body.requestId) : null;
+  if (link) context.requestId = link.id;
+  matchTokenPayRequest(link, context);
+  const recipient = async () => {
+    const resolved = body.contactId ? await resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, context.sender) : await resolveOnChain(rpcUrl, handle);
+    if (link && (!resolved?.safeForNativeSol || resolved.address !== link.recipient_wallet_at_creation)) throw payError('This @handle has changed ownership. Request a new payment link.', 409);
+    return resolved;
+  };
+  if (body.action === 'prepare') {
+    if (link) link = await refreshPayLink(base44, rpcUrl, link, false);
+    assertPayLink(link, context.amountRaw, '', token.asset);
+    return Response.json(await prepareUsdt(rpcUrl, context, await recipient()));
+  }
   context.recipient = new PublicKey(String(body.recipientWallet || '')).toBase58();
+  matchTokenPayRequest(link, context);
   if (!Number.isSafeInteger(context.lastValidBlockHeight) || context.lastValidBlockHeight < 1) throw payError('Missing transaction expiry. Review the payment again.');
   const signed = validateUsdtSigned(body.signedTransaction, context), signature = bs58.encode(signed.signature);
   if (body.signature && body.signature !== signature) throw payError('Payment signature does not match the signed transaction.', 403);
   const getDetails = () => rpc(rpcUrl, 'getTransaction', [signature, { encoding: 'base64', commitment: 'confirmed', maxSupportedTransactionVersion: 0 }]);
   let details = await getDetails();
-  if (details) return Response.json(await confirmedUsdt(base44, rpcUrl, signature, context, details));
+  if (details) return Response.json(await confirmedTokenPayment(base44, rpcUrl, signature, context, details, link));
   if (body.action === 'submit') {
-    const resolved = await recipient();
-    if (!resolved?.safeForNativeSol || resolved.address !== context.recipient) return Response.json({ notSubmitted: true, error: 'The recipient changed or is no longer safe. Review the payment before signing again.' }, { status: 409 });
-    const fee = await rpc(rpcUrl, 'getFeeForMessage', [to64(signed.serializeMessage()), { commitment: 'confirmed' }]);
-    if (!Number.isSafeInteger(fee?.value) || fee.value > 105000) return Response.json({ notSubmitted: true, error: 'The transaction expired or its fee could not be verified. Review it again.' }, { status: 409 });
+    try {
+      if (link) link = await refreshPayLink(base44, rpcUrl, link, false);
+      assertPayLink(link, context.amountRaw, signature, token.asset);
+      const resolved = await recipient();
+      if (!resolved?.safeForNativeSol || resolved.address !== context.recipient) throw payError('The recipient changed or is no longer safe. Review the payment before signing again.', 409);
+      const fee = await rpc(rpcUrl, 'getFeeForMessage', [to64(signed.serializeMessage()), { commitment: 'confirmed' }]);
+      if (!Number.isSafeInteger(fee?.value) || fee.value > 105000) throw payError('The transaction expired or its fee could not be verified. Review it again.', 409);
+      if (link) await claimPayLink(base44.asServiceRole, link, signed, signature, context.sender, 0, context);
+    } catch (error) { return Response.json({ notSubmitted: true, error: error.message }, { status: error.status || 503 }); }
     // Sending only the exact signed bytes is idempotent. An RPC timeout is not proof of failure.
     try { await rpc(rpcUrl, 'sendTransaction', [body.signedTransaction, { encoding: 'base64', preflightCommitment: 'confirmed', maxRetries: 3 }]); }
     catch { return Response.json({ signature, pending: true, error: 'Submission could not be confirmed. Check this payment before signing another one.' }, { status: 202 }); }
@@ -86,7 +89,7 @@ export async function handleUsdtPayment(base44, rpcUrl, body) {
   for (let attempt = 0; attempt < 7; attempt++) {
     await new Promise(resolve => setTimeout(resolve, 1200));
     details = await getDetails();
-    if (details) return Response.json(await confirmedUsdt(base44, rpcUrl, signature, context, details));
+    if (details) return Response.json(await confirmedTokenPayment(base44, rpcUrl, signature, context, details, link));
   }
   const [height, statuses] = await Promise.all([rpc(rpcUrl, 'getBlockHeight', [{ commitment: 'finalized' }]), rpc(rpcUrl, 'getSignatureStatuses', [[signature], { searchTransactionHistory: true }])]);
   const status = statuses.value[0];

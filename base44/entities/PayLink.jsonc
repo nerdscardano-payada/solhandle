@@ -12,6 +12,21 @@
       "type": "string",
       "format": "date-time"
     },
+    "asset": {
+      "type": "string",
+      "enum": [
+        "SOL",
+        "USDC",
+        "USDT",
+        "HANDLE"
+      ]
+    },
+    "requested_amount": {
+      "type": "string"
+    },
+    "requested_amount_raw": {
+      "type": "string"
+    },
     "requested_amount_sol": {
       "type": "string"
     },
@@ -60,6 +75,12 @@
     },
     "processing_blockhash": {
       "type": "string"
+    },
+    "processing_amount_raw": {
+      "type": "string"
+    },
+    "processing_last_valid_height": {
+      "type": "number"
     }
   },
   "required": [

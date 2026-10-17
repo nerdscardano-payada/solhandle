@@ -27,7 +27,7 @@ export default async function(req: Request): Promise<Response> {
     if (body.action === 'link_status') {
       const link = await refreshPayLink(base44, rpcUrl, await findPayLink(base44.asServiceRole, body.requestId));
       const status = linkStatus(link);
-      return Response.json({ handle: link.handle, amount: link.requested_amount_sol || '', valid: status === 'OPEN', status, kind: link.kind || 'REUSABLE', fixedAmount: link.kind === 'SINGLE_USE', description: link.description || '', expiresAt: link.expires_at || '', message: status === 'OPEN' ? '' : statusMessage(status) });
+      return Response.json({ handle: link.handle, asset: link.asset || 'SOL', amount: link.asset && link.asset !== 'SOL' ? link.requested_amount || '' : link.requested_amount_sol || '', valid: status === 'OPEN', status, kind: link.kind || 'REUSABLE', fixedAmount: link.kind === 'SINGLE_USE', description: link.description || '', expiresAt: link.expires_at || '', message: status === 'OPEN' ? '' : statusMessage(status) });
     }
     const handle = normalizeHandle(body.handle);
     if (!/^[a-z0-9]{1,20}$/.test(handle)) return fail('Enter a valid @handle (1–20 letters or numbers).');

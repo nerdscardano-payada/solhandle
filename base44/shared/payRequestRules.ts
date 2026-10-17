@@ -18,12 +18,13 @@ export async function findPayLink(client, id) {
 }
 export const linkStatus = link => link.status === 'PROCESSING' || link.status === 'PAID' || link.status === 'CANCELLED' || link.status === 'INVALID' ? link.status : link.expires_at && Date.parse(link.expires_at) <= Date.now() ? 'EXPIRED' : link.status || 'OPEN';
 export const statusMessage = status => ({ PROCESSING: 'This request has a payment awaiting confirmation. Do not pay again.', PAID: 'This payment request has already been paid.', CANCELLED: 'This payment request was cancelled by its creator.', EXPIRED: 'This payment request has expired.', INVALID: 'This @handle has changed ownership. Request a new payment link.' }[status] || 'This payment request is not open.');
-export function assertPayLink(link, amount, recoverySignature = '') {
+export function assertPayLink(link, amount, recoverySignature = '', asset = 'SOL') {
   if (!link) return;
+  if ((link.asset || 'SOL') !== asset) throw requestError('The payment currency must match this request.', 400);
   const status = linkStatus(link);
   const ownAttempt = recoverySignature && link.processing_signature === recoverySignature && ['PROCESSING', 'PAID'].includes(status);
   if (status !== 'OPEN' && !ownAttempt) throw requestError(statusMessage(status));
-  if (link.kind === 'SINGLE_USE' && solLamports(link.requested_amount_sol) !== amount) throw requestError('The amount must match the fixed amount on this payment request.', 400);
+  if (link.kind === 'SINGLE_USE' && (asset === 'SOL' ? solLamports(link.requested_amount_sol) !== amount : link.requested_amount_raw !== String(amount))) throw requestError('The amount must match the fixed amount on this payment request.', 400);
 }
 export function transactionHasRequest(tx, link) {
   const references = tx.instructions.filter(ix => ix.programId.equals(new PublicKey(PAY_MEMO))).map(ix => new TextDecoder().decode(ix.data)).filter(text => text.startsWith('SolHandle Pay request:'));
