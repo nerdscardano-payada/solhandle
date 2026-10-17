@@ -479,5 +479,7 @@
   "{0} Tier": "{0} Tier",
   "← Integration Center": "← Integration Center",
   "← My Handles": "← My Handles",
-  "✓ Verified on-chain": "✓ Verified on-chain"
+  "✓ Verified on-chain": "✓ Verified on-chain",
+  "PENDING": "PENDING",
+  "FAILED": "FAILED"
 }
