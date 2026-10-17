@@ -28,7 +28,7 @@ export default function StaticTextLocalization() {
     };
     const scan = () => {
       frame = null;
-      const surfaces = [root, ...document.querySelectorAll('[data-demo-localization]')].filter((element, index, all) => !all.slice(0, index).some(other => other.contains(element)));
+      const surfaces = [root, ...document.querySelectorAll('[data-demo-localization], [role="dialog"], [role="menu"], [role="listbox"]')].filter((element, index, all) => !all.slice(0, index).some(other => other.contains(element)));
       surfaces.forEach(surface => {
         const walker = document.createTreeWalker(surface, NodeFilter.SHOW_TEXT);
         while (walker.nextNode()) {
