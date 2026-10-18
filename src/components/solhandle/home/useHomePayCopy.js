@@ -29,7 +29,16 @@ const nl = {
   'Do I need a handle to pay someone?': 'Heb ik een handle nodig om iemand te betalen?',
   'No. Connect a compatible Solana wallet to pay an @handle or a payment request. Claim a handle when you want your own recognizable identity.': 'Nee. Verbind een geschikte Solana-wallet om een @handle of betaalverzoek te betalen. Claim een handle als je zelf een herkenbare identiteit wilt.',
 };
+const paymentAssets = 'SOL, USDC, USDT or HANDLE';
+const assetConjunctions = { en: 'or', nl: 'of', de: 'oder', fr: 'ou', es: 'o', it: 'o', pt: 'ou', ja: 'または', ko: '또는', tr: 'veya', vi: 'hoặc' };
+
 export default function useHomePayCopy() {
   const { language, t } = useLanguage();
-  return text => language === 'nl' ? nl[text] || t(text) : t(text);
+  return text => {
+    // Reuse each complete translated sentence with a localized asset-list substitution.
+    const expanded = text.includes(paymentAssets);
+    const source = expanded ? text.replace(paymentAssets, 'SOL') : text;
+    const translated = language === 'nl' ? nl[source] || t(source) : t(source);
+    return expanded ? translated.replace(/SOL/g, `SOL, USDC, USDT ${assetConjunctions[language] || 'or'} HANDLE`) : translated;
+  };
 }
