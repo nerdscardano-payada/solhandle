@@ -5,7 +5,7 @@ import errors from '@/lib/solhandle-sdk/errors.js?raw';
 import license from '@/lib/solhandle-sdk/LICENSE?raw';
 import { guideSections } from '@/components/solhandle/parallax/parallaxGuide';
 
-export default function ParallaxGuideAssets() {
+export default function ParallaxGuideAssets({ sections = guideSections, partTwo = false }) {
   const [notice, setNotice] = useState('');
   const download = (name, content, type) => {
     const url = URL.createObjectURL(new Blob([content], { type }));
@@ -16,9 +16,9 @@ export default function ParallaxGuideAssets() {
     const source = sdk.replace('import { ERROR_CODES, SolHandleError } from "./errors.js";', '').replace('export { ERROR_CODES, SolHandleError };', '');
     download('solhandle-sdk.mjs', '/*\n' + license + '\n*/\n' + errors + '\n' + source, 'text/javascript;charset=utf-8');
   };
-  const downloadGuide = () => download('solhandle-parallax-integration.md', '# SolHandle × Parallax\n\nProject Passport integration guide\n\n' + guideSections.map(section => '## ' + section.title + '\n\n' + section.text + '\n\n' + (section.code ? '```\n' + section.code + '\n```\n\n' : '') + section.bullets.map(text => '- ' + text).join('\n')).join('\n\n'), 'text/markdown;charset=utf-8');
+  const downloadGuide = () => download(partTwo ? 'solhandle-parallax-part-2.md' : 'solhandle-parallax-integration.md', (partTwo ? '# SolHandle × Parallax · Part 2\n\n19 October 2026\n\nWallet Watch, Atlas, Passports and handle-transfer requirements. Use with Part 1 at /integrations/parallax.\n\n' : '# SolHandle × Parallax\n\nProject Passport integration guide\n\n') + sections.map(section => '## ' + section.title + '\n\n' + section.text + '\n\n' + (section.code ? '```\n' + section.code + '\n```\n\n' : '') + section.bullets.map(text => '- ' + text).join('\n')).join('\n\n'), 'text/markdown;charset=utf-8');
   const copy = async () => {
-    try { await navigator.clipboard.writeText(window.location.origin + '/integrations/parallax'); setNotice('Guide link copied.'); }
+    try { await navigator.clipboard.writeText(window.location.origin + '/integrations/parallax' + (partTwo ? '#part-2' : '')); setNotice('Guide link copied.'); }
     catch { setNotice('Copy the guide URL from your browser address bar.'); }
   };
   return <div className="mt-7"><div className="flex flex-wrap gap-3">
