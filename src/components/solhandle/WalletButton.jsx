@@ -51,10 +51,17 @@ export default function WalletButton({ onConnected }) {
   });
   useEffect(() => {
     const pendingClaim = new URLSearchParams(window.location.search).has("claim");
-    if (!pendingClaim || !isWalletBrowser() || publicKey || connecting || autoConnectAttempted.current) return;
-    const installed = wallets.find(({ readyState }) => readyState === "Installed");
+    if (!pendingClaim || !isMobileBrowser() || !isWalletBrowser() || publicKey || connecting || autoConnectAttempted.current) return;
+    const detected = [
+      window.phantom?.solana?.isPhantom && !window.phantom.solana.isBackpack && 'Phantom',
+      window.solflare?.isSolflare && 'Solflare',
+      window.backpack?.isBackpack && 'Backpack',
+    ].filter(Boolean);
+    // Multiple installed providers are not evidence of which wallet was chosen.
+    if (detected.length !== 1) return;
+    const installed = wallets.find(({ adapter, readyState }) => adapter.name === detected[0] && readyState === 'Installed');
     if (!selectedWallet && installed) { select(installed.adapter.name); return; }
-    if (selectedWallet) {
+    if (selectedWallet?.adapter.name === detected[0]) {
       autoConnectAttempted.current = true;
       connect().catch(() => setVisible(true));
     }

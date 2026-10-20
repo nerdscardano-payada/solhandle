@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { WalletContext, useWallet } from '@solana/wallet-adapter-react';
 import signConnectedMessage from '@/lib/signConnectedMessage';
+import { requestWalletConnection } from '@/lib/walletConnectionPolicy';
 
 export default function WalletSessionGuard({ children }) {
   const session = useWallet();
@@ -30,7 +31,8 @@ export default function WalletSessionGuard({ children }) {
       sendTransaction: guard(session.sendTransaction),
       // Changing wallet is an explicit disconnect/reconnect, never part of an action.
       select: name => {
-        if (current.current.connected && name !== current.current.wallet?.adapter.name) return;
+        if ((current.current.connected || current.current.connecting) && name !== current.current.wallet?.adapter.name) return;
+        if (name) requestWalletConnection(name);
         session.select(name);
       },
     };
