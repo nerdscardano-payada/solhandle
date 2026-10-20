@@ -1,0 +1,33 @@
+{
+  "manifest_format": 1,
+  "status": "candidate_design_pin_not_runtime_installed",
+  "unicode_version": "17.0.0",
+  "uts39_revision": 32,
+  "retrieved_on": "2026-10-20",
+  "hash_algorithm": "SHA-256",
+  "base_url": "https://www.unicode.org/Public/17.0.0/",
+  "provenance_note": "Bytes fetched directly from these versioned HTTPS URLs and hashed during architecture work. This records integrity, not an independent authenticity audit. The fetched release summary still displays a draft warning; final archived publication provenance and Unicode license review are required before devnet. No Unicode implementation, generated repertoire or conformance results are supplied by this manifest.",
+  "normalization": "NFC(Default_Full_Case_Fold(NFC(input)))",
+  "case_folding": "C/F mappings, non-Turkic default",
+  "identity_limits": {"max_graphemes": 20, "max_canonical_utf8_bytes": 80},
+  "generated_policy_artifact_sha256": null,
+  "engine_artifact_sha256": null,
+  "conformance_status": "not_run",
+  "files": [
+    {"path":"ucd/UnicodeData.txt","bytes":2198209,"sha256":"2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"},
+    {"path":"ucd/CaseFolding.txt","bytes":87539,"sha256":"ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183"},
+    {"path":"ucd/DerivedCoreProperties.txt","bytes":1134783,"sha256":"24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"},
+    {"path":"ucd/PropList.txt","bytes":145465,"sha256":"130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd"},
+    {"path":"ucd/Scripts.txt","bytes":192460,"sha256":"9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf"},
+    {"path":"ucd/ScriptExtensions.txt","bytes":20707,"sha256":"ec2107e58825a1586acee8e0911ce18260394ac8b87e535ca325f1ccbeb06bc6"},
+    {"path":"ucd/DerivedNormalizationProps.txt","bytes":1377582,"sha256":"71fd6a206a2c0cdd41feb6b7f656aa31091db45e9cedc926985d718397f9e488"},
+    {"path":"ucd/CompositionExclusions.txt","bytes":9007,"sha256":"2f239196ef3b5b61db5cc476e9bd80f534d15aa1b74e1be1dea5d042a344c85f"},
+    {"path":"ucd/auxiliary/GraphemeBreakProperty.txt","bytes":99377,"sha256":"d6b51d1d2ae5c33b451b7ed994b48f1f4dc62b2272a5831e7fd418514a6bae89"},
+    {"path":"ucd/auxiliary/GraphemeBreakTest.txt","bytes":126570,"sha256":"e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec"},
+    {"path":"ucd/NormalizationTest.txt","bytes":2827429,"sha256":"5019ffd530751a741900c849c0e010332f142a3612234639bd200b82138a87db"},
+    {"path":"ucd/emoji/emoji-data.txt","bytes":107324,"sha256":"2cb2bb9455cda83e8481541ecf5b6dfda66a3bb89efa3fa7c5297eccf607b72b"},
+    {"path":"security/confusables.txt","bytes":745683,"sha256":"091c7f82fc39ef208faf8f94d29c244de99254675e09de163160c810d13ef22a"},
+    {"path":"security/IdentifierStatus.txt","bytes":147969,"sha256":"617228a16da13850bf8af28b6cd08f5e9b6595d2eb60404fe6eee2c85b4e4a35"},
+    {"path":"security/IdentifierType.txt","bytes":527366,"sha256":"924ac63faa97ed73420d6ac48d08279d90968c7da0502ab701e08bfbb9683c22"}
+  ]
+}
