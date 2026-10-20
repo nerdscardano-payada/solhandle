@@ -11,7 +11,7 @@ export function allowWalletReconnect(adapter) {
     return true;
   }
   // Restore authorized accounts only. Legacy autoConnect() may open a prompt.
-  if (adapter.name === 'Phantom') {
+  if (adapter.name === 'Phantom' || adapter.name === 'SolHandle:Phantom') {
     const provider = window.phantom?.solana;
     return Boolean(provider?.isPhantom && !provider.isBackpack && provider.isConnected && provider.publicKey);
   }
