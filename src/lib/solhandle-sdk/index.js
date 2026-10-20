@@ -2,6 +2,7 @@ import { Connection, PublicKey, SystemProgram, TransactionInstruction } from "@s
 import { ERROR_CODES, SolHandleError } from "./errors.js";
 
 export { ERROR_CODES, SolHandleError };
+export { createPartnerMintClient, PartnerMintError, PARTNER_MINT_CLUSTER, PARTNER_MINT_PROGRAM_ID } from './partner-mint.js';
 export const PROGRAM_ID = new PublicKey("B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf");
 export const COLLECTION_ID = new PublicKey("7XZzcbeFBxQA63n9avz44vnbpv34hDGYyHfCDmTdPBJP");
 export const MPL_CORE_ID = new PublicKey("CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");

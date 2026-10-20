@@ -22,6 +22,15 @@ if (result) console.log(result.address.toBase58());
 
 Solana is the source of truth. Resolution does not call SolHandle, Base44, an indexer, or a private API.
 
+## Partner Mint source preview (1.1.0)
+
+The package now includes a **Devnet-only, administrator-authenticated Partner Mint SDK**
+with explicit cost review, local wallet signing, submission and saved-intent recovery.
+This version is local source, not a published npm release or public partner API.
+See [PARTNER_MINT.md](./PARTNER_MINT.md) and the runnable
+[Devnet integration example](./examples/partner-mint-devnet.js).
+Existing Mainnet resolution behavior remains unchanged.
+
 ## Mainnet constants
 
 - Program: `B7xiwfxGcR2Xz7tcUKrkB8Ly6NV8jU7LH1m6GJZRUuf`
@@ -33,7 +42,7 @@ These values are immutable exports in the package. Production integrations shoul
 
 ## Deployed protocol compatibility
 
-The Partner SDK package is version `1.0.0`, while the deployed on-chain protocol is version `2`. The live protocol uses lowercase `a-z` and `0-9`, 1–20 characters, with direct canonical-name PDA seeds. Hash-based seeds, underscores, 32-character names, and version fields inside every record would require a new on-chain protocol deployment and are intentionally not simulated by this SDK.
+The SDK source package is version `1.1.0`, while the Mainnet resolution protocol is version `2`. The live protocol uses lowercase `a-z` and `0-9`, 1–20 characters, with direct canonical-name PDA seeds. Hash-based seeds, underscores, 32-character names, and version fields inside every record would require a new on-chain protocol deployment and are intentionally not simulated by this SDK.
 
 ## Public API
 

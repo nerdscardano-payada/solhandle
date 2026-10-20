@@ -1,6 +1,6 @@
 {
   "name": "solhandle-sdk",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Official Mainnet Beta SDK for resolving and verifying SolHandle identities on Solana.",
   "type": "module",
   "main": "./index.js",
@@ -9,12 +9,23 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js"
+    },
+    "./partner-mint": {
+      "types": "./partner-mint.d.ts",
+      "import": "./partner-mint.js"
     }
   },
   "files": [
     "index.js",
     "index.d.ts",
     "errors.js",
+    "partner-mint.js",
+    "partner-mint.d.ts",
+    "partner-mint-errors.js",
+    "partner-mint-transport.js",
+    "partner-mint-validation.js",
+    "PARTNER_MINT.md",
+    "examples/partner-mint-devnet.js",
     "README.md",
     "LICENSE"
   ],

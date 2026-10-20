@@ -42,6 +42,7 @@ const SolHandleResolve = lazy(() => import('@/pages/SolHandleResolve'));
 const SolHandleWidgetPage = lazy(() => import('@/pages/SolHandleWidgetPage'));
 const TokenHandlesPlan = lazy(() => import('@/pages/TokenHandlesPlan'));
 const PartnerMint = lazy(() => import('@/pages/PartnerMint'));
+const PartnerMintSdkDevnet = lazy(() => import('@/pages/PartnerMintSdkDevnet'));
 const Integrations = lazy(() => import('@/pages/Integrations'));
 const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
 const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
@@ -145,6 +146,7 @@ const AuthenticatedApp = () => {
         <Route path="/developers/token-handles" element={<TokenHandlesPlan />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`} replace />} />}>
           <Route path="/mint" element={<PartnerMint />} />
+          <Route path="/developers/partner-mint/devnet-sdk" element={<PartnerMintSdkDevnet />} />
         </Route>
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />

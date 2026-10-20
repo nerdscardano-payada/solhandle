@@ -1,4 +1,5 @@
 import type { Commitment, Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
+export * from './partner-mint.js';
 
 export declare const PROGRAM_ID: PublicKey;
 export declare const COLLECTION_ID: PublicKey;

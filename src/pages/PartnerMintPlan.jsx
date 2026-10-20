@@ -17,7 +17,7 @@ export default function PartnerMintPlan() {
       <p className="mt-7 text-xs font-semibold uppercase tracking-widest text-names-secondary">Technical plan · planned, not live</p>
       <h1 className="mt-3 text-3xl font-semibold sm:text-5xl">SolHandle Partner Mint</h1>
       <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">Your interface. Our protocol. Shared revenue. A devnet-first, non-custodial integration plan for approved partners, with a 50/50 split on SOL mint fees only.</p>
-      {user?.role === 'admin' && <Link to="/mint?partner=devnet-testpartner" className="mt-6 inline-flex min-h-11 items-center rounded-lg border border-names-accent/40 bg-names-accent/10 px-5 py-3 text-sm font-semibold text-names-accent">Begin hier: fase 1 stappenplan · Devnet · alleen beheerders →</Link>}
+      {user?.role === 'admin' && <div className="mt-6 flex flex-wrap gap-3"><Link to="/developers/partner-mint/devnet-sdk?partner=devnet-testpartner" className="inline-flex min-h-11 items-center rounded-lg border border-names-accent/40 bg-names-accent/10 px-5 py-3 text-sm font-semibold text-names-accent">Fase 2: mint-SDK en Devnet-voorbeeld →</Link><Link to="/mint?partner=devnet-testpartner" className="inline-flex min-h-11 items-center rounded-lg border border-border px-5 py-3 text-sm text-muted-foreground">Fase 1: Devnet-partnerbeheer</Link></div>}
       <PartnerEmbedPreview/>
       <PartnerMintWebsiteExample/>
       <PartnerMintPhases showLink={false}/>
