@@ -1,7 +1,7 @@
 # International Handles V1 — architecture decisions
 
 Date: 2026-10-20
-State: PROPOSED DESIGN BASELINE, NOT IMPLEMENTED OR AUTHORIZED FOR DEPLOYMENT.
+State: PAUSED / BACKLOG as explicitly requested on 2026-10-20. Preserved proposed design only; NOT IMPLEMENTED OR AUTHORIZED FOR DEVNET OR DEPLOYMENT. See PLAN_STATUS.md before any continuation.
 Companion documents: COMPATIBILITY_REPORT.md, REGISTRATION_CONTRACT.md, UNICODE_DATA_MANIFEST.json.
 
 This document resolves design alternatives for review before devnet. It creates no accounts, modifies no active mint path, installs no Unicode implementation and changes no runtime settings. Evidence from the compatibility report remains historical; no new mainnet inventory was taken for this document.

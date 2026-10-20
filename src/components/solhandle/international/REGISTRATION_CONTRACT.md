@@ -1,7 +1,7 @@
 # International Handles V1 — registration and account contract
 
 Date: 2026-10-20
-State: DESIGN CONTRACT FOR REVIEW; no IDL, Rust instructions, accounts or keys have been created.
+State: PAUSED / BACKLOG as explicitly requested on 2026-10-20. Preserved design contract only; no IDL, Rust instructions, accounts or keys have been created. See PLAN_STATUS.md; do not begin devnet work without an explicit request to resume.
 Use with ARCHITECTURE_DECISIONS.md. Format lengths below specify intended Borsh/binary widths, not a claim that an Anchor build has verified them.
 
 ## 1. Byte conventions and identity

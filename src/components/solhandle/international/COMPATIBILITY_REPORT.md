@@ -1,7 +1,7 @@
 # SolHandle International Handles V1 — Phase A compatibility report
 
 Date: 2026-10-20
-Status: PRELIMINARY SOURCE + READ-ONLY MAINNET INVENTORY. NOT A RELEASE APPROVAL.
+Status: PAUSED / BACKLOG as explicitly requested on 2026-10-20. Historical preliminary source + read-only mainnet inventory, preserved for later. NOT A RELEASE APPROVAL. See PLAN_STATUS.md; no further international-name work until explicitly resumed.
 
 Follow-up design baseline (2026-10-20): ARCHITECTURE_DECISIONS.md and REGISTRATION_CONTRACT.md now resolve proposed alternatives; UNICODE_DATA_MANIFEST.json pins candidate source-data checksums. The observations and unexecuted checks below remain historical, not completed by those documents. Where design alternatives differ, the follow-up contract takes precedence: four V2 mint entrypoints instead of optional legacy remaining accounts, dedicated validator governance, permanent occupancy-based replay prevention instead of a generic nonce account, and mutually exclusive primary accounts. No runtime or mainnet change follows from these decisions.
 Scope: architecture and compatibility only. No program, UI, entity, signing configuration, mint instruction or mainnet state was changed. No transactions were signed or submitted.
