@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function HomeIntegrationOnboarding() {
-  return <section aria-labelledby="home-integration-title" className="relative w-full border-t border-names-accent/20 bg-names-accent/5 px-[5vw] py-12">
+  return <section aria-labelledby="home-integration-title" className="home-content-section !py-10">
     <h2 id="home-integration-title" className="font-heading text-3xl font-semibold tracking-tight">Could SolHandle fit your project?</h2>
     <p className="mt-4 text-base text-muted-foreground">Tell us what you’re building. We’ll suggest the easiest integration path.</p>
     <div className="mt-7 grid grid-cols-2 gap-5">
