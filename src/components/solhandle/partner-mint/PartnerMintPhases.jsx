@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
 import { partnerMintPhases } from '@/components/solhandle/partner-mint/partnerMintPlan';
 
 export default function PartnerMintPhases({ showLink = true }) {
+  const { user } = useAuth();
   return <section id="partner-mint-roadmap" className="mt-10 rounded-2xl border border-names-secondary/25 bg-card p-5 sm:p-7">
     <p className="text-xs font-semibold uppercase tracking-wider text-names-secondary">Planned · SOL only · not live</p>
     <h2 className="mt-2 text-2xl font-semibold text-foreground">Partner Mint · three-phase roadmap</h2>
@@ -12,7 +14,7 @@ export default function PartnerMintPhases({ showLink = true }) {
       <ul className="mt-4 list-disc space-y-2 pl-4 text-sm text-muted-foreground">{phase.deliverables.map(item => <li key={item}>{item}</li>)}</ul>
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground"><strong className="text-foreground">Release gate:</strong> {phase.gate}</p>
     </article>)}</div>
-    <Link to="/mint?partner=devnet-testpartner" className="mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Open Devnet mint pilot (admin only) →</Link>
-    {showLink && <Link to="/developers/partner-mint" className="ml-5 mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Read the complete technical plan →</Link>}
+    {user?.role === 'admin' && <Link to="/mint?partner=devnet-testpartner" className="mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Open Devnet mint pilot (admin only) →</Link>}
+    {showLink && user?.role === 'admin' && <Link to="/developers/partner-mint" className="ml-5 mt-6 inline-block text-sm font-semibold text-names-accent underline underline-offset-4">Read the complete technical plan →</Link>}
   </section>;
 }

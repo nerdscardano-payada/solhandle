@@ -3,7 +3,7 @@ import { useLanguage } from '@/components/i18n/LanguageProvider';
 import LanguageSelector from '@/components/i18n/LanguageSelector';
 import { NavLink } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
-import { mobileGroups as groups } from '@/components/solhandle/navigationLinks';
+import { mobileGroups as groups, canViewNavigationLink } from '@/components/solhandle/navigationLinks';
 import CommunityLinks from '@/components/solhandle/CommunityLinks';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -20,7 +20,7 @@ export default function MobileNavigation({ onNavigate, tokenIsLive }) {
     <div className="mt-3 border-t border-white/10 pt-2">
       {groups.map(([title, items]) => <div key={title}>
         <button type="button" onClick={() => setExpanded((prev) => ({ ...prev, [title]: !prev[title] }))} aria-expanded={!!expanded[title]} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-slate-300">{t(title)}<ChevronDown className={`h-4 w-4 transition-transform ${expanded[title] ? "rotate-180" : ""}`} /></button>
-        {expanded[title] && <div className="pb-2">{items.filter(([, path]) => path !== '/android' || user?.role === 'admin').map(([label, path]) => <NavLink key={path} to={path} onClick={onNavigate} className={({ isActive }) => `block border-l-2 py-2 pl-7 text-sm ${isActive ? "border-emerald-300 text-white" : "border-transparent text-slate-400"}`}>{t(label)}</NavLink>)}</div>}
+        {expanded[title] && <div className="pb-2">{items.filter(([, path]) => canViewNavigationLink(path, user)).map(([label, path]) => <NavLink key={path} to={path} onClick={onNavigate} className={({ isActive }) => `block border-l-2 py-2 pl-7 text-sm ${isActive ? "border-emerald-300 text-white" : "border-transparent text-slate-400"}`}>{t(label)}</NavLink>)}</div>}
       </div>)}
     </div>
     <div className="mt-3 border-t border-white/10 pt-4"><p className="mb-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">{t('Community')}</p><CommunityLinks onNavigate={onNavigate}/></div>

@@ -6,15 +6,16 @@ import { useLanguage } from '@/components/i18n/LanguageProvider';
 import useTokenLaunchSettings from '@/hooks/useTokenLaunchSettings';
 import CommunityLinks from '@/components/solhandle/CommunityLinks';
 import { useAuth } from '@/lib/AuthContext';
+import { canViewNavigationLink } from '@/components/solhandle/navigationLinks';
 
-const links = [['Android app', '/android', Smartphone], ['My Contacts', '/contacts', BookUser], ['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['About us', '/about', Info], ['Statistics', '/statistics', BarChart3], ['Last minted', '/last-minted', Clock]];
+const links = [['Android app', '/android', Smartphone], ['My Contacts', '/contacts', BookUser], ['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['Integration Onboarding', '/integrate', Blocks], ['About us', '/about', Info], ['Statistics', '/statistics', BarChart3], ['Last minted', '/last-minted', Clock]];
 const card = 'flex min-h-24 min-w-0 flex-col items-start justify-center gap-2 rounded-xl border border-names-accent/20 bg-card p-4 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-names-accent';
 export default function MobileAppMore() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const { t } = useLanguage();
   const { user } = useAuth();
-  const visibleLinks = links.filter(([, path]) => path !== '/android' || user?.role === 'admin');
+  const visibleLinks = links.filter(([, path]) => canViewNavigationLink(path, user));
   const { tokenMint, loading } = useTokenLaunchSettings();
   const active = open || links.some(([, path]) => pathname === path || pathname.startsWith(`${path}/`));
   useEffect(() => { setOpen(false); }, [pathname]);

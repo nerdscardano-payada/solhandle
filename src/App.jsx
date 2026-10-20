@@ -142,13 +142,15 @@ const AuthenticatedApp = () => {
         <Route path="/my-handles" element={<MyHandles />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
-        <Route path="/developers/partner-mint" element={<PartnerMintPlan />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>
+          <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
+        </Route>
         <Route path="/developers/resolve" element={<SolHandleResolve />} />
         <Route path="/widgets/:type" element={<SolHandleWidgetPage />} />
         <Route path="/developers/token-handles" element={<TokenHandlesPlan />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`} replace />} />}>
-          <Route path="/mint" element={<PartnerMint />} />
-          <Route path="/developers/partner-mint/devnet-sdk" element={<PartnerMintSdkDevnet />} />
+          <Route path="/mint" element={user?.role === 'admin' ? <PartnerMint /> : <Navigate to="/" replace />} />
+          <Route path="/developers/partner-mint/devnet-sdk" element={user?.role === 'admin' ? <PartnerMintSdkDevnet /> : <Navigate to="/" replace />} />
         </Route>
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
