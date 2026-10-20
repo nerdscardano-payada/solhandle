@@ -12,6 +12,7 @@ import HomePayStory from '@/components/solhandle/home/HomePayStory';
 import HomeBackdrop from '@/components/solhandle/home/HomeBackdrop';
 
 import HomeDesktopContent from '@/components/solhandle/home/HomeDesktopContent';
+import HomeIntegrationOnboarding from '@/components/solhandle/home/HomeIntegrationOnboarding';
 import { captureReferralAttribution } from '@/lib/referralAttribution';
 import { base44 } from '@/api/base44Client';
 import '@/components/solhandle/home/home-funnel.css';
@@ -28,5 +29,5 @@ export default function Home() {
 
   useEffect(() => { captureReferralAttribution().catch(() => null); base44.analytics.track({ eventName: 'homepage_view', properties: { device: window.innerWidth < 1280 ? 'mobile' : 'desktop', source: new URLSearchParams(window.location.search).get('utm_source') || 'direct' } }); }, []);
   if (isMobile) return <main ref={pull.ref} data-mobile-scroll-panel className="home-funnel dark min-h-screen bg-hero-canvas"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><MobileMintHome wallet={wallet} refreshVersion={refreshVersion}/></main>;
-  return <main className="home-funnel dark"><HomeBackdrop/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><HomeMintHero wallet={wallet}/><div className="home-content"><HomePayStory/></div><div className="home-content"><HomeDesktopContent/></div></main>;
+  return <main className="home-funnel dark"><HomeBackdrop/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><HomeMintHero wallet={wallet}/><div className="home-content"><HomePayStory/></div><div className="home-content"><HomeDesktopContent/></div><HomeIntegrationOnboarding/></main>;
 }

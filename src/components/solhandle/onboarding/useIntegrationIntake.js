@@ -5,7 +5,7 @@ export default function useIntegrationIntake() {
   const [config,setConfig] = useState(null), [type,setType] = useState(''), [step,setStep] = useState(0), [values,setValues] = useState(empty), [result,setResult] = useState(null);
   const [token,setToken] = useState(''), [receiptToken,setReceiptToken] = useState(''), [busy,setBusy] = useState(false), [error,setError] = useState(''), [resetKey,setResetKey] = useState(0);
   async function load() { setError(''); try {setConfig(await intakeCall({action:'config'}));} catch(e) {setError(intakeError(e));} }
-  useEffect(() => { trackIntake('integrate_page_view'); load(); },[]);
+  useEffect(() => { trackIntake('integrate_page_view'); load(); const selectedFlow = new URLSearchParams(window.location.search).get('flow'); if (['project','nomination'].includes(selectedFlow)) start(selectedFlow); },[]);
   useEffect(() => { if (result) trackIntake('recommendation_viewed',{flow:result.type}); },[result?.reference]);
   function start(flow) { setType(flow);setStep(0);setValues(empty);setResult(null);setToken('');setReceiptToken(crypto.randomUUID());setError('');trackIntake('integration_start',{flow}); }
   function change(name,value) { setValues(previous => ({...previous,[name]:value}));setError('');if (name === 'product_types' || name === 'use_cases') trackIntake(name === 'product_types' ? 'project_type_selected' : 'use_case_selected',{selected_count:value.length}); }
