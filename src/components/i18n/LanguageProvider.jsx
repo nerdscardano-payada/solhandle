@@ -14,6 +14,7 @@ import mobileIdentityTranslations from '@/components/i18n/mobileIdentityTranslat
 
 const integrationLocales = import.meta.glob('./integration-locales/*.json', { import: 'default', eager: true });
 const demoLocales = import.meta.glob('/demo-locales/??.json', { import: 'default', eager: true });
+const onboardingLocales = import.meta.glob('/onboarding-locales/??.json', { import: 'default', eager: true });
 
 const emptyTranslations = Object.freeze({});
 const translationCache = new Map();
@@ -30,7 +31,8 @@ export default function LanguageProvider({ children }) {
   const demoTexts = language === 'en' ? emptyTranslations : demoLocales[`/demo-locales/${language}.json`] || emptyTranslations;
   const payTexts = payTranslations[language] || emptyTranslations;
   const identityTexts = mobileIdentityTranslations[language] || emptyTranslations;
-  const staticTranslations = useMemo(() => ({ ...(loaded.language === language ? loaded.texts : emptyTranslations), ...demoTexts, ...payTexts, ...identityTexts }), [loaded, language, demoTexts, payTexts, identityTexts]);
+  const onboardingTexts = language === 'en' ? emptyTranslations : onboardingLocales[`/onboarding-locales/${language}.json`] || emptyTranslations;
+  const staticTranslations = useMemo(() => ({ ...(loaded.language === language ? loaded.texts : emptyTranslations), ...demoTexts, ...payTexts, ...identityTexts, ...onboardingTexts }), [loaded, language, demoTexts, payTexts, identityTexts, onboardingTexts]);
   const translatePay = useMemo(() => createStaticTranslator(payTexts), [payTexts]);
   const translateDemo = useMemo(() => createStaticTranslator(demoTexts), [demoTexts]);
   const setLanguage = code => { if (languages.some(([value]) => value === code)) updateLanguage(code); };
