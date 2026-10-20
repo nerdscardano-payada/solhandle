@@ -1,7 +1,7 @@
 export const growthHubVisible = false;
 export const tokenLinks = [['Trade $HANDLE', '/upcoming/token-launch'], ['Share & Earn', '/earn'], ...(growthHubVisible ? [['Growth Hub', '/quests']] : []), ['Growth Curve', '/growth'], ['Flywheel', '/flywheel'], ['Burn Dashboard', '/growth/burn'], ['Earn Litepaper', '/earn-litepaper']];
 export const aboutLinks = [['About / How it works', '/about'], ['FAQ', '/faq'], ['Roadmap', '/roadmap'], ['Brand Protection', '/protected-brands'], ['Contact', '/contact']];
-export const developerLinks = [['Demo Lab', '/demos'], ['Integrate SolHandle', '/integrations'], ['SDK / API', '/developers'], ['SolHandle EMBED', '/developers/resolve'], ['Partner Mint Plan', '/developers/partner-mint'], ['Documentation', '/docs']];
+export const developerLinks = [['Demo Lab', '/demos'], ['Integrate SolHandle', '/integrations'], ['Integration Onboarding', '/integrate'], ['SDK / API', '/developers'], ['SolHandle EMBED', '/developers/resolve'], ['Partner Mint Plan', '/developers/partner-mint'], ['Documentation', '/docs']];
 export const legalLinks = [['Legal notice & disclaimer', '/legal'], ['Privacy policy', '/privacy'], ['Share & Earn Terms', '/referral-terms']];
 export const communityLinks = [['X · @Solhandle', 'https://x.com/Solhandle'], ['Discord · Join the community', 'https://discord.gg/xYbZ9Gb5Jx']];
 export const mobileGroups = [
