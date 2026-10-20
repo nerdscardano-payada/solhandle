@@ -1,4 +1,4 @@
-import { solAmount } from '@/components/solhandle/partner-mint/partnerPilotClient';
+import solAmount from '@/components/solhandle/partner-mint/react/formatMintSol';
 export default function PartnerMintCostReview({ prepared }) {
   if (!prepared) return null;
   return <section className="mt-4 rounded-lg border border-names-warning/30 p-4"><h3 className="font-semibold">Separate Devnet costs before signing</h3>

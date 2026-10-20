@@ -1,4 +1,4 @@
-import { solAmount } from '@/components/solhandle/partner-mint/partnerPilotClient';
+import solAmount from '@/components/solhandle/partner-mint/react/formatMintSol';
 export default function PartnerMintQuote({ quote }) {
   if (!quote) return null;
   return <section className="mt-5 rounded-xl border border-names-accent/30 bg-card p-5">
