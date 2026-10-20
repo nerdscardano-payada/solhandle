@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { Keypair, PublicKey, SystemProgram, TransactionInstruction } from 'npm:@solana/web3.js@1.98.4';
+import tokenWalletOrderChecks from '../../shared/tokenWalletOrderChecks.ts';
 import { createApproveInstruction, TOKEN_PROGRAM_ID } from 'npm:@solana/spl-token@0.4.14';
 import { usdtAmount, usdtAccounts, usdtTransaction, validateUsdtSigned, verifyUsdtBalances, to64 } from '../../shared/usdtPayTransaction.ts';
 import getPayToken from '../../shared/payAssets.ts';
@@ -20,6 +21,7 @@ export default async function(req: Request): Promise<Response> {
     const token = getPayToken(asset);
     const context = { asset, sender: sender.publicKey.toBase58(), recipient: recipient.publicKey.toBase58(), handle: 'ansem', amountRaw: '1234567', lastValidBlockHeight: 123456 };
     for (const creates of [false, true]) check(`Valid ${asset} transfer, create ATA=${creates}`, () => validateUsdtSigned(encoded(usdtTransaction(context, blockhash, creates)), context));
+    check('Equivalent wallet account ordering', () => tokenWalletOrderChecks(context, blockhash, sender));
     const signed = encoded(usdtTransaction(context, blockhash, true));
     reject('Different recipient', () => validateUsdtSigned(signed, { ...context, recipient: Keypair.generate().publicKey.toBase58() }));
     reject('Changed amount', () => validateUsdtSigned(signed, { ...context, amountRaw: '1234568' }));

@@ -52,8 +52,14 @@ export function validateUsdtSigned(text, context) {
     if (!assertion || ++assertions > 4) throw payError(`The wallet changed this ${token.asset} payment or added unsupported instructions. No transaction was submitted.`, 403);
     rebuilt.add(assertion);
   }
-  // Recompiling with only canonical privileges also rejects writable/signer escalation in wallet extras.
-  if (index !== expected.length || !Buffer.from(rebuilt.serializeMessage()).equals(Buffer.from(signed.serializeMessage()))) throw payError(`The signed payment does not match the approved ${token.asset} transfer.`, 403);
+  // Instructions were checked above in order. Wallets may reorder equally privileged
+  // message accounts; compare permissions by address, not serialized account order.
+  const canonical = rebuilt.compileMessage(), actual = signed.compileMessage();
+  const permissionsMatch = canonical.accountKeys.length === actual.accountKeys.length && canonical.accountKeys.every((address, i) => {
+    const found = actual.accountKeys.findIndex(key => key.equals(address));
+    return found >= 0 && canonical.isAccountSigner(i) === actual.isAccountSigner(found) && canonical.isAccountWritable(i) === actual.isAccountWritable(found);
+  });
+  if (index !== expected.length || !permissionsMatch) throw payError(`The signed payment does not match the approved ${token.asset} transfer.`, 403);
   return signed;
 }
 export function verifyUsdtBalances(details, context) {

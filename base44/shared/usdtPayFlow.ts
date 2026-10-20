@@ -67,7 +67,13 @@ export async function handleUsdtPayment(base44, rpcUrl, body) {
   context.recipient = new PublicKey(String(body.recipientWallet || '')).toBase58();
   matchTokenPayRequest(link, context);
   if (!Number.isSafeInteger(context.lastValidBlockHeight) || context.lastValidBlockHeight < 1) throw payError('Missing transaction expiry. Review the payment again.');
-  const signed = validateUsdtSigned(body.signedTransaction, context), signature = bs58.encode(signed.signature);
+  let signed;
+  try { signed = validateUsdtSigned(body.signedTransaction, context); }
+  catch (error) {
+    if (body.action === 'submit') return Response.json({ notSubmitted: true, error: error.message }, { status: error.status || 400 });
+    throw error;
+  }
+  const signature = bs58.encode(signed.signature);
   if (body.signature && body.signature !== signature) throw payError('Payment signature does not match the signed transaction.', 403);
   const getDetails = () => rpc(rpcUrl, 'getTransaction', [signature, { encoding: 'base64', commitment: 'confirmed', maxSupportedTransactionVersion: 0 }]);
   let details = await getDetails();
