@@ -24,6 +24,7 @@ export default function WalletButton({ onConnected }) {
   const [walletTarget, setWalletTarget] = useState("");
   const autoConnectAttempted = useRef(false);
   const openWallets = (detail) => {
+    if (publicKey || connecting) return;
     if (isMobileBrowser() && !isWalletBrowser() && !isAndroidHost()) {
       setWalletTarget(currentWalletTarget(detail));
       setMobileChooserOpen(true);
