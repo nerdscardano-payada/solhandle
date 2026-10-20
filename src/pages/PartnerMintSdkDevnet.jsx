@@ -4,6 +4,7 @@ import Header from '@/components/solhandle/Header';
 import PartnerDevnetProvider from '@/components/solhandle/partner-mint/PartnerDevnetProvider';
 import PartnerMintSdkExample from '@/components/solhandle/partner-mint/PartnerMintSdkExample';
 import PartnerMintSdkSource from '@/components/solhandle/partner-mint/PartnerMintSdkSource';
+import PartnerMintPilotPreparation from '@/components/solhandle/partner-mint/PartnerMintPilotPreparation';
 export default function PartnerMintSdkDevnet() {
   const { user } = useAuth(), { search } = useLocation();
   const partnerId = new URLSearchParams(search).get('partner') || 'devnet-testpartner';
@@ -15,6 +16,7 @@ export default function PartnerMintSdkDevnet() {
     <p className="mt-4 text-sm leading-relaxed text-muted-foreground">Een echt integratievoorbeeld: beschikbaarheid controleren, kosten bekijken, zelf ondertekenen en de mint opvolgen. De officiële NFT gaat rechtstreeks naar de claimant; de SOL-mintvergoeding wordt atomair 50/50 verdeeld.</p>
     <p className="mt-3 text-sm text-muted-foreground">Gebruik een goedgekeurde Devnet-partner en test-SOL. Geen Mainnet-activering, geen nieuwe beheerdersrechten en geen toegang voor externe partners in deze stap.</p>
     {user?.role !== 'admin' ? <p role="alert" className="mt-6 text-names-warning">Dit Devnet-voorbeeld is uitsluitend beschikbaar voor protocolbeheerders.</p> : !validPartner ? <p role="alert" className="mt-6 text-destructive">Ongeldige partner-ID. Gebruik de link van de goedgekeurde Devnet-partner.</p> : <PartnerDevnetProvider><PartnerMintSdkExample key={partnerId} partnerId={partnerId}/></PartnerDevnetProvider>}
+    {user?.role === 'admin' && <PartnerMintPilotPreparation/>}
     <PartnerMintSdkSource/>
   </div></main>;
 }
