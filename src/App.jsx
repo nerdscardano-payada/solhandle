@@ -44,6 +44,8 @@ const TokenHandlesPlan = lazy(() => import('@/pages/TokenHandlesPlan'));
 const PartnerMint = lazy(() => import('@/pages/PartnerMint'));
 const PartnerMintSdkDevnet = lazy(() => import('@/pages/PartnerMintSdkDevnet'));
 const Integrations = lazy(() => import('@/pages/Integrations'));
+const Integrate = lazy(() => import('@/pages/Integrate'));
+const AdminIntegrations = lazy(() => import('@/pages/AdminIntegrations'));
 const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
 const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
 const ParallaxIntegration = lazy(() => import('@/pages/ParallaxIntegration'));
@@ -170,6 +172,10 @@ const AuthenticatedApp = () => {
         <Route path="/earn-litepaper" element={<EarnLitepaper />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/referral-terms" element={<ReferralTerms />} />
+        <Route path="/integrate" element={<Integrate />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fintegrations" replace />} />}>
+          <Route path="/admin/integrations" element={<AdminIntegrations />} />
+        </Route>
         <Route path="/integrations" element={<Integrations />} />
         <Route path="/live-integrations" element={<LiveIntegrations />} />
         <Route path="/integrations/parallax" element={<ParallaxIntegration />} />

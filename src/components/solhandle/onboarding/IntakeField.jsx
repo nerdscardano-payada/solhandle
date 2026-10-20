@@ -1,0 +1,7 @@
+import IntakeChoices from '@/components/solhandle/onboarding/IntakeChoices';
+export default function IntakeField({field,values,onChange,options}) {
+  const {name,label,type,required,maxLength,optionsKey} = field;
+  const shared = {id:`intake-${name}`,name,required,value:values[name] || '',onChange:e => onChange(name,e.target.value),className:'min-h-12 w-full rounded-lg border border-input bg-background px-3 py-3 text-base text-foreground',maxLength};
+  if (type === 'multi') return <IntakeChoices name={name} label={label} options={options[optionsKey]} value={values[name]} onChange={onChange}/>;
+  return <div className="min-w-0 space-y-2"><label className="block text-sm font-medium" htmlFor={shared.id}>{label}{required && <span className="text-names-accent"> *</span>}</label>{type === 'select' ? <select {...shared}><option value="">Choose an option</option>{options[optionsKey].map(item => <option key={item} value={item}>{item}</option>)}</select> : type === 'textarea' ? <><textarea {...shared} rows={5}/><p className="text-right text-xs text-muted-foreground">{(values[name] || '').length} / {maxLength}</p></> : <input {...shared} type={type} placeholder={type === 'url' ? 'https://' : undefined}/>}</div>;
+}

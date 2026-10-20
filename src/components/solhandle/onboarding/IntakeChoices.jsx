@@ -1,0 +1,4 @@
+export default function IntakeChoices({name,options,value=[],onChange,label}) {
+  function toggle(option) { onChange(name,value.includes(option) ? value.filter(x => x !== option) : [...value,option]); }
+  return <fieldset className="min-w-0"><legend className="mb-3 text-sm font-medium">{label}</legend><div className="grid gap-2 width-min-[600px]:grid-cols-2">{options.map(option => <label key={option} className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm ${value.includes(option) ? 'border-names-accent bg-names-accent/10' : 'border-border bg-background'}`}><input type="checkbox" name={name} checked={value.includes(option)} onChange={() => toggle(option)} className="mt-1 h-4 w-4 shrink-0 accent-current"/><span>{option}</span></label>)}</div></fieldset>;
+}

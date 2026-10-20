@@ -1,0 +1,42 @@
+{
+  "name": "Integration Request Confirmation",
+  "description": "Bevestigt een integratieaanvraag aan het overeenkomende ingelogde app-account. Anonieme en niet-overeenkomende adressen ontvangen geen automatische mail.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "IntegrationSubmission",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ (.trigger.data.confirmation_email // \"\") != \"\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "integration_request_confirmation",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_confirmation": {
+          "call": "send_email",
+          "with": {
+            "template_name": "IntegrationReceived",
+            "to": "${ .trigger.data.confirmation_email }",
+            "description": "Bevestigt de opgeslagen integratieaanvraag met referentie en ontwikkelaarsdocumentatie",
+            "variables": {
+              "reference": "${ .trigger.data.reference }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Verstuur ontvangstbevestiging",
+            "description": "Alleen naar het overeenkomende app-account"
+          }
+        }
+      }
+    ]
+  }
+}

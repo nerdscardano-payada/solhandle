@@ -1,0 +1,5 @@
+import { Link } from 'react-router-dom';
+import { trackIntake } from '@/components/solhandle/onboarding/intakeClient';
+export default function IntegrationMatchCard({match,index}) {
+  return <article className="rounded-xl border border-names-accent/20 bg-card p-5"><p className="text-xs font-semibold text-names-secondary">{match.availability}</p><h2 className="mt-2 font-heading text-xl font-semibold">{index+1}. {match.title}</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{match.description}</p><p className="mt-3 text-sm"><span className="text-muted-foreground">Integration complexity: </span>{match.complexity}</p><p className="mt-2 text-xs text-muted-foreground">Why this fits: {match.reason}</p><div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-names-accent"><Link to={match.demo_url} onClick={() => trackIntake('demo_clicked',{module:match.integration_type})}>View relevant demo →</Link><Link to={match.docs_url} onClick={() => trackIntake('docs_clicked',{module:match.integration_type})}>Read implementation guide →</Link></div></article>;
+}

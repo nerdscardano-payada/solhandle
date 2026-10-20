@@ -1,0 +1,5 @@
+export default function IntegrationPipelineMetrics({page}) {
+  const counts = Object.fromEntries((page?.totals || []).map(row => [row.status,row.count]));
+  const metrics = [['New requests',counts.NEW || 0],['Under review',(counts.REVIEWING || 0)+(counts.FIT_FOUND || 0)],['In discussion',(counts.CONTACTED || 0)+(counts.REPLIED || 0)+(counts.TECH_REVIEW || 0)],['Building / testing',(counts.BUILDING || 0)+(counts.TESTING || 0)],['Live',counts.LIVE || 0],['New suggestions',page?.new_nominations || 0]];
+  return <section aria-label="All-time integration totals" className="mt-6 grid grid-cols-2 gap-3 width-min-[900px]:grid-cols-6">{metrics.map(([label,value]) => <div key={label} className="rounded-xl border border-border bg-card p-4"><p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 text-2xl font-semibold text-names-accent">{value}</p></div>)}</section>;
+}

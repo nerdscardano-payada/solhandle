@@ -1,0 +1,5 @@
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+export default function IntegrationCta({demo = false}) {
+  return <section className="my-7 rounded-2xl border border-names-accent/25 bg-card p-5"><p className="text-xs font-semibold uppercase tracking-wider text-names-accent">Integrate SolHandle</p><h2 className="mt-2 font-heading text-xl font-semibold">{demo ? 'Could this work in your project?' : 'Building on Solana?'}</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Not sure how @handles could fit your product? Tell us what you’re building and we’ll suggest the simplest integration.</p><Button asChild className="mt-5 min-h-12"><Link to={`/integrate?source=${demo ? 'demo-lab' : 'integration-center'}`}>{demo ? 'Integrate SolHandle →' : 'Find your integration →'}</Link></Button></section>;
+}

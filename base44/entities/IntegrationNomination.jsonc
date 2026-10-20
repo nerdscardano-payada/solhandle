@@ -1,0 +1,100 @@
+{
+  "name": "IntegrationNomination",
+  "type": "object",
+  "properties": {
+    "reference": {
+      "type": "string"
+    },
+    "receipt_hash": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "project_url": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "project_key": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "submitter_contact": {
+      "type": "string",
+      "maxLength": 254
+    },
+    "disclaimer_accepted_at": {
+      "type": "string"
+    },
+    "privacy_consent_at": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "REVIEWING",
+        "FIT_FOUND",
+        "CONTACTED",
+        "REPLIED",
+        "TECH_REVIEW",
+        "BUILDING",
+        "TESTING",
+        "LIVE",
+        "NOT_A_FIT",
+        "NO_RESPONSE"
+      ],
+      "default": "NEW"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "NORMAL",
+        "REVIEW",
+        "HIGH"
+      ],
+      "default": "NORMAL"
+    }
+  },
+  "required": [
+    "reference",
+    "receipt_hash",
+    "project_name",
+    "project_url",
+    "project_key",
+    "reason",
+    "disclaimer_accepted_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

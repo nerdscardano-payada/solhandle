@@ -1,0 +1,159 @@
+{
+  "name": "IntegrationSubmission",
+  "type": "object",
+  "properties": {
+    "reference": {
+      "type": "string"
+    },
+    "receipt_hash": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "website": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "project_key": {
+      "type": "string"
+    },
+    "x_url": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "contact_name": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "contact_email": {
+      "type": "string",
+      "maxLength": 254
+    },
+    "contact_social": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "contact_role": {
+      "type": "string"
+    },
+    "product_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "use_cases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "network": {
+      "type": "string"
+    },
+    "tech_stack": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "integration_preference": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "project_stage": {
+      "type": "string"
+    },
+    "additional_info": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "supporting_link": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "source": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "REVIEWING",
+        "FIT_FOUND",
+        "CONTACTED",
+        "REPLIED",
+        "TECH_REVIEW",
+        "BUILDING",
+        "TESTING",
+        "LIVE",
+        "NOT_A_FIT",
+        "NO_RESPONSE"
+      ],
+      "default": "NEW"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "NORMAL",
+        "REVIEW",
+        "HIGH"
+      ],
+      "default": "NORMAL"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "technical_review_requested": {
+      "type": "boolean",
+      "default": false
+    },
+    "privacy_consent_at": {
+      "type": "string"
+    },
+    "confirmation_email": {
+      "type": "string"
+    },
+    "rule_version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference",
+    "receipt_hash",
+    "project_name",
+    "website",
+    "contact_email",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

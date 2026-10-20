@@ -1,0 +1,5 @@
+const hidden = new Set(['id','receipt_hash','recommendations','confirmation_email','created_by_id','created_by']);
+const links = new Set(['website','project_url','supporting_link']);
+export default function IntegrationSubmissionData({record}) {
+  return <dl className="mt-5 space-y-4">{Object.entries(record).filter(([key,value]) => !hidden.has(key) && value !== '' && value !== null && value !== undefined).map(([key,value]) => <div key={key}><dt className="text-xs capitalize text-muted-foreground">{key.replaceAll('_',' ')}</dt><dd className="mt-1 break-words whitespace-pre-wrap text-sm">{links.has(key) && /^https?:\/\//.test(value) ? <a href={value} target="_blank" rel="noopener noreferrer" className="break-all text-names-accent underline">{value}</a> : Array.isArray(value) ? value.join(', ') : typeof value === 'object' ? JSON.stringify(value) : String(value)}</dd></div>)}</dl>;
+}
