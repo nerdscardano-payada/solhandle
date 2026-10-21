@@ -65,6 +65,7 @@ const DiscordVerify = lazy(() => import('@/pages/DiscordVerify'));
 const UpcomingProjects = lazy(() => import('@/pages/UpcomingProjects'));
 const TokenLaunchPreview = lazy(() => import('@/pages/TokenLaunchPreview'));
 const Market = lazy(() => import('@/pages/Market'));
+const MarketplaceRecovery = lazy(() => import('@/pages/MarketplaceRecovery'));
 const Statistics = lazy(() => import('@/pages/Statistics'));
 const LastMinted = lazy(() => import('@/pages/LastMinted'));
 const Promo = lazy(() => import('@/pages/Promo'));
@@ -187,6 +188,7 @@ const AuthenticatedApp = () => {
         <Route path="/explore" element={<Navigate to="/names" replace />} />
         <Route path="/directory" element={<PremiumDirectory />} />
         <Route path="/market" element={<Market />} />
+        <Route path="/marketplace-recovery" element={<MarketplaceRecovery />} />
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/last-minted" element={<LastMinted />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
