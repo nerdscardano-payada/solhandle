@@ -1,4 +1,5 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
+import { earnRetired } from './earnRetirement.ts';
 import { rpc } from "./solanaRpc.ts";
 import { checkPrimaryMintEarn } from "./partnerMintEarnGuard.ts";
 
@@ -6,6 +7,7 @@ const nowIso = () => new Date().toISOString();
 const clean = (value) => String(value || "").replace(/^@/, "").toLowerCase();
 
 export function earnNetworkMode(settings) {
+  if (earnRetired) return 'PAUSED';
   const mint = String(settings?.token_mint_address || "");
   const validMint = (() => { try { return new PublicKey(mint).toBase58() === mint; } catch { return false; } })();
   return settings?.earn_network_mode === "LIVE" && validMint ? "LIVE" : settings?.earn_network_mode === "PAUSED" ? "PAUSED" : "PRELAUNCH";
@@ -68,6 +70,7 @@ async function createEvent(base44, settings, origin, input, sharePercentage) {
 }
 
 export async function lockMintOrigin(base44, settings, input, rpcUrl) {
+  if (earnRetired) return { origin: null, reason: 'retired' };
   const policy = await checkPrimaryMintEarn({ ...input, source: "MINT" }, rpcUrl);
   if (!policy.eligible) return { origin: null, reason: policy.reason };
   const duplicate = await base44.asServiceRole.entities.OriginReferral.filter({ mint_signature: input.signature }, "-locked_at", 1);
@@ -92,6 +95,7 @@ export async function lockMintOrigin(base44, settings, input, rpcUrl) {
 }
 
 export async function recordOriginRevenue(base44, settings, input, rpcUrl) {
+  if (earnRetired) return { credited: false, reason: 'retired' };
   if (input.source === "MINT") {
     const policy = await checkPrimaryMintEarn(input, rpcUrl);
     if (!policy.eligible) return { credited: false, reason: policy.reason };

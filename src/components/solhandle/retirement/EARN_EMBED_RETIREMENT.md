@@ -1,0 +1,13 @@
+# Earn and public embed retirement
+
+Owner instruction: completely remove Share & Earn, its litepaper and SolHandle Embed, including My Handles and all public information. Application-only retirement; no Mainnet upgrade, global pause, collection change or ownership change is authorized.
+
+Effective settings cutoff: 2026-10-21T13:02:43.994Z. Existing settings explicitly disable referral participation, campaigns and automatic payout, with Earn mode PAUSED. Static application guards prevent reactivation through settings APIs or stale caller-provided settings.
+
+At the pre-change database check, ReferralLedger, ReferralPayout, EarnRevenueEvent, ReferralConversion and OriginReferral each contained zero records. No entity or financial history was deleted. Admin-only historical inspection and confirmation of an already-recorded payout remain available through the existing authenticated administrative service; new participation, attribution, bonuses and allocations are denied.
+
+Public Earn, litepaper, leaderboard, referral-terms and embed routes return the existing not-found view. My Handles, wallet menus, navigation, token launch, mint success, handle badges, protocol paper, roadmap and product guide no longer offer these services. Ordinary non-incentivized handle link sharing, identity resolution SDK/API and payment functionality remain independent.
+
+Old referral query parameters are ignored/removed; browser attribution identifiers are cleared. Direct public attribution, activation, tier/revenue allocation and creator-fee referral-cycle endpoints return HTTP 410 EARN_RETIRED. Shared origin/revenue writers reject new accrual. Referral quest verification is disabled and published referral quests are paused. Shared mint-intent cleanup remains scheduled; reward release has been removed from that job. SolHandle index, growth snapshot and Discord workflows remain untouched.
+
+Backend checks: public enrollment, attribution, revenue recording, creator-fee allocation, settings reactivation and admin bonus requests returned HTTP 410. Mint maintenance returned HTTP 200 with no reward releases. Frontend production build passed. Standard SOL mint preparation returned HTTP 200 with no referral intent, and the cancellation-only endpoint still rejects a missing position with HTTP 422 rather than retiring cancellation. These checks are not a claim of completed wallet end-to-end acceptance. No transaction was signed or broadcast.

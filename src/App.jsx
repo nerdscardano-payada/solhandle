@@ -38,8 +38,6 @@ const Explore = lazy(() => import('@/pages/Explore'));
 const Fun = lazy(() => import('@/pages/Fun'));
 const Developers = lazy(() => import('@/pages/Developers'));
 const PartnerMintPlan = lazy(() => import('@/pages/PartnerMintPlan'));
-const SolHandleResolve = lazy(() => import('@/pages/SolHandleResolve'));
-const SolHandleWidgetPage = lazy(() => import('@/pages/SolHandleWidgetPage'));
 const TokenHandlesPlan = lazy(() => import('@/pages/TokenHandlesPlan'));
 const PartnerMint = lazy(() => import('@/pages/PartnerMint'));
 const PartnerMintSdkDevnet = lazy(() => import('@/pages/PartnerMintSdkDevnet'));
@@ -51,13 +49,8 @@ const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
 const ParallaxIntegration = lazy(() => import('@/pages/ParallaxIntegration'));
 const MintSuccess = lazy(() => import('@/pages/MintSuccess'));
 const Financials = lazy(() => import('@/pages/Financials'));
-const AdminReferrals = lazy(() => import('@/pages/AdminReferrals'));
 const Roadmap = lazy(() => import('@/pages/Roadmap'));
 const ProtocolPaper = lazy(() => import('@/pages/ProtocolPaper'));
-const Earn = lazy(() => import('@/pages/Earn'));
-const EarnLitepaper = lazy(() => import('@/pages/EarnLitepaper'));
-const Leaderboard = lazy(() => import('@/pages/Leaderboard'));
-const ReferralTerms = lazy(() => import('@/pages/ReferralTerms'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const About = lazy(() => import('@/pages/About'));
 const PremiumDirectory = lazy(() => import('@/pages/PremiumDirectory'));
@@ -102,7 +95,7 @@ const AuthenticatedApp = () => {
 
   const isWidget = pathname.startsWith('/widgets/');
   const showMobileTabs = !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
-  const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/earn', '/explore', '/names'].includes(pathname);
+  const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/explore', '/names'].includes(pathname);
   const { user, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
@@ -146,8 +139,8 @@ const AuthenticatedApp = () => {
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>
           <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
         </Route>
-        <Route path="/developers/resolve" element={<SolHandleResolve />} />
-        <Route path="/widgets/:type" element={<SolHandleWidgetPage />} />
+        <Route path="/developers/resolve" element={<PageNotFound />} />
+        <Route path="/widgets/*" element={<PageNotFound />} />
         <Route path="/developers/token-handles" element={<TokenHandlesPlan />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`} replace />} />}>
           <Route path="/mint" element={user?.role === 'admin' ? <PartnerMint /> : <Navigate to="/" replace />} />
@@ -171,10 +164,10 @@ const AuthenticatedApp = () => {
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fgrowth" replace />} />}>
           <Route path="/admin/growth" element={growthHubVisible ? <AdminGrowthHub /> : <Navigate to="/" replace />} />
         </Route>
-        <Route path="/earn" element={<Earn />} />
-        <Route path="/earn-litepaper" element={<EarnLitepaper />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/referral-terms" element={<ReferralTerms />} />
+        <Route path="/earn/*" element={<PageNotFound />} />
+        <Route path="/earn-litepaper" element={<PageNotFound />} />
+        <Route path="/leaderboard" element={<PageNotFound />} />
+        <Route path="/referral-terms" element={<PageNotFound />} />
         <Route path="/integrate" element={<Integrate />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fintegrations" replace />} />}>
           <Route path="/admin/integrations" element={<AdminIntegrations />} />
@@ -203,7 +196,7 @@ const AuthenticatedApp = () => {
         </Route>
         <Route path="/admin/financials" element={<Financials />} />
         <Route path="/admin/burn" element={<AdminBurn />} />
-        <Route path="/admin/referrals" element={<AdminReferrals />} />
+        <Route path="/admin/referrals" element={<PageNotFound />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

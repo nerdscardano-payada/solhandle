@@ -5,7 +5,6 @@ import HomeHeroArtwork from '@/components/solhandle/HomeHeroArtwork';
 import HeroClaimTitle from '@/components/solhandle/HeroClaimTitle';
 
 import MainnetContracts from '@/components/solhandle/MainnetContracts';
-import AmbassadorBanner from '@/components/solhandle/AmbassadorBanner';
 import PayMilestoneCard from '@/components/solhandle/PayMilestoneCard';
 
 export default function FocusedHomeHero({ wallet }) {
@@ -23,6 +22,6 @@ export default function FocusedHomeHero({ wallet }) {
       </section>
       <div aria-hidden="true"/>
     </div>
-    <div className="mt-8 grid grid-cols-[1.35fr_1fr] items-start gap-6 border-t border-border pt-6"><div><MainnetContracts/><AmbassadorBanner/></div><PayMilestoneCard/></div>
+    <div className="mt-8 grid grid-cols-[1.35fr_1fr] items-start gap-6 border-t border-border pt-6"><div><MainnetContracts/></div><PayMilestoneCard/></div>
   </div>;
 }

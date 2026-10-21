@@ -1,10 +1,11 @@
 import { PublicKey } from "npm:@solana/web3.js@1.98.4";
+import { earnRetired } from './earnRetirement.ts';
 import { lockMintOrigin } from "./earnNetwork.ts";
 import { checkPrimaryMintEarn } from "./partnerMintEarnGuard.ts";
 
 export async function getReferralSettings(base44) {
   const rows = await base44.asServiceRole.entities.ReferralSettings.list("-updated_date", 1);
-  return rows[0] || null;
+  return rows[0] ? { ...rows[0], referral_enabled: false, campaign_enabled: false, auto_payout_enabled: false, earn_network_mode: 'PAUSED' } : null;
 }
 
 export function activeCommissionPercentage(settings, at = new Date()) {
@@ -15,6 +16,7 @@ export function activeCommissionPercentage(settings, at = new Date()) {
 }
 
 export async function ensurePromoterProfile(base44, wallet, handle = "") {
+  if (earnRetired) throw new Error('Referral participation has ended.');
   const cleanHandle = String(handle || "").replace(/^@/, "").toLowerCase();
   if (!cleanHandle) throw new Error("Choose a SolHandle for your referral link.");
   const existingWallet = await base44.asServiceRole.entities.ReferralProfile.filter({ wallet_address: wallet }, "-created_date", 1);

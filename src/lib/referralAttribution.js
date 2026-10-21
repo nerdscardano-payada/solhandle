@@ -1,33 +1,12 @@
-import { base44 } from "@/api/base44Client";
-
-const STORAGE_KEY = "solhandle_referral_attribution";
-const SESSION_KEY = "solhandle_referral_session";
-
-function sessionId() {
-  let value = localStorage.getItem(SESSION_KEY);
-  if (!value) { value = crypto.randomUUID(); localStorage.setItem(SESSION_KEY, value); }
-  return value;
-}
-
+// Old referral links still open the normal identity flow without attribution.
 export async function captureReferralAttribution() {
+  localStorage.removeItem('solhandle_referral_attribution');
+  localStorage.removeItem('solhandle_referral_session');
+  document.cookie = 'solhandle_ref=; Max-Age=0; path=/; SameSite=Lax; Secure';
   const url = new URL(window.location.href);
-  const code = String(url.searchParams.get("ref") || "").trim();
-  if (!code) return;
-  const response = await base44.functions.invoke("referralAttribution", { code, browser_session_id: sessionId() });
-  if (response.data?.valid) {
-    const value = JSON.stringify({ id: response.data.attributionId, code: response.data.referralCode, expiresAt: response.data.expiresAt });
-    localStorage.setItem(STORAGE_KEY, value);
-    base44.analytics.track({ eventName: "referral_link_attributed", properties: { referral_code: response.data.referralCode } });
-    document.cookie = `solhandle_ref=${encodeURIComponent(response.data.attributionId)}; expires=${new Date(response.data.expiresAt).toUTCString()}; path=/; SameSite=Lax; Secure`;
+  if (url.searchParams.has('ref')) {
+    url.searchParams.delete('ref');
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
   }
-  url.searchParams.delete("ref");
-  window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
 }
-
-export function getReferralAttributionId() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (!stored?.id || Date.parse(stored.expiresAt) <= Date.now()) { localStorage.removeItem(STORAGE_KEY); return ""; }
-    return stored.id;
-  } catch { localStorage.removeItem(STORAGE_KEY); return ""; }
-}
+export function getReferralAttributionId() { return ''; }

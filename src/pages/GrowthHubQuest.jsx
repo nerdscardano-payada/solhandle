@@ -27,7 +27,7 @@ export default function GrowthHubQuest() {
   };
   if (catalog.isPending) return <p>Quest laden…</p>;
   if (catalog.isError) return <div role="alert"><p>Quest laden is niet gelukt.</p><button onClick={() => catalog.refetch()} className="mt-3 text-names-accent">Opnieuw proberen</button></div>;
-  if (!quest) return <><h1>Quest niet beschikbaar</h1><p className="mt-4 text-muted-foreground">Deze quest is niet gepubliceerd of is gepauzeerd.</p><Link to="/quests/explore" className="mt-5 inline-block text-names-accent">Terug naar quests →</Link></>;
+  if (!quest || quest.handler === 'REFERRAL_MINT') return <><h1>Quest niet beschikbaar</h1><p className="mt-4 text-muted-foreground">Deze quest is niet gepubliceerd of is gepauzeerd.</p><Link to="/quests/explore" className="mt-5 inline-block text-names-accent">Terug naar quests →</Link></>;
   return <><Link to="/quests/explore" className="text-sm text-names-accent">← Alle quests</Link><h1 className="mt-5">{quest.title}</h1><p className="mt-5 max-w-3xl text-muted-foreground leading-8">{quest.description}</p>
     <div className="my-6 flex flex-wrap gap-3 text-sm"><span className="rounded-full bg-names-accent/10 px-3 py-1 text-names-accent">+{quest.xp} XP</span><span className="rounded-full border border-border px-3 py-1">1× lifetime</span><span className="rounded-full border border-border px-3 py-1">Versie {quest.version}</span><span className="rounded-full border border-border px-3 py-1">{completed ? 'COMPLETED' : review?.status || (pending ? 'PENDING' : busy || started ? 'IN_PROGRESS' : 'AVAILABLE')}</span></div>
     <GrowthQuestConditions quest={quest}/>

@@ -2,11 +2,13 @@ import { createClientFromRequest } from "npm:@base44/sdk@0.8.46";
 import { secrets } from "base44:runtime";
 import { getReferralSettings, reconcileReferralProfile } from "../../shared/referralEngine.ts";
 import { rpc } from "../../shared/solanaRpc.ts";
+import { earnRetiredResponse } from '../../shared/earnRetirement.ts';
 
 async function requireAdmin(base44) { const user = await base44.auth.me(); if (!user || user.role !== "admin") throw new Error("ADMIN_REQUIRED"); }
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req); await requireAdmin(base44); const body = await req.json().catch(() => ({})); const action = String(body.action || "list");
+    if (!['list', 'flag_status', 'confirm_payout'].includes(action)) return earnRetiredResponse();
     if (action === "list") {
       const [profiles, conversions, payouts, clicks, flags] = await Promise.all([base44.asServiceRole.entities.ReferralProfile.list("-total_earnings_lamports", 100), base44.asServiceRole.entities.ReferralConversion.list("-created_date", 100), base44.asServiceRole.entities.ReferralPayout.list("-initiated_at", 100), base44.asServiceRole.entities.ReferralClick.list("-clicked_at", 500), base44.asServiceRole.entities.FraudFlag.filter({ status: "OPEN" }, "-created_date", 100)]);
       const commission = conversions.filter((c) => c.status !== "REJECTED_SELF_REFERRAL").reduce((s, c) => s + c.reward_amount_lamports, 0); const revenue = conversions.reduce((s, c) => s + c.eligible_referral_revenue_lamports, 0);

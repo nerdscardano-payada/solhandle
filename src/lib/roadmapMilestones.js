@@ -54,19 +54,13 @@ export const roadmapMilestones = [
     upcoming: ["Independently verify and publish the official mint address and trading routes", "Execute the six-month protocol allocation lock and publish proof"]
   },
   {
-    number: "10", status: "current", title: "Earn Network tiers & activation",
-    summary: "The official token address is configured and Earn Network Live mode is enabled. Payouts are still paused, and end-to-end revenue and payout validation remains outstanding.",
-    completed: ["Permanent origin-referral attribution infrastructure", "Mint-share tiers configured: 25,000 $HANDLE → 20%; 100,000 → 30%; 250,000 → 40%; 1,000,000 → 50%", "24-hour tier-upgrade qualification and actual-received revenue accounting implemented", "Official token mint configured in Earn settings", "Earn Network Live mode enabled"],
-    upcoming: ["Verify live token balance checks and tier qualification with real activity", "Validate confirmed revenue allocation and payout safeguards end to end", "Unpause eligible payouts only after verification"]
-  },
-  {
-    number: "11", status: "current", title: "Additional mint payment options",
+    number: "10", status: "current", title: "Additional mint payment options",
     summary: "SOL remains available alongside wallet-signed $HANDLE minting: no discount, a maximum 5% reference price impact and a verifiable 50/50 burn-treasury split. USDC remains planned.",
-    completed: ["Native SOL payment and NFT mint in one on-chain transaction", "Public $HANDLE mint preparation and confirmation connected to mainnet", "No-discount quotes with a 5% price-impact limit", "Verified token payment, burn and treasury accounting kept separate from SOL referral revenue"],
+    completed: ["Native SOL payment and NFT mint in one on-chain transaction", "Public $HANDLE mint preparation and confirmation connected to mainnet", "No-discount quotes with a 5% price-impact limit", "Verified token payment, burn and treasury accounting"],
     upcoming: ["Complete production wallet approval checks in Phantom and Backpack", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Independent review of token mint security and accounting"]
   },
   {
-    number: "12", status: "upcoming", title: "SolHandle Pay — multi-token transfers & payment fee",
+    number: "11", status: "upcoming", title: "SolHandle Pay — multi-token transfers & payment fee",
     summary: "Extend non-custodial @handle payments beyond SOL to USDC, $HANDLE and selected SPL tokens, with a small, clearly disclosed SolHandle fee. This is a future phase, not a live payment option.",
     completed: ["Native SOL transfers to verified @handle owners, currently without a SolHandle fee"],
     upcoming: ["Start with an allowlist of supported token mints and verify token-program rules, decimals and recipient token-account readiness", "Build wallet-signed, atomic token transfers that split the recipient amount and a small protocol fee; display the exact fee and any account-creation/network costs before signing", "Extend protected payment links, on-chain confirmation, receipts and history by token; review fee policy and security before launch"]

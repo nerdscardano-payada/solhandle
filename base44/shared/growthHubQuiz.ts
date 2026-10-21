@@ -2,7 +2,7 @@ export const quiz = [
   { question: 'Wat is een SolHandle?', options: ['Een NFT-gebaseerde identiteit op Solana', 'Een wachtwoord voor je wallet', 'Een gegarandeerde investering'], answer: 0 },
   { question: 'Wie bewaart de NFT van je handle?', options: ['SolHandle', 'Je eigen wallet', 'De Growth Hub'], answer: 1 },
   { question: 'Welke activiteit is een echte SolHandle Pay-betaling?', options: ['Een betaallink aanmaken', 'Op een betaalknop klikken', 'Een succesvolle SOL-overdracht aan de bedoelde ontvanger'], answer: 2 },
-  { question: 'Welke referral hoort bij echte adoptie?', options: ['Een nieuw bezoek aan de website', 'Een nieuwe gebruiker die een kwalificerende mint uitvoert', 'Je eigen tweede wallet verbinden'], answer: 1 },
+  { question: 'Wie beheert een handle nadat de NFT is overgedragen?', options: ['Altijd de oorspronkelijke minter', 'De huidige geverifieerde NFT-eigenaar', 'Een websitebeheerder'], answer: 1 },
   { question: 'Wat betekent XP?', options: ['Gegarandeerde $HANDLE-tokens', 'Verhandelbaar walletsaldo', 'Erkenning van geverifieerde bijdragen, zonder gegarandeerde geldwaarde'], answer: 2 }
 ];
 export const publicQuiz = () => quiz.map(({ question, options }) => ({ question, options }));

@@ -33,13 +33,13 @@
           },
           "then": "end",
           "x-base44": {
-            "title": "Maintain referrals",
-            "description": "Cleanup and release rewards"
+            "title": "Mintstatus onderhouden",
+            "description": "Verlopen mintaanvragen opruimen"
           }
         }
       }
     ]
   },
   "name": "Referral System Maintenance",
-  "description": "Expires stale mint intents, recovers interrupted referral processing, and releases approved rewards."
+  "description": "Maintains shared mint intents only. Referral processing and reward release are disabled."
 }
