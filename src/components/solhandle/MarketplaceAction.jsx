@@ -1,18 +1,5 @@
-import { useState } from "react";
-import { useLanguage } from '@/components/i18n/LanguageProvider';
-import { useWallet } from "@solana/wallet-adapter-react";
-import { executeMarketplaceAction, solToLamports } from "@/lib/marketplace";
-import useChainActionMutation from '@/components/solhandle/useChainActionMutation';
-import PendingChainActions from '@/components/solhandle/PendingChainActions';
-
-export default function MarketplaceAction({ action, handle, asset, seller, bidder, amount, label, onComplete, cardLayout = false }) {
-  const { publicKey, signTransaction } = useWallet(); const [price, setPrice] = useState(amount || ""); const [busy, setBusy] = useState(false); const [error, setError] = useState("");
-  const { t } = useLanguage();
-  const optimistic = useChainActionMutation();
-  const needsAmount = action === "list" || action === "bid";
-  const [bidOpen, setBidOpen] = useState(false);
-  const revealBid = cardLayout && action === "bid";
-  const handleClick = () => { if (revealBid && !bidOpen && window.matchMedia('(max-width: 1279px)').matches) { setBidOpen(true); return; } submit(); };
-  const submit = async () => { if (!publicKey) return setError("Connect your wallet first."); const lamports = needsAmount ? solToLamports(price) : Number(amount || 0); if ((needsAmount || action === "buy" || action === "accept_bid") && (!Number.isFinite(lamports) || lamports <= 0)) return setError("Enter a valid SOL amount."); setBusy(true); setError(""); try { const result = await optimistic.mutateAsync({ action, handle, wallet: publicKey.toBase58(), amount: lamports, execute: () => executeMarketplaceAction({ action, handle, assetAddress: asset, amountLamports: lamports, seller, bidder, wallet: publicKey, signTransaction }) }); onComplete?.(result); } catch (caught) { setError(caught.response?.data?.error || caught.message || "Marketplace transaction failed."); } finally { setBusy(false); } };
-  return <div className={cardLayout ? "contents" : needsAmount ? "flex flex-nowrap items-stretch gap-2" : "space-y-2"}>{needsAmount && <div className={`${cardLayout ? "order-1 col-span-1 width-min-[1280px]:col-span-2" : "min-w-0 flex-1"} ${revealBid && !bidOpen ? 'hidden width-min-[1280px]:flex' : 'flex'} rounded-lg border border-white/10 bg-slate-950`}><input type="number" min="0" step="any" value={price} onChange={(event) => setPrice(event.target.value)} inputMode="decimal" placeholder={t('Price in SOL')} className={`min-w-0 flex-1 bg-transparent px-2 py-2 text-sm text-white outline-none ${cardLayout ? 'width-min-[1280px]:min-w-20 width-min-[1280px]:px-3' : 'sm:min-w-20 sm:px-3'}`}/><span className={`px-2 py-2 text-xs text-slate-400 ${cardLayout ? 'width-min-[1280px]:px-3 width-min-[1280px]:text-sm' : 'sm:px-3 sm:text-sm'}`}>SOL</span></div>}<button type="button" onClick={handleClick} disabled={busy} className={`${cardLayout ? action === "bid" ? "order-3 w-full" : "order-2 w-full" : needsAmount ? "shrink-0" : "w-full"} rounded-lg bg-gradient-to-r from-cyan-300 to-violet-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-sm shadow-violet-950/30 disabled:opacity-50`}>{busy ? t('Confirming…') : revealBid && bidOpen ? <><span className="width-min-[1280px]:hidden">{t('Submit bid')}</span><span className="hidden width-min-[1280px]:inline">{t(label)}</span></> : t(label)}</button>{optimistic.isPending && ['list', 'bid'].includes(action) && <div className={cardLayout ? 'order-4 col-span-1 width-min-[1280px]:col-span-2' : 'w-full'}><PendingChainActions wallet={publicKey?.toBase58()} handle={handle} actions={[action]}/></div>}{error && <p className={`${cardLayout ? "order-4 col-span-1 width-min-[1280px]:col-span-2" : "w-full"} text-xs text-white`}>{t(error)}</p>}</div>;
+import { Link } from 'react-router-dom';
+export default function MarketplaceAction({ action, handle }) {
+  const cancellation = action === 'delist' || action === 'cancel_bid';
+  return <Link to={`/marketplace-recovery${handle ? `?handle=${encodeURIComponent(handle)}` : ''}`} className="block rounded-lg border border-border px-4 py-2 text-sm text-names-accent">{cancellation ? 'Open cancellation & recovery' : 'Native trading retired · Recovery'}</Link>;
 }

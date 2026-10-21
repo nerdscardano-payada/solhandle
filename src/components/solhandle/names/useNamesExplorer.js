@@ -9,7 +9,7 @@ export default function useNamesExplorer() {
   const [params, setParams] = useSearchParams(), { publicKey, signMessage } = useWallet();
   const tab = ['trending', 'available', 'owned', 'for-sale', 'watchlist'].includes(params.get('tab')) ? params.get('tab') : 'trending';
   const wallet = publicKey?.toBase58() || '';
-  const [search, setSearch] = useState(''), [debounced, setDebounced] = useState('');
+  const [search, setSearch] = useState(() => params.get('handle') || ''), [debounced, setDebounced] = useState(() => params.get('handle') || '');
   useDiscoverConfirmedSearch(search);
   const [filters, setFilters] = useState({ rarity: '', characterType: '', sort: 'newest' });
   const [rank, setRank] = useState('searches'), [preset, setPreset] = useState('all');
