@@ -2,6 +2,14 @@
 
 21 October 2026. Scope in this increment: Marketplace Recovery and stopping new managed native trades/escrow. Earn cutoff and external providers remain separate subsequent work; no Earn setting or accrual policy changed here.
 
+## Approved operating policy: Option A
+
+Owner authorization on 21 October 2026: proceed with application/backend marketplace retirement and preserve cancellation and recovery. No Mainnet upgrade is authorized or required for this operated-service shutdown. Do not pause the shared protocol, change collection permissions, revoke upgrade authority, change NFT ownership, or disable delist_handle/cancel_bid. A future protocol-level shutdown requires separate explicit approval.
+
+Existing managed trading blocks remain in place. Shared notices now explicitly distinguish SolHandle service retirement from the still-permissionless on-chain program, and recovery explains owner-paid upfront SOL fees. No minting, Primary Handle, resolver, Pay, Earn, or external-provider behavior is changed by this confirmation.
+
+Prior read-only assessment on 21 October 2026 found 103 non-expiring native listings and zero native bids. All 103 listings matched current owners and listing transfer delegates. Unsigned owner-paid delist simulations succeeded for 95 positions, closing their accounts, preserving ownership and removing the delegate. Eight positions across three unfunded owner wallets succeeded only with a separate simulated fee payer; the current recovery service does not sponsor fees, so those owners must fund their wallets. Direct buy_handle and place_bid simulations also succeeded, confirming that service retirement does not disable direct contract interaction. These are historical snapshots and unsigned simulations, not completed cancellations or a permanent zero-bid guarantee.
+
 ## Implemented
 
 - Public wallet-based /marketplace-recovery, without email-account requirement. Lists live finalized Mainnet listing/bid accounts filtered by signer wallet, including expired bids, with 25-position paging, handle/PDA/Core collection/owner validation, exact decimal-string amounts, support route and scan timestamp/slot.

@@ -8,9 +8,11 @@ Keep existing services until the replacement cancellation path is evidenced. Pri
 
 No authority transfer has been signed. The owner must choose hardware-backed/multisig custody, verify the new public authority and authorize the transfer separately. Verify on-chain afterward. No mainnet upgrade, freeze or immutable conversion is part of this project. Evidence that the key was hot versus hardware-backed is currently unavailable.
 
-## 1. Coherent next implementation: recovery + managed trading stop
+## 1. Approved Option A: recovery + managed trading stop
 
-Implement these in ONE release, not a redirect-only patch:
+Owner-approved policy on 21 October 2026: discontinue trading through SolHandle's application and backend; keep cancellation and recovery available. No Mainnet upgrade or global pause is authorized. Direct on-chain trading remains possible, including execution of outstanding listings until their owners cancel. Protocol-level shutdown is not a release requirement for Option A and would need separate explicit approval. The implementation record is in PHASE_1_STATUS.md; remaining evidence gates must not be represented as completed.
+
+Preserve these controls together, not as a redirect-only patch:
 
 1. Add read-only Mainnet recovery service that enumerates actual program accounts with Anchor discriminators, validates layout, deterministic position PDA, HandleRecord/asset association and Config collection, and filters by the connected wallet. Public on-chain recovery does not require a platform email account. Cap/paginate response; include snapshot slot and exact decimal-string lamports. Do not rely on NativeBid/NativeListing cache, and do not hide expired bids from cancellation.
 2. Add /marketplace-recovery with connect, wallet-switch/reset, all own live listings and bids, no positions/loading/error states, exact bid principal versus account rent, per-position cancellation, confirmation signatures, support instructions and reload/pending recovery. Users sign their own transactions; no admin refund wallet. Wallet authentication never grants transaction signing permission.
