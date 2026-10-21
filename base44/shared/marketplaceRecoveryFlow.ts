@@ -47,6 +47,8 @@ export async function prepareRecovery(url, body) {
 }
 export async function submitRecovery(url, body) {
   const parsed = await parseCancellation(body, true);
+  // Never use a differently configured network, including for an already-known signature.
+  if (await rpc(url, 'getGenesisHash', []) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d') throw new Error('Recovery requires Solana Mainnet.');
   const status = await recoveryStatus(url, body);
   if (status.state !== 'pending' || !status.canRebroadcast) return status;
   await validatedPosition(url, body, parsed);

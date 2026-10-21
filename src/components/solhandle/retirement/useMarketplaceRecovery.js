@@ -5,7 +5,7 @@ import { readAttempts, saveAttempt } from '@/components/solhandle/retirement/rec
 const message = e => e.response?.data?.error || e.message;
 export default function useMarketplaceRecovery() {
   const { publicKey, signTransaction } = useWallet(), wallet = publicKey?.toBase58() || '';
-  const current = useRef(wallet); current.current = wallet;
+  const current = useRef(wallet), operationLock = useRef(false); current.current = wallet;
   const [view, setView] = useState({ wallet: '', items: [], attempts: [], loading: false, error: '', busy: '' });
   const load = useCallback(async (cursor = null, append = false) => {
     if (!wallet) return;
@@ -17,11 +17,12 @@ export default function useMarketplaceRecovery() {
   }, [wallet]);
   useEffect(() => { setView({ wallet, items: [], attempts: [], loading: Boolean(wallet), error: '', busy: '' }); if (wallet) load(); }, [wallet, load]);
   const act = async operation => {
-    if (!wallet || current.current !== wallet) return;
+    if (!wallet || current.current !== wallet || operationLock.current) return;
+    operationLock.current = true;
     setView(v => ({ ...v, busy: 'working', error: '' }));
     try { await operation(); if (current.current === wallet) await load(); }
-    catch (e) { if (current.current === wallet) setView(v => ({ ...v, attempts: readAttempts(wallet), error: message(e) })); }
-    finally { if (current.current === wallet) setView(v => ({ ...v, busy: '' })); }
+    catch (e) { if (current.current === wallet) { let attempts; try { attempts = readAttempts(wallet); } catch { /* Preserve the history error; never sign around corrupted storage. */ } setView(v => ({ ...v, ...(attempts ? { attempts } : {}), error: message(e) })); } }
+    finally { operationLock.current = false; if (current.current === wallet) setView(v => ({ ...v, busy: '' })); }
   };
   const check = async attempt => { const result = await checkRecovery(attempt); saveAttempt(wallet, { ...attempt, ...result }); return result; };
   useEffect(() => {

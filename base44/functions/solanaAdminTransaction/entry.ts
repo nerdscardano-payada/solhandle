@@ -3,6 +3,7 @@ import { ComputeBudgetProgram, PublicKey, Transaction } from "npm:@solana/web3.j
 import { secrets } from "base44:runtime";
 import { rpc } from "../../shared/solanaRpc.ts";
 import { PROGRAM_ID, SEEDS } from "../../shared/solhandleProtocol.ts";
+import { discriminator, same, retired } from '../../shared/marketplaceRecoveryCodec.ts';
 
 function encodeBase58(bytes) {
   const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -51,6 +52,8 @@ export default async function(req: Request): Promise<Response> {
         const detail = protocolInstructions.length !== 1 ? `Expected one SolHandle instruction, found ${protocolInstructions.length}.` : `Unsupported instruction programs: ${programIds.join(", ")}.`;
         return Response.json({ error: detail }, { status: 400 });
       }
+      const blockedTrading = await Promise.all(['list_handle', 'buy_handle', 'place_bid', 'accept_bid'].map(name => discriminator(`global:${name}`)));
+      if (blockedTrading.some(code => same(protocolInstructions[0].data.slice(0, 8), code))) return retired();
       const signature = await rpc(rpcUrl, "sendTransaction", [body.transaction_base64, { encoding: "base64", preflightCommitment: "confirmed" }]);
       for (let attempt = 0; attempt < 25; attempt += 1) {
         const statuses = await rpc(rpcUrl, "getSignatureStatuses", [[signature], { searchTransactionHistory: true }]);

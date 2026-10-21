@@ -20,7 +20,7 @@ export function signature58(data) {
   for (const value of data) { if (value) break; out = '1' + out; } return out;
 }
 export function formatRecoverySol(value) {
-  const amount = BigInt(value || '0');
+  const signed = BigInt(value || '0'), amount = signed < 0n ? -signed : signed;
   const fraction = (amount % 1000000000n).toString().padStart(9, '0').replace(/0+$/, '');
-  return `${amount / 1000000000n}${fraction ? '.' + fraction : ''}`;
+  return `${signed < 0n ? '-' : ''}${amount / 1000000000n}${fraction ? '.' + fraction : ''}`;
 }
