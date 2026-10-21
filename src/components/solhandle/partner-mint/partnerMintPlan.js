@@ -25,7 +25,7 @@ Authority remains **blockchain → indexer → database/cache → UI**. SolHandl
 - The local **solhandle-sdk@1.1.0 source preview** preserves resolution and adds a Devnet-only Partner Mint client with explicit review, signing, submission and saved-intent recovery. The administrator example is available at **/developers/partner-mint/devnet-sdk**. This is not an npm publication or public partner API. The live administrator example now uses the reusable SolHandleMint React source component; standalone React packaging remains planned.
 
 **Blocking dependency:** implement, review and deploy a backward-compatible Solana program extension before advertising automatic 50/50 links. An extra client-side transfer alongside today's full-treasury mint would overcharge the user. A database update or memo cannot enforce settlement.` },
-  { id: 'economics', title: 'SOL settlement, rounding & Earn interaction', body: `Revenue means the **protocol mint fee**, including applicable premium surcharge. Network/priority fees, account rent, Metaplex account creation and metadata/storage costs are separate user costs, disclosed before signing and excluded from the split. No discount or partner-selected price is allowed.
+  { id: 'economics', title: 'SOL settlement & rounding', body: `Revenue means the **protocol mint fee**, including applicable premium surcharge. Network/priority fees, account rent, Metaplex account creation and metadata/storage costs are separate user costs, disclosed before signing and excluded from the split. No discount or partner-selected price is allowed.
 
 | Example fee | Partner | Protocol treasury |
 | --- | --- | --- |
@@ -33,7 +33,7 @@ Authority remains **blockchain → indexer → database/cache → UI**. SolHandl
 
 Use checked u64 integers on-chain and BigInt in SDK code. Transport lamport amounts as decimal strings; SOL values are display-only. Approved odd-lamport rule (2 October 2026): **partner = floor(price / 2); protocol = price − partner**. The indivisible remainder goes to the treasury. Test 100,000,001 lamports explicitly.
 
-Approved policy (2 October 2026): **Partner Mint and Earn primary-mint commission are mutually exclusive for the same transaction**: pay the partner once, with no additional Earn primary-mint commission. Preserve origin-referral history and unrelated secondary/creator-fee rules; a partner parameter must not rewrite them. The Devnet Partner Mint ledger enforces this exclusion and never creates an Earn primary-mint event. The existing Earn flow is unchanged; full regression evidence remains an acceptance gate.
+Partner Mint settles the approved partner share once per successful transaction. No additional affiliate commission is accrued. Preserve historical accounting and existing transaction evidence; partner parameters must not rewrite prior records. Full settlement and legacy-flow regression evidence remains an acceptance gate.
 
 Free official claims stay in their existing verification flow and earn no partner revenue. No token burn or Integration Rewards Vault distribution is added to the SOL split.` },
   { id: 'registry', title: 'Registry, ownership & approval model', body: `**Proposed application records:**
@@ -104,7 +104,7 @@ Typed errors: INVALID_HANDLE (400), UNAUTHORIZED/PARTNER_NOT_APPROVED (401/403),
 - Save receipts idempotently and reindex durable state. Client mint_confirmed events, URLs and prepared transactions never increase revenue.
 
 A Partner Mint enable switch stops this path without pausing ordinary minting. Suspension invalidates pending partner quotes at execution; completed payments/NFTs remain irreversible.` },
-  { id: 'phase-1', title: 'Phase 1 — implementation work packages & acceptance', body: `**Build order:** economic/rounding/referral policy → additive Devnet program extension → approved-profile administration/shared backend → hosted Devnet links, costs, recovery and activity → complete local-validator/Devnet/wallet acceptance evidence → independent review → Phase 2 → Phase 3 → separate explicit Mainnet approval.
+  { id: 'phase-1', title: 'Phase 1 — implementation work packages & acceptance', body: `**Build order:** economic and rounding policy → additive Devnet program extension → approved-profile administration/shared backend → hosted Devnet links, costs, recovery and activity → complete local-validator/Devnet/wallet acceptance evidence → independent review → Phase 2 → Phase 3 → separate explicit Mainnet approval.
 
 Deliver linked profiles and approval UI, unique on-chain IDs, wallet proof, live signed SOL quotes, atomic split, availability/quote/prepare/submit/status services, recoverable receipts, basic events/aggregate reporting and deep-link minting. No self-service dashboard or packaged mint SDK is required in this phase.
 
@@ -119,7 +119,7 @@ Proposed links: **/mint?partner=example-partner** and **/mint?partner=example-pa
 | Partner | approved/pending/suspended/disabled, duplicate ID, wrong PDA/wallet/revision, unauthorized update, changed wallet |
 | Mint | success, simultaneous claim, insufficient SOL including rent, cancel, duplicate submit, expired blockhash, uncertain confirmation |
 | Security | altered treasury/collection/owner/metadata, forged/replayed/cross-cluster quote, self-mint rule, extra instructions, bad lookups |
-| Accounting | exact transfers, no failed-mint revenue, no duplicate Earn primary commission, recovery/idempotency, finalized totals |
+| Accounting | exact transfers, no failed-mint revenue, no duplicate partner settlement, recovery/idempotency, finalized totals |
 | Regression | ordinary SOL mint, $HANDLE burn/treasury, official claims, resolution, primary handle, marketplace, Pay |
 
 Mainnet gate: reviewed program/IDL, reproducible build, devnet evidence, migration assessment, wallet checks including Phantom/Backpack/Solflare, monitoring and suspension controls. Verify deployed artifact/version before enabling links. Publishing this page does not deploy mainnet.` },
@@ -175,7 +175,7 @@ Minimize wallet analytics, define consent/retention/deletion before wider launch
 
 **Phase 3:** native-wallet/mobile adapters, approval-controlled onboarding, webhooks and enterprise distribution.
 
-Approved on 2 October 2026: odd-lamport treasury remainder, separate network/rent/storage costs and Earn primary-mint exclusivity. The initial registry uses a separate quote signer and defaults self-mint permission to false; exemptions and receipt-rent disclosure still require review before the mint route is enabled. Choose a concrete public-domain/API-routing setup and wallet transaction strategy during implementation. This plan creates no domain, key, deployed program or partner account.
+Approved on 2 October 2026: odd-lamport treasury remainder, separate network/rent/storage costs and a single partner settlement per transaction. The initial registry uses a separate quote signer and defaults self-mint permission to false; exemptions and receipt-rent disclosure still require review before the mint route is enabled. Choose a concrete public-domain/API-routing setup and wallet transaction strategy during implementation. This plan creates no domain, key, deployed program or partner account.
 
 Complete all three phases on Devnet in order before requesting a separately approved Mainnet pilot with a small verified allowlist. Keep production Partner Mint disabled until every phase's deliverables and acceptance gates, independent review and deployment readiness are evidenced. Ordinary minting remains independent.
 
