@@ -20,7 +20,7 @@ export const roadmapMilestones = [
   {
     number: "04", status: "completed", title: "Mainnet ready",
     summary: "The production protocol and its supporting identity infrastructure are deployed on Solana Mainnet Beta.",
-    completed: ["Protocol V2, official collection, treasury and rewards vault deployed", "Reproducible production build process established", "Indexer, resolver API, caching and batched RPC ownership checks live"],
+    completed: ["Protocol V2, official collection and treasury deployed", "Production deployment and protocol configuration established", "Indexer, resolver API, caching and batched RPC ownership checks live"],
     next: "Keep chain state authoritative while monitoring index and RPC reliability."
   },
   {
@@ -30,16 +30,16 @@ export const roadmapMilestones = [
     next: "Continue security monitoring, improve RPC resilience and repair legacy metadata where required."
   },
   {
-    number: "06", status: "current", title: "Partners, SDK & developer ecosystem",
-    summary: "The SDK, resolver and Mainnet integration guides are available; third-party onboarding and verification remain in progress.",
-    completed: ["Public solhandle-sdk package under the MIT License", "Developer Center, integration guides and resolver examples", "Forward and reverse resolution infrastructure"],
-    upcoming: ["Onboard wallets, explorers, payment tools and ecosystem partners", "Verify integrations against the Mainnet security test suite", "Grow the Integration Rewards program and partner distribution model", "Partner Mint Phase 1 (planned): approved partners, atomic 50/50 SOL settlement, verified attribution, APIs and devnet mint links", "Partner Mint Phase 2 (planned): SDK, React component, widget, scoped dashboard, credentials and domain verification", "Partner Mint Phase 3 (planned): wallet-native/mobile adapters, approval-controlled onboarding, webhooks and enterprise analytics"]
+    number: "06", status: "current", title: "SDK, integrations & Partner Mint pilot",
+    summary: "Resolution tools and integration intake are available. Partner Mint has an administrator-only Devnet pilot and reusable SDK/React source; it is not a public or Mainnet release.",
+    completed: ["Developer Center, forward/reverse resolution SDK source and integration examples", "Project submissions, nominations and an administrative integration pipeline", "Administrator-only Devnet Partner Mint flow, registry, receipt recovery and reporting", "Devnet mint SDK source preview and reusable React mint component"],
+    upcoming: ["Complete remaining Devnet wallet, concurrency, security and legacy-flow acceptance gates", "Review partner-scoped access and domain verification before approving an external Devnet pilot", "Package and release developer tools only after their acceptance gates pass", "Require independent review and separate approval before any Mainnet Partner Mint activation"]
   },
   {
-    number: "07", status: "completed", title: "Native marketplace live",
-    summary: "The non-custodial native marketplace is live, with active handle listings and recorded bidding activity.",
-    completed: ["Native listing, bidding and Buy Now interfaces", "Wallet-confirmed non-custodial transaction architecture", "Marketplace discovery and bid/sale notification interfaces"],
-    next: "Continue monitoring ownership synchronization, transaction reliability, sales and royalties actually received, with ongoing marketplace improvements."
+    number: "07", status: "retired", title: "Native marketplace, Share & Earn and Embed retired",
+    summary: "SolHandle has stopped operating its native trading service and removed Share & Earn, the Earn Litepaper and public SolHandle Embed. These are retired services, not future launch milestones.",
+    completed: ["New managed native listings, bids and purchases blocked", "Share & Earn participation, attribution and new reward accrual disabled", "Public Earn, litepaper and Embed entry points removed", "Existing financial history and owner-authorized marketplace cancellation/recovery preserved"],
+    next: "Keep recovery available for existing positions. Service retirement does not disable permissionless on-chain contracts or change NFT ownership; retired services are not scheduled for reactivation."
   },
   {
     number: "08", status: "completed", title: "SolHandle Pay — native SOL transfers",
@@ -54,15 +54,33 @@ export const roadmapMilestones = [
     upcoming: ["Independently verify and publish the official mint address and trading routes", "Execute the six-month protocol allocation lock and publish proof"]
   },
   {
-    number: "10", status: "current", title: "Additional mint payment options",
-    summary: "SOL remains available alongside wallet-signed $HANDLE minting: no discount, a maximum 5% reference price impact and a verifiable 50/50 burn-treasury split. USDC remains planned.",
-    completed: ["Native SOL payment and NFT mint in one on-chain transaction", "Public $HANDLE mint preparation and confirmation connected to mainnet", "No-discount quotes with a 5% price-impact limit", "Verified token payment, burn and treasury accounting"],
-    upcoming: ["Complete production wallet approval checks in Phantom and Backpack", "Add optional USDC mint payments with a reliable, time-limited SOL-to-USDC quote", "Independent review of token mint security and accounting"]
+    number: "10", status: "completed", title: "SOL & $HANDLE mint payment flows",
+    summary: "Existing mint flows support SOL and $HANDLE. The $HANDLE path uses no-discount quotes, a maximum 5% reference price impact and verified 50/50 burn-treasury accounting; USDC mint payment is not advertised as available.",
+    completed: ["Native SOL payment and official NFT mint in one atomic transaction", "Public $HANDLE mint preparation and confirmation connected to Mainnet", "No-discount quotes with a 5% price-impact limit", "Token payment, burn and treasury accounting implemented"],
+    next: "Continue wallet compatibility checks and independent security/accounting review. Implemented functionality does not mean every wallet acceptance or security review is complete."
   },
   {
-    number: "11", status: "upcoming", title: "SolHandle Pay — multi-token transfers & payment fee",
-    summary: "Extend non-custodial @handle payments beyond SOL to USDC, $HANDLE and selected SPL tokens, with a small, clearly disclosed SolHandle fee. This is a future phase, not a live payment option.",
-    completed: ["Native SOL transfers to verified @handle owners, currently without a SolHandle fee"],
-    upcoming: ["Start with an allowlist of supported token mints and verify token-program rules, decimals and recipient token-account readiness", "Build wallet-signed, atomic token transfers that split the recipient amount and a small protocol fee; display the exact fee and any account-creation/network costs before signing", "Extend protected payment links, on-chain confirmation, receipts and history by token; review fee policy and security before launch"]
+    number: "11", status: "completed", title: "SolHandle Pay — SOL, USDC, USDT & $HANDLE",
+    summary: "The payment interface supports SOL and the official USDC, USDT and $HANDLE tokens on Solana. The current flow has no SolHandle payment fee; Solana network and applicable token-account creation costs remain payable.",
+    completed: ["Currency selection and wallet-signed payment flows for SOL, USDC, USDT and $HANDLE", "Official token-mint, decimal and token-program configuration", "Recipient review, token-account checks and disclosed SOL costs", "Confirmation checks, pending-payment recovery, receipts and history"],
+    next: "Improve wallet compatibility, confirmation reliability and recovery without introducing an unapproved payment fee. Wallet-driven submission remains separate future work."
+  },
+  {
+    number: "12", status: "completed", title: "Contacts & protected payment requests",
+    summary: "Wallet-authorized contacts and payment requests are integrated with SolHandle Pay rather than separate payment products.",
+    completed: ["Save, search and manage contacts through wallet-authorized access", "Open payments from saved contacts with recipient-change warnings", "Reusable receiving links and fixed-amount one-time payment requests", "SOL, USDC, USDT and $HANDLE request options, quick expiry choices and confirmed-payment tracking"],
+    next: "Preserve contact privacy and request recovery, and continue checking ownership changes, expiry and concurrent payment attempts."
+  },
+  {
+    number: "13", status: "upcoming", title: "Wallet-driven payment submission",
+    summary: "A migration plan has been outlined, but the existing Pay flow still uses backend preparation, validation and broadcasting after wallet signing. Direct wallet submission has not been activated.",
+    completed: ["Migration scope and request-reservation/recovery risks identified"],
+    upcoming: ["Establish actual sign-and-send support for each supported desktop, mobile and Android wallet route", "Start with direct SOL transfers while preserving validation, confirmation and uncertain-status recovery", "Extend to supported tokens, contacts and payment requests only after their release gates pass", "Retain historical records and reconciliation; disable new backend broadcasts only after migration acceptance"]
+  },
+  {
+    number: "14", status: "research", title: "Optional SolHandle self-custody wallet",
+    summary: "Feasibility research only: an optional integrated wallet is being investigated, not offered as an existing feature. External Phantom, Solflare and Backpack connections remain supported.",
+    completed: ["Initial architecture assessment: the current Android bridge connects external wallets; it is not an integrated key-storage or recovery system"],
+    upcoming: ["Prepare a threat model for a native Android wallet module, local encrypted secrets, independent recovery and explicit native signing approval", "Evaluate create/import/export compatibility and use Devnet test wallets only if prototype development is approved", "Keep user private keys and recovery phrases off SolHandle servers and outside the web interface", "Require independent security and legal review before any real-funds release; browser and iOS wallets require separate assessment"]
   }
 ];
