@@ -1,6 +1,11 @@
 const locales = ['nl', 'de', 'fr', 'es', 'pt', 'it', 'tr', 'ja', 'ko', 'vi'];
 // Keep token symbols, wallet addresses and user-written descriptions unchanged.
 const rows = {
+  'Valid for (optional)': ['Geldig voor (optioneel)', 'Gültig für (optional)', 'Durée de validité (facultatif)', 'Validez (opcional)', 'Validade (opcional)', 'Validità (facoltativa)', 'Geçerlilik süresi (isteğe bağlı)', '有効期間（任意）', '유효 기간 (선택 사항)', 'Thời hạn hiệu lực (không bắt buộc)'],
+  'No expiry': ['Geen vervaldatum', 'Kein Ablaufdatum', 'Sans expiration', 'Sin vencimiento', 'Sem vencimento', 'Nessuna scadenza', 'Süre sınırı yok', '期限なし', '만료 없음', 'Không hết hạn'],
+  '1 hour': ['1 uur', '1 Stunde', '1 heure', '1 hora', '1 hora', '1 ora', '1 saat', '1時間', '1시간', '1 giờ'],
+  '24 hours': ['24 uur', '24 Stunden', '24 heures', '24 horas', '24 horas', '24 ore', '24 saat', '24時間', '24시간', '24 giờ'],
+  '7 days': ['7 dagen', '7 Tage', '7 jours', '7 días', '7 dias', '7 giorni', '7 gün', '7日間', '7일', '7 ngày'],
   'Send SOL, USDC, USDT or HANDLE to an @handle.': ['Verstuur SOL, USDC, USDT of HANDLE naar een @handle.', 'Sende SOL, USDC, USDT oder HANDLE an einen @handle.', 'Envoyez des SOL, USDC, USDT ou HANDLE à un @handle.', 'Envía SOL, USDC, USDT o HANDLE a un @handle.', 'Envie SOL, USDC, USDT ou HANDLE para um @handle.', 'Invia SOL, USDC, USDT o HANDLE a un @handle.', 'Bir @handle’a SOL, USDC, USDT veya HANDLE gönder.', '@handleにSOL、USDC、USDT、HANDLEを送金。', '@handle로 SOL, USDC, USDT 또는 HANDLE을 보내세요.', 'Gửi SOL, USDC, USDT hoặc HANDLE đến một @handle.'],
   'Currency': ['Valuta', 'Währung', 'Devise', 'Moneda', 'Moeda', 'Valuta', 'Para birimi', '通貨', '통화', 'Loại tiền'],
   'Send currency': ['Te versturen valuta', 'Zahlungswährung', 'Devise à envoyer', 'Moneda a enviar', 'Moeda a enviar', 'Valuta da inviare', 'Gönderilecek para birimi', '送金する通貨', '보낼 통화', 'Loại tiền gửi'],

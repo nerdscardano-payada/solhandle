@@ -15,11 +15,11 @@ export default function PayLinkGenerator({ handles, wallet, primaryHandle, loadi
   const handle = names.includes(selected) ? selected : names.includes(primary) ? primary : names[0] || '';
   const key = JSON.stringify([wallet, handle, form]);
   const validAmount = !form.amount ? form.kind === 'REUSABLE' : form.asset === 'SOL' ? /^\d+(\.\d{1,9})?$/.test(form.amount) && Number(form.amount) > 0 && Number.isSafeInteger(Math.round(Number(form.amount) * 1e9)) : Boolean(parseUsdtAmount(form.amount));
-  const validExpiry = !form.expiry || new Date(form.expiry).getTime() > Date.now();
+  const validExpiry = ['', '1', '24', '168'].includes(form.expiry);
   const create = async event => {
     event.preventDefault(); setCreating(true); setError(''); setCreated(null);
     try {
-      const data = await authorizedPayments('create_link', publicKey, signMessage, { handle, asset: form.asset, amount: form.amount, kind: form.kind, description: form.description, expiresAt: form.expiry ? new Date(form.expiry).toISOString() : '' });
+      const data = await authorizedPayments('create_link', publicKey, signMessage, { handle, asset: form.asset, amount: form.amount, kind: form.kind, description: form.description, expiresAt: form.expiry ? new Date(Date.now() + Number(form.expiry) * 3600000).toISOString() : '' });
       setCreated({ key, id: data.requestId }); onCreated?.();
     } catch (e) { setError(e.response?.data?.error || e.message || 'Could not create payment request.'); }
     finally { setCreating(false); }
