@@ -19,7 +19,10 @@
 - prepareMarketplaceTx action=list returned HTTP 410; submitMarketplaceTx action=bid returned HTTP 410.
 - An unsigned transaction containing place_bid but labelled cancel_bid was rejected by both endpoints with HTTP 422 before RPC broadcast.
 - prepareMarketplaceTx produced and successfully simulated unsigned delist_handle for position 2SvzCJ6j76Z2gZGLj1h1fiUus14KBhNCUFi42NpDvGgz at checked slot 459627622. No signature or broadcast. This is not evidence of an executed wallet cancellation or proof of every existing plugin layout.
-- Initial frontend production build completed without a reported compilation error. Final build/status checks are separate from functional wallet acceptance.
+- Final frontend production build passed after all application edits.
+- Wallet-scoped pagination returned 44 live positions as 25 + 19, with zero bid principal for that wallet.
+- Unsigned cancellation relay was rejected with HTTP 422, an extra place_bid instruction was rejected with HTTP 422, and requesting another wallet's position was rejected with HTTP 422. The admin generic relay rejected list_handle with HTTP 410 while its ordinary read-only preparation still returned 200.
+- No signed wallet transaction was created or broadcast during these checks. A build and unsigned simulation are not functional wallet acceptance.
 
 ## Explicit remaining release/evidence gates
 
