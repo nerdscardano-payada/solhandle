@@ -9,7 +9,7 @@
 **Privacy/juridisch beoordelaar:** nog aan te wijzen  
 **Securitybeoordelaar:** nog aan te wijzen
 
-> Dit document is een interne checklist, geen publieke roadmapbelofte, juridisch advies of bewijs van compliance. Het aanmaken van dit document implementeert geen Network-functionaliteit en verleent geen goedkeuring voor ontwikkeling, alpha-toegang of publieke lancering. Werkpakketten zijn niet technisch afgetekend. WP-A heeft inmiddels een vastgestelde productbaseline v1.0; de uitvoering, beoordeling en acceptatie blijven open. Eerdere gesprekken buiten expliciet vastgestelde productregels gelden als voorstellen.
+> Dit document is een interne checklist, geen publieke roadmapbelofte, juridisch advies of bewijs van compliance. Het aanmaken van dit document implementeert geen Network-functionaliteit en verleent geen goedkeuring voor ontwikkeling, alpha-toegang of publieke lancering. Werkpakketten zijn niet technisch afgetekend. WP-A heeft een vastgestelde productbaseline v1.0; WP-B heeft een uitgewerkt technisch ontwerp v0.1 met expliciete implementatieblokkers. Uitvoering, beoordeling en acceptatie blijven open. Eerdere gesprekken buiten expliciet vastgestelde productregels gelden als voorstellen.
 
 ## 1. Doel en werkwijze
 
@@ -80,46 +80,33 @@ Voor ieder werkpakket vastleggen:
 
 **Voorgestelde eigenaar:** technisch verantwoordelijke, met securityreview.  
 **Afhankelijkheden:** WP-A.  
-**Oplevering:** architectuurbesluit, toestandsmodel, autorisatiecontract en na toestemming een afgeschermd prototype.
+**Technisch ontwerp:** [Account, walletbewijs en handlebindings v0.1](./ACCOUNT_OWNERSHIP_DESIGN.md), gebaseerd op productregels v1.0.  
+**Status:** ontwerp uitgewerkt en bestaande bronnen geïnspecteerd; niet geïmplementeerd, getest of vrijgegeven.
 
-### Account- en sessiebasis
-- [ ] Inspecteer de bestaande account-, login- en sessievoorzieningen voordat hergebruik wordt besloten.
-- [ ] Behoud platformauthenticatie als accountbasis; bouw geen parallelle eigen account-/sessiebackend.
-- [ ] Behandel walletbewijs als aparte autorisatiecontrole, niet als toestemming voor transacties.
-- [ ] Documenteer apart of en hoe wallet-first onboarding ondersteund kan worden; beloof geen wachtwoordloze accountflow zonder bewezen ondersteuning.
-- [ ] Bepaal een ondersteunde aanpak voor sessiebeveiliging, rotatie, intrekking, CSRF en domeinbinding; toets noodzakelijke hostingvoorwaarden.
-- [ ] Stel passkeys uit tenzij ondersteund en apart goedgekeurd; passkeys bewijzen nooit actueel handlebezit.
+### Uitgewerkt en vastgelegd
+- [x] Inspecteer bestaande platformauth, login/registratie, routes en walletguard; leg hergebruik en beperkingen vast.
+- [x] Kies platformaccount → expliciete Network-onboarding → walletbewijs → hoofdhandle als v1-richting; geen parallelle loginbackend of beloofde wallet-only login.
+- [x] Specificeer account-/doel-/domeingebonden proofs, vijf minuten challengegeldigheid, berichtcontext en eenmalig transactioneel verbruik.
+- [x] Leg exclusiviteitsinvarianten voor profiel, wallet en hoofdhandle plus idempotentie en crashherstel vast.
+- [x] Scheid veilige directe chainvalidatie van index-/cached-ownerhelpers; beschrijf officiële asset-/collectie-/PDA-controles.
+- [x] Werk PENDING, ACTIVE, OWNERSHIP_UNCERTAIN en ENDED uit, met generaties, swaps en nieuwe periodes na terugkoop.
+- [x] Specificeer confirmed/finalized-controles, contextslots, freshness en beperkingen van een niet-atomaire chain-/databasegrens.
+- [x] Ontwerp Network-autorisatie-intrekking zonder te claimen dat alle platformtokens worden ingetrokken.
+- [x] Definieer herstel zonder accountovername op basis van handlebezit en scheid historische afzender-/Pay-context van actuele lookups.
+- [x] Stel operatiecontracten, bewijseisen en open acceptatiescenario's B-T01 t/m B-T18 op.
 
-### Walletbewijs
-- [ ] Gebruik een eenmalige serverchallenge met wallet, domein, doel, uitgifte- en vervaltijd.
-- [ ] Verifieer handtekening en challenge-context server-side.
-- [ ] Borg racebestendig eenmalig verbruik van challenges; een read-then-writecontrole alleen is onvoldoende.
-- [ ] Weiger verlopen, hergebruikte, verkeerde-wallet-, verkeerde-domein- en verkeerde-doelbewijzen.
-- [ ] Definieer herverificatie voor wallet toevoegen, ontkoppelen en gevoelige accountwijzigingen.
-- [ ] Voeg accounts nooit automatisch samen op basis van een gekoppelde wallet.
+### Verplicht vóór implementatie of vrijgave
+- [ ] B-BLOCK-01: keur een aantoonbaar transactioneel register goed. Entity-check/create en upsert bieden volgens geraadpleegde documentatie geen gegarandeerde exclusiviteit; geen entity-only noodoplossing.
+- [ ] B-BLOCK-02: bewijs ondersteunde recente account-herauthenticatie en beschikbare sessie-intrekking; geen eigen login-/credentialbackend om ontbrekende garanties te omzeilen.
+- [ ] B-BLOCK-03: keur finaliteits-/timingbeleid en resterende chain-/database-race expliciet goed.
+- [ ] B-BLOCK-04: bevestig deploymentafscherming, origins, toegang/leeftijd, bewaring en verantwoordelijken met WP-C/D/F/H.
+- [ ] Geef afzonderlijke toestemming voor het afgeschermde concurrency- en ownershipprototype.
 
-### Handlebinding
-- [ ] Verifieer officiële asset/collectie en actueel keteneigendom; een UI- of databaseclaim is geen bewijs.
-- [ ] Definieer PENDING, ACTIVE, OWNERSHIP_UNCERTAIN en ENDED, inclusief toegestane overgangen.
-- [ ] Leg account, asset, naam, wallet, begin/einde, laatste controle en beëindigingsreden vast.
-- [ ] Ontwerp racebestendige exclusiviteit voor maximaal één actieve binding per handle-asset; verifieer de benodigde opslaggaranties vóór implementatie.
-- [ ] Controleer eigendom server-side bij koppelen en identiteitsgevoelige schrijfacties; achtergrondwatchers zijn aanvullend.
-- [ ] Leg freshness, commitmentniveau, finaliteit en resterende race-/RPC-risico's vast; claim geen absolute onmiddellijke detectie.
-- [ ] Blokkeer bij onzekere eigendom nieuwe acties namens de handle, zonder een netwerkstoring als definitieve eigendomsoverdracht te behandelen.
-- [ ] Laat bestaande sessies, geplande acties en toekomstige API-toegang de controle niet omzeilen.
-- [ ] Maak na terugkoop een nieuwe binding; heractiveer geen oude periode.
-- [ ] Trek alleen handlegebonden publicatierechten in; draag geen account, projectrollen of privégegevens over.
-
-### Historische afzender
-- [ ] Bewaar een stabiele accountverwijzing, binding en handlevermelding op het moment van publiceren.
-- [ ] Ontwerp historische profielverwijzingen los van de huidige eigenaar van dezelfde naam.
-- [ ] Specificeer gedrag van oude mentions, notificaties, shares en Pay-knoppen na overdracht.
-- [ ] Voorkom dat oude posts of betaalverwijzingen impliciet als content of bestemming van de nieuwe eigenaar worden gepresenteerd.
-
-**Acceptatie**
-- [ ] Transfer, terugkoop, gelijktijdige claim, RPC-onzekerheid, walletwissel en challenge-replay hebben aantoonbare uitkomsten.
-- [ ] De nieuwe handle-eigenaar kan geen oude accountgegevens lezen of aanpassen.
-- [ ] De oude eigenaar kan na bevestigde intrekking niet via een oude sessie namens de verkochte handle handelen.
+**Acceptatie, nog niet uitgevoerd**
+- [ ] B-T01 t/m B-T18 hebben geslaagd bewijs, inclusief parallelle claims, nonce-replay, crashes, transfer, oude sessies en uitval.
+- [ ] Nieuwe eigenaren krijgen nooit historische privégegevens of het oude account.
+- [ ] Eigendomsverlies en lokale intrekking blokkeren verdere acties volgens het goedgekeurde actualiteits-/finaliteitsbeleid; geen absolute onmiddellijke chainclaim.
+- [ ] Technisch verantwoordelijke en securitybeoordelaar tekenen bewijs en resterende risico's expliciet af.
 
 ## 5. WP-C — Gegevensmodel en toegangsrechten
 
@@ -324,8 +311,8 @@ Deze poort hoort bij de alpha-release en wordt niet afgetekend op basis van alle
 | ID | Onderwerp | Status | Verantwoordelijke | Besluit / bewijs | Datum |
 |---|---|---|---|---|---|
 | D-01 | V1-account en aantal publieke identiteiten | PRODUCTREGELS VASTGELEGD; acceptatie open | Producteigenaar; reviewers nog aan te wijzen | [Productregels v1.0](./PRODUCT_RULES.md), A-05 t/m A-15 | 22 oktober 2026 |
-| D-02 | Ondersteunde account-/wallet-onboarding | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
-| D-03 | Exclusiviteit, freshness en transferfinaliteit | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
+| D-02 | Ondersteunde account-/wallet-onboarding | ONTWERP UITGEWERKT; herauth-/sessiegaranties open | Nog aan te wijzen | [WP-B v0.1](./ACCOUNT_OWNERSHIP_DESIGN.md), B-01/02 en B-BLOCK-02 | 22 oktober 2026 |
+| D-03 | Exclusiviteit, freshness en transferfinaliteit | ONTWERP TER REVIEW; opslagkeuze blokkeert implementatie | Nog aan te wijzen | [WP-B v0.1](./ACCOUNT_OWNERSHIP_DESIGN.md), B-BLOCK-01/03 | 22 oktober 2026 |
 | D-04 | Leeftijd en rechtsgronden | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-05 | Bewaartermijnen, export en verwijderingsscope | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-06 | Meldingen, bezwaar en moderatieverantwoordelijkheid | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
@@ -352,3 +339,4 @@ Controleer de actuele versie en toepasselijkheid bij de formele review; deze lij
 |---|---|---|---|
 | 0.1 | 22 oktober 2026 | Eerste interne checklist op basis van het besproken fase 0-plan; geen functionaliteit, toegang of lancering geactiveerd | Nog niet goedgekeurd |
 | 0.2 | 22 oktober 2026 | WP-A gekoppeld aan definitieve productregels v1.0; alleen aantoonbaar gedocumenteerde productkeuzes afgevinkt, technische acceptatie en reviews open | Productbaseline op verzoek producteigenaar; geen releasegoedkeuring |
+| 0.3 | 22 oktober 2026 | WP-B uitgewerkt met broninspectie, proof-/ownershipcontracten, transactie- en herauthenticatieblokkers en open acceptatie | Ontwerp ter review; geen implementatie of vrijgave |
