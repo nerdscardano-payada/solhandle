@@ -28,6 +28,7 @@ const Privacy = lazy(() => import('@/pages/Privacy'));
 const Faq = lazy(() => import('@/pages/Faq'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Admin = lazy(() => import('@/pages/Admin'));
+const AdminNetworkSafety = lazy(() => import('@/pages/AdminNetworkSafety'));
 const AdminMainnetTests = lazy(() => import('@/pages/AdminMainnetTests'));
 const HandlePage = lazy(() => import('@/pages/HandlePage'));
 const Login = lazy(() => import('@/pages/Login'));
@@ -193,6 +194,9 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fnetwork-safety" replace />} />}>
+          <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
+        </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fmainnet-tests" replace />} />}>
           <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
         </Route>

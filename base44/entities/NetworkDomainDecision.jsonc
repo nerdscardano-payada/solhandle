@@ -1,0 +1,59 @@
+{
+  "name": "NetworkDomainDecision",
+  "type": "object",
+  "properties": {
+    "hostname": {
+      "type": "string",
+      "maxLength": 253
+    },
+    "classification": {
+      "type": "string",
+      "enum": [
+        "TRUSTED",
+        "NORMAL",
+        "SUSPICIOUS",
+        "BLOCKED"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "actor_id": {
+      "type": "string"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "hostname",
+    "classification",
+    "reason",
+    "actor_id",
+    "decided_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
