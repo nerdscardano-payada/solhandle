@@ -7,6 +7,7 @@ import { labInteract } from '../../shared/networkLabInteractions.ts';
 import { labSafety } from '../../shared/networkLabSafety.ts';
 import { labEntitlements } from '../../shared/networkEntitlements.ts';
 import { labMedia } from '../../shared/networkLabMedia.ts';
+import { testIdentityOperation } from '../../shared/networkTestIdentity.ts';
 export default async function(req) {
   try {
     if (req.method !== 'POST') return Response.json({ error: 'POST required' }, { status: 405 });
@@ -19,6 +20,7 @@ export default async function(req) {
     const db = base44.entities;
     if (['bootstrap', 'createIdentity'].includes(input.action)) return Response.json(await labProfiles(db, user, input, null));
     const actor = await testActor(db, user, input.actorId);
+    if (['identityChallenge', 'identityVerify', 'identityRefresh', 'identityRecipient'].includes(input.action)) return Response.json(await testIdentityOperation(db, user, actor, input, req), { headers: { 'Cache-Control': 'no-store' } });
     if (['saveProfile', 'people', 'profile', 'relations'].includes(input.action)) return Response.json(await labProfiles(db, user, input, actor));
     if (['publish', 'deletePost', 'editPost', 'feed', 'post'].includes(input.action)) return Response.json(await labPosts(db, input, actor));
     if (input.action === 'interact') return Response.json(await labInteract(db, input, actor));

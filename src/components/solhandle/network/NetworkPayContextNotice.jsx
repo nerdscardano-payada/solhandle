@@ -1,0 +1,5 @@
+import { Link } from 'react-router-dom';
+export default function NetworkPayContextNotice({ context }) {
+  if (!context) return null;
+  return <aside className="mt-6 space-y-2 rounded-xl border border-names-accent/30 bg-names-accent/5 p-4"><h2 className="text-sm font-semibold text-names-accent">Network recipient: {context.handle}</h2><p className="text-sm text-identity-muted">Selected from {context.name}'s development Network profile. The existing Pay flow verifies the same account binding and current on-chain owner before preparing or submitting a payment.</p><p className="text-xs text-identity-muted">SOL, USDC, USDT and $HANDLE use the existing review and wallet-signing flow. If ownership or the binding changes, this selection is blocked rather than silently redirected.</p><Link to="/pay" state={null} className="inline-block text-xs text-names-secondary underline">Explicitly choose a different recipient instead</Link></aside>;
+}

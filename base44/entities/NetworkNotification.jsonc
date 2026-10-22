@@ -15,11 +15,19 @@
         "REPOST",
         "FOLLOW",
         "REPLY",
-        "MENTION"
+        "MENTION",
+        "PROJECT",
+        "INTEGRATION",
+        "SECURITY",
+        "OWNERSHIP_CHANGE"
       ]
     },
     "post_id": {
       "type": "string"
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 500
     },
     "read": {
       "type": "boolean",

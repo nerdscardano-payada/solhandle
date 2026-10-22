@@ -10,6 +10,7 @@ import { PAY_MEMO, requestMemo, findPayLink, linkStatus, statusMessage, assertPa
 import { refreshPayLink, claimPayLink } from '../../shared/payRequestLifecycle.ts';
 import { saveConfirmedPayment } from '../../shared/payConfirmation.ts';
 import { handleUsdtPayment } from '../../shared/usdtPayFlow.ts';
+import { guardNetworkPayment } from '../../shared/networkPaymentGuard.ts';
 
 function bytes64(bytes) { return btoa(Array.from(bytes, b => String.fromCharCode(b)).join('')); }
 function decode64(value) { return Uint8Array.from(atob(value), c => c.charCodeAt(0)); }
@@ -35,7 +36,7 @@ export default async function(req: Request): Promise<Response> {
     const amount = Number(body.amountLamports);
     if (!Number.isSafeInteger(amount) || amount <= 0) return fail('Enter a valid SOL amount.');
     if (body.contactId && body.requestId) return fail('Choose either a saved contact or a payment link, not both.');
-    const recipient = () => body.contactId ? resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, sender) : resolveOnChain(rpcUrl, handle);
+    const recipient = async () => guardNetworkPayment(base44, body, body.contactId ? await resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, sender) : await resolveOnChain(rpcUrl, handle));
     let link = null;
     if (body.requestId != null) {
       if (typeof body.requestId !== 'string' || !/^[a-f0-9]{24}$/.test(body.requestId)) return fail('Invalid payment link.');

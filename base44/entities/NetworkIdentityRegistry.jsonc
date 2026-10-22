@@ -1,0 +1,130 @@
+{
+  "name": "NetworkIdentityRegistry",
+  "type": "object",
+  "properties": {
+    "scope": {
+      "type": "string",
+      "enum": [
+        "DEVELOPMENT"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "wallets": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "verified_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "address",
+          "verified_at"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "binding_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "wallet_address": {
+            "type": "string"
+          },
+          "asset_id": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string"
+          },
+          "is_primary": {
+            "type": "boolean"
+          },
+          "safe_for_sol": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "UNCERTAIN",
+              "ENDED"
+            ]
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "ended_at": {
+            "type": "string"
+          },
+          "checked_at": {
+            "type": "string"
+          },
+          "valid_until": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "binding_id",
+          "user_id",
+          "wallet_address",
+          "asset_id",
+          "handle",
+          "status",
+          "started_at",
+          "checked_at",
+          "valid_until"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "scope",
+    "version",
+    "wallets",
+    "bindings"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

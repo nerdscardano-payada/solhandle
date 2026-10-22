@@ -1,6 +1,7 @@
 import { fail, text, options, testScope } from './networkLabContext.ts';
 import { previewProfileInput } from './networkPreviewProfile.ts';
 import { approvedMedia, labProfileMedia } from './networkLabMedia.ts';
+import { refreshTestIdentity } from './networkIdentityRefresh.ts';
 export function labProfile(row) { return { id: row.public_id, name: row.display_name, bio: row.bio || '', kind: row.kind, links: row.social_links || [], website: row.website || '', joinedAt: row.created_date, avatarMediaId: row.avatar_media_id || '', bannerMediaId: row.banner_media_id || '', handle: null, ownerVerified: false, primaryActive: false, paymentsEnabled: false }; }
 export async function labProfiles(db, user, input, actor) {
   if (input.action === 'bootstrap') {
@@ -45,7 +46,7 @@ export async function labProfiles(db, user, input, actor) {
       db.NetworkPost.count({ author_public_id: target, preview: false, status: 'PUBLISHED', parent_id: '' }),
       db.NetworkInteraction.filter({ ...testScope, source_id: actor.public_id, target_id: target, post_id: '', active: true }, { limit: 10 })
     ]);
-    return { profile: { ...await labProfileMedia(db, labProfile(row)), followers, following, posts, relations: relations.items.map(item => item.kind) } };
+    return { profile: { ...await labProfileMedia(db, labProfile(row)), ...await refreshTestIdentity(db, row.public_id), followers, following, posts, relations: relations.items.map(item => item.kind) } };
   }
   const followers = input.direction === 'followers';
   const relations = await db.NetworkInteraction.filter({ ...testScope, kind: 'FOLLOW', active: true, [followers ? 'target_id' : 'source_id']: target }, options(input));

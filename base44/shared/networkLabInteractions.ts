@@ -1,7 +1,9 @@
 import { fail, testScope, testPost, blocked, notify, recalculateScore, relationRows } from './networkLabContext.ts';
+import { requireTestIdentityForWrite } from './networkIdentityRefresh.ts';
 export async function labInteract(db, input, actor) {
   const kind = input.kind;
   if (!['LIKE', 'REPOST', 'BOOKMARK', 'FOLLOW', 'BLOCK', 'MUTE'].includes(kind) || typeof input.active !== 'boolean') fail('Choose a valid interaction and explicit state.');
+  if (input.active && ['LIKE', 'REPOST', 'FOLLOW'].includes(kind)) await requireTestIdentityForWrite(db, actor);
   let targetId = input.target;
   let postId = '';
   if (['LIKE', 'REPOST', 'BOOKMARK'].includes(kind)) {

@@ -44,5 +44,5 @@ export async function labSafety(db, user, input, actor) {
   const query = { ...testScope, recipient_id: actor.public_id, actor_id: { $nin: excluded } };
   const [page, unread] = await Promise.all([db.NetworkNotification.filter(query, options(input)), db.NetworkNotification.count({ ...query, read: false })]);
   const actors = page.items.length ? await db.NetworkProfile.filter({ public_id: { $in: page.items.map(row => row.actor_id) }, preview: false }, { limit: 20 }) : { items: [] };
-  return { ...page, unread, items: page.items.map(row => ({ id: row.id, kind: row.kind, postId: row.post_id, read: row.read, actor: actors.items.find(item => item.public_id === row.actor_id) ? labProfile(actors.items.find(item => item.public_id === row.actor_id)) : { id: row.actor_id, name: 'Development account' } })) };
+  return { ...page, unread, items: page.items.map(row => ({ id: row.id, kind: row.kind, postId: row.post_id, read: row.read, message: row.message || '', actor: actors.items.find(item => item.public_id === row.actor_id) ? labProfile(actors.items.find(item => item.public_id === row.actor_id)) : { id: row.actor_id, name: 'Development account' } })) };
 }

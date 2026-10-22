@@ -13,6 +13,12 @@ export async function ownedContact(client, wallet, id) {
   return page.items[0];
 }
 export async function contactRecords(client, wallet, body) {
+  if (body.action === 'findRecipient') {
+    if (typeof body.recipientWallet !== 'string' || !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(body.recipientWallet)) throw contactError('Invalid recipient wallet.');
+    const page = await client.entities.WalletContact.filter({ owner_wallet: wallet, recipient_wallet: body.recipientWallet }, { limit: 1 });
+    const contact = page.items[0];
+    return { contact: contact ? { id: contact.id, name: contact.name, handle: contact.handle, recipient_wallet: contact.recipient_wallet } : null };
+  }
   if (body.action === 'list') {
     const term = String(body.search || '').trim().slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const query = { owner_wallet: wallet, ...(term ? { $or: [{ name: { $regex: term, $options: 'i' } }, { handle: { $regex: term, $options: 'i' } }] } : {}) };

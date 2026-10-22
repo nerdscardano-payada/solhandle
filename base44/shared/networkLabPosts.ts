@@ -2,6 +2,8 @@ import { fail, text, options, testScope, testPost, blocked, notify, recalculateS
 import { labProfile } from './networkLabProfiles.ts';
 import { approvedMedia, mediaProjection } from './networkLabMedia.ts';
 import { prepareMentions } from './networkLabMentions.ts';
+import { requireTestIdentityForWrite } from './networkIdentityRefresh.ts';
+import { readIdentityRegistry, currentIdentity } from './networkIdentityRegistry.ts';
 export async function enrichPosts(db, posts, actor) {
   const ids = posts.map(row => row.id);
   if (!ids.length) return [];
@@ -14,12 +16,14 @@ export async function enrichPosts(db, posts, actor) {
   ]);
   const mediaIds = [...new Set(posts.flatMap(row => row.media_ids || []))];
   const media = mediaIds.length ? await db.NetworkMedia.filter({ ...testScope, id: { $in: mediaIds }, status: 'APPROVED' }, { limit: 80 }) : { items: [] };
-  const byAuthor = new Map(authors.items.map(row => [row.public_id, labProfile(row)]));
+  const registry = await readIdentityRegistry(db);
+  const byAuthor = new Map(authors.items.map(row => [row.public_id, { ...labProfile(row), ...currentIdentity(registry, row.public_id) }]));
   const counter = (result, key, id) => result.rows.find(row => row[key] === id)?.count || 0;
-  return posts.filter(row => byAuthor.has(row.author_public_id)).map(row => ({ id: row.id, body: row.body, parentId: row.parent_id, date: row.published_at, author: byAuthor.get(row.author_public_id), historicalName: row.author_snapshot?.display_name || null, mentions: row.mentions || [], media: media.items.filter(image => (row.media_ids || []).includes(image.id)).map(mediaProjection), score: row.discovery_score || 0, likes: counter(likes, 'post_id', row.id), reposts: counter(reposts, 'post_id', row.id), replies: counter(replies, 'parent_id', row.id), states: own.items.filter(item => item.post_id === row.id).map(item => item.kind) }));
+  return posts.filter(row => byAuthor.has(row.author_public_id)).map(row => ({ id: row.id, body: row.body, parentId: row.parent_id, date: row.published_at, author: byAuthor.get(row.author_public_id), historicalName: row.author_snapshot?.display_name || null, historicalHandle: row.author_snapshot?.handle || null, mentions: row.mentions || [], media: media.items.filter(image => (row.media_ids || []).includes(image.id)).map(mediaProjection), score: row.discovery_score || 0, likes: counter(likes, 'post_id', row.id), reposts: counter(reposts, 'post_id', row.id), replies: counter(replies, 'parent_id', row.id), states: own.items.filter(item => item.post_id === row.id).map(item => item.kind) }));
 }
 export async function labPosts(db, input, actor) {
   if (input.action === 'publish') {
+    const identity = await requireTestIdentityForWrite(db, actor);
     const images = await approvedMedia(db, input.mediaIds || [], actor.public_id);
     const body = text(input.body || '', 2000, !images.length);
     const mentions = await prepareMentions(db, input.mentionIds, actor.public_id);
@@ -29,7 +33,7 @@ export async function labPosts(db, input, actor) {
       if (await blocked(db, actor.public_id, parent.author_public_id)) fail('Blocked accounts cannot interact.', 403);
     }
     if (await db.NetworkPost.count({ author_public_id: actor.public_id, preview: false, created_date: { $gte: new Date(Date.now() - 60000).toISOString() } }) >= 8) fail('Development limit: eight posts per minute.', 429);
-    const post = await db.NetworkPost.create({ author_public_id: actor.public_id, body, parent_id: parent?.id || '', preview: false, status: 'PUBLISHED', published_at: new Date().toISOString(), discovery_score: 0, media_ids: images.map(image => image.id), author_snapshot: { display_name: actor.display_name, handle: null, binding_id: null }, mentions });
+    const post = await db.NetworkPost.create({ author_public_id: actor.public_id, body, parent_id: parent?.id || '', preview: false, status: 'PUBLISHED', published_at: new Date().toISOString(), discovery_score: 0, media_ids: images.map(image => image.id), author_snapshot: { display_name: actor.display_name, handle: identity.handle, binding_id: identity.bindingId }, mentions });
     if (parent) { await notify(db, parent.author_public_id, actor.public_id, 'REPLY', post.id); await recalculateScore(db, parent.id); }
     for (const mention of mentions) await notify(db, mention.account_id, actor.public_id, 'MENTION', post.id);
     return { id: post.id };

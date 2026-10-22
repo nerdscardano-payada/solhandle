@@ -9,6 +9,7 @@ import { findPayLink, assertPayLink } from './payRequestRules.ts';
 import { refreshPayLink, claimPayLink } from './payRequestLifecycle.ts';
 import { matchTokenPayRequest } from './payRequestAmounts.ts';
 import confirmedTokenPayment from './tokenPayConfirmation.ts';
+import { guardNetworkPayment } from './networkPaymentGuard.ts';
 
 async function prepareUsdt(rpcUrl, context, resolved) {
   const token = getPayToken(context.asset);
@@ -57,7 +58,7 @@ export async function handleUsdtPayment(base44, rpcUrl, body) {
   const recipient = async () => {
     const resolved = body.contactId ? await resolveContactPayment(base44.asServiceRole, rpcUrl, body, handle, context.sender) : await resolveOnChain(rpcUrl, handle);
     if (link && (!resolved?.safeForNativeSol || resolved.address !== link.recipient_wallet_at_creation)) throw payError('This @handle has changed ownership. Request a new payment link.', 409);
-    return resolved;
+    return await guardNetworkPayment(base44, body, resolved);
   };
   if (body.action === 'prepare') {
     if (link) link = await refreshPayLink(base44, rpcUrl, link, false);
