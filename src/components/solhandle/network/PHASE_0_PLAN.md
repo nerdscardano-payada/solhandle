@@ -316,7 +316,7 @@ Deze poort hoort bij de alpha-release en wordt niet afgetekend op basis van alle
 | ID | Onderwerp | Status | Verantwoordelijke | Besluit / bewijs | Datum |
 |---|---|---|---|---|---|
 | D-01 | Walletgebonden profiel en aantal publieke identiteiten | PRODUCTREGELS V1.1 VASTGELEGD; acceptatie open | Producteigenaar; reviewers nog aan te wijzen | [Productregels v1.1](./PRODUCT_RULES.md), A-05 t/m A-15; vervangt verplichte traditionele registratie | 22 oktober 2026 |
-| D-02 | Wallet-native registratie/login | OIDC-ROUTE ONDERZOCHT; geen bewezen email-loze integratie, uitvoering geblokkeerd | Nog aan te wijzen | [WP-B v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md), B-BLOCK-02; [Wallet-authonderzoek v0.1](./WALLET_AUTH_RESEARCH.md), R-01 t/m R-06 | 22 oktober 2026 |
+| D-02 | Wallet-native registratie/login | COMPATIBILITEITSCRITERIA UITGEWERKT; geen geselecteerde provider, uitvoering geblokkeerd | Nog aan te wijzen | [WP-B v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md), B-BLOCK-02; [Wallet-authonderzoek v0.2](./WALLET_AUTH_RESEARCH.md); [verdieping](./WALLET_AUTH_COMPATIBILITY.md), email-loze identiteit en externe-walletlogin eerst | 22 oktober 2026 |
 | D-03 | Exclusiviteit, freshness en transferfinaliteit | ONTWERP TER REVIEW; opslagkeuze blokkeert implementatie | Nog aan te wijzen | [WP-B v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md), B-BLOCK-01/03 | 22 oktober 2026 |
 | D-04 | Leeftijd en rechtsgronden | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-05 | Bewaartermijnen, export en verwijderingsscope | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
