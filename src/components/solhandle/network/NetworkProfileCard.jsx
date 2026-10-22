@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { ArrowUpRight, UserRound } from 'lucide-react';
+import { profilePath } from '@/components/solhandle/network/networkClient';
+export default function NetworkProfileCard({ profile }) {
+  return <Link to={profilePath(profile)} className="group flex gap-4 rounded-2xl border border-identity-border bg-card p-5 transition-colors hover:border-names-accent/50"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-names-secondary/25 bg-names-secondary/10 text-names-secondary"><UserRound className="h-6 w-6"/></span><div className="min-w-0 flex-1"><h3 className="truncate font-semibold">{profile.name}</h3><p className="mt-1 text-xs uppercase tracking-wider text-names-accent">{profile.kind.toLowerCase()} · development preview</p><p className="mt-3 line-clamp-2 whitespace-pre-wrap break-words text-sm text-identity-muted">{profile.bio || 'No bio added.'}</p></div><ArrowUpRight className="h-4 w-4 shrink-0 text-identity-muted"/></Link>;
+}

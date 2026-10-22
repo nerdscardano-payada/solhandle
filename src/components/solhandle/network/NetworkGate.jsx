@@ -1,0 +1,5 @@
+import { LockKeyhole } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+export default function NetworkGate({ children, action = 'Participate in Network' }) {
+  return <Dialog><DialogTrigger asChild>{children || <button className="rounded-full bg-names-accent px-5 py-3 font-semibold">Join Network</button>}</DialogTrigger><DialogContent className="dark border-identity-border bg-hero-canvas text-identity-text"><DialogHeader><LockKeyhole className="mb-3 h-7 w-7 text-names-accent"/><DialogTitle>{action}</DialogTitle><DialogDescription className="pt-3 leading-relaxed text-identity-muted">Public browsing is open. Wallet-native registration is not enabled yet. Connecting a wallet is not a Network login.</DialogDescription></DialogHeader><p className="text-sm leading-relaxed text-identity-muted">Participation will require a verified existing wallet and a valid owned SolHandle. No new wallet or email workaround is created. Social actions are currently unavailable, not silently saved.</p></DialogContent></Dialog>;
+}

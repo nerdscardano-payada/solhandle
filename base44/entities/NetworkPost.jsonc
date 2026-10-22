@@ -1,0 +1,61 @@
+{
+  "name": "NetworkPost",
+  "type": "object",
+  "properties": {
+    "author_public_id": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "parent_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "PUBLISHED",
+        "HIDDEN",
+        "DELETED"
+      ]
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "preview": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "author_public_id",
+    "body",
+    "status",
+    "preview"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

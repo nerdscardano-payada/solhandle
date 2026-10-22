@@ -1,0 +1,7 @@
+.network-surface { --background: var(--hero-canvas); --foreground: var(--identity-text); --card: var(--hero-surface); --card-foreground: var(--identity-text); --border: var(--identity-border); --muted-foreground: var(--identity-muted); color-scheme: dark; }
+.network-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+.network-nav { overflow-x: auto; }
+.network-context { display: none; }
+.network-surface input:focus-visible, .network-surface textarea:focus-visible, .network-surface button:focus-visible, .network-surface a:focus-visible { outline: 2px solid hsl(var(--names-accent)); outline-offset: 4px; }
+@media (min-width: 900px) { .network-grid { grid-template-columns: 250px minmax(0, 1fr); } .network-nav { flex-direction: column; } }
+@media (min-width: 1367px) { .network-grid { grid-template-columns: 245px minmax(0, 1fr) 285px; } .network-context { display: block; } }

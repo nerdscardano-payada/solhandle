@@ -22,6 +22,14 @@ const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
 const Search = lazy(() => import('@/pages/Search'));
 const MyHandles = lazy(() => import('@/pages/MyHandles'));
 const Profile = lazy(() => import('@/pages/Profile'));
+const Network = lazy(() => import('@/pages/Network'));
+const NetworkDiscover = lazy(() => import('@/pages/NetworkDiscover'));
+const NetworkSearch = lazy(() => import('@/pages/NetworkSearch'));
+const NetworkProfile = lazy(() => import('@/pages/NetworkProfile'));
+const NetworkPost = lazy(() => import('@/pages/NetworkPost'));
+const NetworkAccess = lazy(() => import('@/pages/NetworkAccess'));
+const AdminNetworkPreview = lazy(() => import('@/pages/AdminNetworkPreview'));
+const NetworkLayout = lazy(() => import('@/components/solhandle/network/NetworkLayout'));
 const Docs = lazy(() => import('@/pages/Docs'));
 const Legal = lazy(() => import('@/pages/Legal'));
 const Privacy = lazy(() => import('@/pages/Privacy'));
@@ -137,6 +145,20 @@ const AuthenticatedApp = () => {
         <Route path="/mint-weekend" element={<Navigate to="/" replace />} />
         <Route path="/my-handles" element={<MyHandles />} />
         <Route path="/profile" element={<Profile />} />
+        <Route element={<NetworkLayout />}>
+          <Route path="/network" element={<Network />} />
+          <Route path="/network/discover" element={<NetworkDiscover />} />
+          <Route path="/network/search" element={<NetworkSearch />} />
+          <Route path="/network/notifications" element={<NetworkAccess />} />
+          <Route path="/network/bookmarks" element={<NetworkAccess />} />
+          <Route path="/network/access" element={<NetworkAccess />} />
+          <Route path="/network/account/:publicId" element={<NetworkProfile />} />
+          <Route path="/network/post/:postId" element={<NetworkPost />} />
+          <Route path="/network/:handle" element={<NetworkProfile />} />
+        </Route>
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fnetwork-preview" replace />} />}>
+          <Route path="/admin/network-preview" element={user?.role === 'admin' ? <AdminNetworkPreview /> : <Navigate to="/network" replace />} />
+        </Route>
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>

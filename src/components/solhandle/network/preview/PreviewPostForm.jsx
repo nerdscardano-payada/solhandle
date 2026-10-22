@@ -1,0 +1,10 @@
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { networkPreview } from '@/components/solhandle/network/networkClient';
+export default function PreviewPostForm({ enabled }) {
+  const [body, setBody] = useState('');
+  const [parent, setParent] = useState('');
+  const client = useQueryClient();
+  const publish = useMutation({ mutationFn: () => networkPreview({ action: 'publish', body, parent_id: parent.trim() }), onSuccess: async () => { setBody(''); setParent(''); await Promise.all([client.invalidateQueries({ queryKey: ['network-preview'] }), client.invalidateQueries({ queryKey: ['network'] })]); } });
+  return <form onSubmit={event => { event.preventDefault(); publish.mutate(); }} className="space-y-4 rounded-2xl border border-identity-border p-6"><h2 className="text-xl font-semibold">Publish a preview post</h2><p className="text-sm text-identity-muted">Text only. Links in post bodies are not clickable. Every publication is explicitly labelled as an operator preview.</p><label className="block text-sm">Post<textarea aria-label="Post text" required rows={5} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} className="mt-2 w-full rounded-xl border border-identity-border bg-card p-3"/></label><p className="text-right text-xs text-identity-muted">{body.length} / 2000</p><label className="block text-sm">Reply to post ID, optional<input value={parent} onChange={event => setParent(event.target.value)} pattern="[a-f0-9]{24}" maxLength={24} className="mt-2 w-full rounded-xl border border-identity-border bg-card p-3"/></label>{!enabled && <p className="text-sm text-names-warning">Publish your preview profile first.</p>}{publish.isError && <p role="alert" className="text-sm text-names-warning">{publish.error.response?.data?.error || publish.error.message}</p>}<button disabled={!enabled || publish.isPending || !body.trim()} className="rounded-full bg-names-accent px-6 py-3 font-semibold disabled:opacity-40">{publish.isPending ? 'Publishing…' : 'Publish publicly'}</button></form>;
+}

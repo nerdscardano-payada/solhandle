@@ -8,7 +8,7 @@ import CommunityLinks from '@/components/solhandle/CommunityLinks';
 import { useAuth } from '@/lib/AuthContext';
 import { canViewNavigationLink } from '@/components/solhandle/navigationLinks';
 
-const links = [['My Profile', '/profile', Fingerprint], ['Android app', '/android', Smartphone], ['My Contacts', '/contacts', BookUser], ['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['Integration Onboarding', '/integrate', Blocks], ['About us', '/about', Info], ['Statistics', '/statistics', BarChart3], ['Last minted', '/last-minted', Clock]];
+const links = [['SolHandle Network', '/network', Fingerprint], ['My Profile', '/profile', Fingerprint], ['Android app', '/android', Smartphone], ['My Contacts', '/contacts', BookUser], ['Market', '/market', Store], ['Integrations', '/integrations', Blocks], ['Integration Onboarding', '/integrate', Blocks], ['About us', '/about', Info], ['Statistics', '/statistics', BarChart3], ['Last minted', '/last-minted', Clock]];
 const card = 'flex min-h-24 min-w-0 flex-col items-start justify-center gap-2 rounded-xl border border-names-accent/20 bg-card p-4 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-names-accent';
 export default function MobileAppMore() {
   const [open, setOpen] = useState(false);

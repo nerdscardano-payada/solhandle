@@ -1,0 +1,9 @@
+import { Link } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { networkPreview } from '@/components/solhandle/network/networkClient';
+export default function PreviewPosts({ query }) {
+  const client = useQueryClient();
+  const remove = useMutation({ mutationFn: id => networkPreview({ action: 'remove', id }), onSuccess: async () => { await Promise.all([client.invalidateQueries({ queryKey: ['network-preview'] }), client.invalidateQueries({ queryKey: ['network'] })]); } });
+  const posts = query.data?.pages.flatMap(page => page.posts.items) || [];
+  return <section className="rounded-2xl border border-identity-border p-6"><h2 className="text-xl font-semibold">Your published preview posts</h2>{!posts.length && <p className="mt-4 text-sm text-identity-muted">No preview posts yet.</p>}{posts.map(post => <article key={post.id} className="space-y-3 border-b border-identity-border py-5"><p className="whitespace-pre-wrap break-words text-sm">{post.body}</p><p className="font-mono text-xs text-identity-muted">{post.id}{post.parent_id ? ' · reply' : ''}</p><div className="flex gap-5 text-sm"><Link to={`/network/post/${post.id}`} className="text-names-accent">Open conversation</Link><button disabled={remove.isPending} onClick={() => window.confirm('Remove this public preview post?') && remove.mutate(post.id)} className="text-names-warning">Remove</button></div></article>)}{remove.isError && <p role="alert" className="mt-4 text-sm text-names-warning">{remove.error.response?.data?.error || remove.error.message}</p>}{query.hasNextPage && <button disabled={query.isFetchingNextPage} onClick={() => query.fetchNextPage()} className="mt-5 text-sm text-names-accent">{query.isFetchingNextPage ? 'Loading…' : 'Load more'}</button>}</section>;
+}
