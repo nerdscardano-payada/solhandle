@@ -55,7 +55,7 @@ Voor ieder werkpakket vastleggen:
 **Productbaseline:** [Definitieve productregels v1.1](./PRODUCT_RULES.md), vastgesteld op verzoek van de producteigenaar op 22 oktober 2026.  
 **Status:** productregels vastgelegd; technische acceptatie, formele beoordeling en vrijgave staan open.
 
-- [x] Leg stabiele accountidentiteit vast, onafhankelijk van wallet en handle (A-05 t/m A-09).
+- [x] Leg een vaste profiel-ID vast met walletgebonden beheer en wallet-native registratie/login; een andere wallet of @name verandert die ID niet (A-05 t/m A-09).
 - [x] Definieer actieve deelname, publiek lezen en rechten zonder handle (A-17 t/m A-21).
 - [x] Sluit stilzwijgende profielaanmaak door minting, Pay of walletverbinding uit (A-03, A-07).
 - [x] Beslis één profiel en één actieve hoofdhandle per account in v1; extra handles geven geen extra accounts of rechten (A-08, A-12 t/m A-15).
@@ -94,7 +94,7 @@ Voor ieder werkpakket vastleggen:
 - [x] Specificeer confirmed/finalized-controles, contextslots, freshness en beperkingen van een niet-atomaire chain-/databasegrens.
 - [x] Ontwerp Network-autorisatie-intrekking zonder te claimen dat alle platformtokens worden ingetrokken.
 - [x] Definieer herstel zonder accountovername op basis van handlebezit en scheid historische afzender-/Pay-context van actuele lookups.
-- [x] Stel operatiecontracten, bewijseisen en open acceptatiescenario's B-T01 t/m B-T18 op.
+- [x] Stel operatiecontracten, bewijseisen en open acceptatiescenario's B-T01 t/m B-T23 op.
 
 ### Verplicht vóór implementatie of vrijgave
 - [ ] B-BLOCK-01: keur een aantoonbaar transactioneel register goed. Entity-check/create en upsert bieden volgens geraadpleegde documentatie geen gegarandeerde exclusiviteit; geen entity-only noodoplossing.
@@ -104,7 +104,7 @@ Voor ieder werkpakket vastleggen:
 - [ ] Geef afzonderlijke toestemming voor het afgeschermde concurrency- en ownershipprototype.
 
 **Acceptatie, nog niet uitgevoerd**
-- [ ] B-T01 t/m B-T18 hebben geslaagd bewijs, inclusief parallelle claims, nonce-replay, crashes, transfer, oude sessies en uitval.
+- [ ] B-T01 t/m B-T23 hebben geslaagd bewijs, inclusief parallelle claims, nonce-replay, crashes, transfer, oude sessies en uitval.
 - [ ] Nieuwe eigenaren krijgen nooit historische privégegevens of het oude account.
 - [ ] Eigendomsverlies en lokale intrekking blokkeren verdere acties volgens het goedgekeurde actualiteits-/finaliteitsbeleid; geen absolute onmiddellijke chainclaim.
 - [ ] Technisch verantwoordelijke en securitybeoordelaar tekenen bewijs en resterende risico's expliciet af.

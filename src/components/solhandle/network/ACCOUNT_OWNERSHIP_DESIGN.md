@@ -223,7 +223,7 @@ Geen controles uitgevoerd met dit document. Operationele flowtests later via de 
 
 ### Voorwaarden vóór bouwen
 - [x] Bestaande auth-, walletguard-, Contacts- en ownershipbron gelezen; grenzen beschreven.
-- [x] Productregels naar ontwerpbesluiten vertaald zonder walletlogin of sessiegaranties te verzinnen.
+- [x] Productregels v1.1 vertaald naar walletgebonden profielontwerp; wallet-native login is de gewenste richting, niet een reeds aangetoonde integratie of sessiegarantie.
 - [x] Bestaande authroutes vastgesteld; geen duplicaat-login nodig.
 - [x] Entity-exclusiviteitsbeperking en ontbrekende transactiegaranties geregistreerd.
 - [ ] B-BLOCK-01: opslagkeuze met bewezen nonce-, uniekheids-, transactie- en herstelgaranties goedgekeurd.
