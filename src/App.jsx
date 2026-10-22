@@ -21,6 +21,7 @@ const Demos = lazy(() => import('@/pages/Demos'));
 const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
 const Search = lazy(() => import('@/pages/Search'));
 const MyHandles = lazy(() => import('@/pages/MyHandles'));
+const Profile = lazy(() => import('@/pages/Profile'));
 const Docs = lazy(() => import('@/pages/Docs'));
 const Legal = lazy(() => import('@/pages/Legal'));
 const Privacy = lazy(() => import('@/pages/Privacy'));
@@ -134,6 +135,7 @@ const AuthenticatedApp = () => {
         <Route path="/demos/:slug" element={<DemoDetail />} />
         <Route path="/mint-weekend" element={<Navigate to="/" replace />} />
         <Route path="/my-handles" element={<MyHandles />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/developers" element={<Developers />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>

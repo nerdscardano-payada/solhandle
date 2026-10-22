@@ -69,6 +69,9 @@ html, body { overscroll-behavior: none; }
     --hero-violet: 273 100% 60%;
     --hero-pink: 291 100% 66%;
     --hero-surface: 225 58% 6%;
+    --identity-text: 210 40% 96%;
+    --identity-muted: 218 20% 65%;
+    --identity-border: 210 30% 20%;
     --names-accent: 189 94% 67%;
     --names-secondary: 263 90% 78%;
     --names-success: 160 84% 69%;
@@ -100,6 +103,9 @@ html, body { overscroll-behavior: none; }
     --hero-violet: 273 100% 60%;
     --hero-pink: 291 100% 66%;
     --hero-surface: 225 58% 6%;
+    --identity-text: 210 40% 96%;
+    --identity-muted: 218 20% 65%;
+    --identity-border: 210 30% 20%;
     --names-accent: 189 94% 67%;
     --names-secondary: 263 90% 78%;
     --names-success: 160 84% 69%;
