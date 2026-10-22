@@ -275,7 +275,7 @@ Geen feed, publieke navigatie, watcherworkflow, nieuwe tokenvoorwaarde of protoc
 | ID | Onderwerp | Status | Eigenaar / bewijs |
 |---|---|---|---|
 | B-BLOCK-01 | Transactionele exclusiviteit en eenmalig nonceverbruik | BLOKKEERT IMPLEMENTATIE | Nog aan te wijzen; documentatie toont geen voldoende entity-only garanties |
-| B-BLOCK-02 | Ondersteunde wallet-native registratie/login, subjectmapping, step-up en sessie-/walletintrekking | BLOKKEERT AUTH-IMPLEMENTATIE | Nog aan te wijzen; geen bewezen integratiecontract, geen eigen loginbackend of traditionele-loginfallback toegestaan |
+| B-BLOCK-02 | Ondersteunde wallet-native registratie/login, subjectmapping, step-up en sessie-/walletintrekking | BLOKKEERT AUTH-IMPLEMENTATIE; OIDC-kandidaat onderzocht | [Wallet-authonderzoek](./WALLET_AUTH_RESEARCH.md): Base44 custom OIDC + Civic kandidaat; emailclaim, clientmodus, subjectmapping en intrekking onbewezen. Geen eigen loginbackend of traditionele-loginfallback. |
 | B-BLOCK-03 | Finaliteit, contextslots, actietiming en rest-race | ONTWERP TER REVIEW | Ontwerp in §8; geen gemeten garantie |
 | B-BLOCK-04 | Deploymentafscherming, origins, privacybewaring en eligibility | OPEN | WP-C/D/F/H |
 
