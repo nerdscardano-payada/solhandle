@@ -1,6 +1,6 @@
 # SolHandle Network — onderzoek walletregistratie en login
 
-**Versie:** 0.1  
+**Versie:** 0.2  
 **Datum:** 22 oktober 2026  
 **Status:** documentatie- en SDK-onderzoek; geen integratie, runtimeproef of vrijgave  
 **Baseline:** [Productregels v1.1](./PRODUCT_RULES.md) en [WP-B v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md)
@@ -9,7 +9,7 @@
 
 De meest kansrijke ondersteunde architectuur is **externe bestaande Solana-wallet → beheerde wallet-authenticatieprovider met OIDC → Base44 app-SSO → servergeverifieerd profiel → eigen actuele @handle**. Base44 blijft de appauthenticatie en appsessies beheren; Network maakt geen loginbackend.
 
-Dit is een onderbouwde kandidaatroute, geen bewezen werkende combinatie. Base44 documenteert custom OIDC app-SSO en de geïnstalleerde SDK heeft de SSO-ingang. Civic documenteert zowel walletlogin als een OAuth/OIDC-ingang. Maar de Base44-documentatie noemt expliciet een benodigde emailclaim; volledige email-loze identiteit is niet aangetoond. Daarmee blijft **B-BLOCK-02 open**. Geen stille emailverplichting, synthetisch emailadres of eigen tokenbrug om dit te maskeren.
+Dit is een mogelijke integratiegrens, geen bewezen werkende combinatie of geselecteerde provider. Base44 documenteert custom OIDC app-SSO en de SDK heeft de SSO-ingang, maar volledige email-loze identiteit is niet aangetoond. **Correctie na verdiepend onderzoek:** de specifieke Civic Solana-gids en FAQ zeggen dat bestaande externe wallets niet aan Civic Auth kunnen worden gekoppeld, in tegenstelling tot de brede claim op de overzichtspagina. Civic daarom niet selecteren totdat dit conflict aantoonbaar is opgelost. Client secret + PKCE is bij Civic inmiddels wél gedocumenteerd en publiek geadverteerd. **B-BLOCK-02 blijft open**; geen emailfallback, synthetisch adres of eigen tokenbrug. Zie [uitgewerkte compatibiliteitsvragen](./WALLET_AUTH_COMPATIBILITY.md) voor discoverybewijs, identitymatching, step-up, intrekking en sluitcriteria.
 
 ## 2. Wat daadwerkelijk is onderzocht
 
@@ -19,7 +19,7 @@ Dit is een onderbouwde kandidaatroute, geen bewezen werkende combinatie. Base44 
 - Civic Auth-overzicht en generieke OAuth/OIDC-integratie.
 - Historische Auth0/SNS-aankondiging; Privy-documentatiezoekresultaten als beperkte oriëntatie, niet als bewezen downstream OIDC-integratie.
 
-Geen provideraccount gemaakt, discovery-/tokenflow uitgevoerd, SSO aangezet, authenticatiemethode gewijzigd of geldige gebruikerssessie gegenereerd. Geen beveiligingstest of live walletlogin uitgevoerd.
+Geen provideraccount gemaakt, tokenflow uitgevoerd, SSO aangezet, authenticatiemethode gewijzigd of gebruikerssessie gegenereerd. In de verdieping is uitsluitend publieke Civic-discovery read-only uitgelezen (HTTP 200); geen beveiligingstest of live walletlogin uitgevoerd.
 
 ## 3. Bewijsmatrix
 
@@ -29,9 +29,9 @@ Geen provideraccount gemaakt, discovery-/tokenflow uitgevoerd, SSO aangezet, aut
 | Start SSO | SDK 0.8.57 documenteert `loginWithProvider` met provider `sso` | Toekomstige login kan via bestaande authlaag starten; nog geen configuratie of implementatie |
 | PKCE | Advanced / Manual heeft PKCE standaard aan | Behouden; Civic vereist PKCE. Geen werkend-end-to-endbewijs uit alleen twee documentatiepagina's |
 | Emailclaim | Base44-gids noemt de benodigde `email`-claim en fout `Email not returned by OAuth provider` bij Okta | Belangrijke compatibiliteitsblokkade voor strikt email-loze registratie. Niet concluderen dat elke custom provider dezelfde eis heeft, maar geen sub-only ondersteuning aannemen |
-| Civic walletlogin | Officiële overzichtspagina noemt inloggen met wallet, bestaande wallets en Solana | Eerste providerkandidaat; exacte externe Solana-walletflow, wallet-only configuratie en claims nog aantonen |
+| Civic walletlogin | Overzicht noemt walletlogin; specifieke Solana-gids en FAQ zeggen dat bestaande self-custodial wallets niet aan Civic Auth kunnen worden gekoppeld | BRONCONFLICT; niet selecteren voor bestaande-walletlogin zolang dit niet is opgelost |
 | Civic OIDC/OAuth | Officiële generieke integratie beschrijft authorization code + verplichte PKCE, discovery, userinfo en refresh | Provider biedt de relevante richting: als identityprovider voor een client, niet alleen als OIDC-consument |
-| Civic client-auth | Generiek voorbeeld gebruikt public client met `token_endpoint_auth_method: none`; Base44 vraagt client ID en secret | Bevestigen of Civic een compatibele vertrouwelijke OIDC-client/configuratie levert. Niet zelf een secret of tussenproxy verzinnen |
+| Civic client-auth | Verdiepende gids bevestigt client secret + PKCE; publieke discovery adverteert S256 en onder meer client_secret_basic/post | Providercapability bevestigd; concrete clientconfiguratie en Base44-combinatie blijven onbewezen |
 | Civic volwassenheid | Overzicht markeert Civic Auth als beta | Operationele, privacy- en leveranciersreview vereist; geen productieaanbeveling zonder meer |
 | SIWS | Serverchallenge, walletsignature, domain/nonce/tijd en serververificatie bewijzen walletcontrole zonder transactie | Bewijsvorm, niet op zichzelf een Base44-login of account-/sessie-integratie |
 | Fresh login / intrekking | Geraadpleegde Base44-bronnen bewijzen geen end-to-end `max_age`, `auth_time`, per-wallet-intrekking of globale logout | Blijft afzonderlijke veiligheidsvoorwaarde |
@@ -75,7 +75,7 @@ Bevestig of app-SSO werkelijk een subject zonder email kan registreren/inloggen,
 
 ### R-02 — Civic in de juiste clientmodus
 
-Bevestig bestaande externe Solana-walletlogin zonder emailverplichting/embedded-walletcreatie, ondersteunde wallets, OIDC discovery, signing/JWKS, authorization code + PKCE en een client-authenticatiemethode die Base44 accepteert. Beoordeel beta-status, SLA, kosten en verwerkers-/doorgiftevoorwaarden vóór keuze. Nog geen provider geselecteerd of aangesloten.
+Publieke discovery is read-only beschikbaar en client secret + PKCE is aan providerzijde bevestigd. De specifiekere Civic Solana-gids en FAQ spreken de brede externe-walletclaim echter tegen: bestaande wallets kunnen volgens die bronnen niet aan Civic Auth worden gekoppeld. Civic daarom niet selecteren zonder oplossing van dit conflict en bewijs van bestaande-walletlogin zonder email/embedded-walletcreatie. Ook claimmapping, automatische email-linking, concrete clientcompatibiliteit, beta-status en privacy-/operationele voorwaarden blijven te beoordelen; zie [verdieping R-02/R-03](./WALLET_AUTH_COMPATIBILITY.md). Geen provider aangesloten.
 
 ### R-03 — Geverifieerde subject-/walletmapping
 
@@ -114,7 +114,7 @@ Operationele flowproeven later via de Testing Agent; technische OIDC-/claim-/con
 
 ## 8. Aanbevolen vervolg
 
-Eerst R-01 en R-02/R-03 bevestigen, vóór providerinstallatie, secrets of UI-bouw. Als email-loze identitymapping niet ondersteund blijkt, is de huidige combinatie geen goedgekeurde uitvoeringsroute. Kies dan niet automatisch voor verplicht email of eigen auth; leg de ontbrekende ondersteunde integratie terug als architectuurbesluit. B-BLOCK-02 pas sluiten na aantoonbare end-to-endcompatibiliteit, step-up en intrekking.
+Eerst R-01 en R-02/R-03 bevestigen, vóór providerinstallatie, secrets of UI-bouw. Civic niet selecteren zolang de specifieke documentatie bestaande-walletlogin tegenspreekt. Als email-loze identitymapping niet ondersteund blijkt, is de combinatie geen goedgekeurde route; geen verplichte email of eigen auth als stille workaround. De [compatibiliteitsverdieping](./WALLET_AUTH_COMPATIBILITY.md) werkt de exacte vragen, bewijsstukken en go/no-gocriteria uit. B-BLOCK-02 pas sluiten na end-to-endbewijs, step-up en intrekking.
 
 In de app is de documenteerde configuratieroute: **Dashboard → Settings → Authentication → Single sign-on (SSO) → Advanced / Manual Configuration**. Dit is een locatie voor een toekomstige goedgekeurde configuratie, niet een instructie om nu productie-SSO aan te zetten.
 
