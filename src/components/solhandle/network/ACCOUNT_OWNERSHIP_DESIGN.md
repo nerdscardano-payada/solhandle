@@ -1,9 +1,9 @@
-# SolHandle Network — WP-B: account, walletbewijs en handlebindings
+# SolHandle Network — WP-B: walletgebonden profiel, walletbewijs en handlebindings
 
-**Versie:** 0.1  
+**Versie:** 0.2  
 **Datum:** 22 oktober 2026  
 **Status:** uitgewerkt technisch ontwerp; geen implementatie of vrijgave  
-**Productbaseline:** [Definitieve productregels v1.0](./PRODUCT_RULES.md)  
+**Productbaseline:** [Definitieve productregels v1.1](./PRODUCT_RULES.md)  
 **Hoofdplan:** [Intern fase 0-plan](./PHASE_0_PLAN.md)  
 **Verantwoordelijke / securitybeoordelaar:** nog formeel aan te wijzen
 
@@ -13,9 +13,9 @@
 
 | ID | Besluit | Productregels |
 |---|---|---|
-| B-01 | Bestaande platformauthenticatie levert de accountidentiteit. Network maakt geen eigen credentials, JWT's of recoverybackend. | A-05 t/m A-09 |
-| B-02 | Eerste ondersteunde onboardingrichting: bestaand account of bestaande registratie, daarna expliciete Network-aanmelding en walletbewijs. Wallet-only login en passkeys zijn geen v1-belofte. | A-06, A-07, A-10 |
-| B-03 | Walletbewijs is accountgebonden autorisatie, geen login, betaalsignatuur of account recovery. | A-10, A-11, A-36 |
+| B-01 | Vaste profiel-ID met bewezen beheerwallet(s); registratie en login moeten wallet-native zijn via een nog te bewijzen ondersteunde authenticatie-integratie. Geen eigen login-/JWT-/recoverybackend. | A-05 t/m A-09 |
+| B-02 | Gewenste onboarding: wallet verbinden → gericht registratiebewijs → expliciete Network-aanmelding → eigen profiel → eigen @handle kiezen. Geen verplichte email, wachtwoord of Google-login. Terugkeer gebruikt een afzonderlijk SIGN_IN-bewijs. | A-06, A-07, A-10 |
+| B-03 | Alleen specifiek loginbewijs van een actieve beheerwallet kan via de goedgekeurde integratie een sessie opleveren. Registratie-, bindings-, betaal- en herstelproofs zijn geen uitwisselbare logincredentials. NFT-bezit geeft nooit toegang tot een vorig profiel. | A-10, A-11, A-36 |
 | B-04 | Eén transactioneel autorisatieregister moet nonceverbruik, wallet-exclusiviteit, profiel-exclusiviteit en bindingswissels afdwingen. Een gewone entity-check gevolgd door create voldoet niet. | A-08, A-11, A-13 |
 | B-05 | Bestaande entities kunnen later afgeschermde projecties leveren, maar zijn niet zonder aangetoonde garanties het exclusiviteitsregister. | A-13, A-21 |
 | B-06 | Officiële chainidentiteit en verse accountdata zijn autoritatief. Cached owner- en indexerresultaten geven nooit Network-schrijfrecht. | A-13, A-23, A-29 |
@@ -46,7 +46,7 @@ Broninspectie op 22 oktober 2026:
 ## 3. Vertrouwensgrenzen
 
 1. **Browser/native wallet:** onbetrouwbare actie-input; bewaart private keys buiten Network. De server ontvangt alleen de benodigde openbare sleutel en berichtsignatuur.
-2. **Platformauth:** authenticeert het bestaande account op ieder beschermd verzoek. Account-ID komt uitsluitend uit de geverifieerde servercontext.
+2. **Ondersteunde authenticatie-integratie (nog te bewijzen):** valideert wallet-native registratie/login en levert een serververifieerbare subjectidentiteit en beheerde sessie. Network-profiel-ID wordt server-side aan dat subject en actieve beheerwallets gekoppeld, nooit uit requestbody afgeleid. Bestaande platformauth wordt niet vervangen of omzeild; geen zelf uitgegeven tokens of eigen sessiebackend. B-BLOCK-02 blokkeert uitvoering zolang deze integratie niet is aangetoond.
 3. **Network-autorisatie:** controleert expliciete deelname, toelating, leeftijdsstatus, maatregel, autorisatieversie, walletbinding en handlebinding. Dit is geen tweede loginbackend.
 4. **Transactioneel register:** serialiseert de toepasselijke account-, wallet-, challenge- en assetmutaties.
 5. **Solana RPC:** bewijst protocolidentiteit en eigendom binnen gedocumenteerde slot/finaliteitsgrenzen. Index en cache mogen dit niet vervangen.
@@ -56,91 +56,88 @@ Broninspectie op 22 oktober 2026:
 
 ## 4. Logische records en invarianten
 
-Geen schemas of nieuwe User-entiteit in deze documentatiefase. WP-C werkt opslag en afgeschermde leesprojecties uit.
+Ontwerpcontracten, geen schemas of nieuwe User-entiteit. Account-ID betekent hieronder de vaste Network-profiel-ID, niet een verplicht traditioneel platformaccount. WP-C werkt de subjectmapping pas na oplossing van B-BLOCK-02 uit.
 
 | Logisch record | Minimale autorisatie-inhoud |
 |---|---|
-| NetworkAccount | Bestaande user-ID, onboardingversie, leeftijd-/toegangsbesluit, maatregelverwijzing, autorisatieversie, wijzigingstijd |
-| WalletLink | Account-ID, canonieke wallet, generatie, ACTIVE/REVOKED, bewezen/opgezegd moment; eerdere periode blijft onderscheiden |
-| WalletChallenge | ID, noncehash, exacte berichtbytes/hash, account, wallet, doel, actiehash, origin/audience, uitgifte/verval, status, autorisatieversie |
-| HandleBinding | Binding-ID, account, walletlinkgeneratie, netwerk, protocol, asset, handle/PDA, bindingsgeneratie, status, begin/einde, reden |
-| OwnershipObservation | Binding/actie, asset, waargenomen owner, confirmed/finalized slots, commitment, servermeetmoment, beperkte bronreferentie, validatieresultaat |
-| OperationReceipt | Account, operatie-ID, doel/inputhash, resultaatreferentie, status; geen bearercredential |
-| AuthorizationEvent / outbox | Mutatie-ID, account/bindinggeneratie, reden, tijd; minimaal en volgens WP-D-bewaring |
+| NetworkAccount / profiel | Vaste profiel-ID, geverifieerde auth-subjectmapping, onboardingversie, leeftijd/toegang, maatregel, autorisatieversie |
+| WalletLink | Profiel-ID, canonieke beheerwallet, generatie, ACTIVE/REVOKED, bewezen/opgezegd moment; loginbevoegdheid expliciet |
+| WalletChallenge | ID, noncehash, exacte berichtcontext/hash, wallet, specifiek doel, operatie-/actiehash, audience, uitgifte/verval, status; bestaande profiel-ID/generatie alleen bij bevoegde bestaande context |
+| HandleBinding | Profiel-ID, gekoppelde ownerwallet en generatie, netwerk/protocol/asset/handle/PDA, bindinggeneratie, begin/einde/status |
+| OwnershipObservation | Binding/actie, asset, owner, confirmed/finalized slots, commitment, servermeetmoment en validatieresultaat |
+| OperationReceipt | Eigen profiel of afgeschermde preregistratie-operatiecontext, inputhash, resultaatreferentie; geen sessiecredential |
+| AuthorizationEvent / outbox | Mutatie-ID, profiel-/bindinggeneratie, reden en tijd volgens WP-D-bewaring |
 
-**Hard af te dwingen in één commitgrens waar relevant:**
-- Maximaal één Network-profiel per bestaand account.
-- Maximaal één actieve WalletLink per canonieke wallet over alle accounts.
-- Maximaal één actieve hoofdhandle per account.
-- Maximaal één actieve binding per officiële asset.
-- Nonceverbruik kan niet twee verschillende mutaties autoriseren.
-- Swap beëindigt oude binding en activeert nieuwe binding zonder tussentoestand waarin beide actief zijn.
-- Verwijdering/schorsing/intrekking kan niet door een al eerder gestarte mutatie worden overschreven.
-- Opnieuw koppelen gebruikt een nieuwe generatie en een nieuwe bewijscontext.
-- State-event en mutatie gaan samen duurzaam door; een projectie-update is niet de bron van waarheid.
+Invarianten binnen de vereiste transactionele commitgrens:
+- Eén actieve profielkoppeling per beheerwallet; meerdere beheerwallets kunnen hetzelfde profiel bedienen.
+- Eén profiel per blijvende Network-identiteit, één actieve hoofdhandle per profiel en één actieve binding per officiële asset.
+- De publieke @name wordt alleen afgeleid uit een officiële handle die actueel eigendom is van de expliciet gekoppelde wallet in de binding. Geen vrij invulbare username of naam uit alleen metadata.
+- Eerste registratie is expliciet en idempotent; herhaalde login van dezelfde bevoegde wallet maakt geen extra profiel.
+- REGISTER_PROFILE, SIGN_IN, ADD_WALLET, REMOVE_WALLET en SELECT_PRIMARY_HANDLE zijn niet uitwisselbaar; een nonce autoriseert hoogstens één bedoelde uitvoering.
+- Wallet toevoegen vereist verse autorisatie van een bestaande beheerwallet én proof van de nieuwe wallet. Een wallet die een ander profiel beheert kan niet worden verhuisd door alleen de nieuwe profielsessie.
+- Een swap beëindigt de oude binding en start de nieuwe atomisch; intrekking/verwijdering kan niet door een in-flight operatie worden overschreven.
+- Intrekking beëindigt walletloginbevoegdheid, invalideert relevante generaties en wordt door het goedgekeurde sessiecontract afgedwongen.
+- De laatste beheerwallet niet regulier verwijderen zonder veilige vervanging of expliciete profielverwijdering.
+- Opnieuw koppelen maakt een nieuwe generatie; een verwijderde profielidentiteit wordt niet via een latere walletlogin hersteld.
+- State-event en mutatie worden samen duurzaam opgeslagen; projecties zijn geen autorisatiebron.
 
-**Opslagcontract:** echte unieke sleutels/conditionele transitions, transacties over betrokken invarianten, crashherstel, duurzaam idempotentieresultaat en conflictgedrag moeten aantoonbaar zijn. Een frontendqueue, proceslokale lock of watcher biedt dat niet. Autorisatieregister onbereikbaar betekent geen Network-schrijfactie; nooit terugvallen op projecties.
+**Opslagcontract:** unieke sleutels/conditionele transities, transacties, crashherstel en duurzaam idempotentieresultaat aantonen. Een frontendqueue, proceslokale lock of watcher is onvoldoende. Register onbereikbaar: geen nieuwe Network-mutatie. Geen eigen sessieopslag invoeren onder het mom van dit register.
 
-## 5. Onboarding en accounttoegang
+## 5. Wallet-native registratie en terugkerende login
 
-1. Bezoeker leest publieke informatie; een besloten alpha mag zijn hele omgeving server-side afschermen.
-2. Voor deelname logt de gebruiker in via bestaande login of voltooit bestaande registratie inclusief OTP waar van toepassing.
-3. Server leest actuele accountidentiteit. Geen account-ID uit returnTo of requestbody accepteren.
-4. Gebruiker kiest expliciet Network-aanmelding en krijgt actuele voorwaarden/privacy-informatie en de goedgekeurde leeftijdsflow.
-5. Pas na geldige alpha-toegang en benodigde besluiten wordt een NetworkAccount idempotent aangemaakt. Optionele trackingtoestemming is geen toegangseis.
-6. Gebruiker koppelt de gekozen wallet via een gericht bewijs.
-7. Gebruiker kiest een eigen officiële handle; Network verifieert die rechtstreeks op de chain.
-8. De binding wordt pas actief na geslaagde exclusiviteitscommit. De bevestiging vertelt alleen de eigen toestand.
+**Gewenste productflow; niet reeds ondersteund of geïmplementeerd verklaard.**
 
-Login zonder Network-aanmelding creëert geen sociaal profiel. Koppelen en hoofdhandle kiezen mogen aparte stappen zijn; het product blijft zonder hoofdhandle in een niet-publicerende toestand. Bestaande minting en Pay worden niet naar deze flow omgeleid.
+1. Bezoeker kiest expliciet registreren of inloggen en verbindt de gewenste wallet. Verbinden zelf geeft geen profiel of sessie.
+2. De goedgekeurde authenticatie-integratie levert een eenmalige, doel-/domeingebonden challenge. Bij eerste registratie is er nog geen geauthenticeerd profiel; de proof is aan een servergegenereerde, afgeschermde preregistratiecontext gebonden, niet aan een clientgekozen account-ID.
+3. Gebruiker tekent met de gekozen wallet. Geen transactie, gas, tokenapproval, private key of seed phrase opvragen.
+4. De integratie verifieert de proof en levert de ondersteunde geauthenticeerde context. Hoe challenge, verifier, subjectmapping en beheerde sessie veilig aansluiten, is expliciet onderdeel van B-BLOCK-02; Network bouwt hiervoor geen eigen loginbackend.
+5. Bij REGISTER_PROFILE: toon voorwaarden/privacy-informatie en voer de goedgekeurde leeftijds-/alphatoegangsflow uit; pas na expliciete bevestiging wordt exact één nieuw eigen profiel met beheerwallet vastgelegd. Geen profiel aanmaken door alleen een SIGN_IN-verzoek of walletverbinding.
+6. Bij SIGN_IN: resolveer uitsluitend de actieve beheerwalletkoppeling en dezelfde blijvende profiel-ID. Geen willekeurige profiel-ID accepteren, geen automatische registratie als er geen geldige koppeling bestaat, en accountmaatregelen blijven gelden.
+7. Gebruiker kiest een officiële eigen handle uit een gekoppelde wallet; server verifieert bezit rechtstreeks on-chain en commit exclusiviteit. Alleen dan verschijnt deze als publieke @name en kan toegestane sociale deelname beginnen.
 
-## 6. Contract voor walletbewijs
+Voorbeeld: een profiel met wallet W en eigen @name behoudt profiel-ID en volgers bij een andere eigen hoofdhandle. Na transfer van de handle naar wallet X kan het profiel van X de naam kiezen, niet het profiel van W overnemen. Overdracht/diefstal van de private key van W is daarentegen credentialcompromittering: wie een nog bevoegde beheerwallet kan gebruiken kan voor dat eigen gekoppelde profiel tekenen. Dit mag niet verward worden met een veilige NFT-transfergarantie.
+
+Geen verplichte email/wachtwoord/Google als technische workaround. Bestaande platformaccounts, authpagina's, minting en Pay blijven ongewijzigd; geen automatische import of fusie.
+
+## 6. Gescheiden walletbewijzen
 
 ### Bericht en parameters
 
-Ontwerpwaarden voor de eerste afgeschermde implementatie, te toetsen vóór vrijgave:
-- CSPRNG-nonce met minimaal 256 bits entropie.
-- Geldigheid: vijf minuten vanaf servertijd; geen verlenging van hetzelfde bericht.
-- Eén doel per challenge: LINK_WALLET, UNLINK_WALLET of SELECT_PRIMARY_HANDLE.
-- Voor wallet toevoegen/ontkoppelen is ook ondersteunde recente account-herauthenticatie vereist; een walletsignatuur is daarvan geen vervanging.
-- Exacte UTF-8-berichtbytes worden server-side geconstrueerd en geverifieerd; geen door de client aangeleverde vervangende tekst.
-- Base58-publickey canoniek valideren, berichtsignatuur exact 64 bytes en begrensde requestgrootte.
-- V1 bewijst controle via ondersteunde Ed25519-walletsigning. Multisig-/programwallets die geen passend berichtbewijs leveren blijven buiten deze eerste implementatie; geen transactionele fallback introduceren.
+- CSPRNG-nonce met minimaal 256 bits entropie; maximaal vijf minuten geldig volgens servertijd; niet verlengen of hergebruiken.
+- Eén zichtbaar doel: REGISTER_PROFILE, SIGN_IN, ADD_WALLET, REMOVE_WALLET of SELECT_PRIMARY_HANDLE.
+- Exacte UTF-8-bytes, canonieke Base58-publickey en Ed25519-signatuur van exact 64 bytes; begrensde requestgroottes.
+- Bericht noemt SolHandle Network, ingestelde audience, wallet, doel, challenge-ID, nonce, operatie-ID, actiehash, netwerk, uitgifte/verval en versie. Profielreferentie/generatie hoort alleen in een bestaande geautoriseerde context; eerste registratie gebruikt een ondoorzichtige servergegenereerde registratiecontext, nooit een emailadres of door de client opgegeven profiel-ID.
+- Een SIGN_IN-proof wordt door de ondersteunde authenticatie-integratie verwerkt. Een geslaagde handlecontrole of bindingproof mag niet worden omgezet in een zelfgemaakt platformtoken.
+- Gevoelige wijzigingen vereisen verse, serververifieerbare step-up met een reeds bevoegde beheerwallet; bij toevoegen ook proof van de nieuwe wallet. Een gestolen browsercontext en een aanvallerswallet zijn onvoldoende.
+- Eerste versie: ondersteunde Ed25519-walletsigning; multisig-/programwallets zonder passend bewijs vallen erbuiten. Geen betaalsignatuur of blockchaintransactie als ongevraagde fallback.
 
-Het bericht bevat zichtbaar: SolHandle Network, de ingestelde domeinaudience, canonieke wallet, ondoorzichtige accountreferentie, doel, challenge-ID, nonce, operatie-ID, hash van de concrete doelactie, uitgifte en verval, netwerk en berichtversie. Tekst maakt duidelijk dat het geen betaling, blockchaintransactie of accountoverdracht autoriseert. De ondoorzichtige accountreferentie is niet het emailadres.
+### Domein en replay
 
-### Domeinbinding
+Audience en toegestane origins zijn vaste serverconfiguratie; geen blind vertrouwen in Host, doorgestuurde Origin of previewdomain. Preview/test scheiden van productie. Origin is aanvullend, geen identiteit. Domeinwijziging invalideert oude challenges.
 
-De canonieke audience en toegestane origins worden server-side als vaste deploymentconfiguratie vastgesteld. Geen request-Host, doorgegeven Origin of willekeurige previewdomain als vertrouwde audience overnemen. Controleer browser-origin en auth volgens het ondersteunde platformmodel; Origin is aanvullend en geen identiteit. Preview/test krijgt een andere audience en kan geen productieproofs verbruiken. Een domeinwijziging invalideert openstaande oude challenges; geen wildcardvertrouwen.
+Registratie/login gebruiken de aantoonbare replay- en sessiegaranties van de ondersteunde integratie. Voor applicatiemutaties worden challengeverbruik, autorisatieversies, exclusiviteit en receipt atomisch gecontroleerd. Bewijs de grens tussen identityverificatie en registratiecommit; een crash mag geen profielduplicaat of ongeautoriseerde binding opleveren. Een eigen loginverifier of eigen sessie-uitgifte is niet door dit ontwerp toegestaan.
 
-### Uitgifte en verificatie
+Challenge: ISSUED → CONSUMED of EXPIRED/CANCELLED. Een retry van een reeds geslaagde applicatiemutatie kan uitsluitend een beperkte receipt aan dezelfde nog bevoegde context tonen, geen nieuwe sessiecredential of heruitvoering. Een verloren loginantwoord mag niet via hergebruik van een verbruikte signature opnieuw tokens opleveren; volg het ondersteunde integratiecontract of begin een nieuwe challenge.
 
-1. Authenticeer account en beoordeel of deze operatie is toegestaan, inclusief herauthenticatie indien nodig.
-2. Valideer doelinput en rate limit; sla immutable challengecontext op met accountautorisatieversie.
-3. Sign uitsluitend met de gekozen wallet via de bestaande guard. Bij adapter-/adres-/accountwissel: afbreken, geen fallbackwallet kiezen.
-4. Server valideert dezelfde geauthenticeerde accountcontext, versie, audience, doel, inputhash, expiry en signature.
-5. Verbruik challenge en commit de bedoelde mutatie plus receipt atomisch met exclusiviteitscontrole. Geen losse 'used'-update gevolgd door een onbeveiligde create.
-6. Bij reeds gecommitteerde identieke operatie: retourneer alleen dezelfde beperkte receipt aan hetzelfde nog bevoegde account. Dit is uitlezen van een eerder resultaat, geen opnieuw uitvoeren. Bij ander account of andere input weigeren.
-7. Bij crash/verloren antwoord bepaalt de receipt de uitkomst; nooit blind een tweede binding aanmaken.
+Wallet-/adapter-/accountwisseling tijdens signing breekt af; geen fallbackwallet. Rate limits en tijdelijke bewijsbewaring worden vóór uitvoering met WP-D/F vastgesteld. Eerste registratie/login mogen niet afhankelijk zijn van een al bestaande normale sessie; dat zou het wallet-native model circulair maken.
 
-**Challenge-status:** ISSUED → CONSUMED; of ISSUED → EXPIRED/CANCELLED. Ongeldige signatures wijzigen geen eigendom. Pogingen worden begrensd volgens WP-F. Verlopen records worden niet voor eeuwig bewaard; WP-D bepaalt concrete bewaring vóór prototypegegevens met echte gebruikers.
+## 7. Operatiecontracten en integratiegrens
 
-## 7. Operatiecontracten
+Voorgestelde bounded operaties; geen bestaande endpoints of nieuwe authbackend. De goedgekeurde provider/platformintegratie is verantwoordelijk voor wallet-native authenticatie, herauthenticatie en beheerde sessies. Welke ondersteunde ingang dit mogelijk maakt blijft B-BLOCK-02. Zolang die niet bewezen is, geen zelfgemaakte login-endpoints implementeren.
 
-Voorgestelde nauwe operaties, nog geen gedeployde functies. Frontend gebruikt later de bestaande SDK-invocatiewijze, geen harde function-URLs.
-
-| Operatie | Bounded input | Controle / resultaat |
+| Operatie / flow | Vereiste context | Resultaat / grens |
 |---|---|---|
-| readNetworkAccess | Geen callergekozen account | Auth → eigen toegang, hoofdhandle, blokkadereden; geen andermans walletbindingen |
-| enrollNetwork | Geldige documentversies en goedgekeurde onboardingbesluiten | Auth en eligibility → één eigen profiel, nooit clientgekozen leeftijdsgoedkeuring |
-| requestWalletProof | Doel, wallet, operatie-ID, concrete doelinput | Account/herauth/rate limit → immutable challenge |
-| completeWalletLink | Challenge-ID, signature, operatie-ID | Signature + exclusiviteit → eigen link of generiek conflict |
-| selectPrimaryHandle | Challenge-ID, signature, canonieke handle/asset, operatie-ID | Officiële chaincontrole + atomische swap → nieuwe bindinggeneratie |
-| unlinkWallet | Challenge-ID, signature, operatie-ID | Herautorisatie → walletlink intrekken en eventuele hoofdhandle beëindigen in één commit |
-| beginLostWalletRecovery | Beperkte eigen herstelvraag | Bestaande account recovery/review; geen bypass van A-38 of automatische unlock |
-| evaluateHandleAction | Interne actiecontext, actor en idempotentiesleutel | Actuele account-/bindingversie + chainbewijs → alleen de bedoelde mutatie |
+| Walletregistratie / walletlogin | Gericht bewijs via ondersteunde authenticatie-integratie | Geverifieerd subject en beheerde sessie; nog geen stilzwijgende sociale profielaanmaak |
+| readNetworkAccess | Servergeverifieerde eigen sessie/subject | Eigen profiel, toegang en binding; geen andermans walletlijst |
+| enrollNetwork | Registratiecontext, walletbewijs, expliciete onboarding en eligibility | Exact één eigen profiel, vaste ID en eerste beheerwallet |
+| requestWalletProof | Eigen sessie voor wijzigingen; doel en concrete bounded input | Actiespecifieke proofcontext, niet een algemene loginproxy |
+| completeWalletLink | Verse bestaande-walletstep-up plus nieuwe-walletproof | Extra beheerwallet bij hetzelfde profiel of generiek conflict |
+| selectPrimaryHandle | Eigen profiel, gekoppelde ownerwallet en gericht bewijs | Verse chaincontrole en atomische hoofdhandleswap |
+| unlinkWallet | Verse bevoegde step-up, bewaakte laatste-walletregel | Intrekking loginbevoegdheid en relevante handlebinding/sessies volgens goedgekeurd contract |
+| beginLostWalletRecovery | Beperkte herstelvraag via goedgekeurd pad | Geen gegarandeerde recovery of bypass op basis van handlebezit |
+| evaluateHandleAction | Eigen geverifieerde actor, actuele versies en idempotentie | Verse ownershipcontrole, uitsluitend bedoelde actie |
 
-Geen algemene proxy voor willekeurige chaincalls, integraties of SQL; geen publieke optie om eigendom, user-ID, autorisatieversie of verificatieresultaat te zetten. Resultaatcodes onderscheiden AUTH_REQUIRED, REAUTH_REQUIRED, PROOF_EXPIRED, PROOF_INVALID, WALLET_LINK_CONFLICT, HANDLE_NOT_OWNED, OWNERSHIP_UNCERTAIN, ACCOUNT_RESTRICTED, ACCESS_NOT_GRANTED, OPERATION_CONFLICT en SERVICE_UNAVAILABLE. Een conflict onthult geen email, profiel-ID of identiteit van de andere accounthouder.
+Geen callerkeuze van profiel-ID, subject, verificatiestatus, loginrechten of authproviderconfiguratie. Geen algemene proxy voor arbitrary chaincalls/SQL/integraties. Mogelijke beperkte resultaatcodes: AUTH_REQUIRED, REAUTH_REQUIRED, REGISTRATION_REQUIRED, PROOF_EXPIRED, PROOF_INVALID, WALLET_LINK_CONFLICT, LAST_WALLET_PROTECTED, HANDLE_NOT_OWNED, OWNERSHIP_UNCERTAIN, ACCOUNT_RESTRICTED, ACCESS_NOT_GRANTED, OPERATION_CONFLICT en SERVICE_UNAVAILABLE. Conflicten tonen geen andere profielidentiteit of gekoppelde persoonsgegevens. De loginflow kan na geldige verificatie vanzelfsprekend het eigen gekoppelde profiel herkennen.
 
 ## 8. Eigendomsbewijs en finaliteitsbeleid
 
@@ -187,37 +184,38 @@ De autorisatiecommit hercontroleert lokaal accountstatus, generation en observat
 | ACTIVE / OWNERSHIP_UNCERTAIN | Expliciete swap, ontkoppeling of profielverwijdering | ENDED | Met gerelateerde mutaties atomisch afhandelen |
 | ENDED | Terugkoop of terugkoppeling | Nieuwe PENDING-periode | Nooit oude binding heractiveren |
 
-Bij swap van hoofdhandle worden account, oude binding en nieuwe asset-exclusiviteit samen gecontroleerd. Bij overdracht naar een nieuwe eigenaar kan de oude binding op basis van chainbewijs eindigen zonder toestemming van de verkoper; de koper moet met een eigen account en eigen walletproof beginnen. Een wallet die nog bij een ander account gekoppeld is geeft een apart herstel/conflictpad, geen datatoegang. Accountschorsing blijft een aparte accounttoestand, geen NFT-status.
+Bij swap van hoofdhandle worden account, oude binding en nieuwe asset-exclusiviteit samen gecontroleerd. Bij overdracht naar een nieuwe eigenaar kan de oude binding op basis van chainbewijs eindigen zonder toestemming van de verkoper; de koper moet met een eigen account en eigen walletproof beginnen. Een handle in een nieuwe ownerwallet geeft uitsluitend recht op een eigen handlebinding. Alleen een gericht SIGN_IN-bewijs van een reeds bevoegde beheerwallet kan het eigen bestaande profiel bereiken; een wallet toevoegen vanuit een ander profiel geeft bij een bestaande koppeling een conflict, geen verhuizing. Accountschorsing blijft een aparte accounttoestand, geen NFT-status.
 
 **Historische publicatiereferentie:** immutable account-ID, binding-ID/generatie, asset, handle op publicatiemoment en besluitmoment. Wijziging van de actuele handle past bestaande posts/mentions niet aan. Nieuwe handlelookups en historische auteurverwijzingen zijn verschillende operaties.
 
 ## 10. Sessies, herauthenticatie en intrekking
 
-### Wat wordt behouden
+### Ondersteunde integratie vereist — B-BLOCK-02
 
-Bestaande platformlogin, registratie/OTP, reset en SDK-logout blijven leidend. Authroutes zijn reeds aanwezig. Network-authenticatie vraagt server-side de platformidentiteit op; een Contacts-token, walletbewijs of lokale connected-state geldt niet als login.
+Wallet-native registratie en login zijn de producteis, niet een bewezen eigenschap van de huidige app. Bestaande traditionele login-, OTP- en resetpagina's blijven intact voor onafhankelijke bestaande diensten; ze zijn niet de verplichte Network-onboardingroute. Een Contacts-token of lokale connected-state geeft geen Network-login. Ook een geldige signature is zonder de ondersteunde sessie-integratie geen platformlogin.
 
-### Network-autorisatie intrekken
+Vóór implementatie aantonen: walletproof-verificatie via een ondersteunde authenticatieprovider/platformingang, serververifieerbaar subject, eerste registratie zonder verplicht emailaccount, veilige terugkerende sessie, logout/verval, intrekking, walletrotatie en account-/profielmapping. Geen fictieve emails, service-roletoegang in de browser, zelf uitgegeven JWT's of een zelfgemaakte cookie-/sessiebackend om een ontbrekende ingang te omzeilen. Ontbreekt de ondersteunde route, dan blijft Network geblokkeerd; geen stille terugkeer naar traditionele registratie.
 
-Een autorisatieversie op het account wordt in het transactionele register verhoogd bij veiligheidsintrekking, relevante wallet-/bindingswijziging en profielverwijdering. Betrokken bindings krijgen eigen generaties. Open challenges en in-flight acties met oude versies worden geweigerd. Iedere latere Network-mutatie leest de actuele versie; versies uit de browser of cache zijn niet leidend. Dit blokkeert Network-rechten, maar trekt geen platformtoken in en belooft niet alle toegang tot andere SolHandle-diensten te beëindigen.
+### Verse herauthenticatie
 
-### Nog te bewijzen platformeigenschappen — blokker B-BLOCK-02
+Streefgrens vijf minuten voor gevoelige wijzigingen. Gebruik een nieuwe, actiegebonden proof van een al bevoegde beheerwallet via aantoonbaar ondersteunde step-up. Een browser-timestamp, alleen `auth.me()`, een nieuwe aanvallerswallet of een oude willekeurige signature is geen recentheidbewijs. Nieuwe beheerwallets ook afzonderlijk bewijzen. Bij ontbrekende veilige step-up blijft de mutatie geblokkeerd.
 
-Voor gevoelige operaties: een ondersteunde, serververifieerbare recente account-herauthenticatie, streefgrens vijf minuten. Een loginredirect, lokaal timestampveld, nogmaals `auth.me()` of walletsignatuur bewijst die recentheid niet. Geen wachtwoord opnieuw laten insturen naar een zelfgebouwde verificatieproxy.
+### Intrekking
 
-Bepaal daarnaast ondersteunde sessielijst, intrekking van een specifieke sessie, intrekking van alle sessies en reset-/providersemantiek. De gelezen code en gevonden documentatie bewijzen dat niet. Tot verificatie geen UI-beloftes zoals 'uitloggen op alle apparaten'. Als de benodigde herauthenticatie niet ondersteund of niet veilig aantoonbaar is, blijven gevoelige mutaties geblokkeerd en gaat een expliciete productbeslissing terug naar WP-A.
+Profielautorisatieversie en wallet-/bindinggeneraties worden transactioneel bijgewerkt. Iedere Network-mutatie controleert actuele serverstaat, niet browserclaims of een oude projectie. Een ingetrokken wallet kan niet opnieuw inloggen, ook niet wanneer een externe provider nog walletcontrole bevestigt. De ondersteunde sessie-integratie moet betrokken sessies kunnen blokkeren/intrekken; global logout of apparaatbeheer pas beloven na bewijs. Deze Network-intrekking wijzigt geen NFT en belooft geen logout bij onafhankelijke SolHandle-diensten.
 
-Cookies, tokenopslag, rotatie, CSRF en browserheaders volgen de werkelijk ondersteunde platforminrichting. Geen zelfbedachte HttpOnly-cookiebackend naast de bestaande SDK en geen claim dat headers al correct zijn ingesteld zonder verificatie.
+Cookies, tokenopslag, rotatie, CSRF, browserheaders en disconnect-versus-logout volgen het werkelijk ondersteunde contract en moeten beoordeeld worden; wallet disconnect alleen is geen gegarandeerde sessie-intrekking.
 
 ## 11. Herstel, ontkoppelen en privacy
 
-- Normale ontkoppeling: eigen account, passende recente herauthenticatie en gerichte walletproof. Dragende hoofdhandle eindigt in dezelfde transactionele mutatie.
-- Wallet verloren maar account bereikbaar: normale accountrechten blijven bereikbaar. Een nieuwe bewezen eigen wallet/handle kan via veilige herauthenticatie gekozen worden. Geen overdracht van de verloren NFT en geen vereiste dat de verloren wallet nog tekent voor het indienen van een herstelverzoek.
-- Verloren wallet ontkoppelen zonder handtekening: apart beoordeeld herstelpad, niet de normale proofendpoint omzeilen. Scope, bewijs, wachttijd/waarschuwing en bevoegde reviewer worden vóór implementatie met WP-D/WP-F/H vastgesteld; bij twijfel geen automatische verplaatsing.
-- Account verloren: ondersteunde platformrecovery. Voormalige eigenaar, kopende partij of walletbezitter krijgt geen oud profiel of persoonsgegevens via een claim.
-- Wallet aan ander account gekoppeld: generieke melding; herstel naar het oorspronkelijke account of beoordeelde ontkoppeling, nooit automatische accountfusie.
-- Privacy-/bezwaarverzoek blijft bereikbaar zonder handle of actieve normale sessie; alleen passende verificatie van de aanvrager, geen verkregen handle als bewijs van oude accountidentiteit.
-- Network-profielverwijdering beëindigt bindings en autorisatie. Geen automatische verwijdering van het platformaccount of aanroep van algemene accountverwijdering; WP-D bepaalt de exacte scope.
+- Andere vooraf gekoppelde, nog bevoegde beheerwallet: vers inloggen/step-up voor hetzelfde profiel; gecontroleerde vervanging mogelijk zonder de verloren NFT te verplaatsen.
+- Nog slechts een browsersessie maar geen beheersleutel: geen credentialwijziging alleen op basis van die sessie. Rechtenverzoeken blijven passend verifieerbaar.
+- Alle beheersleutels verloren: geen gegarandeerd herstel, geen verplicht emailherstel en geen toegang op basis van gekochte/voormalige handle. Eventuele aanvullende recovery eerst afzonderlijk goedkeuren met WP-D/F/H.
+- Normaal ontkoppelen vereist verse bevoegde step-up, bewaakt de laatste beheerwallet en beëindigt de toepasselijke hoofdhandle en loginrechten/sessies in het goedgekeurde intrekkingscontract.
+- Een actieve beheerwallet in de SIGN_IN-flow betekent terugkeer naar het eigen gekoppelde profiel; dezelfde wallet toevoegen vanuit een ander profiel betekent een conflict, geen fusie.
+- Diefstal of overdracht van de private key is compromittering van een logincredential, anders dan overdracht van alleen de NFT. Leg dit expliciet uit aan deelnemers; Network vraagt of bewaart nooit private keys.
+- Privacy-/bezwaarverzoeken blijven bereikbaar zonder actieve handle of normale sessie; geen nieuw verkregen NFT als bewijs van oude accountidentiteit.
+- Profielverwijdering beëindigt beheerwallet-/handlebindings en Network-autorisatie. Geen automatische verwijdering van een onafhankelijk platformaccount of andere SolHandle-diensten. Nieuwe registratie herstelt geen gewist profiel.
 
 ## 12. Bewijs- en prototypeplan
 
@@ -229,12 +227,12 @@ Geen controles uitgevoerd met dit document. Operationele flowtests later via de 
 - [x] Bestaande authroutes vastgesteld; geen duplicaat-login nodig.
 - [x] Entity-exclusiviteitsbeperking en ontbrekende transactiegaranties geregistreerd.
 - [ ] B-BLOCK-01: opslagkeuze met bewezen nonce-, uniekheids-, transactie- en herstelgaranties goedgekeurd.
-- [ ] B-BLOCK-02: recente herauthenticatie en sessie-/intrekkingsmogelijkheden bewezen; resterende scopebeperkingen expliciet besloten.
+- [ ] B-BLOCK-02: ondersteunde wallet-native registratie/login en servergeverifieerde subjectmapping bewezen, zonder verplichte traditionele registratie; step-up, sessiebeheer en walletintrekking aantoonbaar.
 - [ ] B-BLOCK-03: chainfinaliteitsbeleid, publicatiemoment en resterende distributed race beoordeeld en geaccepteerd.
 - [ ] B-BLOCK-04: originconfiguratie, alpha-afscherming, leeftijds-/toegangsbesluiten, privacybewaring en verantwoordelijken vastgelegd.
 
 ### Acceptatie met bewijsreferentie
-- [ ] B-T01: registratie inclusief OTP en login houden bestaande veilige returnTo-afhandeling intact; geen profiel zonder expliciete Network-onboarding.
+- [ ] B-T01: eerste walletregistratie en terugkerende walletlogin werken via de ondersteunde integratie zonder verplichte email/wachtwoord/Google; geen profiel zonder expliciete Network-onboarding; bestaande authroutes en veilige redirects blijven intact.
 - [ ] B-T02: dezelfde accountgegevens uit body of gewijzigd client-state geven geen toegang als een ander account.
 - [ ] B-T03: honderd gelijktijdige verbruiken van één challenge leveren hoogstens één mutatie op; andere input/account wordt geweigerd.
 - [ ] B-T04: honderd gelijktijdige claims van dezelfde wallet/asset en eerste profielcreaties leveren exact de toegestane cardinaliteit op.
@@ -252,6 +250,11 @@ Geen controles uitgevoerd met dit document. Operationele flowtests later via de 
 - [ ] B-T16: verlies van wallet/account wordt afgehandeld zonder accountovername op alleen een wallet- of handleclaim.
 - [ ] B-T17: uitval van register of RPC faalt gesloten voor nieuwe Network-acties; bestaande onafhankelijke SolHandle-diensten blijven intact.
 - [ ] B-T18: responses, logs en fouten lekken geen andere accountidentiteit, credentials, volle proofs of privéwalletkoppelingen.
+- [ ] B-T19: REGISTER_PROFILE, SIGN_IN en bindingsproofs kunnen elkaars doel niet autoriseren; preregistratie vertrouwt geen clientgekozen profiel-ID.
+- [ ] B-T20: geldige SIGN_IN van een bestaande beheerwallet bereikt hetzelfde profiel; ADD_WALLET vanuit een ander profiel fuseert of verplaatst niets.
+- [ ] B-T21: ingetrokken beheerwallet kan niet opnieuw inloggen; bestaande betrokken sessies verliezen toegang; laatste-walletregel voorkomt onbedoelde lock-out.
+- [ ] B-T22: dezelfde profiel-ID en followers blijven bij hoofdhandlewissel; publieke @name komt alleen van een actuele officiële handle in de gekoppelde ownerwallet.
+- [ ] B-T23: een aanvallerswallet met alleen een gestolen browsercontext kan geen beheerwallet toevoegen; sleutelverlies zonder andere bevoegde wallet geeft geen automatische recovery.
 
 Per test: omgeving, versie, tijdstip, uitvoerder, inputscenario, verwacht/waargenomen resultaat en bewijsreferentie vastleggen. Belastingsproeven uitsluitend in de afgesproken afgeschermde omgeving.
 
@@ -261,7 +264,7 @@ Per test: omgeving, versie, tijdstip, uitvoerder, inputscenario, verwacht/waarge
 2. Keur B-BLOCK-03/04 en de transactietoestandsmachine goed.
 3. Bouw alleen registerinvarianten, receipts en concurrency-/crashproef.
 4. Bouw de nauwe walletproof- en ownershipoperaties, met gedeelde logica in gedeelde servermodules.
-5. Sluit bestaande auth en walletguard aan; behoud bestaande authflows.
+5. Sluit uitsluitend de bewezen ondersteunde wallet-authenticatie-integratie en walletguard aan; bestaande onafhankelijke authflows blijven intact.
 6. Verifieer intrekking, herstel en onafhankelijke rechtenprocessen.
 7. Laat securityreview en acceptatie uitvoeren, daarna pas faseovergang beoordelen.
 
@@ -272,7 +275,7 @@ Geen feed, publieke navigatie, watcherworkflow, nieuwe tokenvoorwaarde of protoc
 | ID | Onderwerp | Status | Eigenaar / bewijs |
 |---|---|---|---|
 | B-BLOCK-01 | Transactionele exclusiviteit en eenmalig nonceverbruik | BLOKKEERT IMPLEMENTATIE | Nog aan te wijzen; documentatie toont geen voldoende entity-only garanties |
-| B-BLOCK-02 | Serververifieerbare recente herauthenticatie en sessie-intrekking | OPEN / blokkeert gevoelige mutaties | Nog aan te wijzen; geen bewezen platformcontract |
+| B-BLOCK-02 | Ondersteunde wallet-native registratie/login, subjectmapping, step-up en sessie-/walletintrekking | BLOKKEERT AUTH-IMPLEMENTATIE | Nog aan te wijzen; geen bewezen integratiecontract, geen eigen loginbackend of traditionele-loginfallback toegestaan |
 | B-BLOCK-03 | Finaliteit, contextslots, actietiming en rest-race | ONTWERP TER REVIEW | Ontwerp in §8; geen gemeten garantie |
 | B-BLOCK-04 | Deploymentafscherming, origins, privacybewaring en eligibility | OPEN | WP-C/D/F/H |
 
@@ -288,3 +291,4 @@ De broninspectie en documentatiezoekactie bewijzen geen uitvoeringsgedrag, onged
 | Versie | Datum | Wijziging |
 |---|---|---|
 | 0.1 | 22 oktober 2026 | Eerste concrete WP-B-uitwerking op productregels v1.0; broninspectie, auth-/proofcontract, eigendomsbeleid, invarianten, blockers en open acceptatie vastgelegd. Geen runtimewijzigingen. |
+| 0.2 | 22 oktober 2026 | Productbesluit v1.1 verwerkt: vaste profiel-ID, beheerwallet als logincredential, eigen @name, onderscheiden registratie/login/bindingsproofs en veilig herstel/intrekking. Vervangt platformregistratie als verplichte route. B-BLOCK-02 uitgebreid tot vereiste ondersteunde wallet-authintegratie. Alleen documentatie; geen runtimewijzigingen of geslaagde tests. |

@@ -9,13 +9,13 @@
 **Privacy/juridisch beoordelaar:** nog aan te wijzen  
 **Securitybeoordelaar:** nog aan te wijzen
 
-> Dit document is een interne checklist, geen publieke roadmapbelofte, juridisch advies of bewijs van compliance. Het aanmaken van dit document implementeert geen Network-functionaliteit en verleent geen goedkeuring voor ontwikkeling, alpha-toegang of publieke lancering. Werkpakketten zijn niet technisch afgetekend. WP-A heeft een vastgestelde productbaseline v1.0; WP-B heeft een uitgewerkt technisch ontwerp v0.1 met expliciete implementatieblokkers. Uitvoering, beoordeling en acceptatie blijven open. Eerdere gesprekken buiten expliciet vastgestelde productregels gelden als voorstellen.
+> Dit document is een interne checklist, geen publieke roadmapbelofte, juridisch advies of bewijs van compliance. Het aanmaken van dit document implementeert geen Network-functionaliteit en verleent geen goedkeuring voor ontwikkeling, alpha-toegang of publieke lancering. Werkpakketten zijn niet technisch afgetekend. WP-A heeft productbaseline v1.1 voor het walletgebonden profielmodel; WP-B heeft technisch ontwerp v0.2 met expliciete implementatieblokkers, waaronder de nog aan te tonen ondersteunde wallet-authenticatie-integratie. Uitvoering, beoordeling en acceptatie blijven open. Eerdere gesprekken buiten expliciet vastgestelde productregels gelden als voorstellen.
 
 ## 1. Doel en werkwijze
 
 Fase 0 levert een goedgekeurd bouwdossier en, na afzonderlijke toestemming, een afgeschermde technische fundering op. Eerst identiteit, eigendom, privacy en moderatie; daarna pas de sociale feed in fase 1.
 
-**Kernregel:** een SolHandle is overdraagbaar bezit. Het sociale account, privégegevens, volgers, historie en bevoegdheden worden niet automatisch mee overgedragen.
+**Kernmodel:** vaste profiel-ID → bewezen beheerwallet(s) → eigen officiële handle uit een gekoppelde wallet → publieke @name. Registratie en terugkerende login zijn wallet-native, zonder verplichte email/wachtwoord/Google-login; alleen verbinden is onvoldoende. Een SolHandle is overdraagbaar bezit, maar profiel, privégegevens, volgers, historie en loginbevoegdheden worden niet met de NFT overgedragen. De ondersteunde authenticatie-/sessie-integratie moet nog worden aangetoond; geen eigen loginbackend als omweg.
 
 **Afvinken:** zet een vakje uitsluitend op voltooid wanneer de genoemde oplevering beschikbaar is, de acceptatie aantoonbaar slaagt en de aangewezen verantwoordelijke heeft goedgekeurd. Een ontwerp, implementatie en geverifieerde werking zijn afzonderlijke resultaten. Geen deadline of gereedheidspercentage wordt uit het aantal vakjes afgeleid.
 
@@ -52,7 +52,7 @@ Voor ieder werkpakket vastleggen:
 
 **Voorgestelde eigenaar:** productverantwoordelijke.  
 **Afhankelijkheden:** geen.  
-**Productbaseline:** [Definitieve productregels v1.0](./PRODUCT_RULES.md), vastgesteld op verzoek van de producteigenaar op 22 oktober 2026.  
+**Productbaseline:** [Definitieve productregels v1.1](./PRODUCT_RULES.md), vastgesteld op verzoek van de producteigenaar op 22 oktober 2026.  
 **Status:** productregels vastgelegd; technische acceptatie, formele beoordeling en vrijgave staan open.
 
 - [x] Leg stabiele accountidentiteit vast, onafhankelijk van wallet en handle (A-05 t/m A-09).
@@ -68,24 +68,25 @@ Voor ieder werkpakket vastleggen:
 - [ ] Laat passende leeftijdsmaatregelen en toepasselijke verplichtingen beoordelen vóór alpha-toelating (WP-H).
 - [x] Bevestig basisgebruik zonder $HANDLE-balans en zonder betaalde verificatie of bereikvoordeel (A-45 t/m A-47).
 - [x] Houd profielverwijdering los van bredere accountverwijdering en NFT-/Pay-functionaliteit (A-40 t/m A-42).
-- [x] Specificeer scenario's en verwachte uitkomsten in productacceptatie P-A01 t/m P-A18.
+- [x] Specificeer scenario's en verwachte uitkomsten in productacceptatie P-A01 t/m P-A22.
 - [ ] Wijs verantwoordelijken en beoordelaars formeel toe en leg hun review vast.
 
 **Acceptatie, nog niet uitgevoerd**
 - [ ] WP-B t/m WP-H bevestigen uitvoerbaarheid en leggen eventuele conflicten expliciet voor; geen stille afwijkingen van de baseline.
-- [ ] P-A01 t/m P-A18 slagen tegen de relevante implementatie en hebben bewijsreferenties.
+- [ ] P-A01 t/m P-A22 slagen tegen de relevante implementatie en hebben bewijsreferenties.
 - [ ] Productverantwoordelijke en aangewezen beoordelaars tekenen de faseovergang expliciet af.
 
 ## 4. WP-B — Authenticatie, walletbewijs en handlebindings
 
 **Voorgestelde eigenaar:** technisch verantwoordelijke, met securityreview.  
 **Afhankelijkheden:** WP-A.  
-**Technisch ontwerp:** [Account, walletbewijs en handlebindings v0.1](./ACCOUNT_OWNERSHIP_DESIGN.md), gebaseerd op productregels v1.0.  
+**Technisch ontwerp:** [Walletgebonden profiel, walletbewijs en handlebindings v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md), gebaseerd op productregels v1.1.  
 **Status:** ontwerp uitgewerkt en bestaande bronnen geïnspecteerd; niet geïmplementeerd, getest of vrijgegeven.
 
 ### Uitgewerkt en vastgelegd
 - [x] Inspecteer bestaande platformauth, login/registratie, routes en walletguard; leg hergebruik en beperkingen vast.
-- [x] Kies platformaccount → expliciete Network-onboarding → walletbewijs → hoofdhandle als v1-richting; geen parallelle loginbackend of beloofde wallet-only login.
+- [x] Leg wallet verbinden → gericht registratie-/loginbewijs → expliciete profielregistratie bij eerste gebruik → eigen hoofdhandle vast als gewenste v1-richting; geen verplichte traditionele login en geen zelfgebouwde loginbackend.
+- [x] Maak onderscheid tussen login met een bestaande beheerwallet en een handletransfer die nooit het verkopersprofiel overdraagt.
 - [x] Specificeer account-/doel-/domeingebonden proofs, vijf minuten challengegeldigheid, berichtcontext en eenmalig transactioneel verbruik.
 - [x] Leg exclusiviteitsinvarianten voor profiel, wallet en hoofdhandle plus idempotentie en crashherstel vast.
 - [x] Scheid veilige directe chainvalidatie van index-/cached-ownerhelpers; beschrijf officiële asset-/collectie-/PDA-controles.
@@ -97,7 +98,7 @@ Voor ieder werkpakket vastleggen:
 
 ### Verplicht vóór implementatie of vrijgave
 - [ ] B-BLOCK-01: keur een aantoonbaar transactioneel register goed. Entity-check/create en upsert bieden volgens geraadpleegde documentatie geen gegarandeerde exclusiviteit; geen entity-only noodoplossing.
-- [ ] B-BLOCK-02: bewijs ondersteunde recente account-herauthenticatie en beschikbare sessie-intrekking; geen eigen login-/credentialbackend om ontbrekende garanties te omzeilen.
+- [ ] B-BLOCK-02: toon een ondersteunde wallet-native authenticatie-/sessie-integratie aan, inclusief eerste registratie, terugkerende login, verse wallet-herauthenticatie en intrekking per beheerwallet; geen verplichte emailfallback, fictieve accounts of eigen loginbackend.
 - [ ] B-BLOCK-03: keur finaliteits-/timingbeleid en resterende chain-/database-race expliciet goed.
 - [ ] B-BLOCK-04: bevestig deploymentafscherming, origins, toegang/leeftijd, bewaring en verantwoordelijken met WP-C/D/F/H.
 - [ ] Geef afzonderlijke toestemming voor het afgeschermde concurrency- en ownershipprototype.
@@ -115,7 +116,7 @@ Voor ieder werkpakket vastleggen:
 **Oplevering:** gegevenswoordenboek en rechtenmatrix voor iedere bewerking.
 
 - [ ] Ontwerp alleen noodzakelijke fase 0-records; bouw de volledige toekomstige sociale database niet vooruit.
-- [ ] Gebruik de ingebouwde accountidentiteit; maak geen concurrerende User-entiteit.
+- [ ] Gebruik een vaste Network-profiel-ID en koppel alleen via de goedgekeurde wallet-authenticatie-integratie aan een servergeverifieerde subjectidentiteit; maak geen concurrerende User-entiteit, zelfbedachte loginsessie of fictief emailaccount.
 - [ ] Scheid publieke profielprojecties van accountinstellingen, walletbewijzen en interne koppelingen.
 - [ ] Maak volledige wallet-/accountbindings niet publiek leesbaar; bepaal minimaal benodigde openbare eigendomsinformatie.
 - [ ] Specificeer lees-, maak-, wijzig- en verwijderrechten per gegevensgroep.
@@ -265,7 +266,11 @@ Deze checklist beschrijft nog uit te voeren controles; er is met dit document ni
 
 | Gereed | Scenario | Verwacht resultaat | Bewijsreferentie |
 |---|---|---|---|
-| [ ] | Geldig, eenmalig walletbewijs | Alleen bedoelde koppeling wordt toegestaan | Nog vast te leggen |
+| [ ] | Eerste walletregistratie | Alleen na gericht bewijs en expliciete onboarding één eigen profiel, zonder verplichte traditionele registratie | Nog vast te leggen |
+| [ ] | Terugkerende walletlogin | Geldig SIGN_IN-bewijs bereikt uitsluitend het profiel van de nog bevoegde beheerwallet | Nog vast te leggen |
+| [ ] | Handlekeuze of NFT-transfer als loginpoging | Geen toegang tot het oude profiel of andere accountidentiteit | Nog vast te leggen |
+| [ ] | Walletintrekking / laatste beheerwallet | Betrokken toegang ingetrokken; geen onbedoelde lock-out | Nog vast te leggen |
+| [ ] | Geldig, eenmalig walletbewijs | Alleen het bedoelde doel wordt toegestaan; login-, registratie- en bindingsproofs zijn niet uitwisselbaar | Nog vast te leggen |
 | [ ] | Hergebruik/verval/verkeerd domein of doel | Bewijs wordt geweigerd | Nog vast te leggen |
 | [ ] | Twee gelijktijdige claims van dezelfde asset | Maximaal één actieve binding | Nog vast te leggen |
 | [ ] | Overdracht A naar B | B krijgt geen account of privégegevens van A | Nog vast te leggen |
@@ -310,9 +315,9 @@ Deze poort hoort bij de alpha-release en wordt niet afgetekend op basis van alle
 
 | ID | Onderwerp | Status | Verantwoordelijke | Besluit / bewijs | Datum |
 |---|---|---|---|---|---|
-| D-01 | V1-account en aantal publieke identiteiten | PRODUCTREGELS VASTGELEGD; acceptatie open | Producteigenaar; reviewers nog aan te wijzen | [Productregels v1.0](./PRODUCT_RULES.md), A-05 t/m A-15 | 22 oktober 2026 |
-| D-02 | Ondersteunde account-/wallet-onboarding | ONTWERP UITGEWERKT; herauth-/sessiegaranties open | Nog aan te wijzen | [WP-B v0.1](./ACCOUNT_OWNERSHIP_DESIGN.md), B-01/02 en B-BLOCK-02 | 22 oktober 2026 |
-| D-03 | Exclusiviteit, freshness en transferfinaliteit | ONTWERP TER REVIEW; opslagkeuze blokkeert implementatie | Nog aan te wijzen | [WP-B v0.1](./ACCOUNT_OWNERSHIP_DESIGN.md), B-BLOCK-01/03 | 22 oktober 2026 |
+| D-01 | Walletgebonden profiel en aantal publieke identiteiten | PRODUCTREGELS V1.1 VASTGELEGD; acceptatie open | Producteigenaar; reviewers nog aan te wijzen | [Productregels v1.1](./PRODUCT_RULES.md), A-05 t/m A-15; vervangt verplichte traditionele registratie | 22 oktober 2026 |
+| D-02 | Wallet-native registratie/login | PRODUCTRICHTING VASTGELEGD; ondersteunde authenticatie-integratie blokkeert uitvoering | Nog aan te wijzen | [WP-B v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md), B-01/02/03 en B-BLOCK-02 | 22 oktober 2026 |
+| D-03 | Exclusiviteit, freshness en transferfinaliteit | ONTWERP TER REVIEW; opslagkeuze blokkeert implementatie | Nog aan te wijzen | [WP-B v0.2](./ACCOUNT_OWNERSHIP_DESIGN.md), B-BLOCK-01/03 | 22 oktober 2026 |
 | D-04 | Leeftijd en rechtsgronden | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-05 | Bewaartermijnen, export en verwijderingsscope | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-06 | Meldingen, bezwaar en moderatieverantwoordelijkheid | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
@@ -340,3 +345,4 @@ Controleer de actuele versie en toepasselijkheid bij de formele review; deze lij
 | 0.1 | 22 oktober 2026 | Eerste interne checklist op basis van het besproken fase 0-plan; geen functionaliteit, toegang of lancering geactiveerd | Nog niet goedgekeurd |
 | 0.2 | 22 oktober 2026 | WP-A gekoppeld aan definitieve productregels v1.0; alleen aantoonbaar gedocumenteerde productkeuzes afgevinkt, technische acceptatie en reviews open | Productbaseline op verzoek producteigenaar; geen releasegoedkeuring |
 | 0.3 | 22 oktober 2026 | WP-B uitgewerkt met broninspectie, proof-/ownershipcontracten, transactie- en herauthenticatieblokkers en open acceptatie | Ontwerp ter review; geen implementatie of vrijgave |
+| 0.4 | 22 oktober 2026 | Productbaseline v1.1 en WP-B v0.2: walletgebonden profiel, wallet-native registratie/login, eigen @name, beheerwallet-/transferonderscheid en bijgewerkte acceptatie/blokkers | Productwijziging op verzoek; geen runtimewijziging, migratie of releasegoedkeuring |

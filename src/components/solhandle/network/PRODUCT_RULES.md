@@ -1,6 +1,6 @@
 # SolHandle Network — definitieve productregels
 
-**Versie:** 1.0  
+**Versie:** 1.1  
 **Datum:** 22 oktober 2026  
 **Onderdeel:** fase 0, werkpakket A  
 **Status:** productbaseline voor v1, vastgesteld op verzoek van de producteigenaar  
@@ -18,25 +18,27 @@
 
 **A-04 — Geen publiekslancering door dit besluit.** De eerste mogelijke release is een apart geautoriseerde gesloten tekstalpha. Feed, posts, interacties en eventuele commerciële functies worden niet door fase 0 geactiveerd.
 
-## 2. Account is niet de handle
+## 2. Walletgebonden profiel, niet gebonden aan de handle-NFT
 
-**A-05 — Blijvend account.** Een Network-account heeft een stabiele, niet van walletadres of handle afgeleide accountidentiteit. Posts, volgers, voorkeuren, moderatie en rechten horen bij dit account.
+**Model:** vaste profiel-ID → bewezen beheerwallet(s) → actieve handlebinding → publieke @name. De wallet is het authenticatiemiddel; de officiële handle uit die wallet is de gekozen publieke naam. Een account betekent in dit document de blijvende Network-profielidentiteit, niet een verplicht email-/wachtwoordaccount.
 
-**A-06 — Bestaande accountbasis.** Network gebruikt de bestaande platformaccountbasis. Een bestaand account hoeft niet opnieuw te worden aangemaakt; een sociaal profiel ontstaat wel pas na expliciete Network-aanmelding. Er komt geen zelfgebouwde parallelle login- of sessiebackend.
+**A-05 — Blijvende profielidentiteit.** Een Network-profiel krijgt een stabiele, niet uit walletadres of handle berekende profiel-ID. Posts, volgers, voorkeuren, moderatie en rechten verwijzen naar die ID. Walletgebonden beheer en een veranderende @name wijzigen die historische identiteit niet.
 
-**A-07 — Expliciete deelname.** Wallet verbinden, een handle minten, een betaling doen of de site bezoeken maakt geen sociaal profiel. Voor onboarding zijn de geldende Network-voorwaarden, leeftijdsverklaring en privacy-informatie nodig. Optionele trackingtoestemming staat hier los van.
+**A-06 — Wallet-native registratie en login.** De gebruiker verbindt een wallet en ondertekent een eenmalig, doel- en domeingebonden bericht. Bij eerste gebruik kan daarna expliciet een profiel worden geregistreerd; bij terugkeer kan een geldige loginproof van een reeds bevoegde beheerwallet toegang geven tot hetzelfde profiel. Geen verplichte email, wachtwoord, Google-login of voorafgaande traditionele registratie. Een veilige, ondersteunde authenticatie-/sessie-integratie moet vóór implementatie aantoonbaar zijn; geen zelfgebouwde loginbackend, fictieve emails, stilzwijgende traditionele-loginfallback of walletproof die als platformtoken wordt voorgesteld. Ontbreekt die integratie, dan blijft uitvoering geblokkeerd zonder deze productkeuze te veranderen.
 
-**A-08 — Eén profiel per account in v1.** Ieder account kan maximaal één Network-profiel hebben. Een nieuwe wallet of extra handle maakt geen extra profiel, volgerbasis of rechten. Dit is geen claim dat één mens technisch maar één account kan bezitten; meerdere accounts worden niet via verplichte persoonsidentificatie uitgesloten.
+**A-07 — Expliciete deelname.** Alleen wallet verbinden, een handle minten, een betaling doen of de site bezoeken maakt geen sociaal profiel. Registratie verlangt een geldig registratiebewijs, expliciete Network-aanmelding, geldende voorwaarden/privacy-informatie en de goedgekeurde leeftijds-/toegangsflow. Optionele trackingtoestemming staat hier los van. Een loginbewijs mag niet stilzwijgend een nieuw profiel registreren.
 
-**A-09 — Geen automatische samenvoeging.** Accounts worden niet samengevoegd op basis van dezelfde naam, wallet, apparaat, IP-adres of handlehistorie. Profieloverdracht of accountfusie is geen v1-functie.
+**A-08 — Eén profiel per blijvende identiteit in v1.** Een beheerwallet kan maximaal één actief Network-profiel beheren; extra aan hetzelfde profiel gekoppelde wallets of handles maken geen extra profiel, volgerbasis of rechten. Dit bewijst niet dat één mens slechts één profiel kan hebben: verschillende onbekende wallets worden niet automatisch als één persoon herkend.
+
+**A-09 — Geen automatische samenvoeging.** Profielen worden niet samengevoegd op basis van naam, apparaat, IP-adres of handlehistorie. Profieloverdracht of accountfusie is geen v1-functie. Een bestaande bevoegde wallet die opnieuw correct inlogt keert terug naar hetzelfde profiel; dat is geen fusie.
 
 ## 3. Walletbewijs en publieke identiteit
 
-**A-10 — Walletcontrole bewijzen.** Alleen een geldige, eenmalige, doel- en domeingebonden challenge kan walletcontrole voor een account aantonen. Een walletadres invullen of een verbonden wallet tonen is onvoldoende.
+**A-10 — Walletcontrole bewijzen.** Alleen een geldige, eenmalige, doel- en domeingebonden challenge bewijst walletcontrole. REGISTER_PROFILE, SIGN_IN, ADD_WALLET, REMOVE_WALLET en SELECT_PRIMARY_HANDLE zijn onderscheiden doelen. Verbinden, een adres invullen of een oude signature hergebruiken is onvoldoende. Alleen een specifiek loginbewijs via de goedgekeurde authenticatie-integratie kan een sessie opleveren; een handlekeuze- of betaalbewijs niet.
 
-**A-11 — Eén accountkoppeling per wallet.** Een wallet kan in v1 aan maximaal één Network-account tegelijk gekoppeld zijn. Het opnieuw bewijzen van die wallet geeft geen toegang tot het gekoppelde account. Een bestaande koppeling verplaatsen vereist geauthenticeerde afhandeling van het oorspronkelijke account of een afzonderlijk beoordeeld herstelproces; bij conflict geen automatische verplaatsing of dataoverdracht.
+**A-11 — Exclusieve beheerwallet en terugkerende login.** Een wallet is in v1 aan maximaal één actief Network-profiel als beheerwallet gekoppeld. Een geldig vers loginbewijs van die nog bevoegde wallet mag toegang geven tot datzelfde profiel, met actuele account-/sessiecontroles; niet tot een willekeurig ander profiel. Een wallet vanuit een andere profielsessie toevoegen verplaatst of fuseert de bestaande koppeling niet. Een voormalige of ingetrokken beheerwallet krijgt geen toegang doordat zij opnieuw tekent. Nieuw handlebezit is nooit een loginbewijs voor het oude profiel.
 
-**A-12 — Meerdere wallets, één identiteit.** Een account mag meerdere bewezen wallets koppelen om een andere eigen handle te kiezen of walletwissels veilig af te handelen. Publieke deelname gebruikt altijd één actieve hoofdhandle.
+**A-12 — Meerdere wallets, één identiteit.** Een profiel mag meerdere expliciet bewezen beheerwallets koppelen; iedere actieve beheerwallet kan binnen de goedgekeurde authenticatie-integratie voor hetzelfde profiel inloggen en moet dus als accountcredential worden behandeld. Toevoegen vereist verse herauthenticatie met een reeds bevoegde wallet én bewijs van de nieuwe wallet. Voor de publieke @name moet de gekozen handle eigendom zijn van de gekoppelde wallet waaruit die handle wordt gekozen. Er blijft één actieve hoofdhandle; extra beheerwallets worden niet automatisch gepubliceerd.
 
 **A-13 — Eén actieve handlebinding.** Eén account heeft maximaal één actieve publieke hoofdhandle. Eén officiële handle-asset heeft maximaal één actieve accountbinding. Alleen actueel bewezen bezit in de officiële SolHandle-collectie komt in aanmerking; geen handmatige naamclaim of alternatieve collectie.
 
@@ -92,19 +94,19 @@
 
 ## 7. Walletverlies, herstel en privacy
 
-**A-36 — Accounttoegang en bezit herstellen zijn verschillende zaken.** Platformaccount recovery herstelt geen blockchainbezit. Controle over een wallet of nieuw aangeschafte handle herstelt geen ander account.
+**A-36 — Profieltoegang en blockchainbezit zijn verschillend.** Herstel van profieltoegang herstelt geen verloren private key of NFT. Bezit van een voormalige of gekochte handle bewijst nooit controle over het oude profiel. Controle over een nog bevoegde beheerwallet is daarentegen het gekozen loginmiddel voor het eigen gekoppelde profiel.
 
-**A-37 — Walletverlies.** Wie nog bij het eigen account kan, mag eigen rechten blijven uitoefenen en een andere bewezen eigen wallet/handle koppelen. Het product verklaart een verloren wallet of NFT niet administratief als eigendom van een andere wallet.
+**A-37 — Walletverlies.** Een andere vooraf gekoppelde, nog bevoegde beheerwallet kan toegang tot hetzelfde profiel geven en gecontroleerde walletwijzigingen autoriseren. Een resterende sessie alleen is geen voldoende bewijs voor gevoelige credentialwijzigingen. Er wordt geen verloren NFT administratief naar een andere wallet verplaatst.
 
-**A-38 — Verloren accounttoegang.** Gebruik het ondersteunde account-herstelpad. Een verzoek wordt bij twijfel beperkt en passend beoordeeld; er is geen garantie dat iedere claimant toegang terugkrijgt. Voormalig handlebezit alleen geeft nooit toegang tot persoonsgegevens of profielbeheer.
+**A-38 — Verloren toegang tot alle beheerwallets.** Geen verplicht emailherstel en geen belofte dat toegang kan worden hersteld. Een eventueel aanvullend herstelpad moet vooraf afzonderlijk worden goedgekeurd en mag niet uitsluitend op nieuw/voormalig handlebezit, een ingevuld adres of een onbewezen claim vertrouwen. Zonder voldoende ondersteund bewijs geen automatische profielovername. Privacy-/bezwaarkanalen blijven bereikbaar met passende verificatie.
 
-**A-39 — Ontkoppelen.** Een wallet ontkoppelen die de actieve hoofdhandle draagt beëindigt ook die actieve binding, tenzij in dezelfde gecontroleerde handeling een andere eigen hoofdhandle wordt gekozen. Historische auteurverwijzingen blijven bestaan volgens het bewaar-/verwijderbeleid.
+**A-39 — Ontkoppelen.** Walletintrekking beëindigt die loginbevoegdheid en betrokken sessies volgens het goedgekeurde intrekkingscontract. Draagt de wallet de hoofdhandle, dan eindigt ook de actieve handlebinding, tenzij dezelfde gecontroleerde mutatie een andere eigen hoofdhandle kiest. De laatste beheerwallet mag niet gewoon worden verwijderd als dat een actief profiel onbedoeld ontoegankelijk maakt: eerst een nieuwe wallet veilig toevoegen of expliciet profielverwijdering uitvoeren. Historische auteurverwijzingen blijven volgens het bewaar-/verwijderbeleid.
 
-**A-40 — Network-profiel verwijderen.** Profielverwijdering is een afzonderlijke keuze van het verwijderen van het bredere SolHandle-account. Zij verbergt het profiel, beëindigt bindings en deelname, en verwijdert Network-gegevens volgens het vastgestelde beleid. Zij verstuurt, verbrandt of verkoopt geen NFT en verwijdert geen blockchainhistorie.
+**A-40 — Network-profiel verwijderen.** Dit is een afzonderlijke keuze, geen verwijdering van eventueel onafhankelijk gebruikte SolHandle-platformaccounts. Verwijdering verbergt het profiel, beëindigt beheerwallet-/handlebindings en deelname en verwerkt Network-gegevens volgens het vastgestelde beleid. Zij verstuurt, verbrandt of verkoopt geen NFT en verwijdert geen blockchainhistorie.
 
-**A-41 — Geen rechtenblokkade.** Schorsing, eigendomsverlies of verwijderde publieke zichtbaarheid mogen export, privacyverzoeken en bezwaar niet onmogelijk maken. Informatie van andere personen wordt daarbij beschermd. Eventuele noodzakelijke bewaring vraagt een vastgelegd doel, grondslag en einddatum.
+**A-41 — Geen rechtenblokkade.** Schorsing, eigendomsverlies of verwijderde publieke zichtbaarheid mogen export, privacyverzoeken en bezwaar niet onmogelijk maken. Informatie van andere personen wordt beschermd. Noodzakelijke bewaring vraagt een vastgelegd doel, grondslag en einddatum.
 
-**A-42 — Geen automatische heropleving.** Een nieuwe eigenaar of opnieuw aangemeld account krijgt geen oude verwijderde gegevens terug. Voortgezette beperkingen of bewaarde gegevens worden uitsluitend volgens het geldende moderatie-/bewaarbeleid verwerkt.
+**A-42 — Geen automatische heropleving.** Een nieuwe eigenaar of opnieuw registrerende wallet krijgt geen oude verwijderde gegevens terug. Nieuwe registratie na verwijdering is een aparte lifecyclebeslissing met nieuwe profiel-ID, nooit automatische login in een gewist profiel. Voortgezette beperkingen en bewaring volgen het vastgestelde beleid.
 
 ## 8. Leeftijd, toegang en badges
 
@@ -141,7 +143,7 @@ Alle controles hieronder staan open. Vastgestelde productregels zijn niet hetzel
 - [ ] **P-A02 — Stabiel account:** hoofdhandle wisselen behoudt hetzelfde account en dezelfde volgers, zonder historische posts te herschrijven.
 - [ ] **P-A03 — Exclusiviteit:** twee accounts kunnen dezelfde handle niet tegelijk actief voeren.
 - [ ] **P-A04 — Extra handles:** extra bezit creëert geen extra profiel, publieke alias of extra rechten.
-- [ ] **P-A05 — Walletconflict:** walletbewijs geeft geen toegang tot een ander gekoppeld account en verplaatst diens koppeling niet automatisch.
+- [ ] **P-A05 — Walletlogin en conflict:** een vers SIGN_IN-bewijs van een actieve beheerwallet bereikt uitsluitend het eigen gekoppelde profiel; ADD_WALLET vanuit een ander profiel verplaatst of fuseert die koppeling niet.
 - [ ] **P-A06 — Overdracht:** koper krijgt uitsluitend eigen binding, nooit het oude account, privégegevens, followers of projectrollen.
 - [ ] **P-A07 — Oude sessie:** oude eigenaar kan geen nieuwe actie namens verkochte handle uitvoeren via bestaande of geplande sessieacties.
 - [ ] **P-A08 — Onzekerheid:** RPC-uitval blokkeert relevante nieuwe acties zonder een definitieve onterechte ontkoppeling.
@@ -155,12 +157,16 @@ Alle controles hieronder staan open. Vastgestelde productregels zijn niet hetzel
 - [ ] **P-A16 — Geen tokenpoort:** normaal basisgebruik en wettelijke/veiligheidskanalen zijn niet afhankelijk van $HANDLE.
 - [ ] **P-A17 — Profiel verwijderen:** Network-verwijdering wijzigt geen NFT-eigendom of onafhankelijke SolHandle-diensten.
 - [ ] **P-A18 — Geen financiële import:** contacten, saldi en betaalhistorie worden niet automatisch publiek gemaakt.
+- [ ] **P-A19 — Wallet-native onboarding:** verbinden → gericht registratiebewijs → expliciete aanmelding → eigen profiel → eigen handle kiezen, zonder verplichte email/wachtwoord/providerlogin.
+- [ ] **P-A20 — Geen credentialverwarring:** REGISTER_PROFILE, SIGN_IN en bindingsbewijzen zijn niet uitwisselbaar; een handletransfer geeft nooit loginrechten in het verkopersprofiel.
+- [ ] **P-A21 — Walletintrekking:** ingetrokken wallets en hun sessies kunnen niet terugkeren via een oude proof; laatste-walletbeveiliging voorkomt onbedoelde lock-out.
+- [ ] **P-A22 — Sleutelrisico:** bezit van de private key van een actieve beheerwallet kan profielbeheer mogelijk maken; overdracht/diefstal van de walletkey is niet hetzelfde als alleen een handle-NFT overdragen en wordt niet als veilig verklaard.
 
 ## 11. Overdracht aan overige werkpakketten
 
 | Werkpakket | Moet nu concretiseren | Geen impliciete productwijziging toegestaan |
 |---|---|---|
-| B — Account/ownership | Challenges, ondersteunde onboarding, koppelingconflicten, exclusiviteit, freshness, finaliteit, recovery | Geen walletbewijs als accountovername of enkel watcher-gebaseerde beveiliging |
+| B — Account/ownership | Wallet-native registratie/login, ondersteunde sessie-integratie, beheersleutels, koppelingconflicten, exclusiviteit, freshness, finaliteit, recovery | Geen verplichte traditionele login, zelfgebouwde loginbackend, handlebewijs als toegang tot een vorig profiel of enkel watcher-beveiliging |
 | C — Data/rechten | Stabiele accountreferenties, gescheiden publieke projecties, bindinghistorie, action-rechtenmatrix | Geen open toegang om anonieme of wallet-only flows passend te maken |
 | D — Privacy | Rechtsgronden, termijnmatrix, account-/profielscope, export, wissen en contactroute | Geen onbegrensde opslag of automatische publieke walletprofilering |
 | E — Moderatie | Maatregelen, motivering, bezwaar, block/mute, nieuwe eigenaar versus oud account | Geen straf overdraagbaar via NFT zonder afzonderlijke grond |
@@ -177,3 +183,4 @@ Deze productbaseline vervangt de voorlopige productkeuzes voor WP-A in het fase 
 | Versie | Datum | Besluit |
 |---|---|---|
 | 1.0 | 22 oktober 2026 | WP-A uitgewerkt tot productbaseline op verzoek van de producteigenaar; geen implementatie, geslaagde acceptatie of launchgoedkeuring geclaimd |
+| 1.1 | 22 oktober 2026 | Expliciet productbesluit: walletgebonden profiel met vaste ID, wallet-native registratie/login en eigen @handle uit de gekoppelde wallet; vervangt verplichte platformregistratie en het eerdere verbod op terugkerende walletlogin. A-05 t/m A-12 en A-36 t/m A-42 herzien; acceptatie uitgebreid. Geen bestaande gebruikers gemigreerd; authenticatie-integratie, privacy/securityreview en vrijgave blijven open. |
