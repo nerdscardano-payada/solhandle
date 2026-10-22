@@ -6,6 +6,7 @@ import { labPosts } from '../../shared/networkLabPosts.ts';
 import { labInteract } from '../../shared/networkLabInteractions.ts';
 import { labSafety } from '../../shared/networkLabSafety.ts';
 import { labEntitlements } from '../../shared/networkEntitlements.ts';
+import { labMedia } from '../../shared/networkLabMedia.ts';
 export default async function(req) {
   try {
     if (req.method !== 'POST') return Response.json({ error: 'POST required' }, { status: 405 });
@@ -21,6 +22,7 @@ export default async function(req) {
     if (['saveProfile', 'people', 'profile', 'relations'].includes(input.action)) return Response.json(await labProfiles(db, user, input, actor));
     if (['publish', 'deletePost', 'editPost', 'feed', 'post'].includes(input.action)) return Response.json(await labPosts(db, input, actor));
     if (input.action === 'interact') return Response.json(await labInteract(db, input, actor));
+    if (['registerMedia', 'reviewMedia'].includes(input.action)) return Response.json(await labMedia(db, input, actor));
     if (['entitlements', 'setEntitlement'].includes(input.action)) return Response.json(await labEntitlements(db, input, actor));
     if (['report', 'reports', 'moderate', 'moderationHistory', 'notifications', 'notificationRead'].includes(input.action)) return Response.json(await labSafety(db, user, input, actor));
     return Response.json({ error: 'Unknown development operation' }, { status: 400 });

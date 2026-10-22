@@ -1,4 +1,6 @@
-# SolHandle Network — definitieve productregels
+# SolHandle Network — historische aanvullende productregels
+
+> VERVANGEN ALS LEIDENDE SPECIFICATIE: `MASTER_SPECIFICATION.md` van 22 oktober 2026 is nu de productopdracht. Dit oudere document blijft achtergrond voor niet-strijdige veiligheids-/privacy-invarianten. Bij conflict gaat de master voor; oude fasepoorten stoppen niet de ontwikkeling van sociale functies achter testtoegang. Implementatievoortgang staat in `MASTER_PROGRESS.md`.
 
 **Versie:** 1.1  
 **Datum:** 22 oktober 2026  

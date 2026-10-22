@@ -1,5 +1,7 @@
 # SolHandle Network — uitvoering en resterende scope
 
+> Leidend vanaf de nieuwste productopdracht: `MASTER_SPECIFICATION.md`. Actuele sectie-voor-sectie voortgang: `MASTER_PROGRESS.md`. Hieronder staat het historische opleveringsregister; dit schrapt of pauzeert geen onafgewerkte mastervereisten.
+
 Datum: 22 oktober 2026. Dit is een opleveringsregister, geen compliance- of releaseverklaring.
 
 ## Opdracht en productlijn

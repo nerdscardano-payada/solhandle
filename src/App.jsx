@@ -153,7 +153,7 @@ const AuthenticatedApp = () => {
           <Route path="/network/notifications" element={<NetworkAccess />} />
           <Route path="/network/bookmarks" element={<NetworkAccess />} />
           <Route path="/network/access" element={<NetworkAccess />} />
-          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fnetwork%2Flab" replace />} />}>
+          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
             <Route path="/network/lab" element={user?.role === 'admin' ? <NetworkLab /> : <Navigate to="/network" replace />} />
           </Route>
           <Route path="/network/account/:publicId" element={<NetworkProfile />} />

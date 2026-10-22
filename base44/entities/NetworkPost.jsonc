@@ -32,6 +32,56 @@
     "discovery_score": {
       "type": "number",
       "default": 0
+    },
+    "media_ids": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "author_snapshot": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "handle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "binding_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "mentions": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "account_id",
+          "label"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

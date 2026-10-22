@@ -14,7 +14,8 @@
         "LIKE",
         "REPOST",
         "FOLLOW",
-        "REPLY"
+        "REPLY",
+        "MENTION"
       ]
     },
     "post_id": {

@@ -1,0 +1,6 @@
+import NetworkExternalLink from '@/components/solhandle/network/NetworkExternalLink';
+import LabPrivateImage from '@/components/solhandle/network/lab/LabPrivateImage';
+export default function LabPostBody({ post, onProfile }) {
+  const pieces = post.body.split(/(https:\/\/[^\s<>]+)/g);
+  return <><p className="whitespace-pre-wrap break-words leading-relaxed">{pieces.map((part, index) => /^https:\/\//.test(part) ? <NetworkExternalLink key={index} href={part}>{part}</NetworkExternalLink> : part)}</p>{post.mentions?.length > 0 && <div className="flex flex-wrap gap-3 text-xs"><span className="text-identity-muted">Mentioned:</span>{post.mentions.map(mention => <button key={mention.account_id} onClick={() => onProfile(mention.account_id)} className="text-names-secondary">{mention.label}</button>)}</div>}{post.media?.map(media => <LabPrivateImage key={media.id} media={media} alt="Post image" fittingType="fit" className="h-72 w-full rounded-2xl bg-card"/>)}</>;
+}
