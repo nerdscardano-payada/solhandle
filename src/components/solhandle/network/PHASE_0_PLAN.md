@@ -95,6 +95,7 @@ Voor ieder werkpakket vastleggen:
 - [x] Ontwerp Network-autorisatie-intrekking zonder te claimen dat alle platformtokens worden ingetrokken.
 - [x] Definieer herstel zonder accountovername op basis van handlebezit en scheid historische afzender-/Pay-context van actuele lookups.
 - [x] Stel operatiecontracten, bewijseisen en open acceptatiescenario's B-T01 t/m B-T23 op.
+- [x] Werk de [sessiekoppeling met de bestaande walletverbinding](./WALLET_SESSION_BRIDGE.md) uit: geselecteerde adapter hergebruiken, serververtrouwde mapping, callback-/walletwissels en logout/intrekking scheiden; bewijs SB-01 t/m SB-09 blijft open, geen runtimebouw.
 
 ### Verplicht vóór implementatie of vrijgave
 - [ ] B-BLOCK-01: keur een aantoonbaar transactioneel register goed. Entity-check/create en upsert bieden volgens geraadpleegde documentatie geen gegarandeerde exclusiviteit; geen entity-only noodoplossing.

@@ -192,6 +192,8 @@ Bij swap van hoofdhandle worden account, oude binding en nieuwe asset-exclusivit
 
 ### Ondersteunde integratie vereist — B-BLOCK-02
 
+**Verdieping bestaande walletverbinding:** [Sessiekoppelingscontract v0.1](./WALLET_SESSION_BRIDGE.md) specificeert hergebruik van de geselecteerde adapter, de nog te bewijzen signature-/OIDC-aansluiting, vertrouwde sessie→wallet→profielmapping, walletwissels en afzonderlijke logout-/intrekkingslagen. Alleen ontwerp; B-BLOCK-02 blijft open.
+
 Wallet-native registratie en login zijn de producteis, niet een bewezen eigenschap van de huidige app. Bestaande traditionele login-, OTP- en resetpagina's blijven intact voor onafhankelijke bestaande diensten; ze zijn niet de verplichte Network-onboardingroute. Een Contacts-token of lokale connected-state geeft geen Network-login. Ook een geldige signature is zonder de ondersteunde sessie-integratie geen platformlogin.
 
 Vóór implementatie aantonen: walletproof-verificatie via een ondersteunde authenticatieprovider/platformingang, serververifieerbaar subject, eerste registratie zonder verplicht emailaccount, veilige terugkerende sessie, logout/verval, intrekking, walletrotatie en account-/profielmapping. Geen fictieve emails, service-roletoegang in de browser, zelf uitgegeven JWT's of een zelfgemaakte cookie-/sessiebackend om een ontbrekende ingang te omzeilen. Ontbreekt de ondersteunde route, dan blijft Network geblokkeerd; geen stille terugkeer naar traditionele registratie.
