@@ -9,7 +9,7 @@
 **Privacy/juridisch beoordelaar:** nog aan te wijzen  
 **Securitybeoordelaar:** nog aan te wijzen
 
-> Dit document is een interne checklist, geen publieke roadmapbelofte, juridisch advies of bewijs van compliance. Het aanmaken van dit document implementeert geen Network-functionaliteit en verleent geen goedkeuring voor ontwikkeling, alpha-toegang of publieke lancering. Alle werkpakketten staan open; eerdere gesprekken gelden als voorstellen, niet als afgetekende besluiten.
+> Dit document is een interne checklist, geen publieke roadmapbelofte, juridisch advies of bewijs van compliance. Het aanmaken van dit document implementeert geen Network-functionaliteit en verleent geen goedkeuring voor ontwikkeling, alpha-toegang of publieke lancering. Werkpakketten zijn niet technisch afgetekend. WP-A heeft inmiddels een vastgestelde productbaseline v1.0; de uitvoering, beoordeling en acceptatie blijven open. Eerdere gesprekken buiten expliciet vastgestelde productregels gelden als voorstellen.
 
 ## 1. Doel en werkwijze
 
@@ -52,24 +52,29 @@ Voor ieder werkpakket vastleggen:
 
 **Voorgestelde eigenaar:** productverantwoordelijke.  
 **Afhankelijkheden:** geen.  
-**Oplevering:** goedgekeurd besluitdocument met scenario's en expliciete uitzonderingen.
+**Productbaseline:** [Definitieve productregels v1.0](./PRODUCT_RULES.md), vastgesteld op verzoek van de producteigenaar op 22 oktober 2026.  
+**Status:** productregels vastgelegd; technische acceptatie, formele beoordeling en vrijgave staan open.
 
-- [ ] Bevestig een blijvende accountidentiteit, onafhankelijk van walletadres en handle.
-- [ ] Bevestig dat actuele handlebinding én toegestaan account nodig zijn voor actief deelnemen.
-- [ ] Bevestig dat publiek lezen zonder handle mogelijk blijft.
-- [ ] Bevestig dat minten geen stilzwijgende sociale account- of profielaanmaak veroorzaakt.
-- [ ] Beslis voor v1: één actieve publieke hoofdidentiteit per account; meerdere handles creëren niet automatisch extra accounts of rechten.
-- [ ] Definieer gedrag bij verkoop, burn, walletontkoppeling, walletverlies, schorsing en accountverwijdering.
-- [ ] Behoud export, verwijdering, sessie-intrekking, bezwaar en koppeling van een nieuwe eigen handle voor accounts zonder actieve handle.
-- [ ] Leg vast dat followers het account volgen, niet de NFT.
-- [ ] Leg vast dat handlebezit geen bewijs van unieke persoon, betrouwbaarheid of projectverificatie is.
-- [ ] Beoordeel het voorgestelde 18+-beleid en passende leeftijdsmaatregelen; een checkbox geldt niet automatisch als voldoende waarborg.
-- [ ] Bevestig basisgebruik zonder verplichte $HANDLE-balans.
-- [ ] Definieer badgebetekenissen zonder investerings-, veiligheids- of betrouwbaarheidsclaim.
-- [ ] Leg vast dat Pay de bestaande ontvangerreview gebruikt; Network introduceert geen custody of signing namens gebruikers.
+- [x] Leg stabiele accountidentiteit vast, onafhankelijk van wallet en handle (A-05 t/m A-09).
+- [x] Definieer actieve deelname, publiek lezen en rechten zonder handle (A-17 t/m A-21).
+- [x] Sluit stilzwijgende profielaanmaak door minting, Pay of walletverbinding uit (A-03, A-07).
+- [x] Beslis één profiel en één actieve hoofdhandle per account in v1; extra handles geven geen extra accounts of rechten (A-08, A-12 t/m A-15).
+- [x] Definieer walletkoppeling, conflict, walletverlies en herstel zonder automatische accountovername (A-10 t/m A-12, A-36 t/m A-39).
+- [x] Leg verkoop, burn, terugkoop, onzekere eigendom en schorsing vast (A-21 t/m A-30).
+- [x] Leg vast dat account, volgers, historie, privégegevens en projectrechten niet met de NFT meegaan (A-22 t/m A-28).
+- [x] Definieer historische afzenders, mentions en veilige betaalcontext (A-31 t/m A-35).
+- [x] Onderscheid ownership, unieke persoon, vertrouwen en badges (A-16, A-47).
+- [x] Stel 18+ vast als productregel zonder standaard verzameling van identiteitsdocumenten (A-43, A-44).
+- [ ] Laat passende leeftijdsmaatregelen en toepasselijke verplichtingen beoordelen vóór alpha-toelating (WP-H).
+- [x] Bevestig basisgebruik zonder $HANDLE-balans en zonder betaalde verificatie of bereikvoordeel (A-45 t/m A-47).
+- [x] Houd profielverwijdering los van bredere accountverwijdering en NFT-/Pay-functionaliteit (A-40 t/m A-42).
+- [x] Specificeer scenario's en verwachte uitkomsten in productacceptatie P-A01 t/m P-A18.
+- [ ] Wijs verantwoordelijken en beoordelaars formeel toe en leg hun review vast.
 
-**Acceptatie**
-- [ ] Alle bovengenoemde scenario's hebben een ondubbelzinnig verwacht resultaat en een verantwoordelijke heeft dit goedgekeurd.
+**Acceptatie, nog niet uitgevoerd**
+- [ ] WP-B t/m WP-H bevestigen uitvoerbaarheid en leggen eventuele conflicten expliciet voor; geen stille afwijkingen van de baseline.
+- [ ] P-A01 t/m P-A18 slagen tegen de relevante implementatie en hebben bewijsreferenties.
+- [ ] Productverantwoordelijke en aangewezen beoordelaars tekenen de faseovergang expliciet af.
 
 ## 4. WP-B — Authenticatie, walletbewijs en handlebindings
 
@@ -318,7 +323,7 @@ Deze poort hoort bij de alpha-release en wordt niet afgetekend op basis van alle
 
 | ID | Onderwerp | Status | Verantwoordelijke | Besluit / bewijs | Datum |
 |---|---|---|---|---|---|
-| D-01 | V1-account en aantal publieke identiteiten | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
+| D-01 | V1-account en aantal publieke identiteiten | PRODUCTREGELS VASTGELEGD; acceptatie open | Producteigenaar; reviewers nog aan te wijzen | [Productregels v1.0](./PRODUCT_RULES.md), A-05 t/m A-15 | 22 oktober 2026 |
 | D-02 | Ondersteunde account-/wallet-onboarding | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-03 | Exclusiviteit, freshness en transferfinaliteit | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
 | D-04 | Leeftijd en rechtsgronden | OPEN | Nog aan te wijzen | Nog vast te leggen | — |
@@ -346,3 +351,4 @@ Controleer de actuele versie en toepasselijkheid bij de formele review; deze lij
 | Versie | Datum | Wijziging | Goedkeuring |
 |---|---|---|---|
 | 0.1 | 22 oktober 2026 | Eerste interne checklist op basis van het besproken fase 0-plan; geen functionaliteit, toegang of lancering geactiveerd | Nog niet goedgekeurd |
+| 0.2 | 22 oktober 2026 | WP-A gekoppeld aan definitieve productregels v1.0; alleen aantoonbaar gedocumenteerde productkeuzes afgevinkt, technische acceptatie en reviews open | Productbaseline op verzoek producteigenaar; geen releasegoedkeuring |
