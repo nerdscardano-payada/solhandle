@@ -1,0 +1,70 @@
+{
+  "name": "NetworkEntitlement",
+  "type": "object",
+  "properties": {
+    "account_public_id": {
+      "type": "string"
+    },
+    "feature": {
+      "type": "string",
+      "enum": [
+        "PROFILE_CUSTOMIZATION",
+        "CREATOR_TOOLS",
+        "ANALYTICS",
+        "SCHEDULED_POSTS",
+        "PROJECT_CARDS",
+        "ADVANCED_PAYMENTS",
+        "INTEGRATIONS"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "OPERATOR_TEST"
+      ]
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "TEST"
+      ]
+    }
+  },
+  "required": [
+    "account_public_id",
+    "feature",
+    "enabled",
+    "expires_at",
+    "source",
+    "environment"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

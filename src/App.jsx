@@ -29,6 +29,7 @@ const NetworkProfile = lazy(() => import('@/pages/NetworkProfile'));
 const NetworkPost = lazy(() => import('@/pages/NetworkPost'));
 const NetworkAccess = lazy(() => import('@/pages/NetworkAccess'));
 const AdminNetworkPreview = lazy(() => import('@/pages/AdminNetworkPreview'));
+const NetworkLab = lazy(() => import('@/pages/NetworkLab'));
 const NetworkLayout = lazy(() => import('@/components/solhandle/network/NetworkLayout'));
 const Docs = lazy(() => import('@/pages/Docs'));
 const Legal = lazy(() => import('@/pages/Legal'));
@@ -152,6 +153,9 @@ const AuthenticatedApp = () => {
           <Route path="/network/notifications" element={<NetworkAccess />} />
           <Route path="/network/bookmarks" element={<NetworkAccess />} />
           <Route path="/network/access" element={<NetworkAccess />} />
+          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fnetwork%2Flab" replace />} />}>
+            <Route path="/network/lab" element={user?.role === 'admin' ? <NetworkLab /> : <Navigate to="/network" replace />} />
+          </Route>
           <Route path="/network/account/:publicId" element={<NetworkProfile />} />
           <Route path="/network/post/:postId" element={<NetworkPost />} />
           <Route path="/network/:handle" element={<NetworkProfile />} />

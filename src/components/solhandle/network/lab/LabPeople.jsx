@@ -1,0 +1,8 @@
+import useLabList from '@/components/solhandle/network/lab/useLabList';
+import NetworkState from '@/components/solhandle/network/NetworkState';
+import NetworkMore from '@/components/solhandle/network/NetworkMore';
+export default function LabPeople({ actorId, target, direction, q = '', onProfile }) {
+  const query = useLabList(actorId, direction ? { action: 'relations', target, direction } : { action: 'people', q });
+  const people = query.data?.pages.flatMap(page => page.items) || [];
+  return <NetworkState query={query} empty={!people.length && 'No matching test profiles.'}><div className="space-y-3 p-5">{people.map(profile => <button key={profile.id} onClick={() => onProfile(profile.id)} className="block w-full rounded-2xl border border-identity-border p-5 text-left hover:border-names-accent/40"><span className="font-semibold text-names-accent">{profile.name}</span><span className="ml-3 text-xs text-identity-muted">{profile.kind} · TEST</span><p className="mt-3 line-clamp-2 whitespace-pre-wrap text-sm text-identity-muted">{profile.bio || 'No bio added.'}</p></button>)}</div><NetworkMore query={query}/></NetworkState>;
+}

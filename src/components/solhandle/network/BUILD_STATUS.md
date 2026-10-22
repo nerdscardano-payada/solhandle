@@ -23,6 +23,21 @@ Blijvende identiteit en historische auteurverwijzingen blijven los van de overdr
 - Tekst wordt als tekst weergegeven, niet als HTML; tekstlinks worden niet automatisch klikbaar. HTTPS-profielexterne links vereisen een waarschuwing voordat ze worden geopend; geen netwerkfetch van gebruikers-URL's.
 - Geen nieuwe sessies, nonce-authbackend, synthetische emails of automatische accounts door walletconnectie. Account/wallet/handle/permissions blijven onderscheiden; transactionele exclusiviteit wordt niet door de preview geclaimd.
 
+### Afgeschermde social productontwikkeling, 22 oktober 2026
+
+- Nieuwe `/network/lab`-workspace achter platformbeheerderstoegang én serverflag `developmentSocial`. Dit is expliciete testtoegang, geen alternatieve Network-login of publieke deelname.
+- Eén operator kan maximaal twaalf eigen testidentiteiten aanmaken/schakelen; vaste account-ID's, aparte developmentmodus. Geen wallet-/handleclaim, synthetische email, providerwijziging of automatisch lidmaatschap.
+- Testprofielbewerking (naam, bio, persoon/creator/project, HTTPS-links), posts bewerken/verwijderen, replies en gesprekken, like/unlike, repost/undo, bookmark/undo, follow/unfollow, followers/following-lijsten.
+- Latest, Following, Discover, eigen bookmarks/reposts en tekst-/profielzoeken met paginatie. Following toont originele posts van gevolgde accounts plus eigen posts; reposts hebben daarnaast een eigen overzicht. Discover gebruikt serveropgeslagen score = likes + 2×reposts + 3×zichtbare replies, zonder tokenweging.
+- In-app testnotificaties bij follow/like/repost/reply, ongelezen teller en eigen notificaties markeren als gelezen. Geen emails of native push toegevoegd.
+- Block/mute beïnvloeden server-side feed/conversaties; block verhindert nieuwe like/repost/follow/reply-interacties en verbreekt follows in beide richtingen. Profielen blijven vindbaar om eigen block/mute terug te draaien.
+- Testpostrapportage met reden, admin-moderatiequeue, hide/dismiss/restore met verplichte motivering en leesbare beslissingengeschiedenis. Alleen testposts worden gemodereerd; er is nog geen bezwaarflow of productiemoderatie.
+- Accountgebonden optionele entitlementarchitectuur met 24-uurs testgrants en intrekking. Geen tokenbalans als autoriteit, geen ownership-/trust-/moderatie-/rankingentitlements. Het verlenen van een capability implementeert nog niet de bijbehorende premiumtool.
+- Alle nieuwe interacties, notificaties, meldingen, moderatieacties en entitlements zijn admin-only met expliciete RLS op lezen/aanmaken/wijzigen/verwijderen. De functie controleert elke gekozen testactor op de ingelogde operator. Admins behouden platformbreed beheerrecht.
+- Testcontent heeft `preview:false`; bestaande publieke API's selecteren uitsluitend `preview:true`. Publieke productiepublicaties worden niet met testinteracties of testcontent vermengd.
+- Geen testcontent automatisch ingezaaid. Testidentiteiten worden uitsluitend op expliciete knopdruk gemaakt.
+- Grenzen: testmodellen bewijzen geen transactionele exclusiviteit, atomische interactiededuplicatie of productieconcurrency. Relatieverzamelingen zijn expliciet begrensd tot 200 en geven bij overschrijding een fout in plaats van stil onvolledig door te gaan. Alleen testposts hebben nu een serverlimiet (8/minuut); volledige bot/CAPTCHA-bescherming volgt.
+
 ### Bestaand ondersteunend Safety Center
 
 - Intern Safety Center op `/admin/network-safety`, bereikbaar vanuit het bestaande developer dashboard.
@@ -43,10 +58,10 @@ Domeinbeleid wordt nog niet buiten het interne controlepaneel afgedwongen. Subdo
 1. Ondersteunde wallet-native platformauthenticatie, sessie-/credentialintrekking en transactionele exclusiviteit. B-BLOCK-01/02 blijven open; de geraadpleegde platformdocumentatie bewijst geen signature-naar-platformsessie of email-loze matching.
 2. Geverifieerde deelnemersaccounts met beheerwallets en historisch gescheiden handlebindings; transactionele transferisolatie en verse autorisatie op iedere deelnemerschrijfactie. De nieuwe operatorpreview-account-ID's claimen deze garanties niet.
 3. Privacy Center, export, verwijderpijplijn, bewaartermijnen, consent en sessiebeheer voor Network.
-4. Meldingen, block/mute, moderatiemaatregelen, motiveringen, bezwaar en inhoudelijke beheerprocessen.
+4. Productierapportage, -block/mute en -moderatie plus bezwaar/inhoudelijke beheerprocessen. De afgeschermde testvariant van rapportage, block/mute en gemotiveerde moderatie is nu gebouwd.
 5. Server-side rate limits, CAPTCHA-escalatie, linkinterceptie, phishingbronnen, botrisico en incident/noodstopmechanismen.
 6. Schrijven en interacties door echte wallet-native deelnemers: profielbewerking, posts/replies, likes, follows en actuele geverifieerde handle/Pay-binding. Publiek lezen en eigen operatorpublicaties zijn nu afzonderlijk werkend.
-7. Reposts, notificaties, bookmarks, profielafbeeldingen/banners, mediaquarantaine, engagement-ranking, projectkaarten, integraties en $HANDLE-entitlements. Directory-discovery is al gebouwd; geen fictieve engagementscore.
+7. Productieactivering van reposts/notificaties/bookmarks, profielafbeeldingen/banners, mediaquarantaine, Pay-handlebinding, projectkaarten en verbonden integraties. De labvariant van reposts/notificaties/bookmarks, transparante engagementranking en accountgebonden entitlementgrants is gebouwd; echte $HANDLE-providerregels en premiumtools nog niet.
 8. Business, scheduling, API en latere optionele automatisering/DMs.
 
 ## Vrijgave

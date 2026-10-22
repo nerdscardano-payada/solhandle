@@ -1,0 +1,15 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import labClient, { labError } from '@/components/solhandle/network/lab/labClient';
+import useLabMutation from '@/components/solhandle/network/lab/useLabMutation';
+import NetworkState from '@/components/solhandle/network/NetworkState';
+import LabProfileEdit from '@/components/solhandle/network/lab/LabProfileEdit';
+import LabFeed from '@/components/solhandle/network/lab/LabFeed';
+import LabPeople from '@/components/solhandle/network/lab/LabPeople';
+export default function LabProfile({ actorId, target, onProfile, onConversation, onBack }) {
+  const [list, setList] = useState('posts');
+  const query = useQuery({ queryKey: ['network-lab', actorId, 'profile', target], queryFn: () => labClient({ action: 'profile', actorId, target }), retry: 1 });
+  const change = useLabMutation(actorId);
+  const profile = query.data?.profile;
+  return <><button onClick={onBack} className="p-5 text-sm text-names-accent">← Back to test feed</button><NetworkState query={query}>{profile && <><header className="border-y border-identity-border p-5"><p className="text-xs uppercase tracking-widest text-names-secondary">{profile.kind} · isolated test identity</p><h2 className="mt-3 text-3xl font-semibold">{profile.name}</h2><p className="mt-4 whitespace-pre-wrap break-words text-sm">{profile.bio || 'No bio added.'}</p>{profile.links.length > 0 && <div className="mt-3 space-y-1">{profile.links.map(link => <p key={link} className="break-all text-xs text-names-secondary">{link}</p>)}</div>}<p className="mt-3 text-xs text-identity-muted">No wallet binding or verified @handle. This is not a production account.</p><div className="mt-5 flex flex-wrap gap-5 text-sm"><button onClick={() => setList('posts')}>{profile.posts} posts</button><button onClick={() => setList('followers')}>{profile.followers} followers</button><button onClick={() => setList('following')}>{profile.following} following</button></div>{actorId !== target && <div className="mt-5 flex flex-wrap gap-3">{['FOLLOW', 'BLOCK', 'MUTE'].map(kind => <button key={kind} disabled={change.isPending} aria-pressed={profile.relations.includes(kind)} onClick={() => change.mutate({ action: 'interact', kind, target, active: !profile.relations.includes(kind) })} className={`rounded-full border px-4 py-2 text-sm ${profile.relations.includes(kind) ? 'border-names-accent text-names-accent' : 'border-identity-border text-identity-muted'}`}>{profile.relations.includes(kind) ? `Undo ${kind.toLowerCase()}` : kind.toLowerCase()}</button>)}</div>}{change.isError && <p role="alert" className="mt-3 text-sm text-names-warning">{labError(change.error)}</p>}{actorId === target && <LabProfileEdit key={target} actorId={actorId} profile={profile}/>}</header>{['followers', 'following'].includes(list) ? <LabPeople actorId={actorId} target={target} direction={list} onProfile={onProfile}/> : <LabFeed actorId={actorId} author={target} mode="latest" onProfile={onProfile} onConversation={onConversation}/>}</>}</NetworkState></>;
+}

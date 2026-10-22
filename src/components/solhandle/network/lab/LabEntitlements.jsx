@@ -1,0 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
+import labClient, { labError } from '@/components/solhandle/network/lab/labClient';
+import useLabMutation from '@/components/solhandle/network/lab/useLabMutation';
+import NetworkState from '@/components/solhandle/network/NetworkState';
+export default function LabEntitlements({ actorId }) {
+  const query = useQuery({ queryKey: ['network-lab', actorId, 'entitlements'], queryFn: () => labClient({ action: 'entitlements', actorId }), retry: 1 });
+  const save = useLabMutation(actorId);
+  return <section className="space-y-5 p-5"><h2 className="text-xl font-semibold">$HANDLE entitlement framework</h2><p className="text-sm leading-relaxed text-identity-muted">Account-bound optional capabilities with expiry and explicit revocation. These development grants expire after 24 hours; no token balance is read and no production rights are granted. Optional tools are not automatically implemented by granting their capability.</p><p className="text-sm text-names-accent">Core social access never requires a $HANDLE balance. Verification, moderation priority, trust and ranking cannot be granted here.</p><NetworkState query={query}>{Object.entries(query.data?.capabilities || {}).map(([feature, enabled]) => <div key={feature} className="flex items-center justify-between gap-4 border-b border-identity-border py-4"><span className="text-xs">{feature.replaceAll('_', ' ')}</span><button disabled={save.isPending} aria-pressed={enabled} onClick={() => save.mutate({ action: 'setEntitlement', feature, enabled: !enabled })} className={`rounded-full border px-4 py-2 text-xs ${enabled ? 'border-names-accent text-names-accent' : 'border-identity-border text-identity-muted'}`}>{enabled ? 'Revoke test grant' : 'Grant for 24 hours'}</button></div>)}</NetworkState>{save.isError && <p role="alert" className="text-sm text-names-warning">{labError(save.error)}</p>}</section>;
+}

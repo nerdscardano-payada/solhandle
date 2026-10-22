@@ -1,0 +1,5 @@
+import LabPostActions from '@/components/solhandle/network/lab/LabPostActions';
+import LabPostManage from '@/components/solhandle/network/lab/LabPostManage';
+export default function LabPostCard({ actorId, post, onConversation, onProfile }) {
+  return <article className="space-y-4 border-b border-identity-border p-5"><header><button onClick={() => onProfile(post.author.id)} className="font-semibold text-names-accent">{post.author.name}</button><p className="mt-1 text-xs text-identity-muted">Test identity · <time dateTime={post.date}>{new Date(post.date).toLocaleString()}</time></p></header>{post.parentId && <button onClick={() => onConversation(post.parentId)} className="text-xs text-names-secondary">View parent conversation</button>}<p className="whitespace-pre-wrap break-words leading-relaxed">{post.body}</p><LabPostActions actorId={actorId} post={post} onConversation={onConversation}/><LabPostManage key={`${actorId}:${post.id}:${post.body}`} actorId={actorId} post={post}/></article>;
+}

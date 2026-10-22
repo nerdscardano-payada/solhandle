@@ -1,0 +1,73 @@
+{
+  "name": "NetworkReport",
+  "type": "object",
+  "properties": {
+    "reporter_id": {
+      "type": "string"
+    },
+    "post_id": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "SPAM",
+        "SCAM",
+        "HARASSMENT",
+        "ILLEGAL",
+        "OTHER"
+      ]
+    },
+    "details": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "RESOLVED",
+        "DISMISSED"
+      ]
+    },
+    "resolution": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "TEST"
+      ]
+    }
+  },
+  "required": [
+    "reporter_id",
+    "post_id",
+    "reason",
+    "status",
+    "environment"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

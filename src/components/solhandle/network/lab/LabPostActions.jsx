@@ -1,0 +1,7 @@
+import { MessageCircle, Heart, Repeat2, Bookmark } from 'lucide-react';
+import useLabMutation from '@/components/solhandle/network/lab/useLabMutation';
+import { labError } from '@/components/solhandle/network/lab/labClient';
+export default function LabPostActions({ actorId, post, onConversation }) {
+  const change = useLabMutation(actorId);
+  return <><div className="flex flex-wrap items-center gap-5 text-sm"><button aria-label="Open replies" onClick={() => onConversation(post.id)} className="flex items-center gap-2 text-identity-muted"><MessageCircle className="h-4 w-4"/>{post.replies}</button>{[[Heart, 'LIKE', post.likes], [Repeat2, 'REPOST', post.reposts], [Bookmark, 'BOOKMARK', null]].map(([Icon, kind, count]) => <button key={kind} aria-label={kind.toLowerCase()} aria-pressed={post.states.includes(kind)} disabled={change.isPending} onClick={() => change.mutate({ action: 'interact', kind, postId: post.id, active: !post.states.includes(kind) })} className={`flex items-center gap-2 disabled:opacity-40 ${post.states.includes(kind) ? 'text-names-accent' : 'text-identity-muted'}`}><Icon className="h-4 w-4"/>{count}</button>)}</div>{change.isError && <p role="alert" className="mt-3 text-xs text-names-warning">{labError(change.error)}</p>}</>;
+}

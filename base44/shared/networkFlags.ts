@@ -1,6 +1,6 @@
 // Public reading and operator previews are independent from member authentication.
 // These server-owned gates cannot be enabled by request data or a browser flag.
-export const networkFlags = Object.freeze({ publicBrowse: true, operatorPreview: true, walletAuthentication: false, contributions: false, moderation: false, entitlements: false });
+export const networkFlags = Object.freeze({ publicBrowse: true, operatorPreview: true, developmentSocial: true, walletAuthentication: false, contributions: false, moderation: false, entitlements: false });
 export function publicProfile(row) {
   return { id: row.public_id, name: row.display_name, bio: row.bio || '', kind: row.kind, links: row.social_links || [], preview: true, handle: null, ownership: 'NOT_VERIFIED', primaryHandle: false };
 }

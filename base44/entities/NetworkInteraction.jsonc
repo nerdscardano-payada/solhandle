@@ -1,0 +1,65 @@
+{
+  "name": "NetworkInteraction",
+  "type": "object",
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "post_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "LIKE",
+        "REPOST",
+        "BOOKMARK",
+        "FOLLOW",
+        "BLOCK",
+        "MUTE"
+      ]
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "TEST"
+      ]
+    }
+  },
+  "required": [
+    "source_id",
+    "target_id",
+    "post_id",
+    "kind",
+    "active",
+    "environment"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -12,7 +12,8 @@
       "type": "string",
       "enum": [
         "OPERATOR_PREVIEW",
-        "MEMBER"
+        "MEMBER",
+        "DEVELOPMENT"
       ]
     },
     "status": {

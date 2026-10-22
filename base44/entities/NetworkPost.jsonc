@@ -28,6 +28,10 @@
     "preview": {
       "type": "boolean",
       "default": true
+    },
+    "discovery_score": {
+      "type": "number",
+      "default": 0
     }
   },
   "required": [

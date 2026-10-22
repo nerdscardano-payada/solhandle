@@ -1,0 +1,10 @@
+import { useState } from 'react';
+import LabModerationHistory from '@/components/solhandle/network/lab/LabModerationHistory';
+import useLabMutation from '@/components/solhandle/network/lab/useLabMutation';
+import { labError } from '@/components/solhandle/network/lab/labClient';
+export default function LabReportDecision({ actorId, report }) {
+  const [reason, setReason] = useState('');
+  const [decision, setDecision] = useState('HIDE');
+  const save = useLabMutation(actorId, () => setReason(''));
+  return <article className="space-y-4 border-b border-identity-border p-5"><p className="text-sm font-semibold">{report.reason} · {report.status}</p><blockquote className="whitespace-pre-wrap break-words rounded-xl border border-identity-border p-4 text-sm">{report.body}</blockquote><p className="whitespace-pre-wrap text-sm text-identity-muted">{report.details || 'No additional details.'}</p>{report.resolution && <p className="text-sm text-names-secondary">Decision reason: {report.resolution}</p>}<form onSubmit={event => { event.preventDefault(); save.mutate({ action: 'moderate', reportId: report.id, decision, reason }); }} className="space-y-3"><label className="block text-sm">Action<select value={decision} onChange={event => setDecision(event.target.value)} className="ml-3 rounded-xl border border-identity-border bg-card p-2"><option value="HIDE">Hide test post</option><option value="DISMISS">Dismiss report</option><option value="RESTORE">Restore hidden test post</option></select></label><textarea aria-label="Moderation decision reason" required maxLength={1000} value={reason} onChange={event => setReason(event.target.value)} placeholder="Required reason, recorded in the moderation history" className="w-full rounded-xl border border-identity-border bg-card p-3 text-sm"/><button disabled={save.isPending} className="text-sm text-names-accent">{save.isPending ? 'Saving decision…' : 'Apply moderation decision'}</button></form><LabModerationHistory actorId={actorId} reportId={report.id}/>{save.isError && <p role="alert" className="text-sm text-names-warning">{labError(save.error)}</p>}</article>;
+}

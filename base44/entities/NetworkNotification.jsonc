@@ -1,0 +1,64 @@
+{
+  "name": "NetworkNotification",
+  "type": "object",
+  "properties": {
+    "recipient_id": {
+      "type": "string"
+    },
+    "actor_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "LIKE",
+        "REPOST",
+        "FOLLOW",
+        "REPLY"
+      ]
+    },
+    "post_id": {
+      "type": "string"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "TEST"
+      ]
+    }
+  },
+  "required": [
+    "recipient_id",
+    "actor_id",
+    "kind",
+    "post_id",
+    "read",
+    "environment"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
