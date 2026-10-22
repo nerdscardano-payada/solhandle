@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import usePullToRefresh from '@/hooks/usePullToRefresh';
 import PullRefreshStatus from '@/components/solhandle/PullRefreshStatus';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -33,6 +33,7 @@ export default function Pay() {
   const location = useLocation();
   const networkContext = location.state?.networkRecipient || null;
   const networkFields = networkContext ? { networkContext } : {};
+  const previousNetworkContext = useRef(networkContext);
   const address = publicKey?.toBase58() || '';
   const [selection, setSelection] = useState(null);
   const [asset, setAsset] = useState('SOL'), [usdtLocked, setUsdtLocked] = useState(false);
@@ -57,7 +58,8 @@ export default function Pay() {
     setQuote(null); setPending(null);
     if (selection && selection.ownerWallet !== address) clearContact();
     if (networkContext && !requestId && !receiptId) { setSelection(null); setHandle(networkContext.handle); }
-    else if (!networkContext && !location.state?.contact && !requestId && !receiptId && !legacyLink) setHandle('');
+    else if (previousNetworkContext.current && !networkContext && !location.state?.contact && !requestId && !receiptId && !legacyLink) setHandle('');
+    previousNetworkContext.current = networkContext;
     if (location.state?.contact && location.state.contactOwnerWallet === address && !requestId && !receiptId) selectContact(location.state.contact);
   }, [location.key, address]);
   useEffect(() => {
