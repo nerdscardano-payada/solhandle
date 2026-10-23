@@ -2,13 +2,15 @@ import { fail, text, options, testScope } from './networkLabContext.ts';
 import { previewProfileInput } from './networkPreviewProfile.ts';
 import { approvedMedia, labProfileMedia } from './networkLabMedia.ts';
 import { refreshTestIdentity } from './networkIdentityRefresh.ts';
+import { readIdentityRegistry } from './networkIdentityRegistry.ts';
 export function labProfile(row) { return { id: row.public_id, name: row.display_name, bio: row.bio || '', kind: row.kind, links: row.social_links || [], website: row.website || '', joinedAt: row.created_date, avatarMediaId: row.avatar_media_id || '', bannerMediaId: row.banner_media_id || '', handle: null, ownerVerified: false, primaryActive: false, paymentsEnabled: false }; }
 export async function labProfiles(db, user, input, actor) {
   if (input.action === 'bootstrap') {
     const accounts = await db.NetworkAccount.filter({ operator_user_id: user.id, mode: 'DEVELOPMENT', status: 'ACTIVE' }, { limit: 12 });
     const ids = accounts.items.map(row => row.public_id);
     const profiles = ids.length ? await db.NetworkProfile.filter({ public_id: { $in: ids }, preview: false }, { limit: 12 }) : { items: [] };
-    return { identities: profiles.items.map(labProfile), testOnly: true };
+    const registry = await readIdentityRegistry(db);
+    return { identities: profiles.items.map(row => ({ ...labProfile(row), walletAddress: registry.wallets.find(wallet => wallet.user_id === row.public_id)?.address || '' })), testOnly: true };
   }
   if (input.action === 'createIdentity') {
     if (await db.NetworkAccount.count({ operator_user_id: user.id, mode: 'DEVELOPMENT', status: 'ACTIVE' }) >= 12) fail('Maximum twelve development identities per operator.');

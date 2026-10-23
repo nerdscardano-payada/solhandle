@@ -1,8 +1,12 @@
 import { useLocation } from 'react-router-dom';
 import { ShieldCheck } from 'lucide-react';
 import NetworkGate from '@/components/solhandle/network/NetworkGate';
+import { useNetworkSession } from '@/components/solhandle/network/NetworkSessionProvider';
+import NetworkOwnerView from '@/components/solhandle/network/NetworkOwnerView';
 export default function NetworkAccess() {
   const { pathname } = useLocation();
+  const session = useNetworkSession();
+  if (session?.operator && (pathname.endsWith('/notifications') || pathname.endsWith('/bookmarks'))) return <NetworkOwnerView view={pathname.endsWith('/notifications') ? 'notifications' : 'bookmarks'}/>;
   const title = pathname.endsWith('/notifications') ? 'Your notifications' : pathname.endsWith('/bookmarks') ? 'Your bookmarks' : 'Participation & privacy';
   return <section className="p-6"><ShieldCheck className="h-8 w-8 text-names-accent"/><h1 className="mt-5 text-3xl font-semibold">{title}</h1><p className="mt-5 text-sm leading-relaxed text-identity-muted">Network is publicly readable. Member registration, personal notifications and saved posts require a verified Network session and are not enabled yet. A connected wallet is not an authenticated Network account.</p><div className="mt-6"><NetworkGate action="Network account access"/></div><dl className="mt-10 space-y-6 text-sm"><div><dt className="font-semibold">Account ≠ wallet ≠ handle ≠ permissions</dt><dd className="mt-2 leading-relaxed text-identity-muted">An NFT transfer must never transfer an account, posts, followers or private data. No wallet or handle bindings are created in this preview.</dd></div><div><dt className="font-semibold">Public means public</dt><dd className="mt-2 leading-relaxed text-identity-muted">Operator previews are explicitly published. They assert no ownership or trust status. Search and feeds show only published content.</dd></div><div><dt className="font-semibold">Personal data controls</dt><dd className="mt-2 leading-relaxed text-identity-muted">Member export, deletion, block/mute, reporting and appeals are still in development. The preview does not create a member account or collect a recovery phrase.</dd></div><div><dt className="font-semibold">$HANDLE utility</dt><dd className="mt-2 leading-relaxed text-identity-muted">Core social access will require a SolHandle, not a token balance. Optional entitlements must never influence verification, moderation priority or trust. Entitlements are not active.</dd></div></dl></section>;
 }
