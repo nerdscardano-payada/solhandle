@@ -5,5 +5,5 @@ import LabPostCard from '@/components/solhandle/network/lab/LabPostCard';
 export default function LabFeed({ actorId, mode, q = '', author, id, onConversation, onProfile }) {
   const query = useLabList(actorId, { action: 'feed', mode, q, author, id });
   const posts = query.data?.pages.flatMap(page => page.items) || [];
-  return <NetworkState query={query} empty={!posts.length && !query.hasNextPage && 'No matching test posts. Create content or follow another test identity.'}>{posts.map(post => <LabPostCard key={post.id} actorId={actorId} post={post} onConversation={onConversation} onProfile={onProfile}/>)}<NetworkMore query={query}/></NetworkState>;
+  return <NetworkState query={query} empty={!posts.length && !query.hasNextPage && 'No matching posts yet. Create a post or follow people to build your feed.'}>{posts.map(post => <LabPostCard key={post.id} actorId={actorId} post={post} onConversation={onConversation} onProfile={onProfile}/>)}<NetworkMore query={query}/></NetworkState>;
 }
