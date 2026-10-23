@@ -1,0 +1,9 @@
+import { Link, useLocation } from 'react-router-dom';
+import { MessageCircle, Users } from 'lucide-react';
+import NetworkPublicPeople from '@/components/solhandle/network/NetworkPublicPeople';
+import NetworkQuickPay from '@/components/solhandle/network/NetworkQuickPay';
+export default function NetworkActivitySidebar({ enabled }) {
+  const { pathname } = useLocation();
+  const lab = pathname === '/network/lab';
+  return <aside className="network-context network-activity-sidebar" aria-label="Social context and payments">{lab ? <section className="network-panel"><p className="text-[10px] uppercase tracking-widest text-names-warning">Isolated development</p><h2 className="mt-3 text-sm font-semibold">Real test activity, separate identities.</h2><p className="mt-3 text-xs leading-relaxed text-identity-muted">Use the lab's people, following and notifications views. Test accounts and private media are never mixed into public discovery.</p></section> : <NetworkPublicPeople enabled={enabled}/>}<NetworkQuickPay/><section className="network-panel"><div className="mb-3 flex gap-3 text-names-secondary"><MessageCircle className="h-5 w-5"/><Users className="h-5 w-5"/></div><h2 className="text-sm font-semibold">Messages & communities</h2><p className="mt-3 text-xs leading-relaxed text-identity-muted">Planned, not enabled. Private conversations and community channels will have their own full-width workspace.</p><p className="mt-3 text-[10px] leading-relaxed text-identity-muted">No simulated conversations, membership counts or online indicators.</p></section><div className="px-2 text-[10px] leading-relaxed text-identity-muted"><p>Your account and private history never transfer with a handle NFT.</p><Link to="/network/access" className="mt-3 inline-block text-names-secondary">Participation & privacy ↗</Link></div></aside>;
+}

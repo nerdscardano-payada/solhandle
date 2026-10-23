@@ -2,6 +2,14 @@
 
 Leidend: MASTER_SPECIFICATION.md, ontvangen 22 oktober 2026. Dit is een eerlijke implementatiematrix, geen verklaring dat het volledige product klaar of integraal getest is.
 
+## Update 23 oktober 2026 — Social webplan
+
+Nieuwe code-audit en geprioriteerd plan: `SOCIAL_WEB_AUDIT.md`, inclusief bronverwijzingen en concrete verschillen tussen productie, publieke operatorpreview, adminlab en ontbrekende functies. Via **Audit & bouwplan** in de adminontwikkelsectie van Network te lezen/downloaden.
+
+De eerste desktopshell hergebruikt bestaande Network-routes, officiële branding, profielzoekfunctie, Primary-resolver, privécontactkiezer en Contacts → bestaand Pay-overzicht met ontvanger-/walletcontext. Desktop krijgt vaste navigatie, zoeken boven de feed, duidelijke walletkaart en echte publieke profielontdekking. Minten blijft op de bestaande startpagina. Mobiele indeling en bestaande auth-/betalingsregels worden niet vervangen.
+
+Niet geleverd of geactiveerd: publieke wallet-native Network-login, eigen ingelogde sociale profielkaart/statistieken, privéberichten, communities, onlinepresence, universeel handle/project/communityzoeken, nieuwe feeds of professionele verificatie. Messages/Communities zijn uitgeschakeld en gelabeld Planned, geen nieuwe mockpagina's. Pay en Contacts blijven zelfstandige bestaande pagina's; niet claimen dat zij al volledig onder de sociale shell vallen. Er is geen tweede identiteit, wallet, adresboek of betaalbackend gemaakt.
+
 ## Uitvoeringsregel
 
 Sociale functionaliteit doorbouwen achter testtoegang. Productie-authenticatie beperkt alleen de vrijgave van de betreffende publiek beschrijfbare onderdelen, niet de ontwikkeling van profielen, feeds, interacties, notificaties, media of entitlements. Bestaande walletconnectie en `/profile` blijven zelfstandig; geen tweede wallet, synthetische emails of alternatieve deelnemerslogin toevoegen.

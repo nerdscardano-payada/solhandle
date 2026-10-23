@@ -1,0 +1,9 @@
+import { Link } from 'react-router-dom';
+import { UserRound, ArrowUpRight } from 'lucide-react';
+import useNetworkPages from '@/components/solhandle/network/useNetworkPages';
+import { profilePath } from '@/components/solhandle/network/networkClient';
+export default function NetworkPublicPeople({ enabled = true }) {
+  const query = useNetworkPages('profiles', {}, enabled);
+  const profiles = query.data?.pages[0]?.items.slice(0, 4) || [];
+  return <section className="network-panel"><h2 className="network-panel-title">Discover profiles<Link to="/network/discover" className="flex items-center gap-1 text-[10px] font-normal text-names-accent">View all<ArrowUpRight className="h-3 w-3"/></Link></h2><p className="mb-3 text-[10px] text-identity-muted">Published operator previews, not endorsements.</p>{query.isPending ? <p role="status" className="py-3 text-xs text-identity-muted">Loading public profiles…</p> : query.isError ? <p role="alert" className="py-3 text-xs text-names-warning">Could not load profiles. <button onClick={() => query.refetch()} className="underline">Retry</button></p> : !profiles.length ? <div className="network-widget-empty"><UserRound className="h-6 w-6 text-names-secondary"/><p>No public profiles yet.</p><span>Only real publications will appear here.</span></div> : profiles.map(profile => <Link key={profile.id} to={profilePath(profile)} className="network-discovery-row"><span className="network-post-avatar p-2"><UserRound className="h-4 w-4 text-names-accent"/></span><span className="min-w-0 flex-1"><strong className="block truncate text-xs font-semibold">{profile.name}</strong><span className="text-[10px] capitalize text-identity-muted">{profile.kind.toLowerCase()} · Preview</span></span><ArrowUpRight className="h-3.5 w-3.5 text-identity-muted"/></Link>)}</section>;
+}

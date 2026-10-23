@@ -2,6 +2,10 @@
 
 Source: product owner's specification, received 22 October 2026. This is the controlling product specification. Earlier fragmented development instructions, phase plans and product baselines are historical or supporting references; where they conflict, this specification takes precedence. This document states requirements, not a claim of completed implementation or production release.
 
+## Addendum 23 October 2026 — Social web reference
+
+The owner's newer SolHandle Social web plan and supplied desktop concept extend this specification; they do not replace existing identity, mint, wallet, Pay or Contacts implementations. The current code-based inventory, gaps, desktop scope and prioritized delivery/acceptance plan are recorded in `SOCIAL_WEB_AUDIT.md` (23 October 2026). The new brief makes private messaging and communities explicit later deliverables with their own full-width workspaces, account-based authorization and safety review; no implementation or production availability is implied. Stable accounts, on-chain ownership authority, the 18+ participation requirement, non-custodial payments and the separation of wallet connection from Network authentication remain mandatory. Follow this newer desktop reference where the earlier layout descriptions differ.
+
 ## Status of this specification
 
 This document replaces fragmented previous development instructions for SolHandle Network.
