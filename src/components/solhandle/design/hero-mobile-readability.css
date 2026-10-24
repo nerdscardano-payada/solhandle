@@ -1,0 +1,40 @@
+.sd-phone .sd-hero-cinematic .sd-visual-columns{grid-template-columns:minmax(0,1fr);gap:14px}
+.sd-phone .sd-hero-cinematic .sd-visual-panel-title,
+.sd-phone .sd-hero-cinematic .sd-visual-social>.sd-visual-panel-title{min-height:48px;padding:12px;gap:10px}
+.sd-phone .sd-hero-cinematic .sd-visual-panel-title>strong{font-size:17px;font-weight:700}
+.sd-phone .sd-hero-cinematic .sd-visual-panel-title>span{width:32px;height:32px}
+.sd-phone .sd-hero-cinematic .sd-visual-panel-title>span>svg{width:20px;height:20px}
+.sd-phone .sd-hero-cinematic .sd-visual-author>div>strong{font-size:14px}
+.sd-phone .sd-hero-cinematic .sd-visual-author>div>small{font-size:12px;margin-top:4px}
+.sd-phone .sd-hero-cinematic .sd-visual-avatar{width:32px;height:32px;font-size:16px}
+.sd-phone .sd-hero-cinematic .sd-visual-social>.sd-visual-mini-post{display:flex;flex-direction:column;gap:10px;padding:8px 12px 14px}
+.sd-phone .sd-hero-cinematic .sd-visual-social .sd-visual-mini-post>p{font-size:14px;line-height:1.6;margin:0}
+.sd-phone .sd-hero-cinematic .sd-visual-post-image{height:130px}
+.sd-phone .sd-hero-cinematic .sd-visual-reactions{width:100%;justify-content:space-between;margin-top:2px}
+.sd-phone .sd-hero-cinematic .sd-visual-reactions>span{font-size:12px;gap:6px}
+.sd-phone .sd-hero-cinematic .sd-visual-reactions svg{width:16px;height:16px}
+.sd-phone .sd-hero-cinematic .sd-visual-profile-body{padding:12px}
+.sd-phone .sd-hero-cinematic .sd-visual-profile-name{font-size:24px!important;min-height:44px}
+.sd-phone .sd-hero-cinematic .sd-visual-profile-body>small{font-size:12px}
+.sd-phone .sd-hero-cinematic .sd-visual-profile-body>p{font-size:14px;line-height:1.6}
+.sd-phone .sd-hero-cinematic .sd-visual-tags{gap:6px}
+.sd-phone .sd-hero-cinematic .sd-visual-tags>span{font-size:12px;padding:4px 7px}
+.sd-phone .sd-hero-cinematic .sd-visual-stats strong{font-size:16px}
+.sd-phone .sd-hero-cinematic .sd-visual-stats small{font-size:12px}
+.sd-phone .sd-hero-cinematic .sd-visual-panel .sd-button{font-size:14px;min-height:44px;padding:10px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-body{padding:14px 12px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-tab{font-size:14px;padding:0 12px 12px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-body>small{font-size:13px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-recipient{padding:10px;gap:9px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-recipient>strong{font-size:16px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-amount{padding:12px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-amount>span{font-size:14px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-amount>strong{font-size:28px}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-amount strong>small{font-size:12px}
+.sd-phone .sd-hero-cinematic .sd-visual-memo{font-size:13px;padding:12px;line-height:1.5}
+.sd-phone .sd-hero-cinematic .sd-visual-pay-trust{font-size:12px;line-height:1.5;gap:6px}
+.sd-phone .sd-hero-cinematic .sd-visual-profile-body>.sd-visual-fineprint,
+.sd-phone .sd-hero-cinematic .sd-visual-fineprint{font-size:12px!important;line-height:1.5}
+.sd-phone .sd-hero-cinematic .sd-visual-dashboard-footer{flex-direction:column;align-items:flex-start;gap:7px;padding:12px 4px 4px}
+.sd-phone .sd-hero-cinematic .sd-visual-dashboard-footer>span{font-size:10px;line-height:1.5;letter-spacing:.4px}
+.sd-phone .sd-hero-cinematic .sd-visual-dashboard-footer>small{font-size:12px}
