@@ -1,6 +1,6 @@
 # Network mainnet — implementatieregister
 
-Datum: 24 oktober 2026. Status: eerste migratiestap uitgevoerd, publieke deelnemersrelease NIET vrijgegeven.
+Datum: 24 oktober 2026. Status: ontwerpmigratie en productievoorbereiding in uitvoering, publieke deelnemersrelease NIET vrijgegeven.
 
 Dit register betreft de nieuwe sociale Network-laag. Het is geen uitspraak dat bestaande mint-, resolver-, Pay- of Contacts-diensten offline zijn. De ontwerpomgeving blijft apart en wordt niet als mainnet-implementatie gebruikt.
 
@@ -37,6 +37,12 @@ Tweede migratieslice geleverd: één gedeelde header met merk, zoeken, meldingen
 Derde migratieslice geleverd: Identity-tab voor profielweergaven en een walletidentiteitsweergave op het eigen profiel zonder actief sociaal account. Eén begrensde read-only lookup hergebruikt de on-chain resolver voor de officiële collectie, asset en eigenaar. NFT-afbeelding en metadata worden alleen van een overeenkomend DAS-asset getoond; ontbrekende metadata krijgt geen voorbeeldafbeelding. Ontwikkelprofielen vergelijken de verse eigenaar en asset met de bestaande geverifieerde binding; publieke operatorprofielen krijgen geen afgeleide walletbinding. Een verbonden wallet wordt alleen in de expliciete eigen-walletweergave gebruikt. Oorspronkelijke mintprijs, -datum en -transactie zijn niet in deze lookup beschikbaar.
 
 Vierde migratieslice geleverd: Pay en My Contacts openen vanaf het eigen profiel binnen de Network-shell. De bestaande ContactsWorkspace blijft verantwoordelijk voor ontgrendelen, opslaan, bewerken, verwijderen, zoeken en synchroniseren. Send vanuit dit paneel geeft het contact plus de eigenaarwallet door aan dezelfde bestaande Pay-review, zonder querylink of afgeleide ontvanger. Walletwissels wissen de lokale selectie; bestaande Contacts-proof, vaste opgeslagen ontvanger en transactiecontrole blijven actief. Profielbetalingen naar andere ontwikkelaccounts behouden identityRecipient en de bestaande binding-/transfercontroles. Er zijn geen publieke contactgegevens, extra betaalmethoden of automatische transacties toegevoegd. Publieke walletlogin en deelname blijven uit; volledige visuele en gebruikersacceptatie is nog niet uitgevoerd. Geen previewcontext, fictieve aantallen of demo-posts als echte productiegegevens overzetten. Privé-ontwikkelprofielen krijgen geen publieke deelknoppen zolang er geen publieke projectie voor bestaat.
+
+### Productieslice — scheiding van echte en fictieve inhoud
+
+Live Home, Ontdekken en de operatorwerkruimte voegen geen hardcoded demo-berichten of demo-profielen meer toe. Lege resultaten blijven leeg en krijgen de bestaande laad-, fout- en pagineringsafhandeling; er wordt geen demo als fallback geladen. Design Preview en de afzonderlijke democomponenten blijven behouden voor ontwerpwerk. Zonder expliciet actieve wallet-/profielcontext kiest de operatorweergave niet meer stilzwijgend het eerste ontwikkelaccount. De openbare tijdlijn gebruikt dan uitsluitend de bestaande openbare leesprojectie.
+
+Dit is inhoudsscheiding, geen vrijgave van publieke deelnemersaccounts. De opnieuw geraadpleegde documentatie bevestigt OIDC-SSO, maar niet de vereiste e-mailloze Solana-signature-naar-beheerde-appsessie. Walletlogin blijft een extern te bevestigen integratiecontract, geen zelfgebouwde authbackend. Transferbewaking, productie-identiteit, moderatie/privacy en eindgebruikersacceptatie blijven open.
 
 ## Poort 4 — Publieke sociale deelname: OPEN
 
