@@ -3,5 +3,5 @@ import { demoPostsFor } from '@/components/solhandle/network/demo/networkDemoDat
 export default function NetworkDemoFeed({ q = '' }) {
   const posts = demoPostsFor(q);
   if (!posts.length) return null;
-  return <section aria-label="Voorbeeldtijdlijn"><div className="border-b border-identity-border px-5 py-3"><h2 className="text-sm font-semibold text-identity-text">Een kijkje in je netwerk <span className="ml-1 text-xs font-normal text-names-accent">Demo</span></h2><p className="mt-1 text-xs leading-relaxed text-identity-muted">Fictieve accounts, posts, reacties en aantallen. Probeer profielen, likes en reacties uit; acties blijven lokaal en verdwijnen bij herladen.</p></div>{posts.map((post, index) => <NetworkDemoPost key={post.id} post={post} expanded={index === 0}/>)}</section>;
+  return <section aria-label="Voorbeeldtijdlijn"><p className="border-b border-identity-border px-4 py-2 text-xs text-identity-muted"><span className="font-semibold text-names-accent">Demo</span> · Fictieve activiteit. Acties blijven lokaal.</p>{posts.map((post, index) => <NetworkDemoPost key={post.id} post={post} expanded={index === 0}/>)}</section>;
 }
