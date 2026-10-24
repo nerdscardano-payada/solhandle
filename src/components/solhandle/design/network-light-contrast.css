@@ -8,7 +8,7 @@
   --sd-hero-muted: #586780;
 }
 
-.sol-design[data-mode="light"] .sd-network-frame :is(.sd-network-city, .sd-network-shade) {
+.sol-design[data-mode="light"] .sd-network-frame .sd-network-shade {
   display: none;
 }
 
