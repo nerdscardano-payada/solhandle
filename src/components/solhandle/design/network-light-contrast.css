@@ -1,4 +1,5 @@
 .sol-design[data-mode="light"] .sd-network-frame {
+  --sd-bg: #f4f6fb;
   --sd-hero-panel: #ffffff;
   --sd-hero-glass: #ffffff;
   --sd-hero-field: #edf1f8;
@@ -7,8 +8,12 @@
   --sd-hero-muted: #586780;
 }
 
-.sol-design[data-mode="light"] .sd-network-frame .sd-network-shade {
-  background: rgba(4, 10, 24, .65);
+.sol-design[data-mode="light"] .sd-network-frame :is(.sd-network-city, .sd-network-shade) {
+  display: none;
+}
+
+.sol-design[data-mode="light"] .sd-network-frame > .sd-screen {
+  background: var(--sd-bg);
 }
 
 .sol-design[data-mode="light"] .sd-frame:not(.sd-public-frame) .sd-topbar {
@@ -29,11 +34,10 @@
 }
 
 .sol-design[data-mode="light"] .sd-network-frame .sd-page-title {
-  --sd-ink: #f1f4fa;
-  --sd-muted: #b3bdd5;
-  --sd-purple: #aa88ff;
-  --sd-hero-glass: rgba(8,15,34,.9);
-  --sd-line: rgba(151,137,242,.34);
+  --sd-ink: #172338;
+  --sd-muted: #586780;
+  --sd-hero-glass: #ffffff;
+  --sd-line: #dce2ed;
   color: var(--sd-ink);
 }
 
@@ -58,7 +62,7 @@
 }
 
 .sol-design[data-mode="light"] .sd-network-frame .sd-main .sd-page-title {
-  --sd-purple: #aa88ff;
+  --sd-purple: #6844b5;
 }
 
 .sol-design[data-mode="light"] .sd-network-frame .sd-main :is(.sd-eco-card, .sd-feed-panel, .sd-person-card, .sd-profile-intro, .sd-profile-detail, .sd-messages, .sd-notice, .sd-directory-body, .sd-main > .sd-feed-tabs) {
