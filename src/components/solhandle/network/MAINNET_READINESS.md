@@ -32,7 +32,9 @@ Sluitbewijs: ondersteunde e-mailloze login met bestaande geselecteerde wallet, b
 
 Geleverd: compacte publieke profieldeelknoppen met correct gecodeerde profiel-URL, Discord-kopieerbevestiging en handmatig kopieerpad bij geweigerde klembordtoegang. Geen OAuth of automatische Discord-publicatie.
 
-Volgende afgebakende modules: gedeelde navigatie en profielcompositie; vierkante profielfoto en 3:1-banner met echte toegestane media; Identity-weergave met echte mintgegevens; bestaande Pay/Contacts-interacties onder dezelfde navigatie. Geen previewcontext, fictieve aantallen of demo-posts als echte productiegegevens overzetten. Privé-ontwikkelprofielen krijgen geen publieke deelknoppen zolang er geen publieke projectie voor bestaat.
+Tweede migratieslice geleverd: één gedeelde header met merk, zoeken, meldingen, weergave en bestaande walletknop; dezelfde navigatiebron voor desktop en mobiel; bestaande Pay-drawer, claimroute en informatieve tokenroute als desktopshortcuts. Publieke operatorprofielen en ontwikkelprofielen delen nu profielcompositie en tabs: 3:1-banner, vierkante profielfoto, displaynaam vóór handle, echte bio/status/aantallen en bestaande acties. Het eigen ontwikkelprofiel opent de bestaande editor via Edit profile, zonder dubbele uitklaplaag. Goedgekeurde private ontwikkelmedia behouden hun bestaande ondertekende weergave; de publieke profielprojectie krijgt geen private media of verzonnen mintdetails.
+
+Volgende afgebakende modules: Identity-weergave met echte mintgegevens; verdere integratie van bestaande Pay/Contacts-interacties. Publieke walletlogin en deelname blijven uit; volledige visuele en gebruikersacceptatie is nog niet uitgevoerd. Geen previewcontext, fictieve aantallen of demo-posts als echte productiegegevens overzetten. Privé-ontwikkelprofielen krijgen geen publieke deelknoppen zolang er geen publieke projectie voor bestaat.
 
 ## Poort 4 — Publieke sociale deelname: OPEN
 
