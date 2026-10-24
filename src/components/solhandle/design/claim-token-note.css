@@ -1,0 +1,8 @@
+.sd-claim-token{display:flex;align-items:flex-start;gap:12px;max-width:438px;margin-top:16px;padding:16px 0;border-top:1px solid var(--sd-hero-stroke);color:var(--sd-hero-copy)}
+.sd-claim-token-mark{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:35px;height:35px;border:1px solid var(--sd-hero-stroke);border-radius:50%;color:var(--sd-purple);background:var(--sd-hero-field)}
+.sd-claim-token-copy{min-width:0;flex:1}.sd-claim-token-label{display:block;font-size:8px;font-weight:650;letter-spacing:1.3px;color:var(--sd-hero-muted)}
+.sol-design .sd-claim-token h2{font-size:15px;line-height:1.45;letter-spacing:-.3px;margin:5px 0 6px;color:var(--sd-hero-copy)}
+.sol-design .sd-claim-token p{font-size:12px;line-height:1.75;color:var(--sd-hero-muted);margin:0}
+.sd-claim-token summary{display:flex;align-items:center;gap:6px;width:fit-content;min-height:36px;font-size:12px;font-weight:600;color:var(--sd-link);cursor:pointer;list-style:none}.sd-claim-token summary::-webkit-details-marker{display:none}.sd-claim-token summary:focus-visible{outline:2px solid var(--sd-link);outline-offset:4px;border-radius:3px}
+.sd-claim-token-details{padding-top:6px}.sol-design .sd-claim-token-details p+p{margin-top:9px}
+.sd-phone .sd-claim-token{gap:10px;margin-top:14px;padding:14px 0}.sd-phone .sd-claim-token-label{font-size:8px;letter-spacing:1px}.sd-phone .sd-claim-token h2{font-size:15px}.sd-phone .sd-claim-token p{font-size:12px}

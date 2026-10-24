@@ -2,6 +2,7 @@ import { ArrowRight, ShieldCheck, Search, Users } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { useDesign } from '@/components/solhandle/design/DesignContext';
 import HeroEcosystemVisual from '@/components/solhandle/design/HeroEcosystemVisual';
+import ClaimTokenNote from '@/components/solhandle/design/ClaimTokenNote';
 import '@/components/solhandle/design/hero-cinematic.css';
 export default function PublicHero() {
   const d = useDesign();
@@ -17,6 +18,7 @@ export default function PublicHero() {
         <label htmlFor="sd-claim">Vind jouw @handle</label>
         <div className="sd-cinematic-search-row"><div className="sd-cinematic-input"><Search size={17}/><input id="sd-claim" placeholder="jouwnaam" value={d.search} onChange={e => d.setSearch(e.target.value.replace(/^@/, ''))} maxLength={20} required autoComplete="off"/><span>@</span></div><button className="sd-button sd-gradient" type="submit">Zoeken <ArrowRight size={16}/></button></div>
       </form>
+      <ClaimTokenNote/>
       <div className="sd-cinematic-cta-row"><button className="sd-cinematic-explore" onClick={() => d.go('home')}><Users size={19}/> Ontdek Social <ArrowRight size={15}/></button><span><ShieldCheck size={14}/> Jouw wallet. Jouw eigendom.</span></div>
     </div>
     <HeroEcosystemVisual/>
