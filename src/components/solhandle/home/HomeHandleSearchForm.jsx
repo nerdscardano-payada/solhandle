@@ -1,0 +1,7 @@
+import { Search, ArrowRight } from 'lucide-react';
+
+export default function HomeHandleSearchForm({ presentation, submit, input, onChange, disabled, t }) {
+  const field = { id: 'home-handle-input', value: input.replace(/^@+/, ''), onChange: event => onChange(event.target.value.replace(/^@+/, '')), placeholder: t('yourname'), 'aria-label': t('Search your @ name'), autoComplete: 'off', autoCapitalize: 'none', spellCheck: false, enterKeyHint: 'search' };
+  if (presentation === 'preview') return <form onSubmit={submit} className="sd-cinematic-search"><label htmlFor="home-handle-input">{t('Find your @handle')}</label><div className="sd-cinematic-search-row"><div className="sd-cinematic-input"><Search size={17}/><input {...field} required maxLength={20}/><span>@</span></div><button disabled={disabled && Boolean(input)} className="sd-button sd-gradient" type="submit">{t('Search')} <ArrowRight size={16}/></button></div></form>;
+  return <form onSubmit={submit} className="home-search-form"><label className="flex min-w-0 flex-1 items-center gap-3 px-4 py-4"><span className="text-2xl text-names-accent">@</span><input {...field} className="min-w-0 w-full bg-transparent text-foreground outline-none text-3xl md:text-2xl"/></label><button disabled={disabled} className="home-primary-button">{t('Check availability')} <ArrowRight className="h-4 w-4"/></button></form>;
+}

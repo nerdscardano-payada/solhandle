@@ -1,0 +1,39 @@
+.network-preview-parity.sol-design { background: var(--sd-bg); color: var(--sd-ink); }
+.network-preview-parity > .sd-frame { width: 100%; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
+.network-preview-parity .sd-screen { min-height: 100dvh; }
+.network-preview-parity .sd-phone > .sd-screen { max-height: none; overflow: visible; }
+.network-preview-parity .sd-sidebar-post { width: calc(100% - 10px); }
+.network-preview-parity .sd-sidebar-account { text-decoration: none; }
+.network-preview-parity .live-ecosystem-shortcuts { display: flex; flex-direction: column; }
+.network-preview-parity .live-ecosystem-shortcuts .sd-sidebar-shortcut { display: flex; align-items: center; gap: 10px; text-align: left; }
+.network-preview-parity .live-ecosystem-shortcuts .sd-sidebar-shortcut > span { flex: 1; }
+.network-preview-parity .sd-global-search { min-width: 0; }
+.network-preview-parity .sd-global-search input { min-width: 0; }
+.network-preview-parity .sd-feed-tabs { margin: 0; }
+.network-preview-parity .sd-feed-tabs > button { border: 0; border-radius: 0; background: transparent; color: var(--sd-muted); }
+.network-preview-parity .sd-feed-tabs > button[aria-pressed="true"] { color: var(--sd-ink); }
+.network-preview-parity .sd-main .network-profile-columns { display: block; padding: 0; }
+.network-preview-parity .sd-profile-intro.network-profile-hero { border: 0; border-radius: 0; background: var(--sd-surface); box-shadow: none; }
+.network-preview-parity .sd-profile-banner > :is(img,picture), .network-preview-parity .sd-avatar-profile > :is(img,picture) { width: 100%; height: 100%; object-fit: cover; }
+.network-preview-parity .sd-avatar-profile { overflow: hidden; }
+.network-preview-parity .sd-profile-actions .social-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 17px; border: 1px solid var(--sd-line); border-radius: 9px; font-size: 12px; font-weight: 650; min-height: 42px; color: var(--sd-ink); background: var(--sd-raised); }
+.network-preview-parity .sd-profile-actions .social-action-primary { border-color: transparent; background: var(--sd-grad); color: var(--sd-accent-ink); }
+.network-preview-parity .sd-profile-counts > :is(button,span) { display: inline-flex; align-items: baseline; gap: 5px; }
+.network-preview-parity .sd-profile-counts button { padding: 0; border: 0; background: none; }
+.network-preview-parity .live-profile-tools { margin: 20px 0; padding: 16px; border-top: 1px solid var(--sd-line); background: var(--sd-surface); }
+.network-preview-parity .live-profile-tools > summary { cursor: pointer; font-size: 12px; color: var(--sd-muted); }
+.network-preview-parity .live-profile-tools .network-profile-panels { display: block; padding-top: 16px; }
+.network-preview-parity .live-context-handle-art { width: 80%; align-self: center; margin-bottom: 16px; }
+.network-preview-parity .live-composer { display: block; border: 0; border-bottom: 1px solid var(--sd-line); border-radius: 0; background: transparent; padding: 18px; }
+.network-preview-parity .live-composer textarea { margin-top: 8px; width: 100%; min-height: 72px; border: 0; border-radius: 0; padding: 8px 0; background: transparent; color: var(--sd-ink); font-size: 14px; }
+.network-preview-parity .live-composer fieldset > p { font-size: 12px; }
+.network-preview-parity .live-post-copy { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 1.85; }
+.network-preview-parity .sd-post-author > a { color: var(--sd-ink); font-size: 13px; font-weight: 650; }
+.network-preview-parity .sd-post-actions { flex-wrap: wrap; }
+.network-preview-parity .sd-post-actions :is(a,button) { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; color: var(--sd-muted); }
+.network-preview-parity .sd-main:has(.network-profile-hero) { background: var(--sd-surface); }
+.network-preview-parity .sd-screen:has(.network-profile-hero) > :is(.sd-network-city,.sd-network-shade) { display: none; }
+.network-preview-parity .social-header { border-color: var(--sd-line); background: var(--sd-surface); }
+.network-preview-parity .social-section { background: var(--sd-surface); }
+.network-preview-parity .sd-eco-pay .live-pay-label { font-size: 10px; }
+@media (max-width: 767px) { .network-preview-parity .sd-bottom-nav { position: sticky; bottom: 0; z-index: 40; padding-bottom: calc(8px + env(safe-area-inset-bottom,0px)); } .network-preview-parity .live-post-copy { font-size: 12px; } .network-preview-parity .sd-wallet-button { max-width: 150px; overflow: hidden; font-size: 11px; } }

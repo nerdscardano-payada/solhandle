@@ -7,7 +7,7 @@ import NetworkRecipientActions from '@/components/solhandle/network/lab/NetworkR
 import NetworkProfileSocialActions from '@/components/solhandle/network/NetworkProfileSocialActions';
 import NetworkProfilePaymentTools from '@/components/solhandle/network/NetworkProfilePaymentTools';
 export default function LabProfileHero({ profile, actorId, change, onList, onEdit, own = false }) {
-  return <NetworkProfileFrame profile={profile} label={own ? 'My profile · Private preview' : 'Development profile'}
+  return <NetworkProfileFrame profile={profile} onIdentity={() => onList('identity')} label={own ? 'My profile · Private preview' : 'Development profile'}
     banner={profile.banner && <LabPrivateImage media={profile.banner} alt={`${profile.name} banner`} className="h-full w-full"/>}
     avatar={profile.avatar && <LabPrivateImage media={profile.avatar} alt={`${profile.name} profile picture`} className="h-full w-full"/>}
     actions={<>{actorId === profile.id && <button type="button" className="social-action social-action-secondary" onClick={onEdit}><Pencil className="h-4 w-4"/>Edit profile</button>}{actorId === profile.id && <NetworkProfilePaymentTools/>}{actorId !== profile.id && <NetworkProfileSocialActions actorId={actorId} profile={profile} change={change}/>}</>}

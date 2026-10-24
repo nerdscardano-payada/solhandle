@@ -28,6 +28,12 @@ Sluitbewijs: ondersteunde e-mailloze login met bestaande geselecteerde wallet, b
 - Continue transferverwerking, behoud van historische auteur-ID en geen overdracht van account, posts, volgers of contacten met een NFT.
 - Bewezen autorisatie en privacyrechten voor echte deelnemers, zonder de bestaande admin-only opslag open te zetten.
 
+## Correctie na ontwerpvergelijking
+
+De eerste presentatiemigratie week nog af van de goedgekeurde preview: de homepage had andere ecosysteempanelen en lettergroottes; Network gebruikte nog de oude driedelige shell; profielen hadden een andere header en een aparte statistiekkolom. De homepage gebruikt nu rechtstreeks dezelfde PublicHero en HeroEcosystemVisual als DesignPreview, met live-inhoudslots in plaats van fictieve voorbeelden. De tijdlijn deelt NetworkHomeLayout met de preview, met dezelfde sidebar, topbar, cityscape, Identity/Pay-contextkolom en responsieve ontwerplagen. De profielheader gebruikt dezelfde sd-profielklassen en ProfileHeaderLayout, met behoud van eigendomsbewijzen, editor, delen, tabs en betalingsacties. Extra bestaande profielgereedschappen blijven beschikbaar onder More profile tools.
+
+Mobiele presentatie volgt de previewgrens van 767px, niet de algemene app/tabletgrens van 1366px. De voorbeeldtelefoonrand, maximale voorbeeldhoogte en scroll-in-een-preview worden niet naar de echte website meegenomen. Ontbrekende echte berichten, social counts en walletgegevens worden niet vervangen door demo-inhoud. Sociale aanmeldings- en schrijfbeperkingen blijven ongewijzigd.
+
 ## Publieke presentatiemigratie — voor alle bezoekers
 
 Op verzoek van de eigenaar is de oude mint-only hoofdroute vervangen door de publieke Social · Identity · Pay-opzet: dezelfde donkere cityscape, kop, handlezoekactie, ecosysteemvisual en driestappen-uitleg als de goedgekeurde DesignPreview. De zoekactie gebruikt de bestaande beschikbaarheidscheck en mintreview, met de werkelijk verbonden wallet in plaats van een bewaarde adresstring. De identityvisual toont alleen de bestaande on-chain Primary Handle-lookup, inclusief laad-, fout- en niet-verbonden toestand. Social verwijst naar de openbare tijdlijn en ontdekpagina, Pay en Contacts naar de bestaande werkende routes. De ontwikkelaars- en juridische links blijven bereikbaar. Het oude mobiele startmenu, de oude desktopfooter en de chat-overlay worden alleen op deze hoofdroute niet meer bovenop het nieuwe ontwerp getoond; andere bestaande routes blijven intact.
