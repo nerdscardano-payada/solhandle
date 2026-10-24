@@ -28,6 +28,14 @@ De subtiele profieldeelknoppen uit DesignPreview worden meegenomen in de bestaan
 - [ ] Handleloos profiel, gewijzigde Primary Handle en NFT-transfer volgen het goedgekeurde profiel-/handle-URL-beleid zonder oude content aan een nieuwe eigenaar toe te schrijven.
 - [ ] Knoppen blijven subtiel, leesbaar en met toetsenbord/touch bedienbaar in light/dark en op desktop/mobiel; bestaande profielacties blijven werken.
 
+## Update 24 oktober 2026 — Mainnet-uitvoering gestart
+
+Actueel implementatieregister: `MAINNET_READINESS.md`, inclusief resterende walletauthblokkade, productie-identiteit, ontwerpmigratie en vrijgavecriteria. Het bestaande adminontwikkelpaneel toont de actuele serverpoorten en biedt dit register aan.
+
+Eerste uitvoeringsslice: LinkedIn/X/Discord-deelknoppen op het echte publieke operatorpreviewprofiel, met stabiele account-URL en kopieerfallback; wallet-/account-/adaptergebonden pogingsbewaking in de bestaande ontwikkelproof; operator-/walletgebonden profielcache. Geen deelnemerslogin of publieke schrijfrechten geactiveerd. Nieuwe walletclientbescherming is geen serverintrekking. End-to-endacceptatie blijft open.
+
+Deelknoppen: productiecode-integratie uitgevoerd voor publiek gepubliceerde operatorpreviewprofielen; acceptatiepunten hieronder blijven nog uit te voeren. Ontwikkelprofielen zijn niet openbaar en worden niet als publieke profielbestemming gedeeld door de nieuwe component.
+
 ## Uitvoeringsregel
 
 Sociale functionaliteit doorbouwen achter testtoegang. Productie-authenticatie beperkt alleen de vrijgave van de betreffende publiek beschrijfbare onderdelen, niet de ontwikkeling van profielen, feeds, interacties, notificaties, media of entitlements. Bestaande walletconnectie en `/profile` blijven zelfstandig; geen tweede wallet, synthetische emails of alternatieve deelnemerslogin toevoegen.
