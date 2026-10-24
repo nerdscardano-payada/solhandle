@@ -1,11 +1,28 @@
 import { useState } from 'react';
-import { Search, ArrowUpRight, Send, Users, Layers, LockKeyhole } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useDesign } from '@/components/solhandle/design/DesignContext';
 import ScenarioNotice from '@/components/solhandle/design/ScenarioNotice';
-const people = [{ name: 'Ansem', handle: '@ansem', initials: 'a', bio: 'Building on Solana. Samen vooruit.' },{ name: 'SolHandle Studio', handle: '@studio', initials: 's', bio: 'Ideeën voor een meer verbonden wereld.' },{ name: 'Design Collective', handle: '@design', initials: 'd', bio: 'Een eenvoudiger internet begint bij goed ontwerp.' }];
+import PreviewPeopleList from '@/components/solhandle/design/PreviewPeopleList';
+import { previewPeople, previewConnections, previewContacts } from '@/components/solhandle/design/previewPeople';
+
 export default function NetworkDirectory() {
   const d = useDesign();
-  const [tab,setTab] = useState('contacts'), [q,setQ] = useState(d.search);
-  const found = people.filter(p => `${p.name} ${p.handle}`.toLowerCase().includes(q.toLowerCase()));
-  return <><header className="sd-page-title"><div><span className="sd-eyebrow">MENSEN MAKEN HET NETWERK</span><h1>Jouw connecties<span className="sd-title-dot">.</span></h1><p>Van een eerste ontmoeting tot samen iets bouwen.</p></div></header><ScenarioNotice/><nav className="sd-feed-tabs" aria-label="Netwerkonderdelen">{[['contacts','Contacten'],['projects','Projecten'],['communities','Communities · concept']].map(([id,label]) => <button key={id} onClick={() => setTab(id)} aria-pressed={tab === id}>{label}</button>)}</nav><div className="sd-directory-body"><label className="sd-search-field"><Search size={17}/><input placeholder={tab === 'projects' ? 'Zoek een project' : 'Zoek een naam of @handle'} value={q} onChange={e => setQ(e.target.value)}/></label>{tab === 'communities' ? <><div className="sd-concept-banner"><Layers size={18}/><div><strong>Toekomstige community-ervaring</strong><p>Dit is een ontwerp, geen bestaande communitydienst.</p></div></div><div className="sd-community-card"><span className="sd-community-art"><Users size={36}/></span><div><span className="sd-eyebrow">VOORBEELDCOMMUNITY</span><h2>Solana Builders</h2><p>Een plek om ideeën te delen, vragen te stellen en samen te bouwen.</p><span className="sd-tiny-pill"><LockKeyhole size={12}/> Lidmaatschapsrechten nog te ontwikkelen</span></div></div></> : <><p className="sd-directory-caption">{tab === 'contacts' ? 'Privécontacten blijven gescheiden van openbare sociale connecties.' : 'Voorbeeldprojecten, geen geverifieerde partners.'}</p><div className="sd-people-grid">{found.map(p => <article className="sd-person-card" key={p.handle}><span className="sd-avatar">{p.initials}</span><small>{tab === 'projects' ? 'PROJECT · VOORBEELD' : 'CONTACT · VOORBEELD'}</small><h3>{p.name}</h3><span>{p.handle}</span><p>{p.bio}</p><div><button className="sd-text-button" onClick={() => d.go('profile')}>Bekijk profiel <ArrowUpRight size={14}/></button><button className="sd-icon-button" aria-label={`Betaal aan ${p.name}`} onClick={() => d.openPay(p.handle)}><Send size={16}/></button></div></article>)}</div>{!found.length && <div className="sd-empty"><h3>Geen resultaten</h3><p>Probeer een andere naam.</p></div>}</>}</div></>;
+  const [tab, setTab] = useState('connections');
+  const [query, setQuery] = useState('');
+  const found = previewPeople.filter(person => (tab === 'following' ? d.isFollowing(person.handle) : (tab === 'contacts' ? previewContacts : previewConnections).includes(person.handle)) && `${person.name} ${person.handle}`.toLowerCase().includes(query.trim().toLowerCase()));
+  const captions = {
+    connections: 'Je bestaande sociale verbindingen. Deze connectie is fictief en dient als ontwerpvoorbeeld.',
+    following: 'Accounts die je in dit ontwerpvoorbeeld volgt. Volgen en ontvolgen worden direct hier bijgewerkt.',
+    contacts: 'Je opgeslagen privécontacten, los van openbare sociale connecties. Dit is een fictief adresboek, geen echte contactgegevens.'
+  };
+  return <>
+    <header className="sd-page-title"><div><span className="sd-eyebrow">JOUW BESTAANDE VERBINDINGEN</span><h1>Mijn netwerk<span className="sd-title-dot">.</span></h1><p>Je connecties, gevolgde accounts en privécontacten op één plek.</p></div></header>
+    <ScenarioNotice/>
+    <nav className="sd-feed-tabs" aria-label="Mijn netwerk">{[['connections', 'Connecties'], ['following', 'Volgend'], ['contacts', 'Privécontacten']].map(([id, label]) => <button key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
+    <div className="sd-directory-body">
+      <label className="sd-search-field"><Search size={17}/><input aria-label="Zoek binnen mijn netwerk" placeholder={tab === 'contacts' ? 'Zoek in je privécontacten' : 'Zoek binnen je netwerk'} value={query} onChange={event => setQuery(event.target.value)}/></label>
+      <p className="sd-directory-caption">{captions[tab]}</p>
+      <PreviewPeopleList people={found} privateContacts={tab === 'contacts'} emptyTitle={query.trim() ? 'Geen resultaten in je netwerk' : tab === 'following' ? 'Je volgt nog geen accounts' : 'Nog geen verbindingen'} emptyText={query.trim() ? 'Probeer een andere naam of zoek nieuwe accounts via Ontdekken.' : 'Ga naar Ontdekken en volg mensen of projecten die je interessant vindt.'}/>
+    </div>
+  </>;
 }
