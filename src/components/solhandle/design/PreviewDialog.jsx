@@ -13,6 +13,7 @@ export default function PreviewDialog() {
     wallet: ['Je eigen wallet. Jouw controle.', 'Dit is een visuele walletstap. Er wordt geen echte wallet geopend of verbonden.', 'Bekijk verbonden toestand', null],
     session: ['Eén naam. Een eigen sociaal account.', 'Een verbonden wallet is nog geen sociale aanmelding. Publieke walletaanmelding moet veilig worden ontwikkeld voordat deze flow live gaat.', 'Bekijk aangemelde toestand', null],
     claim: [`Jouw naam: @${d.search || 'ansem'}`, 'Dit toont de claimervaring, niet de werkelijke beschikbaarheid of prijs. De bestaande claimfunctie blijft ongewijzigd.', 'Bekijk Identity', 'Ontdek Network'],
+    token: ['$HANDLE. Onze ecosysteemtoken.', 'Jouw @handle is je unieke identiteit als NFT. $HANDLE is onze afzonderlijke, uitwisselbare token binnen SolHandle. Tokenbezit geeft op zichzelf geen eigendom van een @handle en is geen bewijs van identiteit of vertrouwen.', 'Terug naar het ecosysteem', null],
     developers: ['Bouw verder met SolHandle', 'De bestaande SDK, resolver en integratiehandleidingen blijven de basis. Dit concept bouwt geen tweede infrastructuur.', 'Terug naar het ontwerp', null],
     share: ['Jouw profiel delen', 'Een publieke @handle-URL vraagt een actuele, geverifieerde sociale koppeling. Dit prototype maakt geen echte profielkoppeling aan.', 'Begrepen', null]
   };
