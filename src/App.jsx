@@ -16,6 +16,7 @@ import { growthHubVisible } from '@/components/solhandle/navigationLinks';
 import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
 
 const Home = lazy(() => import('@/pages/Home'));
+const DesignPreview = lazy(() => import('@/pages/DesignPreview'));
 const AndroidDownload = lazy(() => import('@/pages/AndroidDownload'));
 const Demos = lazy(() => import('@/pages/Demos'));
 const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
@@ -131,6 +132,9 @@ const AuthenticatedApp = () => {
       return null;
     }
   }
+
+  // Isolated design review: no production navigation, wallet UI or product pages.
+  if (pathname === '/design-preview') return <Suspense fallback={<div role="status">Ontwerp laden…</div>}><Routes><Route path="/design-preview" element={<DesignPreview />} /></Routes></Suspense>;
 
   // Render the main app
   return (

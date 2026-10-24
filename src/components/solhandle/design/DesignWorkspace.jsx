@@ -1,0 +1,8 @@
+import { useDesign } from '@/components/solhandle/design/DesignContext';
+import PreviewToolbar from '@/components/solhandle/design/PreviewToolbar';
+import PreviewShell from '@/components/solhandle/design/PreviewShell';
+import PreviewDialog from '@/components/solhandle/design/PreviewDialog';
+export default function DesignWorkspace() {
+  const d = useDesign();
+  return <div className="sol-design" data-mode={d.theme}><PreviewToolbar/><div className="sd-stage"><PreviewShell/></div><PreviewDialog/></div>;
+}
