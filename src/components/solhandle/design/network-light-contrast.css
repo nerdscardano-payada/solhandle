@@ -33,9 +33,9 @@
   color-scheme: dark;
 }
 
-.sol-design[data-mode="light"] .sd-network-frame .sd-page-title {
-  --sd-ink: #172338;
-  --sd-muted: #586780;
+.sol-design[data-mode="light"] .sd-network-frame:not(.sd-profile-frame) .sd-page-title {
+  --sd-ink: #f1f4fa;
+  --sd-muted: #e2e8f0;
   --sd-hero-glass: #ffffff;
   --sd-line: #dce2ed;
   color: var(--sd-ink);
@@ -61,8 +61,12 @@
   padding: 24px;
 }
 
-.sol-design[data-mode="light"] .sd-network-frame .sd-main .sd-page-title {
-  --sd-purple: #6844b5;
+.sol-design[data-mode="light"] .sd-network-frame:not(.sd-profile-frame) .sd-main .sd-page-title {
+  --sd-purple: #aa88ff;
+}
+
+.sol-design[data-mode="light"] .sd-network-frame .sd-page-title .sd-small-status {
+  color: var(--sd-hero-copy);
 }
 
 .sol-design[data-mode="light"] .sd-network-frame .sd-main :is(.sd-eco-card, .sd-feed-panel, .sd-person-card, .sd-profile-intro, .sd-profile-detail, .sd-messages, .sd-notice, .sd-directory-body, .sd-main > .sd-feed-tabs) {
