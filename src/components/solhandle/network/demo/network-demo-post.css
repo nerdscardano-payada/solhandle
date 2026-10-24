@@ -1,0 +1,30 @@
+.sh-demo-post { box-sizing: border-box; width: 100%; padding: 16px 15px 10px; background: #fff; color: #0F1419; border: 1px solid #dce1e5; font: 15px/1.55 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif; letter-spacing: .005em; }
+.sh-demo-post, .sh-demo-post * { box-sizing: border-box; }
+.sh-demo-post .sh-demo-top { display: grid; grid-template-columns: 42px minmax(0,1fr); gap: 11px; }
+.sh-demo-post .sh-demo-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #e8f2fb; color: #1473CC; font-size: 13px; font-weight: 700; letter-spacing: .02em; }
+.sh-demo-post .sh-demo-content { min-width: 0; }
+.sh-demo-post .sh-demo-identity { display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap; line-height: 1.4; }
+.sh-demo-post.sh-demo-post .sh-demo-identity > button { display: inline-flex; align-items: baseline; gap: 5px; flex-wrap: wrap; min-height: 0 !important; min-width: 0 !important; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer; }
+.sh-demo-post .sh-demo-identity > button > span:first-child { display: none; }
+.sh-demo-post .sh-demo-identity > button > span:last-child { display: contents; }
+.sh-demo-post.sh-demo-post .sh-demo-identity strong { display: inline; font: inherit; font-weight: 650; letter-spacing: .01em; color: #0F1419; white-space: normal; overflow: visible; }
+.sh-demo-post.sh-demo-post .sh-demo-identity [data-no-translate], .sh-demo-post .sh-demo-time, .sh-demo-post .sh-demo-label { display: inline; color: #536471; font-size: 13px; line-height: inherit; white-space: normal; overflow: visible; }
+.sh-demo-post .sh-demo-meta { margin-left: auto; display: flex; gap: 5px; align-items: baseline; white-space: nowrap; }
+.sh-demo-post .sh-demo-label { color: #1473CC; font-weight: 600; }
+.sh-demo-post .sh-demo-copy { margin: 7px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; }
+.sh-demo-post .sh-demo-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding: 0 3px 0 0; }
+.sh-demo-post.sh-demo-post .sh-demo-action { display: inline-flex; align-items: center; gap: 6px; min-width: 42px !important; min-height: 36px !important; padding: 4px 6px; border: 0; border-radius: 18px; background: transparent; color: #536471; font: 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif; cursor: pointer; transition: color .16s ease,background-color .16s ease,opacity .16s ease; }
+.sh-demo-post .sh-demo-action svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.sh-demo-post .sh-demo-action[data-tone="like"] svg, .sh-demo-post .sh-demo-action[data-tone="bookmark"] svg { stroke: #536471; }
+.sh-demo-post.sh-demo-post .sh-demo-action:hover { color: #1473CC; background: #eef6fc; }
+.sh-demo-post.sh-demo-post .sh-demo-action:active { background: #dcecf9; }
+.sh-demo-post.sh-demo-post .sh-demo-action:focus-visible { outline: 2px solid #1473CC; outline-offset: 2px; }
+.sh-demo-post .sh-demo-reply-count { position: relative; padding-left: 7px; }
+.sh-demo-post .sh-demo-reply-count:before { content: ""; position: absolute; left: 0; top: 50%; width: 3px; height: 12px; border-radius: 2px; background: #1473CC; transform: translateY(-50%); animation: sh-demo-marker 2.8s ease-in-out infinite; }
+.sh-demo-post .sh-demo-replies { display: grid; gap: 11px; margin-top: 8px; }
+.sh-demo-post .sh-demo-reply { display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 9px; }
+.sh-demo-post .sh-demo-reply .sh-demo-avatar { width: 29px; height: 29px; font-size: 10px; }
+.sh-demo-post .sh-demo-replybody { min-width: 0; }
+.sh-demo-post .sh-demo-replycopy { margin: 3px 0 0; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+.sh-demo-post .sh-demo-replytag { display: block; margin-top: 3px; color: #536471; font-size: 12px; }
+@keyframes sh-demo-marker { 0%,100% { opacity: .75; } 50% { opacity: 1; } }
