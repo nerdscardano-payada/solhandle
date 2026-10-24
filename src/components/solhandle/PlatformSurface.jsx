@@ -10,9 +10,10 @@ export default function PlatformSurface({ children }) {
   const { pathname } = useLocation();
   if (pathname.startsWith('/widgets/')) return children;
   const home = pathname === '/';
-  const appNavigation = !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname) && !pathname.startsWith('/admin');
+  const social = pathname === '/network' || pathname.startsWith('/network/');
+  const appNavigation = !social && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname) && !pathname.startsWith('/admin');
   return <div className={`platform-shell ${home ? 'platform-home' : 'platform-inner'} ${appNavigation ? 'has-app-navigation' : ''}`}>
-    {!home && <div className="platform-backdrop" aria-hidden="true">
+    {!home && !social && <div className="platform-backdrop" aria-hidden="true">
       <Image src="https://cdn.wegic.ai/assets/onepage/agent/reference-assets/cosmic-hero-bg-01M4D6CE612GE314R7S18MGQQE-enhanced.png" alt="" fittingType="fill" className="platform-backdrop-image" loading="eager"/>
       <div className="platform-backdrop-tint"/>
     </div>}

@@ -31,6 +31,8 @@ const NetworkAccess = lazy(() => import('@/pages/NetworkAccess'));
 const AdminNetworkPreview = lazy(() => import('@/pages/AdminNetworkPreview'));
 const NetworkLab = lazy(() => import('@/pages/NetworkLab'));
 const NetworkLayout = lazy(() => import('@/components/solhandle/network/NetworkLayout'));
+const NetworkConnections = lazy(() => import('@/pages/NetworkConnections'));
+const NetworkMe = lazy(() => import('@/pages/NetworkMe'));
 const Docs = lazy(() => import('@/pages/Docs'));
 const Legal = lazy(() => import('@/pages/Legal'));
 const Privacy = lazy(() => import('@/pages/Privacy'));
@@ -105,8 +107,9 @@ const AuthenticatedApp = () => {
   const { pathname } = location;
 
   const isWidget = pathname.startsWith('/widgets/');
-  const showMobileTabs = !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
-  const isChildPage = !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/explore', '/names'].includes(pathname);
+  const isSocial = pathname === '/network' || pathname.startsWith('/network/');
+  const showMobileTabs = !isSocial && !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
+  const isChildPage = !isSocial && !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/explore', '/names'].includes(pathname);
   const { user, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
@@ -149,6 +152,8 @@ const AuthenticatedApp = () => {
         <Route element={<NetworkLayout />}>
           <Route path="/network" element={<Network />} />
           <Route path="/network/discover" element={<NetworkDiscover />} />
+          <Route path="/network/connections" element={<NetworkConnections />} />
+          <Route path="/network/me" element={<NetworkMe />} />
           <Route path="/network/search" element={<NetworkSearch />} />
           <Route path="/network/notifications" element={<NetworkAccess />} />
           <Route path="/network/bookmarks" element={<NetworkAccess />} />
@@ -248,8 +253,8 @@ const AuthenticatedApp = () => {
       </Routes>
           </Suspense>
       </MobileTabCache>
-      {!isWidget && <div className="hidden md:block"><Footer /></div>}
-      {!isWidget && <AttoChat />}
+      {!isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
+      {!isWidget && !isSocial && <AttoChat />}
       {showMobileTabs && <MobileAppNavigation />}
     </PlatformSurface>
   );

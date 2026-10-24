@@ -1,9 +1,12 @@
+import { Link, useSearchParams } from 'react-router-dom';
 import { useNetworkSession } from '@/components/solhandle/network/NetworkSessionProvider';
-import NetworkWalletSetup from '@/components/solhandle/network/NetworkWalletSetup';
 import NetworkWorkspace from '@/components/solhandle/network/NetworkWorkspace';
-import WalletButton from '@/components/solhandle/WalletButton';
+import NetworkSectionHeader from '@/components/solhandle/network/NetworkSectionHeader';
 export default function NetworkOwnerView({ view = 'latest', search = '' }) {
   const session = useNetworkSession();
+  const [params] = useSearchParams();
+  const selected = params.get('view') || view;
+  const title = { profile: 'Profiel', people: 'Ontdekken', notifications: 'Meldingen', bookmarks: 'Bewaard', reposts: 'Reposts' }[selected] || 'Home';
   const visibleActorId = session.actorId || session.identities[0]?.id || '';
-  return <><header className="flex flex-wrap items-center justify-between gap-3 border-b border-identity-border p-5"><div><h1 className="text-xl font-semibold">SolHandle Network</h1><p data-no-translate className="mt-1 text-xs text-identity-muted">{session.profile?.handle || (session.address ? `${session.address.slice(0, 6)}…${session.address.slice(-4)}` : 'Your identity. Your network.')}</p></div><WalletButton/></header><details className="border-b border-identity-border"><summary className="cursor-pointer p-4 text-sm text-names-accent">{session.ready ? 'My wallet & owned handles' : session.address ? 'My owned handles · activate my identity' : 'Connect my wallet & choose my handle'}</summary><NetworkWalletSetup key={session.address}/></details>{session.bootstrap.isError && <div role="alert" className="p-4 text-sm text-names-warning">Your Network profile could not be loaded. <button type="button" onClick={() => session.bootstrap.refetch()} className="underline">Try again</button></div>}<NetworkWorkspace key={`${session.address}:${visibleActorId}:${search}`} actorId={visibleActorId} initialView={view} initialSearch={search}/></>;
+  return <><NetworkSectionHeader title={title} posting={title === 'Home'}/>{!session.ready && selected !== 'profile' && <div className="border-b border-identity-border px-5 py-3 text-xs text-identity-muted">Je kunt rondkijken. <Link to="/network/me#account" className="font-semibold text-names-accent">Activeer je eigen handle om mee te doen.</Link></div>}{session.bootstrap.isError && <div role="alert" className="p-4 text-sm text-names-warning">Je profiel kon niet worden geladen. <button type="button" onClick={() => session.bootstrap.refetch()} className="underline">Opnieuw proberen</button></div>}{session.bootstrap.isPending ? <p role="status" className="p-8 text-center text-sm text-identity-muted">Je Network laden…</p> : <NetworkWorkspace key={`${session.address}:${visibleActorId}:${search}`} actorId={visibleActorId} initialView={view} initialSearch={search}/>}</>;
 }

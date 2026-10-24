@@ -234,6 +234,40 @@ html, body { overscroll-behavior: none; }
   .buyback-firework { animation: none; transform: translate(-50%, -50%); opacity: .25; }
 }
 
+:root, .dark {
+  --social-night-canvas: 224 36% 10%;
+  --social-night-surface: 224 30% 14%;
+  --social-night-text: 220 25% 96%;
+  --social-night-muted: 220 16% 72%;
+  --social-night-border: 222 22% 29%;
+  --social-night-accent: 263 90% 79%;
+  --social-night-cyan: 188 75% 70%;
+  --social-day-canvas: 40 23% 97%;
+  --social-day-surface: 0 0% 100%;
+  --social-day-text: 224 32% 15%;
+  --social-day-muted: 224 15% 39%;
+  --social-day-border: 225 16% 83%;
+  --social-day-accent: 263 65% 43%;
+  --social-day-cyan: 190 85% 26%;
+}
+.network-surface[data-social-theme] {
+  --hero-canvas: var(--social-night-canvas); --hero-surface: var(--social-night-surface);
+  --identity-text: var(--social-night-text); --identity-muted: var(--social-night-muted); --identity-border: var(--social-night-border);
+  --names-accent: var(--social-night-accent); --names-secondary: var(--social-night-cyan);
+  --hero-cyan: var(--social-night-cyan); --hero-violet: var(--social-night-accent);
+  --background: var(--hero-canvas); --foreground: var(--identity-text); --card: var(--hero-surface); --card-foreground: var(--identity-text);
+  --popover: var(--hero-surface); --popover-foreground: var(--identity-text); --border: var(--identity-border); --input: var(--identity-border);
+  --muted: var(--hero-canvas); --muted-foreground: var(--identity-muted); --accent: var(--hero-canvas); --accent-foreground: var(--identity-text);
+  --primary: var(--names-accent); --primary-foreground: var(--social-night-canvas); --ring: var(--names-accent);
+  --button-foreground: var(--primary-foreground); --button-gradient: linear-gradient(0deg,hsl(var(--primary)),hsl(var(--primary)));
+}
+.network-surface[data-social-theme="light"] {
+  --hero-canvas: var(--social-day-canvas); --hero-surface: var(--social-day-surface);
+  --identity-text: var(--social-day-text); --identity-muted: var(--social-day-muted); --identity-border: var(--social-day-border);
+  --names-accent: var(--social-day-accent); --names-secondary: var(--social-day-cyan); --hero-cyan: var(--social-day-cyan); --hero-violet: var(--social-day-accent);
+  --primary-foreground: var(--social-day-surface); --names-success: 158 70% 26%; --names-warning: 29 85% 30%;
+}
+
 /* Shared primary action colors, including existing desktop and mobile CTAs.
    Exact color classes leave tinted, outline, navigation and destructive controls unchanged. */
 :root body :is(button, a, [role="button"]):is(

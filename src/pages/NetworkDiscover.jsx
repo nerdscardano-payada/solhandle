@@ -1,15 +1,9 @@
-import useNetworkPages from '@/components/solhandle/network/useNetworkPages';
-import NetworkProfileCard from '@/components/solhandle/network/NetworkProfileCard';
-import NetworkState from '@/components/solhandle/network/NetworkState';
-import NetworkMore from '@/components/solhandle/network/NetworkMore';
+import { useSearchParams, Link } from 'react-router-dom';
 import NetworkSearch from '@/components/solhandle/network/NetworkSearch';
-import NetworkBanner from '@/components/solhandle/network/NetworkBanner';
-import { useNetworkSession } from '@/components/solhandle/network/NetworkSessionProvider';
-import NetworkOwnerView from '@/components/solhandle/network/NetworkOwnerView';
+import NetworkSectionHeader from '@/components/solhandle/network/NetworkSectionHeader';
+import NetworkDiscoverResults from '@/components/solhandle/network/NetworkDiscoverResults';
 export default function NetworkDiscover() {
-  const session = useNetworkSession();
-  const query = useNetworkPages('profiles', {}, !session?.operator);
-  const profiles = query.data?.pages.flatMap(page => page.items) || [];
-  if (session?.operator) return <NetworkOwnerView view="people"/>;
-  return <><header className="network-intro space-y-4 border-b border-identity-border p-6"><NetworkBanner compact/><p className="text-xs uppercase tracking-widest text-names-secondary">People · Creators · Projects</p><h1 className="text-3xl font-semibold">Discover Network</h1><p className="text-sm leading-relaxed text-identity-muted">Published profiles, sorted by name. Engagement ranking will only be introduced when real member interactions are enabled; $HANDLE balances will not influence it.</p><NetworkSearch/></header><NetworkState query={query} empty={!profiles.length && 'No public profiles have been published yet.'}><div className="network-discover-grid p-5">{profiles.map(profile => <NetworkProfileCard key={profile.id} profile={profile}/>)}</div><NetworkMore query={query}/></NetworkState></>;
+  const [params] = useSearchParams();
+  const q = (params.get('q') || '').slice(0, 80);
+  return <><NetworkSectionHeader title="Ontdekken"/><div className="border-b border-identity-border p-5"><NetworkSearch key={q}/>{q ? <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-identity-muted"><p>Resultaten voor “{q}”</p><Link to="/network/discover" className="social-action text-names-accent">Zoekopdracht wissen</Link></div> : <p className="mt-3 text-sm text-identity-muted">Vind mensen, makers en projecten. Zoek ook in gepubliceerde berichten.</p>}</div><NetworkDiscoverResults key={q} q={q}/></>;
 }
