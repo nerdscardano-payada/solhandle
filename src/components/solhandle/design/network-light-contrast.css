@@ -1,0 +1,29 @@
+.sol-design[data-mode="light"] .sd-network-frame .sd-network-shade {
+  background: none;
+}
+
+.sol-design[data-mode="light"] .sd-frame:not(.sd-public-frame) .sd-topbar {
+  --sd-surface: #101827;
+  --sd-raised: #162032;
+  --sd-ink: #f1f4fa;
+  --sd-muted: #b3bdd5;
+  --sd-line: #263248;
+  --sd-purple: #aa88ff;
+  --sd-link: #91ddf1;
+  --sd-hero-glass: rgba(8,15,34,.96);
+  --sd-hero-field: rgba(4,11,27,.65);
+  --sd-hero-stroke: rgba(151,137,242,.34);
+  background: var(--sd-hero-glass);
+  color: var(--sd-ink);
+  border-bottom-color: var(--sd-hero-stroke);
+  color-scheme: dark;
+}
+
+.sol-design[data-mode="light"] .sd-network-frame .sd-page-title {
+  --sd-ink: #f1f4fa;
+  --sd-muted: #b3bdd5;
+  --sd-purple: #aa88ff;
+  --sd-hero-glass: rgba(8,15,34,.9);
+  --sd-line: rgba(151,137,242,.34);
+  color: var(--sd-ink);
+}
