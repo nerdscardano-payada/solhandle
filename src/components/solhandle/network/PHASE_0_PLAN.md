@@ -26,6 +26,13 @@ Voor ieder werkpakket vastleggen:
 - open bevindingen en afhankelijkheden;
 - goedkeuringsdatum en documentversie.
 
+## Language baseline
+
+- English is the primary language for the design preview and the planned mainnet experience.
+- The design preview uses English copy throughout, including navigation, examples, dialogs, validation and accessibility labels.
+- Translating the final experience into every language offered by SolHandle remains a separate future task. English is the source and fallback language.
+- This preview-only change does not alter the current production language settings or existing translations.
+
 ## 2. Scope en grenzen
 
 ### Binnen fase 0

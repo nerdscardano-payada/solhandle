@@ -6,5 +6,5 @@ import '@/components/solhandle/design/network-light-contrast.css';
 import '@/components/solhandle/design/network-panel-consistency.css';
 export default function DesignWorkspace() {
   const d = useDesign();
-  return <div className="sol-design" data-mode={d.screen === 'public' ? 'dark' : d.theme}><PreviewToolbar/><div className="sd-stage"><PreviewShell/></div><PreviewDialog/></div>;
+  return <div className="sol-design" lang="en" data-no-translate translate="no" data-mode={d.screen === 'public' ? 'dark' : d.theme}><PreviewToolbar/><div className="sd-stage"><PreviewShell/></div><PreviewDialog/></div>;
 }

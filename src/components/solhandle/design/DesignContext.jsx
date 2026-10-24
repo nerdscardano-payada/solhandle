@@ -11,7 +11,7 @@ export default function DesignProvider({ children }) {
   const [followedHandles, setFollowedHandles] = useState([]);
   const isFollowing = handle => handle === '@ansem' ? following : followedHandles.includes(handle);
   const toggleFollow = handle => handle === '@ansem' ? setFollowing(value => !value) : setFollowedHandles(handles => handles.includes(handle) ? handles.filter(item => item !== handle) : [...handles, handle]);
-  const [profile, setProfile] = useState({ name: 'Ansem', bio: 'Building on Solana. Nieuwe ideeën, echte verbinding.\nEen naam voor alles wat je bouwt.', kind: 'CREATOR', website: '', links: '', avatar: '', banner: '' });
+  const [profile, setProfile] = useState({ name: 'Ansem', bio: 'Building on Solana. New ideas, real connections.\nOne name for everything you build.', kind: 'CREATOR', website: '', links: '', avatar: '', banner: '' });
   const [posts, setPosts] = useState([]);
   const [messages, setMessages] = useState([]);
   const [search, setSearch] = useState('');
