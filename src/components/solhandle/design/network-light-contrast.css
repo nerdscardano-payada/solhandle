@@ -1,3 +1,12 @@
+.sol-design[data-mode="light"] .sd-network-frame {
+  --sd-hero-panel: #ffffff;
+  --sd-hero-glass: #ffffff;
+  --sd-hero-field: #edf1f8;
+  --sd-hero-stroke: #dce2ed;
+  --sd-hero-copy: #172338;
+  --sd-hero-muted: #586780;
+}
+
 .sol-design[data-mode="light"] .sd-network-frame .sd-network-shade {
   background: none;
 }
