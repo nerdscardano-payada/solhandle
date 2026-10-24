@@ -32,5 +32,7 @@
 .sol-design .sd-profile-mint-placeholder { display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1; padding: 24px; border: 1px solid var(--sd-line); border-radius: 12px; text-align: center; color: var(--sd-muted); background: var(--sd-bg); font-size: 12px; }
 .network-preview-parity .sd-profile-back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px; padding: 0; border: 0; background: none; color: var(--sd-muted); font-size: 11px; }
 .network-preview-parity .sd-profile-counts { flex-wrap: wrap; }
+.network-preview-parity .sd-profile-banner > .sd-profile-banner-image { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.network-preview-parity .sd-avatar-profile > .sd-profile-avatar-image { display: block; width: 100%; height: 100%; object-fit: cover; }
 .network-preview-parity .sd-profile-feed { border: 1px solid var(--sd-line); border-top: 0; }
 @media (max-width:767px) { .sd-profile-tab-more > summary { padding: 13px 10px; font-size: 11px; } .sd-profile-contact-options > div { right: 0; width: min(270px,80vw); } }
