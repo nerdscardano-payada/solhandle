@@ -1,0 +1,15 @@
+@media (min-width: 901px) {
+  .sol-design .sd-network-frame:not(.sd-phone) .sd-network-home-layout .sd-network-social-title strong,
+  .sol-design .sd-network-frame:not(.sd-phone) .sd-network-home-layout .sd-card-label > span:first-of-type {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .sol-design .sd-network-frame:not(.sd-phone) .sd-network-home-layout .sd-network-social-title > span > svg,
+  .sol-design .sd-network-frame:not(.sd-phone) .sd-network-home-layout .sd-card-label > svg:first-child {
+    width: 24px;
+    height: 24px;
+    padding: 9px;
+    flex-shrink: 0;
+  }
+}

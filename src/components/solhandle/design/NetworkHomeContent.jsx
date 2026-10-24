@@ -3,6 +3,7 @@ import { Users, ArrowUpRight, Fingerprint, Send } from 'lucide-react';
 import { useDesign } from '@/components/solhandle/design/DesignContext';
 import EcosystemCards from '@/components/solhandle/design/EcosystemCards';
 import PreviewFeed from '@/components/solhandle/design/PreviewFeed';
+import '@/components/solhandle/design/network-section-headings.css';
 export default function NetworkHomeContent() {
   const d = useDesign();
   const [tab, setTab] = useState('all');
