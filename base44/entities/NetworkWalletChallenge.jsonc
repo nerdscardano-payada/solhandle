@@ -21,8 +21,13 @@
     "purpose": {
       "type": "string",
       "enum": [
-        "DEVELOPMENT_BIND_HANDLE"
+        "DEVELOPMENT_BIND_HANDLE",
+        "DEVELOPMENT_SAVE_PROFILE"
       ]
+    },
+    "payload_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
     },
     "origin": {
       "type": "string"

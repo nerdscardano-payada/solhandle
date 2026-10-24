@@ -18,7 +18,7 @@ export default function useNetworkIdentityProof(actorId) {
     try {
       const proof = await labClient({ action: 'identityChallenge', actorId, wallet: address, handle });
       attempt.assertCurrent();
-      if (proof.wallet !== address || !Number.isFinite(Date.parse(proof.expiresAt)) || Date.parse(proof.expiresAt) <= Date.now()) throw new Error('This wallet proof is invalid or expired. Start a new verification.');
+      if (proof.wallet !== address || proof.accountId !== actorId || proof.purpose !== 'DEVELOPMENT_BIND_HANDLE' || typeof proof.message !== 'string' || proof.message.length > 2048 || !Number.isFinite(Date.parse(proof.expiresAt)) || Date.parse(proof.expiresAt) <= Date.now()) throw new Error('This wallet proof is invalid or expired. Start a new verification.');
       const signature = await signConnectedMessage(wallet, new TextEncoder().encode(proof.message));
       attempt.assertCurrent();
       if (Date.parse(proof.expiresAt) <= Date.now()) throw new Error('This wallet proof expired while signing. Start a new verification.');

@@ -8,6 +8,7 @@ import { labSafety } from '../../shared/networkLabSafety.ts';
 import { labEntitlements } from '../../shared/networkEntitlements.ts';
 import { labMedia } from '../../shared/networkLabMedia.ts';
 import { testIdentityOperation } from '../../shared/networkTestIdentity.ts';
+import { authorizeProfileWrite } from '../../shared/networkProfileWrite.ts';
 export default async function(req) {
   try {
     if (req.method !== 'POST') return Response.json({ error: 'POST required' }, { status: 405 });
@@ -21,7 +22,12 @@ export default async function(req) {
     if (['bootstrap', 'createIdentity'].includes(input.action)) return Response.json(await labProfiles(db, user, input, null));
     const actor = await testActor(db, user, input.actorId);
     if (['identityChallenge', 'identityVerify', 'identityRefresh', 'identityRecipient'].includes(input.action)) return Response.json(await testIdentityOperation(db, user, actor, input, req), { headers: { 'Cache-Control': 'no-store' } });
-    if (['saveProfile', 'people', 'profile', 'relations'].includes(input.action)) return Response.json(await labProfiles(db, user, input, actor));
+    if (input.action === 'profileWriteChallenge') return Response.json(await authorizeProfileWrite(db, user, actor, input, req), { headers: { 'Cache-Control': 'no-store' } });
+    if (input.action === 'saveProfile') {
+      await authorizeProfileWrite(db, user, actor, input, req);
+      return Response.json(await labProfiles(db, user, input, actor), { headers: { 'Cache-Control': 'no-store' } });
+    }
+    if (['people', 'profile', 'relations'].includes(input.action)) return Response.json(await labProfiles(db, user, input, actor));
     if (['publish', 'deletePost', 'editPost', 'feed', 'post'].includes(input.action)) return Response.json(await labPosts(db, input, actor));
     if (input.action === 'interact') return Response.json(await labInteract(db, input, actor));
     if (['registerMedia', 'reviewMedia'].includes(input.action)) return Response.json(await labMedia(db, input, actor));

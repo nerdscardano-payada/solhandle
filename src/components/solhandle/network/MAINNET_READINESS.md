@@ -44,6 +44,14 @@ Live Home, Ontdekken en de operatorwerkruimte voegen geen hardcoded demo-bericht
 
 Dit is inhoudsscheiding, geen vrijgave van publieke deelnemersaccounts. De opnieuw geraadpleegde documentatie bevestigt OIDC-SSO, maar niet de vereiste e-mailloze Solana-signature-naar-beheerde-appsessie. Walletlogin blijft een extern te bevestigen integratiecontract, geen zelfgebouwde authbackend. Transferbewaking, productie-identiteit, moderatie/privacy en eindgebruikersacceptatie blijven open.
 
+### Walletgebonden profielwijzigingen
+
+De bestaande profiel-editor vraagt nu per opslagactie een berichtsignature van precies de eerder geverifieerde beheerwallet. De server koppelt de challenge aan beheerder, profiel-ID, app-origin, doel DEVELOPMENT_SAVE_PROFILE en SHA-256 van de genormaliseerde profielvelden en media-ID’s. Een gewijzigde inhoud, andere wallet, verkeerd doel, verlopen challenge of hergebruik wordt geweigerd. De challenge wordt eenmalig voorwaardelijk geconsumeerd; eigendom wordt opnieuw on-chain gecontroleerd. Een mislukte opslag vereist een nieuwe signature. De gebruiker ziet dat dit een berichtsignature is, geen betaling.
+
+De client maakt een nieuwe profielcontext bij wallet-, adapter-, connectie- of beheerderswissel. Een oude profielkeuze wordt na reconnect niet hergebruikt; de accountlookup heeft een contextspecifieke sleutel. Deelname vervalt ook lokaal zodra de bestaande eigendomscontrole verloopt of de gebonden wallet niet overeenkomt.
+
+Dit is actieautorisatie binnen de bestaande afgeschermde beheerdersomgeving, geen nieuwe authenticatie- of sessiebackend en geen publieke walletlogin. NetworkWalletChallenge behoudt admin-only toegang op alle vier opslagoperaties. Andere sociale acties blijven onder hun bestaande ontwikkelautorisatie vallen.
+
 ## Poort 4 — Publieke sociale deelname: OPEN
 
 Productieconcurrency/idempotentie, misbruiklimieten, mediaquarantaine, rapportage/moderatie/bezwaar, privacy/export/verwijdering, leeftijds- en deelnamevoorwaarden vereisen afzonderlijke implementatie en acceptatie. Geen DMs of betaalde privileges als impliciet onderdeel van deze migratie.

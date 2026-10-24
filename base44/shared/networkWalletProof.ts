@@ -6,7 +6,7 @@ export function proofOrigin(req) {
   if (url.protocol !== 'https:') fail('Secure application origin required.', 400);
   return url.origin;
 }
-export async function createDevelopmentProof(db, user, actor, input, origin) {
+export async function createDevelopmentProof(db, user, actor, input, origin, operation = null) {
   let wallet;
   try { const key = new PublicKey(String(input.wallet || '')); if (!PublicKey.isOnCurve(key.toBytes())) fail('Use a wallet capable of message signing.'); wallet = key.toBase58(); }
   catch { fail('Connect a valid Solana wallet.'); }
@@ -14,13 +14,15 @@ export async function createDevelopmentProof(db, user, actor, input, origin) {
   if (handle && !/^[a-z0-9]{1,20}$/.test(handle)) fail('Choose a valid owned SolHandle.');
   if (await db.NetworkWalletChallenge.count({ operator_user_id: user.id, created_date: { $gt: new Date(Date.now() - 60000).toISOString() } }) >= 5) fail('Wait a minute before requesting another wallet proof.', 429);
   const issued = new Date().toISOString(); const expires = new Date(Date.now() + 180000).toISOString();
-  const message = `${new URL(origin).host} requests a SolHandle Network development identity proof.\nWallet: ${wallet}\n\nVerify control of this wallet to bind an owned SolHandle to your existing development Network account. This is not a transaction, does not spend funds and does not create a production login session.\n\nURI: ${origin}/network/lab\nPurpose: DEVELOPMENT_BIND_HANDLE\nNetwork account: ${actor.public_id}\nHandle: ${handle ? '@' + handle : 'current valid Primary Handle'}\nNonce: ${crypto.randomUUID()}\nIssued At: ${issued}\nExpiration Time: ${expires}`;
-  const record = await db.NetworkWalletChallenge.create({ account_public_id: actor.public_id, operator_user_id: user.id, wallet, handle, message, purpose: 'DEVELOPMENT_BIND_HANDLE', origin, expires_at: expires, status: 'ISSUED' });
-  return { challengeId: record.id, message, expiresAt: expires, wallet };
+  const bindingMessage = `${new URL(origin).host} requests a SolHandle Network development identity proof.\nWallet: ${wallet}\n\nVerify control of this wallet to bind an owned SolHandle to your existing development Network account. This is not a transaction, does not spend funds and does not create a production login session.\n\nURI: ${origin}/network/lab\nPurpose: DEVELOPMENT_BIND_HANDLE\nNetwork account: ${actor.public_id}\nHandle: ${handle ? '@' + handle : 'current valid Primary Handle'}\nNonce: ${crypto.randomUUID()}\nIssued At: ${issued}\nExpiration Time: ${expires}`;
+  const purpose = operation ? 'DEVELOPMENT_SAVE_PROFILE' : 'DEVELOPMENT_BIND_HANDLE';
+  const message = operation ? `${new URL(origin).host} requests a SolHandle Network profile update.\nWallet: ${wallet}\n\nAuthorize only the profile changes you just submitted. No transaction, spending permission or production login session.\n\nURI: ${origin}/network/me\nPurpose: ${purpose}\nNetwork account: ${actor.public_id}\nChanges SHA-256: ${operation.payloadHash}\nNonce: ${crypto.randomUUID()}\nIssued At: ${issued}\nExpiration Time: ${expires}` : bindingMessage;
+  const record = await db.NetworkWalletChallenge.create({ account_public_id: actor.public_id, operator_user_id: user.id, wallet, handle, message, purpose, ...(operation ? { payload_hash: operation.payloadHash } : {}), origin, expires_at: expires, status: 'ISSUED' });
+  return { challengeId: record.id, message, expiresAt: expires, wallet, accountId: actor.public_id, purpose };
 }
-export async function consumeDevelopmentProof(db, user, actor, input, origin) {
+export async function consumeDevelopmentProof(db, user, actor, input, origin, operation = null) {
   if (typeof input.challengeId !== 'string' || !/^[a-f0-9]{24}$/.test(input.challengeId) || typeof input.signature !== 'string' || input.signature.length > 100) fail('This wallet proof is invalid. Please sign again.', 401);
-  const page = await db.NetworkWalletChallenge.filter({ id: input.challengeId, account_public_id: actor.public_id, operator_user_id: user.id, origin, purpose: 'DEVELOPMENT_BIND_HANDLE', status: 'ISSUED', expires_at: { $gt: new Date().toISOString() } }, { limit: 1 });
+  const page = await db.NetworkWalletChallenge.filter({ id: input.challengeId, account_public_id: actor.public_id, operator_user_id: user.id, origin, purpose: operation ? 'DEVELOPMENT_SAVE_PROFILE' : 'DEVELOPMENT_BIND_HANDLE', ...(operation ? { payload_hash: operation.payloadHash, wallet: operation.wallet } : {}), status: 'ISSUED', expires_at: { $gt: new Date().toISOString() } }, { limit: 1 });
   const challenge = page.items[0];
   if (!challenge) fail('This wallet proof expired or was already used. Please sign again.', 401);
   let valid = false;
