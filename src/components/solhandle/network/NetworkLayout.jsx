@@ -6,6 +6,7 @@ import '@/components/solhandle/network/network-desktop.css';
 import '@/components/solhandle/network/network-social.css';
 import '@/components/solhandle/network/network-compact.css';
 import '@/components/solhandle/network/network-structure.css';
+import '@/components/solhandle/network/network-live.css';
 export default function NetworkLayout() {
   return <NetworkSessionProvider><NetworkThemeProvider><NetworkShell/></NetworkThemeProvider></NetworkSessionProvider>;
 }

@@ -109,7 +109,7 @@ const AuthenticatedApp = () => {
 
   const isWidget = pathname.startsWith('/widgets/');
   const isSocial = pathname === '/network' || pathname.startsWith('/network/');
-  const showMobileTabs = !isSocial && !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
+  const showMobileTabs = pathname !== '/' && !isSocial && !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
   const isChildPage = !isSocial && !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/explore', '/names'].includes(pathname);
   const { user, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -254,8 +254,8 @@ const AuthenticatedApp = () => {
       </Routes>
           </Suspense>
       </MobileTabCache>
-      {!isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
-      {!isWidget && !isSocial && <AttoChat />}
+      {pathname !== '/' && !isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
+      {pathname !== '/' && !isWidget && !isSocial && <AttoChat />}
       {showMobileTabs && <MobileAppNavigation />}
     </PlatformSurface>
   );

@@ -1,0 +1,7 @@
+.network-surface.network-migrated-shell { position: relative; isolation: isolate; }
+.network-migrated-shell > .network-live-city { position: fixed !important; inset: 0; width: 100%; height: 100dvh; z-index: -2; }
+.network-migrated-shell > .network-live-shade { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(90deg, hsl(var(--social-night-canvas) / .92), hsl(var(--social-night-canvas) / .5)), linear-gradient(0deg, hsl(var(--social-night-canvas) / .86), transparent); }
+.network-migrated-shell > .network-grid > .network-sidebar { padding: 18px 12px; border: 1px solid hsl(var(--identity-border)); border-radius: 14px; background: hsl(var(--hero-surface) / .96); }
+.network-migrated-shell:has(.network-profile-hero) > :is(.network-live-city,.network-live-shade) { display: none; }
+.network-migrated-shell .network-activity-sidebar > .network-own-identity { margin: 0; }
+@media (max-width: 767px) { .network-migrated-shell > .network-grid > .network-sidebar { padding: 0; border: 0; background: transparent; } }

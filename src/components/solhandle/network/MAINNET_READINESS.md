@@ -1,8 +1,8 @@
 # Network mainnet — implementatieregister
 
-Datum: 24 oktober 2026. Status: ontwerpmigratie en productievoorbereiding in uitvoering, publieke deelnemersrelease NIET vrijgegeven.
+Datum: 24 oktober 2026. Status: publieke presentatie volgens DesignPreview aangesloten op de hoofdroute en Network; publieke sociale schrijfacties NIET vrijgegeven.
 
-Dit register betreft de nieuwe sociale Network-laag. Het is geen uitspraak dat bestaande mint-, resolver-, Pay- of Contacts-diensten offline zijn. De ontwerpomgeving blijft apart en wordt niet als mainnet-implementatie gebruikt.
+Dit register betreft de nieuwe sociale Network-laag. Het is geen uitspraak dat bestaande mint-, resolver-, Pay- of Contacts-diensten offline zijn. De hoofdroute gebruikt nu de goedgekeurde publieke presentatie met werkelijke handlezoek-, mint-, wallet-, Pay- en Contacts-routes. De ontwerpomgeving blijft beschikbaar als afzonderlijk prototype; fictieve profielen, bedragen en aantallen zijn niet naar de publieke presentatie gekopieerd.
 
 ## Vastgestelde situatie
 
@@ -27,6 +27,14 @@ Sluitbewijs: ondersteunde e-mailloze login met bestaande geselecteerde wallet, b
 - Verse chaincontrole voor identiteitsacties en Pay; RPC-onzekerheid blokkeert nieuwe risicovolle acties.
 - Continue transferverwerking, behoud van historische auteur-ID en geen overdracht van account, posts, volgers of contacten met een NFT.
 - Bewezen autorisatie en privacyrechten voor echte deelnemers, zonder de bestaande admin-only opslag open te zetten.
+
+## Publieke presentatiemigratie — voor alle bezoekers
+
+Op verzoek van de eigenaar is de oude mint-only hoofdroute vervangen door de publieke Social · Identity · Pay-opzet: dezelfde donkere cityscape, kop, handlezoekactie, ecosysteemvisual en driestappen-uitleg als de goedgekeurde DesignPreview. De zoekactie gebruikt de bestaande beschikbaarheidscheck en mintreview, met de werkelijk verbonden wallet in plaats van een bewaarde adresstring. De identityvisual toont alleen de bestaande on-chain Primary Handle-lookup, inclusief laad-, fout- en niet-verbonden toestand. Social verwijst naar de openbare tijdlijn en ontdekpagina, Pay en Contacts naar de bestaande werkende routes. De ontwikkelaars- en juridische links blijven bereikbaar. Het oude mobiele startmenu, de oude desktopfooter en de chat-overlay worden alleen op deze hoofdroute niet meer bovenop het nieuwe ontwerp getoond; andere bestaande routes blijven intact.
+
+Network gebruikt de goedgekeurde cityscape achter zijn echte tijdlijn en panelen; de Identity-weergave staat naast Pay in de desktopcontextkolom. Individuele profielcomposities houden hun rustige achtergrond en light-modepanelen behouden donkere tekst op een solide lichte ondergrond. Er zijn geen demoposts, verzonnen volgers, voorbeeldontvangers of betalingsbedragen toegevoegd.
+
+Dit geeft de publieke presentatie vrij, niet automatisch nieuwe sociale schrijfrechten. De bestaande serverautorisatie, eigendomscontrole, signatures en private contactopslag zijn niet versoepeld. Publiek sociaal registreren, plaatsen en volgen blijven afzonderlijk te leveren onderdelen: de huidige sessieprovider accepteert alleen ontwikkelaccounts van beheerders. Een bouwcontrole is geen handmatige walletacceptatie of integrale vrijgave.
 
 ## Poort 3 — Ontwerpmigratie: GESTART
 

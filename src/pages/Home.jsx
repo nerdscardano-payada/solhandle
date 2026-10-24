@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useWallet } from '@solana/wallet-adapter-react';
 import usePullToRefresh from '@/hooks/usePullToRefresh';
 import PullRefreshStatus from '@/components/solhandle/PullRefreshStatus';
-import Header from '@/components/solhandle/Header';
-import { useIsMobile } from '@/hooks/use-mobile';
-import MobileMintHome from '@/components/solhandle/home/MobileMintHome';
 import PublicHandleMintRecovery from '@/components/solhandle/PublicHandleMintRecovery';
-import HomeMintHero from '@/components/solhandle/home/HomeMintHero';
-
-import HomePayStory from '@/components/solhandle/home/HomePayStory';
-import HomeBackdrop from '@/components/solhandle/home/HomeBackdrop';
-
-import HomeDesktopContent from '@/components/solhandle/home/HomeDesktopContent';
-import HomeIntegrationOnboarding from '@/components/solhandle/home/HomeIntegrationOnboarding';
+import PlatformLandingHeader from '@/components/solhandle/home/PlatformLandingHeader';
+import PlatformHero from '@/components/solhandle/home/PlatformHero';
+import PlatformLandingSteps from '@/components/solhandle/home/PlatformLandingSteps';
 import { captureReferralAttribution } from '@/lib/referralAttribution';
 import { base44 } from '@/api/base44Client';
-import '@/components/solhandle/home/home-funnel.css';
+import '@/components/solhandle/design/design-preview.css';
+import '@/components/solhandle/design/hero-cinematic.css';
+import '@/components/solhandle/home/platform-live.css';
 
 export default function Home() {
-  const isMobile = useIsMobile();
-  const [wallet, setWallet] = useState(() => localStorage.getItem("solhandle_wallet") || "");
+  const connectedWallet = useWallet();
+  const wallet = connectedWallet.connected ? connectedWallet.publicKey?.toBase58() || '' : '';
   const client = useQueryClient();
   const [refreshVersion, setRefreshVersion] = useState(0);
   const pull = usePullToRefresh(async () => {
@@ -28,6 +24,5 @@ export default function Home() {
   });
 
   useEffect(() => { captureReferralAttribution().catch(() => null); base44.analytics.track({ eventName: 'homepage_view', properties: { device: window.innerWidth < 1280 ? 'mobile' : 'desktop', source: new URLSearchParams(window.location.search).get('utm_source') || 'direct' } }); }, []);
-  if (isMobile) return <main ref={pull.ref} data-mobile-scroll-panel className="home-funnel dark min-h-screen bg-hero-canvas"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><MobileMintHome wallet={wallet} refreshVersion={refreshVersion}/></main>;
-  return <main className="home-funnel dark"><HomeBackdrop/><Header onConnected={setWallet} funnel/><PublicHandleMintRecovery/><HomeMintHero wallet={wallet}/><div className="home-content"><HomePayStory/></div><div className="home-content"><HomeDesktopContent/><HomeIntegrationOnboarding/></div></main>;
+  return <main ref={pull.ref} data-mobile-scroll-panel className="sol-design platform-live dark" data-mode="dark"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><div className="sd-public-frame"><div className="sd-screen"><PlatformLandingHeader/><PublicHandleMintRecovery/><PlatformHero wallet={wallet} refreshVersion={refreshVersion}/><PlatformLandingSteps/></div></div></main>;
 }
