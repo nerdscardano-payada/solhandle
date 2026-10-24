@@ -15,6 +15,8 @@ import '@/components/solhandle/design/network-light-contrast.css';
 import '@/components/solhandle/design/network-panel-consistency.css';
 import '@/components/solhandle/home/platform-live.css';
 import '@/components/solhandle/network/network-preview-parity.css';
+import '@/components/solhandle/network/network-profile-parity.css';
+import '@/components/solhandle/design/profile-identity-preview.css';
 export default function NetworkLayout() {
   return <NetworkSessionProvider><NetworkThemeProvider><NetworkShell/></NetworkThemeProvider></NetworkSessionProvider>;
 }

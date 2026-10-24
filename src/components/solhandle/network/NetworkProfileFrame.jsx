@@ -1,4 +1,5 @@
-import { UserRound } from 'lucide-react';
+import { UserRound, Fingerprint } from 'lucide-react';
+import '@/components/solhandle/design/profile-identity-preview.css';
 import ProfileHeaderLayout from '@/components/solhandle/profile/ProfileHeaderLayout';
 
 export default function NetworkProfileFrame({ profile, label, banner, avatar, actions, identity, meta, share, counts, children, onIdentity }) {
@@ -10,12 +11,11 @@ export default function NetworkProfileFrame({ profile, label, banner, avatar, ac
   >
       <span className="sd-eyebrow">{profile.kind} · {label}</span>
       <h1>{profile.name}</h1>
-      {profile.handle && <button type="button" className="sd-profile-primary-handle" onClick={onIdentity} data-no-translate>{profile.handle}</button>}
-      {identity}
+      <button type="button" className="sd-profile-primary-handle" onClick={onIdentity} aria-label="View the primary handle under Identity" data-no-translate><Fingerprint size={16}/>{profile.handle || 'No primary handle yet'}</button>
       <p className="sd-profile-bio whitespace-pre-wrap break-words">{profile.bio || 'No bio added.'}</p>
       {meta && <div className="sd-profile-meta">{meta}</div>}
-      {share && <div className="mt-4">{share}</div>}
+      {share}
       <div className="sd-profile-counts">{counts}</div>
-      {children}
+      {(identity || children) && <details className="sd-profile-status"><summary>Ownership & payment status</summary>{identity}{children}</details>}
   </ProfileHeaderLayout>;
 }

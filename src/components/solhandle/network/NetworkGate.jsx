@@ -1,7 +1,6 @@
 import { LockKeyhole } from 'lucide-react';
-import { useNetworkTheme } from '@/components/solhandle/network/NetworkThemeProvider';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import NetworkProfileDialog from '@/components/solhandle/network/NetworkProfileDialog';
+
 export default function NetworkGate({ children, action = 'Participate in Network' }) {
-  const { theme } = useNetworkTheme();
-  return <Dialog><DialogTrigger asChild>{children || <button className="rounded-full bg-names-accent px-5 py-3 font-semibold">Aanmelden voor Social</button>}</DialogTrigger><DialogContent data-social-theme={theme} className="network-surface border-identity-border bg-hero-canvas text-identity-text"><DialogHeader><LockKeyhole className="mb-3 h-7 w-7 text-names-accent"/><DialogTitle>{action}</DialogTitle><DialogDescription className="pt-3 leading-relaxed text-identity-muted">Openbare berichten bekijken kan al. Publieke wallet-aanmelding is nog niet beschikbaar. Een wallet verbinden is nog geen aanmelding voor Social.</DialogDescription></DialogHeader><p className="text-sm leading-relaxed text-identity-muted">Actief deelnemen vereist een geverifieerde wallet en een eigen SolHandle. Er wordt geen extra wallet aangemaakt en er is geen verplichte e-mailomweg. Deze actie wordt pas beschikbaar wanneer veilige accountaanmelding gereed is.</p></DialogContent></Dialog>;
+  return <NetworkProfileDialog title={action} description="Public posts are already available to read. Public wallet sign-in is not available yet. Connecting a wallet does not sign you in to Social." trigger={children || <button type="button" className="sd-button sd-gradient">Sign in to Social</button>}><LockKeyhole size={28} aria-hidden="true"/><p>Participation requires a verified wallet and your own SolHandle. No additional wallet is created and no email workaround is required. This action becomes available only after secure account sign-in is ready.</p></NetworkProfileDialog>;
 }
