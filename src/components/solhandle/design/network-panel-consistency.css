@@ -1,0 +1,56 @@
+.sol-design[data-mode="light"] .sd-frame:not(.sd-public-frame) .sd-main :is(.sd-eco-card, .sd-feed-panel, .sd-person-card, .sd-community-card, .sd-profile-intro, .sd-profile-detail, .sd-notice, .sd-concept-banner) {
+  border: 1px solid var(--sd-line);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--sd-ink) 7%, transparent);
+}
+
+.sol-design[data-mode="light"] .sd-frame:not(.sd-public-frame) .sd-main .sd-profile-intro {
+  border-top: 0;
+  border-radius: 0;
+}
+
+.sol-design[data-mode="light"] .sd-frame:not(.sd-public-frame) .sd-main > .sd-feed {
+  border: 1px solid var(--sd-line);
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--sd-ink) 7%, transparent);
+}
+
+@media (min-width: 1201px) {
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-app-layout {
+    grid-template-columns: 214px minmax(0, 1fr);
+    min-height: 840px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar {
+    padding: 28px 17px 20px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar-section {
+    font-size: 8px;
+    letter-spacing: 1.9px;
+    padding: 0 13px 18px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar nav > button {
+    font-size: 13px;
+    padding: 13px 12px;
+    gap: 13px;
+    min-height: 46px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar-post {
+    margin: 22px 5px;
+    min-height: 42px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar-shortcut {
+    font-size: 11px;
+    gap: 10px;
+    padding: 12px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar-account {
+    margin-top: auto;
+    padding: 11px;
+    gap: 9px;
+  }
+  .sol-design .sd-frame:not(.sd-public-frame):not(.sd-phone) .sd-sidebar-account small {
+    font-size: 9px;
+  }
+}
