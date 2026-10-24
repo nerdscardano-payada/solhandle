@@ -10,7 +10,7 @@ import ContactsList from '@/components/solhandle/contacts/ContactsList';
 import useContacts from '@/components/solhandle/contacts/useContacts';
 import useContactSearch from '@/components/solhandle/contacts/useContactSearch';
 import { contactMessage, contactRequest } from '@/components/solhandle/contacts/contactClient';
-export default function ContactsWorkspace() {
+export default function ContactsWorkspace({ onSendContact } = {}) {
   const { language } = useLanguage();
   const navigate = useNavigate(), search = useContactSearch(), data = useContacts(search.term);
   const [editing, setEditing] = useState(null), [adding, setAdding] = useState(false);
@@ -33,7 +33,7 @@ export default function ContactsWorkspace() {
       <label className="flex items-center gap-3 rounded-xl border border-border bg-card px-4"><Search className="h-4 w-4 shrink-0 text-muted-foreground"/><input aria-label="Search contacts" value={search.search} maxLength={80} onChange={e => search.setSearch(e.target.value)} placeholder="Search name or @handle" className="min-w-0 flex-1 bg-transparent py-3 text-foreground outline-none"/></label>
       {(error || data.error || data.query.error) && <div role="alert" className="rounded-xl border border-names-warning/30 p-4 text-sm text-names-warning">{error || data.error || contactMessage(data.query.error)}<button type="button" onClick={() => data.query.refetch()} className="ml-2 underline">Retry sync</button></div>}
       {notice && <p role="status" className="text-sm text-names-success">{notice}</p>}
-      {data.query.isPending ? <p role="status" className="py-8 text-center text-muted-foreground">Loading private contacts…</p> : !data.contacts.length && !data.query.isError ? <p className="rounded-2xl border border-border p-6 text-center text-sm text-muted-foreground">{search.term ? 'No contacts match this search.' : 'No contacts yet. Add an @handle or save a recipient after a payment.'}</p> : <ContactsList contacts={data.contacts} busy={busy} onDelete={remove} onEdit={contact => { setAdding(false); setEditing(contact); }} onSend={contact => navigate('/pay', { state: { contact, contactOwnerWallet: data.wallet } })}/>}
+      {data.query.isPending ? <p role="status" className="py-8 text-center text-muted-foreground">Loading private contacts…</p> : !data.contacts.length && !data.query.isError ? <p className="rounded-2xl border border-border p-6 text-center text-sm text-muted-foreground">{search.term ? 'No contacts match this search.' : 'No contacts yet. Add an @handle or save a recipient after a payment.'}</p> : <ContactsList contacts={data.contacts} busy={busy} onDelete={remove} onEdit={contact => { setAdding(false); setEditing(contact); }} onSend={contact => onSendContact ? onSendContact(contact, data.wallet) : navigate('/pay', { state: { contact, contactOwnerWallet: data.wallet } })}/>}
       {data.query.hasNextPage && <button type="button" disabled={data.query.isFetchingNextPage} onClick={() => data.query.fetchNextPage()} className="min-h-12 w-full rounded-xl border border-border text-sm">{data.query.isFetchingNextPage ? 'Loading…' : 'Load more contacts'}</button>}
     </div>}</div>
   </section>;

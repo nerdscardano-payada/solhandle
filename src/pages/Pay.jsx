@@ -28,10 +28,12 @@ const message = e => {
     ? 'Your wallet refused signing permission for this account on Solana Mainnet. Open your wallet’s connected-app settings and allow transaction signing for this site and the selected account. No signed payment was submitted by this attempt.'
     : text;
 };
-export default function Pay({ embedded = false }) {
+export default function Pay({ embedded = false, contactSelection = null }) {
   const { publicKey, signTransaction, signMessage, wallet } = useWallet();
   const location = useLocation();
-  const networkContext = location.state?.networkRecipient || null;
+  const networkContext = contactSelection ? null : location.state?.networkRecipient || null;
+  const incomingContact = contactSelection?.contact || location.state?.contact || null;
+  const incomingContactOwner = contactSelection?.ownerWallet || location.state?.contactOwnerWallet || '';
   const networkFields = networkContext ? { networkContext } : {};
   const previousNetworkContext = useRef(networkContext);
   const address = publicKey?.toBase58() || '';
@@ -58,10 +60,10 @@ export default function Pay({ embedded = false }) {
     setQuote(null); setPending(null);
     if (selection && selection.ownerWallet !== address) clearContact();
     if (networkContext && !requestId && !receiptId) { setSelection(null); setHandle(networkContext.handle); }
-    else if (previousNetworkContext.current && !networkContext && !location.state?.contact && !requestId && !receiptId && !legacyLink) setHandle('');
+    else if (previousNetworkContext.current && !networkContext && !incomingContact && !requestId && !receiptId && !legacyLink) setHandle('');
     previousNetworkContext.current = networkContext;
-    if (location.state?.contact && location.state.contactOwnerWallet === address && !requestId && !receiptId) selectContact(location.state.contact);
-  }, [location.key, address]);
+    if (incomingContact && incomingContactOwner === address && !requestId && !receiptId) selectContact(incomingContact);
+  }, [location.key, address, incomingContact, incomingContactOwner]);
   useEffect(() => {
     if (!receiptId) { setReceipt(null); setQuote(null); setPending(null); setError(''); }
   }, [receiptId, location.key]);
