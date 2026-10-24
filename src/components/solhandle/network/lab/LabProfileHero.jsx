@@ -6,9 +6,9 @@ import NetworkExternalLink from '@/components/solhandle/network/NetworkExternalL
 import NetworkRecipientActions from '@/components/solhandle/network/lab/NetworkRecipientActions';
 import useNetworkParticipation from '@/components/solhandle/network/useNetworkParticipation';
 import NetworkProfilePaymentTools from '@/components/solhandle/network/NetworkProfilePaymentTools';
-export default function LabProfileHero({ profile, actorId, change, onList, onEdit }) {
+export default function LabProfileHero({ profile, actorId, change, onList, onEdit, own = false }) {
   const canParticipate = useNetworkParticipation(actorId);
-  return <NetworkProfileFrame profile={profile} label="Development profile"
+  return <NetworkProfileFrame profile={profile} label={own ? 'My profile · Private preview' : 'Development profile'}
     banner={profile.banner && <LabPrivateImage media={profile.banner} alt={`${profile.name} banner`} className="h-full w-full"/>}
     avatar={profile.avatar && <LabPrivateImage media={profile.avatar} alt={`${profile.name} profile picture`} className="h-full w-full"/>}
     actions={<>{actorId === profile.id && <button type="button" className="social-action social-action-secondary" onClick={onEdit}><Pencil className="h-4 w-4"/>Edit profile</button>}{actorId === profile.id && <NetworkProfilePaymentTools/>}{actorId !== profile.id && ['FOLLOW', 'BLOCK', 'MUTE'].map(kind => <button type="button" key={kind} disabled={!canParticipate || change.isPending} aria-pressed={profile.relations.includes(kind)} onClick={() => change.mutate({ action: 'interact', kind, target: profile.id, active: !profile.relations.includes(kind) })} className={`social-action ${profile.relations.includes(kind) ? 'border-names-accent text-names-accent' : 'text-identity-muted'}`}>{profile.relations.includes(kind) ? `Undo ${kind.toLowerCase()}` : kind.toLowerCase()}</button>)}</>}

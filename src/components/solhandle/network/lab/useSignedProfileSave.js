@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import useIdentityAttempt from '@/components/solhandle/network/lab/useIdentityAttempt';
 import labClient from '@/components/solhandle/network/lab/labClient';
 
-export default function useSignedProfileSave(actorId) {
+export default function useSignedProfileSave(actorId, onSaved) {
   const wallet = useWallet();
   const address = wallet.publicKey?.toBase58() || '';
   const guard = useIdentityAttempt({ actorId, address, adapter: wallet.wallet?.adapter, connected: wallet.connected });
@@ -23,6 +23,8 @@ export default function useSignedProfileSave(actorId) {
       const result = await labClient({ ...payload, action: 'saveProfile', actorId, challengeId: proof.challengeId, signature: btoa(Array.from(signature, byte => String.fromCharCode(byte)).join('')) });
       attempt.assertCurrent();
       await client.invalidateQueries({ queryKey: ['network-lab'] });
+      attempt.assertCurrent();
+      if (onSaved) onSaved(result);
       return result;
     } finally { attempt.finish(); }
   }});

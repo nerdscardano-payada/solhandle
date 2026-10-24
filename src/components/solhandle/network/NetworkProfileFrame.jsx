@@ -1,15 +1,13 @@
 import { UserRound } from 'lucide-react';
+import ProfileHeaderLayout from '@/components/solhandle/profile/ProfileHeaderLayout';
 
 export default function NetworkProfileFrame({ profile, label, banner, avatar, actions, identity, meta, share, counts, children }) {
-  return <>
-    <div className="network-profile-cover">
-      {banner || <div className="network-profile-cover-empty" aria-hidden="true"><span>SOCIAL / IDENTITY / PAY</span><strong>@</strong></div>}
-    </div>
-    <header className="network-profile-hero network-profile-composition">
-      <div className="network-profile-top-row">
-        <div className="network-avatar-frame"><div className="network-avatar-inner">{avatar || <UserRound className="h-12 w-12 text-names-accent" aria-hidden="true"/>}</div></div>
-        <div className="network-profile-primary-actions">{actions}</div>
-      </div>
+  return <ProfileHeaderLayout
+    classes={{ cover: 'network-profile-cover', intro: 'network-profile-hero network-profile-composition', top: 'network-profile-top-row', avatar: 'network-avatar-frame', actions: 'network-profile-primary-actions' }}
+    banner={banner || <div className="network-profile-cover-empty" aria-hidden="true"><span>SOCIAL / IDENTITY / PAY</span><strong>@</strong></div>}
+    avatar={<div className="network-avatar-inner">{avatar || <UserRound className="h-12 w-12 text-names-accent" aria-hidden="true"/>}</div>}
+    actions={actions}
+  >
       <p className="text-xs uppercase tracking-widest text-identity-muted">{profile.kind} · {label}</p>
       <h1 className="network-profile-display-name">{profile.name}</h1>
       {profile.handle && <p className="mb-3 break-words text-base text-names-accent" data-no-translate>{profile.handle}</p>}
@@ -19,6 +17,5 @@ export default function NetworkProfileFrame({ profile, label, banner, avatar, ac
       {share && <div className="mt-4">{share}</div>}
       <div className="network-profile-counts">{counts}</div>
       {children}
-    </header>
-  </>;
+  </ProfileHeaderLayout>;
 }

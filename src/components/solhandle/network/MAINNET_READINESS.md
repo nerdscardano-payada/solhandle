@@ -52,6 +52,12 @@ De client maakt een nieuwe profielcontext bij wallet-, adapter-, connectie- of b
 
 Dit is actieautorisatie binnen de bestaande afgeschermde beheerdersomgeving, geen nieuwe authenticatie- of sessiebackend en geen publieke walletlogin. NetworkWalletChallenge behoudt admin-only toegang op alle vier opslagoperaties. Andere sociale acties blijven onder hun bestaande ontwikkelautorisatie vallen.
 
+### Eigen profielroute — previewontwerp gekoppeld
+
+`/network/me` heeft een eigen walletgebonden profielpad en gebruikt rechtstreeks de contextspecifieke accountquery. URL-parameters voor andere profielen of feeds vervangen het eigen profiel niet meer. De profielcompositie deelt nu een presentatiecomponent met SocialProfile uit Design Preview: banner, vierkante avatar en actierij. Beide omgevingen behouden hun bestaande responsive stijlen en thema’s; de preview blijft expliciet fictief.
+
+Het echte profiel toont uitsluitend opgeslagen profielvelden, echte serveraantallen, goedgekeurde private media en een nog geldige handlebinding. Verlopen verificatie wordt niet als actueel getoond. Edit profile opent op deze route een toegankelijk dialoogvenster met de bestaande editor en eenmalige walletautorisatie; succesvolle opslag ververst de profielquery en sluit de editor. Sluiten of wisselen van wallet tijdens signing maakt de clientpoging ongeldig. Een niet-gekoppelde wallet krijgt een instelstatus, nooit @ansem of een ander voorbeeldprofiel. De bestaande Account management & wallet-sectie behoudt creatie, selectie en verificatie. Geen publieke walletlogin of deelname geactiveerd; gebruikersacceptatie blijft open.
+
 ## Poort 4 — Publieke sociale deelname: OPEN
 
 Productieconcurrency/idempotentie, misbruiklimieten, mediaquarantaine, rapportage/moderatie/bezwaar, privacy/export/verwijdering, leeftijds- en deelnamevoorwaarden vereisen afzonderlijke implementatie en acceptatie. Geen DMs of betaalde privileges als impliciet onderdeel van deze migratie.

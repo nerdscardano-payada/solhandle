@@ -24,5 +24,5 @@ export default function NetworkSessionProvider({ children }) {
   const profile = operator && wallet.connected && address && actorId && account.isSuccess ? account.data?.profile : undefined;
   const ready = Boolean(operator && wallet.connected && linked && profile?.identityConfigured && profile.ownerVerified && profile.boundWalletAddress === address && Date.parse(profile.verifiedUntil) > now);
   const selectProfile = id => setDraft({ address, id, userId: user?.id, contextKey });
-  return <NetworkSessionContext.Provider value={{ address, operator, bootstrap, identities, actorId, profile, account, ready, selectProfile }}>{children}</NetworkSessionContext.Provider>;
+  return <NetworkSessionContext.Provider value={{ address, operator, bootstrap, identities, actorId, profile, account, ready, selectProfile, contextKey }}>{children}</NetworkSessionContext.Provider>;
 }
