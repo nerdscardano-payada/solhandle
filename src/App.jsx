@@ -133,9 +133,6 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Isolated design review: no production navigation, wallet UI or product pages.
-  if (pathname === '/design-preview') return <Suspense fallback={<div role="status">Ontwerp laden…</div>}><Routes><Route path="/design-preview" element={<DesignPreview />} /></Routes></Suspense>;
-
   // Render the main app
   return (
     <PlatformSurface>
@@ -276,7 +273,11 @@ function App() {
           <NativeDialogLocalization />
           <ScrollToTop />
           <ProtocolPageTracker />
-          <AuthenticatedApp />
+          <Routes>
+            <Route path="/design-preview" element={<Suspense fallback={<div role="status">Ontwerp laden…</div>}><DesignPreview /></Suspense>} />
+            <Route path="/DesignPreview" element={<Suspense fallback={<div role="status">Ontwerp laden…</div>}><DesignPreview /></Suspense>} />
+            <Route path="*" element={<AuthenticatedApp />} />
+          </Routes>
           </MobileTabProvider>
         </Router>
         <Toaster />
