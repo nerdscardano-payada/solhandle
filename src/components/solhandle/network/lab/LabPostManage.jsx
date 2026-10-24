@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { MoreHorizontal } from 'lucide-react';
-import useLabMutation from '@/components/solhandle/network/lab/useLabMutation';
+import useNetworkSocialMutation from '@/components/solhandle/network/lab/useNetworkSocialMutation';
 import { labError } from '@/components/solhandle/network/lab/labClient';
 import useNetworkParticipation from '@/components/solhandle/network/useNetworkParticipation';
 export default function LabPostManage({ actorId, post }) {
   const [body, setBody] = useState(post.body);
   const [reason, setReason] = useState('SPAM');
   const [details, setDetails] = useState('');
-  const action = useLabMutation(actorId);
+  const action = useNetworkSocialMutation(actorId);
   const mine = actorId === post.author.id;
   const canParticipate = useNetworkParticipation(actorId);
   return <details className="network-post-manage text-xs text-identity-muted"><summary className="cursor-pointer" aria-label={mine ? 'Edit, delete or report this post' : 'Report this post'}><MoreHorizontal className="h-4 w-4"/><span>{mine ? 'Manage post' : 'Report post'}</span></summary><fieldset disabled={!canParticipate}>{mine && <form onSubmit={event => { event.preventDefault(); action.mutate({ action: 'editPost', id: post.id, body }); }} className="mt-3 space-y-3"><textarea aria-label="Edit post" rows={3} required={!post.media?.length} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} className="w-full rounded-xl border border-identity-border bg-card p-3 text-sm text-identity-text"/><div className="flex gap-4"><button disabled={action.isPending} className="text-names-accent">Save edit</button><button type="button" disabled={action.isPending} onClick={() => window.confirm('Delete this post?') && action.mutate({ action: 'deletePost', id: post.id })} className="text-names-warning">Delete</button></div></form>}<form onSubmit={event => { event.preventDefault(); action.mutate({ action: 'report', postId: post.id, reason, details }); }} className="mt-4 space-y-3 border-t border-identity-border pt-4"><label className="block">Report reason<select value={reason} onChange={event => setReason(event.target.value)} className="ml-3 rounded-lg border border-identity-border bg-card p-2">{['SPAM', 'SCAM', 'HARASSMENT', 'ILLEGAL', 'OTHER'].map(value => <option key={value}>{value}</option>)}</select></label><textarea aria-label="Report details" maxLength={1000} value={details} onChange={event => setDetails(event.target.value)} placeholder="Optional details" className="w-full rounded-xl border border-identity-border bg-card p-3"/><button disabled={action.isPending} className="text-names-warning">Submit report</button></form>{action.isError && <p role="alert" className="mt-3 text-names-warning">{labError(action.error)}</p>}{action.isSuccess && <p role="status" className="mt-3 text-names-success">Saved.</p>}</fieldset></details>;

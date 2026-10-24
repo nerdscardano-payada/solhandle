@@ -9,14 +9,14 @@ import LabNotifications from '@/components/solhandle/network/lab/LabNotification
 import NetworkSearch from '@/components/solhandle/network/NetworkSearch';
 import NetworkPublicTimeline from '@/components/solhandle/network/NetworkPublicTimeline';
 const views = [['latest', 'Latest'], ['following', 'Following'], ['discover', 'Discover'], ['people', 'People'], ['bookmarks', 'Bookmarks'], ['reposts', 'Reposts'], ['notifications', 'Notifications'], ['profile', 'My profile']];
-export default function NetworkWorkspace({ actorId, initialView = 'latest', initialSearch = '' }) {
+export default function NetworkWorkspace({ actorId, initialView = 'latest', initialSearch = '', lockedView = false }) {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const requested = params.get('view') || (params.get('feed') === 'following' ? 'following' : initialView);
+  const requested = lockedView ? initialView : params.get('view') || (params.get('feed') === 'following' ? 'following' : initialView);
   const view = views.some(([value]) => value === requested) ? requested : 'latest';
-  const q = (params.get('q') || initialSearch).slice(0, 80);
-  const target = params.get('profile') || (view === 'profile' ? actorId : '');
-  const postId = params.get('post');
+  const q = lockedView ? '' : (params.get('q') || initialSearch).slice(0, 80);
+  const target = lockedView ? '' : params.get('profile') || (view === 'profile' ? actorId : '');
+  const postId = lockedView ? null : params.get('post');
   const go = (values = {}) => navigate(`/network?${new URLSearchParams({ view: view === 'profile' ? 'latest' : view, ...(q ? { q } : {}), ...values })}`);
   const onProfile = id => go({ profile: id });
   const onConversation = id => go({ post: id });

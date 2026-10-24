@@ -3,7 +3,8 @@ import NetworkProfileTabs from '@/components/solhandle/network/NetworkProfileTab
 import NetworkProfileIdentity from '@/components/solhandle/network/NetworkProfileIdentity';
 import { useQuery } from '@tanstack/react-query';
 import labClient, { labError } from '@/components/solhandle/network/lab/labClient';
-import useLabMutation from '@/components/solhandle/network/lab/useLabMutation';
+import useNetworkSocialMutation from '@/components/solhandle/network/lab/useNetworkSocialMutation';
+import LabComposer from '@/components/solhandle/network/lab/LabComposer';
 import NetworkState from '@/components/solhandle/network/NetworkState';
 import LabProfileEdit from '@/components/solhandle/network/lab/LabProfileEdit';
 import LabProfileHero from '@/components/solhandle/network/lab/LabProfileHero';
@@ -27,10 +28,10 @@ export default function LabProfile({ actorId, target, onProfile, onConversation,
     details.querySelector('summary')?.focus();
   };
   const query = useQuery({ queryKey: ['network-lab', actorId, 'profile', target, session?.contextKey], queryFn: () => labClient({ action: 'profile', actorId, target }), enabled: !own, retry: 1, refetchInterval: 30000 });
-  const change = useLabMutation(actorId);
+  const change = useNetworkSocialMutation(actorId);
   const profileQuery = own ? session.account : query;
   const savedProfile = profileQuery.isSuccess ? profileQuery.data?.profile : null;
   const verified = Boolean(savedProfile?.ownerVerified && Date.parse(savedProfile.verifiedUntil) > Date.now() && (!own || session.ready));
   const profile = savedProfile ? { ...savedProfile, ownerVerified: verified, primaryActive: verified && savedProfile.primaryActive, paymentsEnabled: verified && savedProfile.paymentsEnabled, handle: verified ? savedProfile.handle : null } : null;
-  return <><button onClick={onBack} className="p-5 text-sm text-names-accent">← Back to feed</button><NetworkState query={profileQuery}>{profile && <><LabProfileHero profile={profile} own={own} actorId={actorId} change={change} onList={setList} onEdit={openEditor}/><div className="network-profile-columns"><div className="min-w-0">{change.isError && <p role="alert" className="p-5 text-sm text-names-warning">{labError(change.error)}</p>}{actorId === target && (own ? <NetworkProfileEditor actorId={actorId} profile={profile} open={editing} onOpenChange={setEditing}/> : <div ref={editor} className="px-5 pb-5"><LabProfileEdit key={target} actorId={actorId} profile={profile}/></div>)}<NetworkProfileTabs value={list} onChange={setList}/>{['followers', 'following'].includes(list) ? <LabPeople actorId={actorId} target={target} direction={list} onProfile={onProfile}/> : list === 'identity' ? <NetworkProfileIdentity profile={profile}/> : list === 'about' ? <LabProfileAbout profile={profile}/> : <LabFeed actorId={actorId} author={target} mode={list === 'replies' ? 'profileReplies' : list === 'media' ? 'media' : 'latest'} onProfile={onProfile} onConversation={onConversation}/>}</div><NetworkProfileStats profile={profile} onList={setList}/></div></>}</NetworkState></>;
+  return <><button onClick={onBack} className="p-5 text-sm text-names-accent">← Back to feed</button><NetworkState query={profileQuery}>{profile && <><LabProfileHero profile={profile} own={own} actorId={actorId} change={change} onList={setList} onEdit={openEditor}/><div className="network-profile-columns"><div className="min-w-0">{change.isError && <p role="alert" className="p-5 text-sm text-names-warning">{labError(change.error)}</p>}{actorId === target && (own ? <NetworkProfileEditor actorId={actorId} profile={profile} open={editing} onOpenChange={setEditing}/> : <div ref={editor} className="px-5 pb-5"><LabProfileEdit key={target} actorId={actorId} profile={profile}/></div>)}<NetworkProfileTabs value={list} onChange={setList}/>{own && list === 'posts' && <LabComposer key={`${session.contextKey}:${actorId}`} actorId={actorId} />}{['followers', 'following'].includes(list) ? <LabPeople actorId={actorId} target={target} direction={list} onProfile={onProfile}/> : list === 'identity' ? <NetworkProfileIdentity profile={profile}/> : list === 'about' ? <LabProfileAbout profile={profile}/> : <LabFeed actorId={actorId} author={target} mode={list === 'replies' ? 'profileReplies' : list === 'media' ? 'media' : 'latest'} onProfile={onProfile} onConversation={onConversation}/>}</div><NetworkProfileStats profile={profile} onList={setList}/></div></>}</NetworkState></>;
 }

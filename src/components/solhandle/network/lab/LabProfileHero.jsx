@@ -4,14 +4,13 @@ import LabPrivateImage from '@/components/solhandle/network/lab/LabPrivateImage'
 import NetworkShare from '@/components/solhandle/network/NetworkShare';
 import NetworkExternalLink from '@/components/solhandle/network/NetworkExternalLink';
 import NetworkRecipientActions from '@/components/solhandle/network/lab/NetworkRecipientActions';
-import useNetworkParticipation from '@/components/solhandle/network/useNetworkParticipation';
+import NetworkProfileSocialActions from '@/components/solhandle/network/NetworkProfileSocialActions';
 import NetworkProfilePaymentTools from '@/components/solhandle/network/NetworkProfilePaymentTools';
 export default function LabProfileHero({ profile, actorId, change, onList, onEdit, own = false }) {
-  const canParticipate = useNetworkParticipation(actorId);
   return <NetworkProfileFrame profile={profile} label={own ? 'My profile · Private preview' : 'Development profile'}
     banner={profile.banner && <LabPrivateImage media={profile.banner} alt={`${profile.name} banner`} className="h-full w-full"/>}
     avatar={profile.avatar && <LabPrivateImage media={profile.avatar} alt={`${profile.name} profile picture`} className="h-full w-full"/>}
-    actions={<>{actorId === profile.id && <button type="button" className="social-action social-action-secondary" onClick={onEdit}><Pencil className="h-4 w-4"/>Edit profile</button>}{actorId === profile.id && <NetworkProfilePaymentTools/>}{actorId !== profile.id && ['FOLLOW', 'BLOCK', 'MUTE'].map(kind => <button type="button" key={kind} disabled={!canParticipate || change.isPending} aria-pressed={profile.relations.includes(kind)} onClick={() => change.mutate({ action: 'interact', kind, target: profile.id, active: !profile.relations.includes(kind) })} className={`social-action ${profile.relations.includes(kind) ? 'border-names-accent text-names-accent' : 'text-identity-muted'}`}>{profile.relations.includes(kind) ? `Undo ${kind.toLowerCase()}` : kind.toLowerCase()}</button>)}</>}
+    actions={<>{actorId === profile.id && <button type="button" className="social-action social-action-secondary" onClick={onEdit}><Pencil className="h-4 w-4"/>Edit profile</button>}{actorId === profile.id && <NetworkProfilePaymentTools/>}{actorId !== profile.id && <NetworkProfileSocialActions actorId={actorId} profile={profile} change={change}/>}</>}
     identity={<div className="network-identity-badges"><span data-active={profile.ownerVerified} title="Ownership only, not trust, KYC or investment endorsement.">{profile.ownerVerified ? 'Current Owner Verified' : 'Owner not currently verified'}</span><span data-active={profile.primaryActive}>{profile.primaryActive ? 'Primary Handle Active' : 'Primary Handle not active'}</span><span data-active={profile.paymentsEnabled}>{profile.paymentsEnabled ? 'Payments enabled' : 'Payments not enabled'}</span></div>}
     meta={<><span>Joined {profile.joinedAt ? new Date(profile.joinedAt).toLocaleDateString() : 'date unavailable'}</span>{profile.website && <NetworkExternalLink href={profile.website}/>}</>}
     share={<NetworkShare path={`/network?profile=${profile.id}`} title={`${profile.name} · Network profile`}/>}
