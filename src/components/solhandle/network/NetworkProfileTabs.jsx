@@ -1,4 +1,4 @@
-const tabs = ['posts', 'replies', 'media', 'about'];
+const tabs = ['posts', 'replies', 'media', 'about', 'identity'];
 
 export default function NetworkProfileTabs({ value, onChange }) {
   return <nav aria-label="Profile sections" className="network-content-tabs network-profile-tabs flex border-b border-identity-border">
