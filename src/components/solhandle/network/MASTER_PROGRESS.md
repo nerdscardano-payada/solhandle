@@ -10,6 +10,24 @@ De eerste desktopshell hergebruikt bestaande Network-routes, officiële branding
 
 Niet geleverd of geactiveerd: publieke wallet-native Network-login, eigen ingelogde sociale profielkaart/statistieken, privéberichten, communities, onlinepresence, universeel handle/project/communityzoeken, nieuwe feeds of professionele verificatie. Messages/Communities zijn uitgeschakeld en gelabeld Planned, geen nieuwe mockpagina's. Pay en Contacts blijven zelfstandige bestaande pagina's; niet claimen dat zij al volledig onder de sociale shell vallen. Er is geen tweede identiteit, wallet, adresboek of betaalbackend gemaakt.
 
+## Update 24 oktober 2026 — Deelknoppen in mainnet-implementatieplan
+
+De subtiele profieldeelknoppen uit DesignPreview worden meegenomen in de bestaande vijfstappenmigratie. Status: ontwerpvoorbeeld aanwezig; productie-integratie en acceptatie nog open. Dit onderdeel activeert geen mainnet-functionaliteit.
+
+- **Stap 1 — Design/structuur:** behoud de compacte LinkedIn-, X- en Discord-knoppen in het profieloverzicht, passend bij het huidige ontwerp en bruikbaar op desktop en mobiel.
+- **Stap 2 — Identity:** bepaal de canonieke openbare deellink vanuit de echte profielidentiteit en actuele handlebinding, niet vanuit demo-@ansem of een previewroute. Onderscheid de stabiele sociale profiel-URL van de overdraagbare handle-URL; een gedeeld profiel mag na NFT-overdracht niet ongemerkt naar het account van de koper wijzen.
+- **Stap 3 — Pay/Contacts:** geen nieuwe betaal- of contactlogica nodig; bestaande ontvangercontext en privacygrenzen blijven ongewijzigd.
+- **Stap 4 — Social:** hergebruik de deelcomponent in het productieprofiel. LinkedIn en X openen hun deelvenster met correct gecodeerde openbare URL en passende tekst. Discord kopieert tekst en link met zichtbare bevestiging en handmatig kopieerpad bij geweigerde klembordtoegang; geen automatische Discord-post, OAuth of bot nodig. Deel uitsluitend openbare gegevens, nooit sessietokens of private walletinformatie.
+- **Stap 5 — Release:** onderstaande acceptatie aantoonbaar afronden vóór vrijgave van de productieknoppen.
+
+### Acceptatie deelknoppen — nog uit te voeren
+
+- [ ] LinkedIn en X ontvangen de juiste canonieke link voor het bekeken profiel, niet steeds de eigen ingelogde handle.
+- [ ] Discord kopieert de juiste tekst en link; bevestiging en handmatig kopiëren werken bij ontbrekende klembordtoegang.
+- [ ] De gedeelde bestemming opent voor uitgelogde bezoekers en deelt geen preview-URL, privégegevens of ongepubliceerd profiel.
+- [ ] Handleloos profiel, gewijzigde Primary Handle en NFT-transfer volgen het goedgekeurde profiel-/handle-URL-beleid zonder oude content aan een nieuwe eigenaar toe te schrijven.
+- [ ] Knoppen blijven subtiel, leesbaar en met toetsenbord/touch bedienbaar in light/dark en op desktop/mobiel; bestaande profielacties blijven werken.
+
 ## Uitvoeringsregel
 
 Sociale functionaliteit doorbouwen achter testtoegang. Productie-authenticatie beperkt alleen de vrijgave van de betreffende publiek beschrijfbare onderdelen, niet de ontwikkeling van profielen, feeds, interacties, notificaties, media of entitlements. Bestaande walletconnectie en `/profile` blijven zelfstandig; geen tweede wallet, synthetische emails of alternatieve deelnemerslogin toevoegen.
