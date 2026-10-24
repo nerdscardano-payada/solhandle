@@ -1,0 +1,17 @@
+.sol-design .sd-profile-intro .sd-profile-primary-handle{display:flex;align-items:center;gap:7px;width:fit-content;margin:0 0 16px;padding:0;min-height:32px;border:0;background:none;color:var(--sd-link);font-size:16px;font-weight:600;letter-spacing:0;text-align:left}
+.sol-design .sd-profile-identity-grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:28px;align-items:start}
+.sol-design .sd-profile-mint{margin:0;min-width:0}
+.sol-design .sd-profile-mint-image{display:block;width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden}
+.sol-design .sd-profile-mint figcaption{margin-top:9px;font-size:11px;color:var(--sd-muted)}
+.sol-design .sd-profile-identity-data{min-width:0}
+.sol-design .sd-profile-identity-data h3{margin:10px 0 16px;font-size:25px;color:var(--sd-ink)}
+.sol-design .sd-profile-identity-data dl{margin:0 0 16px}
+.sol-design .sd-profile-identity-data dl>div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--sd-line);font-size:12px}
+.sol-design .sd-profile-identity-data dt{color:var(--sd-muted)}
+.sol-design .sd-profile-identity-data dd{margin:0;text-align:right;color:var(--sd-ink);overflow-wrap:anywhere}
+.sol-design .sd-profile-identity-data dd a{display:inline-flex;align-items:center;gap:4px;color:var(--sd-link)}
+.sol-design .sd-profile-identity-data>small{display:block;line-height:1.8;margin-bottom:18px}
+.sol-design .sd-profile-identity-data>.sd-button{white-space:normal;text-align:center}
+.sol-design .sd-phone .sd-profile-identity-grid{grid-template-columns:minmax(0,1fr);gap:22px}
+.sol-design .sd-phone .sd-profile-mint{width:100%;max-width:320px;margin:0 auto}
+@media(max-width:767px){.sol-design .sd-profile-identity-grid{grid-template-columns:minmax(0,1fr);gap:22px}.sol-design .sd-profile-mint{width:100%;max-width:320px;margin:0 auto}}
