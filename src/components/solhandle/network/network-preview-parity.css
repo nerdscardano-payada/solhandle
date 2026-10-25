@@ -48,8 +48,9 @@
 .network-preview-parity .sd-post-author > a { color: var(--sd-ink); font-size: 13px; font-weight: 650; }
 .network-preview-parity .sd-post-actions { flex-wrap: wrap; }
 .network-preview-parity .sd-post-actions :is(a,button) { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; color: var(--sd-muted); }
-.network-preview-parity .sd-main:has(.network-profile-hero) { background: var(--sd-surface); }
-.network-preview-parity .sd-screen:has(.network-profile-hero) > :is(.sd-network-city,.sd-network-shade) { display: none; }
+.network-preview-parity .sd-main:has(.network-profile-hero) { background: transparent; }
+.network-preview-parity .sd-profile-frame > .sd-screen,
+.network-preview-parity[data-mode="light"] .sd-network-frame > .sd-screen { background: transparent; }
 .network-preview-parity .social-header { border-color: var(--sd-line); background: var(--sd-surface); }
 .network-preview-parity .social-section { background: var(--sd-surface); }
 .network-preview-parity .sd-eco-pay .live-pay-label { font-size: 10px; }
