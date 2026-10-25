@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
+import { handleProfileDirectory } from '../../shared/handleProfileDirectory.ts';
 import { resolveOnChain } from '../../shared/solhandleResolver.ts';
 import { profileInput, profileError, profileProof, profilePayload } from '../../shared/handleProfileProof.ts';
 export default async function(req) {
@@ -10,6 +11,7 @@ export default async function(req) {
     if (text.length > 10000) return Response.json({ error: 'Profile request too large.' }, { status: 413, headers });
     let body; try { body = JSON.parse(text); } catch { return Response.json({ error: 'Invalid request.' }, { status: 400, headers }); }
     if (!body || typeof body !== 'object') return Response.json({ error: 'Invalid request.' }, { status: 400, headers });
+    if (body.action === 'list') return await handleProfileDirectory(createClientFromRequest(req).asServiceRole.entities, secrets.get('SOLANA_RPC_URL'), body);
     const handle = profileInput(body);
     if (!['public', 'challenge', 'authorize'].includes(body.action)) return Response.json({ error: 'Invalid operation.' }, { status: 400, headers });
     // No Base44 login session is issued. As with walletContacts, wallet signatures
