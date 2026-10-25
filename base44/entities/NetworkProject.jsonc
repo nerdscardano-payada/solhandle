@@ -97,6 +97,71 @@
         "HIDDEN"
       ],
       "default": "DRAFT"
+    },
+    "integration_valid_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "integration_reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "integration_evidence_url": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "integration_reviewed_website": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "handle_valid_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "handle_reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "handle_evidence_url": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "handle_owner_wallet": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "handle_verified_asset": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "handle_reviewed_handle": {
+      "type": "string",
+      "maxLength": 21
+    },
+    "handle_reviewed_website": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "handle_checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "handle_check_due_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "handle_check_interval_hours": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 720
+    },
+    "handle_check_status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "UNCERTAIN",
+        "INACTIVE"
+      ]
     }
   },
   "required": [

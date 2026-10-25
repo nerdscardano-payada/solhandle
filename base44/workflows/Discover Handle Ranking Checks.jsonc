@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/15 * * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Brussels",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Controleert uitsluitend goedgekeurde handlekoppelingen wanneer hun expliciet gekozen controletermijn is verstreken. Een overdracht verwijdert alleen het handle-rankingvoordeel.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "discover_handle_ranking_checks",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_due_handles": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "discoverRanking",
+            "args": {
+              "action": "maintenance"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Controleer verschuldigde handlekoppelingen",
+            "description": "Alleen het rankingvoordeel aanpassen"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Discover Handle Ranking Checks"
+}
