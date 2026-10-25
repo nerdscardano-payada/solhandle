@@ -170,13 +170,17 @@ const AuthenticatedApp = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/legal" element={<Legal />} />
+            <Route path="/docs" element={<Docs />} />
+            <Route path="/demos" element={<Demos />} />
+            <Route path="/demos/:slug" element={<DemoDetail />} />
+            <Route path="/integrate" element={<Integrate />} />
+            <Route path="/roadmap" element={<Roadmap />} />
           </Route>
         </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
           <Route path="/android" element={user?.role === 'admin' ? <AndroidDownload /> : <Navigate to="/" replace />} />
         </Route>
-        <Route path="/demos" element={<Demos />} />
-        <Route path="/demos/:slug" element={<DemoDetail />} />
+
         <Route path="/mint-weekend" element={<Navigate to="/" replace />} />
         <Route element={<NetworkLayout />}>
           <Route path="/network" element={<Network />} />
@@ -198,7 +202,6 @@ const AuthenticatedApp = () => {
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fnetwork-preview" replace />} />}>
           <Route path="/admin/network-preview" element={user?.role === 'admin' ? <AdminNetworkPreview /> : <Navigate to="/network" replace />} />
         </Route>
-        <Route path="/docs" element={<Docs />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>
           <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
         </Route>
@@ -209,7 +212,6 @@ const AuthenticatedApp = () => {
           <Route path="/mint" element={user?.role === 'admin' ? <PartnerMint /> : <Navigate to="/" replace />} />
           <Route path="/developers/partner-mint/devnet-sdk" element={user?.role === 'admin' ? <PartnerMintSdkDevnet /> : <Navigate to="/" replace />} />
         </Route>
-        <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/upcoming/marketplace" element={<Market />} />
         <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
@@ -231,7 +233,6 @@ const AuthenticatedApp = () => {
         <Route path="/earn-litepaper" element={<PageNotFound />} />
         <Route path="/leaderboard" element={<PageNotFound />} />
         <Route path="/referral-terms" element={<PageNotFound />} />
-        <Route path="/integrate" element={<Integrate />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fintegrations" replace />} />}>
           <Route path="/admin/integrations" element={<AdminIntegrations />} />
         </Route>

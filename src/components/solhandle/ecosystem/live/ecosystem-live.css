@@ -24,6 +24,10 @@
 .eco-live .ep-sidebar nav a:hover{background:var(--eco-card);color:var(--eco-text)}
 .eco-live .ep-sidebar nav a[aria-current]{background:linear-gradient(105deg,color-mix(in srgb,var(--eco-purple) 40%,var(--eco-card)),color-mix(in srgb,var(--eco-cyan) 30%,var(--eco-card)));border-color:color-mix(in srgb,var(--eco-cyan) 55%,var(--eco-border));color:var(--eco-text)}
 .eco-live .el-manage{margin-top:12px;justify-content:center}
+.eco-live .el-resource-navigation{margin-top:24px;padding-top:20px;border-top:1px solid var(--eco-border)}
+.eco-live .el-resource-navigation .ep-eyebrow{margin-bottom:10px}
+.eco-live .el-resource-navigation nav a{font-size:12px;gap:10px;padding:10px;min-height:43px}
+.eco-live .el-resource-navigation nav a svg{flex-shrink:0;color:var(--eco-purple)}
 .eco-live .ep-main{padding:24px;min-width:0}
 .eco-live .el-module>main{min-height:0;background:transparent;color:var(--eco-text)}
 .eco-live .el-module>main>div.max-w-7xl{border:0;min-height:0;max-width:100%}

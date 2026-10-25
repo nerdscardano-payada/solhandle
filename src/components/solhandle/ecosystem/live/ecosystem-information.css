@@ -36,7 +36,25 @@
 .eco-live .el-information-about>main>div>section:first-child>.absolute{display:none}
 .eco-live .el-information-about>main>div>section:first-child h1{font-size:clamp(30px,3.5cqw,44px)}
 .eco-live .el-information-about .bg-clip-text{background-image:var(--eco-gradient)}
+.eco-live .el-information-resources>main>div{padding:8px 0 28px}
+.eco-live .el-information-resources :is(.bg-card,.bg-background){background:var(--eco-card)}
+.eco-live .el-information-resources .text-muted-foreground{color:var(--eco-muted)}
+.eco-live .el-information-resources :is(.text-names-accent,.text-primary){color:var(--eco-cyan)}
+.eco-live .el-information-resources .border-border{border-color:var(--eco-border)}
+.eco-live .el-information-resources :is(h1,h2,h3){font-family:var(--eco-font)}
+.eco-live .el-information-docs>main>div>section>article{max-width:none;margin:0;padding:0;border:0;background:transparent}
+.eco-live .el-information-docs article>section,.eco-live .el-information-roadmap article{padding:24px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card);margin-top:18px}
+.eco-live .el-information-docs :is(section[id],aside a){scroll-margin-top:24px}
+.eco-live .el-information-demos>main>div>section:first-child{max-width:none;padding:28px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card)}
+.eco-live .el-information-demos>main>div>section:first-child h1{font-size:32px}
+@container ecosystem (max-width:1099px){
+ .eco-live .el-information-docs>main>div>section{grid-template-columns:minmax(0,1fr);gap:24px}
+ .eco-live .el-information-docs>main>div>section>aside{position:static;display:flex;flex-wrap:wrap;gap:8px 16px}
+ .eco-live .el-information-docs>main>div>section>aside>a{margin:0;font-size:12px}
+}
 @container ecosystem (max-width:767px){
+ .eco-live .el-information-docs article>section,.eco-live .el-information-roadmap article,.eco-live .el-information-demos>main>div>section:first-child{padding:18px}
+ .eco-live .el-information-demos>main>div>section:first-child h1{font-size:27px}
  .eco-live .el-information h1{font-size:27px}
  .eco-live .el-information h2{font-size:19px}
  .eco-live .el-information>main>div>section,.eco-live .el-information>main>div>article{padding-block:5px 22px}
