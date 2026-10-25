@@ -5,11 +5,11 @@ import useSolHandleMint from '@/components/solhandle/partner-mint/react/useSolHa
 import SolHandleMintReview from '@/components/solhandle/partner-mint/react/SolHandleMintReview';
 import PartnerMintReceipt from '@/components/solhandle/partner-mint/PartnerMintReceipt';
 export default function SolHandleMintFlow(props) {
-  const { partnerId, wallet, onConnect, onDisconnect, theme, className, buttonText } = props;
+  const { partnerId, wallet, onConnect, onDisconnect, className, buttonText } = props;
   const [handle, setHandle] = useState(''), pilot = useSolHandleMint(props);
   const prepared = pilot.prepared?.quote.wallet === wallet.publicKey?.toBase58() ? pilot.prepared : null;
   const connectionAction = wallet.connected ? onDisconnect : onConnect;
-  return <section className={`${theme === 'light' ? 'solhandle-mint-light' : 'dark'} rounded-xl border border-border bg-card p-5 text-foreground ${className}`} aria-label="SolHandle Partner Mint" data-solhandle-mint="devnet">
+  return <section className={`dark rounded-xl border border-border bg-card p-5 text-foreground ${className}`} aria-label="SolHandle Partner Mint" data-solhandle-mint="devnet">
     <h2 className="font-heading text-xl font-semibold">Claim je @handle</h2>
     <p className="mt-2 text-sm text-muted-foreground">Partner: {partnerId} · Solana Devnet · uitsluitend test-SOL</p>
     {connectionAction && <Button className="mt-5" disabled={pilot.busy || wallet.connecting} onClick={() => pilot.runConnection(connectionAction)}>{wallet.connecting ? 'Wallet verbinden…' : wallet.connected ? 'Wallet loskoppelen' : 'Devnet-wallet verbinden'}</Button>}

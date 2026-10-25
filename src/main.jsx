@@ -7,7 +7,7 @@ import '@solana/wallet-adapter-react-ui/styles.css'
 import '@/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ThemeProvider attribute="class" defaultTheme="system" enableSystem enableColorScheme disableTransitionOnChange>
+  <ThemeProvider attribute="class" forcedTheme="dark" defaultTheme="dark" enableSystem={false} enableColorScheme disableTransitionOnChange>
     <SolanaWalletProvider><App /></SolanaWalletProvider>
   </ThemeProvider>
 )
