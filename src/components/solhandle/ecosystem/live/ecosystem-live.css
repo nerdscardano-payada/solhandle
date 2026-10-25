@@ -82,7 +82,7 @@
  .eco-live .ep-hero-preview>p{margin-top:10px}
 }
 @container ecosystem (min-width:1100px){
- .eco-live .el-dashboard{grid-template-columns:minmax(0,1fr) 220px}
+ .eco-live .el-dashboard{grid-template-columns:minmax(0,1fr)}
  .eco-live .ep-context{display:flex;flex-direction:column}
  .eco-live .el-mobile-actions{display:none}
  .eco-live .ep-dashboard-lower{grid-template-columns:minmax(0,1.3fr) minmax(220px,1fr)}
