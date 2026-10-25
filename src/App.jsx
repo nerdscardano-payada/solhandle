@@ -97,6 +97,7 @@ import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
 import PlatformSurface from '@/components/solhandle/PlatformSurface';
 import MobileAppNavigation from '@/components/solhandle/MobileAppNavigation';
+import HomeMobileNavigation from '@/components/solhandle/home/HomeMobileNavigation';
 import MobileBackHeader from '@/components/solhandle/MobileBackHeader';
 import MobileTabProvider from '@/components/solhandle/navigation/MobileTabProvider';
 import LanguageProvider from '@/components/i18n/LanguageProvider';
@@ -256,6 +257,7 @@ const AuthenticatedApp = () => {
       </MobileTabCache>
       {pathname !== '/' && !isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
       {pathname !== '/' && !isWidget && !isSocial && <AttoChat />}
+      {pathname === '/' && <HomeMobileNavigation />}
       {showMobileTabs && <MobileAppNavigation />}
     </PlatformSurface>
   );
