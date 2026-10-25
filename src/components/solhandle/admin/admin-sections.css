@@ -1,0 +1,33 @@
+.eco-live .el-admin-workspace{min-width:0;width:100%}
+.eco-live .el-admin-workspace>main{min-height:0;background:transparent;padding:0;color:var(--eco-text)}
+.eco-live .el-admin-workspace>main>div{max-width:none;min-height:0;border:0;margin:0;padding:0}
+.eco-live .el-admin-workspace>main>section,.eco-live .el-admin-workspace>main>div>section{max-width:none;margin:0;padding:0;min-width:0}
+.eco-live .el-admin-workspace h1{font-size:32px;line-height:1.2;letter-spacing:-.045em;font-weight:750;margin:16px 0 12px}
+.eco-live .el-admin-workspace :is(h2,h3){line-height:1.4}
+.eco-live .el-admin-workspace :is(p,h2,h3)[class*="mt-"]{margin-top:16px}
+.eco-live .el-admin-workspace :is(.bg-card,.bg-background,.bg-hero-canvas,[class~="bg-white/5"],[class~="bg-slate-900/50"]){background:var(--eco-card)}
+.eco-live .el-admin-workspace :is(.border-border,[class~="border-white/10"],[class~="border-white/15"]){border-color:var(--eco-border)}
+.eco-live .el-admin-workspace :is(.text-foreground,.text-identity-text){color:var(--eco-text)}
+.eco-live .el-admin-workspace :is(.text-muted-foreground,.text-identity-muted){color:var(--eco-muted)}
+.eco-live .el-admin-workspace :is(.text-names-accent,.text-cyan-300,.text-cyan-200){color:var(--eco-cyan)}
+.eco-live .el-admin-workspace .text-names-secondary{color:var(--eco-purple)}
+.eco-live .el-admin-workspace button:not(.ep-icon):not([role=switch]):not([role=checkbox]){min-height:44px;border-radius:9px}
+.eco-live .el-admin-workspace :is(button,a)[class*="rounded"][class*="border"]{border-color:var(--eco-border);background:var(--eco-raised);color:var(--eco-text)}
+.eco-live .el-admin :is(button.bg-cyan-300,button.bg-primary,button.bg-names-accent){background:var(--eco-gradient);color:var(--eco-canvas);border-color:transparent}
+.eco-live .el-admin-workspace :is(input:not([type=checkbox]):not([type=radio]),select,textarea){min-height:44px;border-color:var(--eco-border);background:var(--eco-sidebar);color:var(--eco-text);border-radius:10px}
+.eco-live .el-admin-workspace :is(.overflow-x-auto,.overflow-auto){max-width:100%;overscroll-behavior-x:contain}
+.eco-live .el-admin-workspace table{width:100%;font-size:13px}
+.eco-live .el-admin-workspace :is(th,td){padding:12px;text-align:left;border-color:var(--eco-border)}
+.eco-live .el-admin-workspace th{color:var(--eco-muted);font-weight:600}
+.eco-live .el-admin-workspace pre{max-width:100%;overflow:auto;background:var(--eco-sidebar);color:var(--eco-text)}
+.eco-live .el-admin-workspace :is(.border-identity-border,.border-names-accent\/30){border-color:var(--eco-border)}
+.eco-live .el-admin-workspace :is(form,article,aside)[class*="rounded"]{background:var(--eco-card);border-radius:16px}
+.eco-live .el-admin-workspace :is([class~="bg-slate-950/70"],.bg-slate-900){background:var(--eco-sidebar)}
+.eco-live .el-admin input:is([type=checkbox],[type=radio]){padding:0;accent-color:var(--eco-cyan)}
+@container ecosystem (max-width:767px){
+ .eco-live .el-admin-workspace h1{font-size:28px;overflow-wrap:anywhere}
+ .eco-live .el-admin-workspace>main>div>div.p-20,.eco-live .el-admin-workspace>main>div.p-20{padding:32px 16px}
+ .eco-live .el-admin-workspace :is(.grid,.flex)>*{min-width:0}
+ .eco-live .el-admin-workspace .grid[class*="grid-cols-"]:not([class*="md:grid-cols-"]):not([class*="lg:grid-cols-"]){grid-template-columns:minmax(0,1fr)}
+ .eco-live .el-admin-workspace :is(input,select,textarea){font-size:16px}
+}

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Compass, ShieldCheck, RefreshCw, Flame, ChartNoAxesCombined, Plug, Trophy, FlaskConical, Landmark } from 'lucide-react';
 import { growthHubVisible } from '@/components/solhandle/navigationLinks';
 
@@ -14,5 +14,6 @@ const links = [
   [Landmark, 'Financials', '/admin/financials']
 ];
 export default function AdminOperationsNavigation() {
-  return <nav className="el-admin-navigation" aria-label="Administration tools">{links.map(([Icon, label, to]) => <Link key={to} to={to} className={to === '/admin/projects' ? 'ep-button ep-primary' : 'ep-button'}><Icon size={18}/><span>{label}</span></Link>)}</nav>;
+  const { pathname } = useLocation();
+  return <nav className="el-admin-navigation" aria-label="Administration tools">{links.map(([Icon, label, to]) => <Link key={to} to={to} className={to === pathname ? 'ep-button ep-primary' : 'ep-button'}><Icon size={18}/><span>{label}</span></Link>)}</nav>;
 }
