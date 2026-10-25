@@ -1,5 +1,9 @@
 export const growthHubVisible = false;
-export const canViewNavigationLink = (path, user) => path !== '/android' && (!path.startsWith('/developers/partner-mint') || user?.role === 'admin');
+export const canViewNavigationLink = (path, user) => {
+  const pathname = path.split(/[?#]/)[0].replace(/\/$/, '') || '/';
+  const adminOnly = pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/mint' || pathname.startsWith('/developers/partner-mint');
+  return pathname !== '/android' && (!adminOnly || user?.role === 'admin');
+};
 export const tokenLinks = [['Trade $HANDLE', '/upcoming/token-launch'], ...(growthHubVisible ? [['Growth Hub', '/quests']] : []), ['Growth Curve', '/growth'], ['Flywheel', '/flywheel'], ['Burn Dashboard', '/growth/burn']];
 export const aboutLinks = [['About / How it works', '/about'], ['FAQ', '/faq'], ['Roadmap', '/roadmap'], ['Brand Protection', '/protected-brands'], ['Contact', '/contact']];
 export const developerLinks = [['Demo Lab', '/demos'], ['Integrate SolHandle', '/integrations'], ['Integration Onboarding', '/integrate'], ['SDK / API', '/developers'], ['Partner Mint Plan', '/developers/partner-mint'], ['Documentation', '/docs']];
