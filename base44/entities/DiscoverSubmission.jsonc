@@ -69,6 +69,18 @@
       "type": "string",
       "maxLength": 21
     },
+    "pfp_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^https://[^\\s]+$"
+    },
+    "banner_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^https://[^\\s]+$"
+    },
     "product_status": {
       "type": "string",
       "enum": [
@@ -119,7 +131,9 @@
     "reason",
     "contact_email",
     "consent_at",
-    "status"
+    "status",
+    "pfp_url",
+    "banner_url"
   ],
   "rls": {
     "read": {

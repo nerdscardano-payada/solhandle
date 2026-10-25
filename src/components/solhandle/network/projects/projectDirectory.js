@@ -1,6 +1,6 @@
 export const projectCategories = { WALLET: 'Wallets', DEFI: 'DeFi', NFT: 'NFTs', INFRASTRUCTURE: 'Infrastructure', GAMING: 'Gaming', COMMUNITY: 'Community', OTHER: 'Other' };
 export const listingTypes = { PROJECT: 'Projects', BUILDER: 'Builders', PERSON: 'People' };
-export const projectFields = ['name', 'summary', 'description', 'category', 'website', 'status', 'listing_type', 'expertise', 'social_links', 'handle', 'product_status', 'featured'];
+export const projectFields = ['name', 'summary', 'description', 'category', 'website', 'status', 'listing_type', 'expertise', 'social_links', 'handle', 'product_status', 'featured', 'pfp_url', 'banner_url'];
 export const projectError = error => error.response?.data?.error || error.message || 'The project could not be saved.';
 export function projectQuery({ admin = false, q = '', status = 'ALL', category = 'ALL', type = 'ALL', expertise = '', featured = false }) {
   const escaped = q.trim().slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -15,6 +15,11 @@ export function projectQuery({ admin = false, q = '', status = 'ALL', category =
 }
 export function projectInput(values) {
   const data = Object.fromEntries(['name', 'summary', 'description', 'category', 'website', 'status', 'expertise', 'handle'].map(field => [field, String(values[field] || '').trim()]));
+  for (const key of ['pfp_url','banner_url']) {
+    const value = String(values[key] || '').trim();
+    if (!/^https:\/\/[^\s]+$/.test(value) || value.length > 2048) throw new Error('A profile picture and banner image are required. Upload both images before saving.');
+    data[key] = value;
+  }
   data.listing_type = values.listing_type || 'PROJECT';
   data.product_status = values.product_status || 'LIVE';
   data.featured = !!values.featured;

@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 import { verifyHuman } from '../../shared/integrationSecurity.ts';
 import { digest } from '../../shared/integrationOptions.ts';
+import { validateDiscoverImages } from '../../shared/discoverImages.ts';
 export default async function(req) {
   try {
     if (req.method !== 'POST') return Response.json({error:'Method not allowed.'},{status:405});
@@ -27,7 +28,7 @@ export default async function(req) {
         const existing = await db.NetworkProject.filter({source_reference:record.reference},{limit:1});
         listing = existing.items[0];
         if (!listing) {
-          const data = Object.fromEntries(['listing_type','name','summary','description','category','expertise','website','social_links','handle','product_status'].map(key => [key,record[key]]).filter(([,value]) => value !== undefined));
+          const data = Object.fromEntries(['listing_type','name','summary','description','category','expertise','website','social_links','handle','product_status','pfp_url','banner_url'].map(key => [key,record[key]]).filter(([,value]) => value !== undefined));
           listing = await db.NetworkProject.create({...data,status:'DRAFT',featured:false,source_reference:record.reference});
         }
       }
@@ -37,7 +38,7 @@ export default async function(req) {
     if (body.action !== 'submit') return Response.json({error:'Unknown action.'},{status:400});
     if (typeof body.receipt_token !== 'string' || !/^[a-f0-9-]{36}$/i.test(body.receipt_token)) return Response.json({error:'Missing receipt code. Refresh the page.'},{status:400});
     const text = (key,max,required=false) => { const value = typeof body[key] === 'string' ? body[key].trim() : ''; if ((required && !value) || value.length > max) throw Object.assign(new Error(`Check ${key.replaceAll('_',' ')}.`),{status:400}); return value; };
-    const data = Object.fromEntries([['name',80,true],['summary',240,true],['description',3000],['expertise',120],['website',500,true],['handle',21],['reason',1000,true],['contact_email',254,true]].map(([key,max,required]) => [key,text(key,max,required)]));
+    const data = Object.fromEntries([['name',80,true],['summary',240,true],['description',3000],['expertise',120],['website',500,true],['handle',21],['reason',1000,true],['contact_email',254,true],['pfp_url',2048,true],['banner_url',2048,true]].map(([key,max,required]) => [key,text(key,max,required)]));
     const validUrl = value => { try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password && url.hostname.includes('.') && value.length <= 500; } catch { return false; } };
     if (!['SELF','SUGGESTION'].includes(body.submission_kind) || !['PROJECT','BUILDER','PERSON'].includes(body.listing_type) || !['WALLET','DEFI','NFT','INFRASTRUCTURE','GAMING','COMMUNITY','OTHER'].includes(body.category) || !['BUILDING','LIVE','PAUSED'].includes(body.product_status)) return Response.json({error:'Choose valid listing options.'},{status:400});
     if (!validUrl(data.website) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact_email) || (data.handle && !/^@[a-z0-9]{1,20}$/.test(data.handle)) || body.consent !== true) return Response.json({error:'Check the HTTPS website, email, handle and privacy consent.'},{status:400});
@@ -48,6 +49,7 @@ export default async function(req) {
     if (existing.items[0]) return Response.json({reference:existing.items[0].reference},{headers:{'Cache-Control':'no-store'}});
     // Deliberately public intake: authenticate the human challenge before the bounded privileged insert.
     await verifyHuman(req,body,db,{action:'discover_intake',scope:'discover',limit:3});
+    await validateDiscoverImages(data);
     const reference = `SHD-${crypto.randomUUID().replaceAll('-','').slice(0,12).toUpperCase()}`;
     await db.DiscoverSubmission.create({...data,submission_kind:body.submission_kind,listing_type:body.listing_type,category:body.category,product_status:body.product_status,social_links:body.social_links,reference,receipt_hash:hash,status:'NEW',consent_at:new Date().toISOString()});
     return Response.json({reference},{status:201,headers:{'Cache-Control':'no-store'}});

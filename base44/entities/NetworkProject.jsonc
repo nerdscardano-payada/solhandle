@@ -60,6 +60,18 @@
       "maxLength": 21,
       "pattern": "^$|^@[a-z0-9]{1,20}$"
     },
+    "pfp_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^https://[^\\s]+$"
+    },
+    "banner_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^https://[^\\s]+$"
+    },
     "product_status": {
       "type": "string",
       "enum": [
@@ -92,7 +104,9 @@
     "summary",
     "category",
     "website",
-    "status"
+    "status",
+    "pfp_url",
+    "banner_url"
   ],
   "rls": {
     "read": {
