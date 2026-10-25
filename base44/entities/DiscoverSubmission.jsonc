@@ -1,0 +1,146 @@
+{
+  "name": "DiscoverSubmission",
+  "type": "object",
+  "properties": {
+    "reference": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "receipt_hash": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "submission_kind": {
+      "type": "string",
+      "enum": [
+        "SELF",
+        "SUGGESTION"
+      ]
+    },
+    "listing_type": {
+      "type": "string",
+      "enum": [
+        "PROJECT",
+        "BUILDER",
+        "PERSON"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 240
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "WALLET",
+        "DEFI",
+        "NFT",
+        "INFRASTRUCTURE",
+        "GAMING",
+        "COMMUNITY",
+        "OTHER"
+      ]
+    },
+    "expertise": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "website": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "social_links": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "maxLength": 500
+      }
+    },
+    "handle": {
+      "type": "string",
+      "maxLength": 21
+    },
+    "product_status": {
+      "type": "string",
+      "enum": [
+        "BUILDING",
+        "LIVE",
+        "PAUSED"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "contact_email": {
+      "type": "string",
+      "maxLength": 254
+    },
+    "consent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "IN_REVIEW",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "default": "NEW"
+    },
+    "review_notes": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "linked_listing_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference",
+    "receipt_hash",
+    "submission_kind",
+    "listing_type",
+    "name",
+    "summary",
+    "category",
+    "website",
+    "reason",
+    "contact_email",
+    "consent_at",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

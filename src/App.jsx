@@ -20,6 +20,7 @@ const DesignPreview = lazy(() => import('@/pages/DesignPreview'));
 const EcosystemPreview = lazy(() => import('@/pages/EcosystemPreview'));
 const Ecosystem = lazy(() => import('@/pages/Ecosystem'));
 const EcosystemDiscover = lazy(() => import('@/pages/EcosystemDiscover'));
+const DiscoverSubmit = lazy(() => import('@/pages/DiscoverSubmit'));
 const EcosystemLiveFrame = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemLiveFrame'));
 import { isEcosystemPath, isEcosystemInformationPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 const EcosystemInformationLayout = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemInformationLayout'));
@@ -154,6 +155,10 @@ const AuthenticatedApp = () => {
           <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
           <Route path="/ecosystem" element={<Ecosystem />} />
           <Route path="/discover" element={<EcosystemDiscover />} />
+          <Route path="/discover/submit" element={<DiscoverSubmit />} />
+          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fprojects" replace />} />}>
+            <Route path="/admin/projects" element={user?.role === 'admin' ? <AdminProjects /> : <Navigate to="/discover" replace />} />
+          </Route>
           <Route path="/discover/projects/:projectId" element={<NetworkProject backTo="/discover" />} />
           <Route path="/search" element={<Search />} />
           <Route path="/my-handles" element={<MyHandles />} />
@@ -250,7 +255,6 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<Admin />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
           <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
-          <Route path="/admin/projects" element={user?.role === 'admin' ? <AdminProjects /> : <Navigate to="/" replace />} />
         </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fmainnet-tests" replace />} />}>
           <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />

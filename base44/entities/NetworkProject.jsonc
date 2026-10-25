@@ -16,6 +16,15 @@
       "type": "string",
       "maxLength": 3000
     },
+    "listing_type": {
+      "type": "string",
+      "enum": [
+        "PROJECT",
+        "BUILDER",
+        "PERSON"
+      ],
+      "default": "PROJECT"
+    },
     "category": {
       "type": "string",
       "enum": [
@@ -28,16 +37,52 @@
         "OTHER"
       ]
     },
+    "expertise": {
+      "type": "string",
+      "maxLength": 120
+    },
     "website": {
       "type": "string",
       "maxLength": 500,
       "pattern": "^https://[^\\s]+$"
     },
+    "social_links": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "maxLength": 500,
+        "pattern": "^https://[^\\s]+$"
+      }
+    },
+    "handle": {
+      "type": "string",
+      "maxLength": 21,
+      "pattern": "^$|^@[a-z0-9]{1,20}$"
+    },
+    "product_status": {
+      "type": "string",
+      "enum": [
+        "BUILDING",
+        "LIVE",
+        "PAUSED"
+      ],
+      "default": "LIVE"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "source_reference": {
+      "type": "string",
+      "maxLength": 40
+    },
     "status": {
       "type": "string",
       "enum": [
         "DRAFT",
-        "PUBLISHED"
+        "PUBLISHED",
+        "HIDDEN"
       ],
       "default": "DRAFT"
     }
