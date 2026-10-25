@@ -1,6 +1,13 @@
 .network-preview-parity.sol-design { background: var(--sd-bg); color: var(--sd-ink); }
 .network-preview-parity > .sd-frame { width: 100%; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
 .network-preview-parity .sd-screen { min-height: 100dvh; }
+@media (min-width: 1024px) {
+  .network-preview-parity > .sd-network-frame:not(.sd-phone) {
+    width: calc(100% - 56px);
+    max-width: 1256px;
+    margin-inline: auto;
+  }
+}
 .network-preview-parity .sd-phone > .sd-screen { max-height: none; overflow: visible; }
 .network-preview-parity .sd-sidebar-post { width: calc(100% - 10px); }
 .network-preview-parity .sd-sidebar-account { text-decoration: none; }
