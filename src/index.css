@@ -235,6 +235,7 @@ html, body { overscroll-behavior: none; }
 }
 
 :root, .dark {
+  --social-profile-night-canvas: 0 0% 0%;
   --social-night-canvas: 224 36% 10%;
   --social-night-surface: 224 30% 14%;
   --social-night-text: 220 25% 96%;

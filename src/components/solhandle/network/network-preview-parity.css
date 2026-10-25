@@ -49,6 +49,16 @@
 .network-preview-parity .sd-post-actions { flex-wrap: wrap; }
 .network-preview-parity .sd-post-actions :is(a,button) { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; color: var(--sd-muted); }
 .network-preview-parity .sd-main:has(.network-profile-hero) { background: transparent; }
+@media (min-width: 1024px) {
+  .network-preview-parity .sd-profile-frame:not(.sd-phone) .sd-main {
+    --sd-surface: hsl(var(--social-profile-night-canvas));
+    --sd-hero-panel: var(--sd-surface);
+    background: var(--sd-surface);
+  }
+  .network-preview-parity[data-mode="light"] .sd-profile-frame:not(.sd-phone) .sd-main {
+    --sd-surface: hsl(var(--social-day-surface));
+  }
+}
 .network-preview-parity .sd-profile-frame > .sd-screen,
 .network-preview-parity[data-mode="light"] .sd-network-frame > .sd-screen { background: transparent; }
 .network-preview-parity .social-header { border-color: var(--sd-line); background: var(--sd-surface); }
