@@ -73,7 +73,7 @@
  .eco-live .el-dashboard .ep-identity{padding:30px}
  .eco-live .el-dashboard .ep-identity>.ep-card-heading{margin-bottom:28px}
  .eco-live .el-dashboard .ep-identity-layout{row-gap:32px}
- .eco-live .el-dashboard .ep-identity-person{gap:28px;align-items:flex-start}
+ .eco-live .el-dashboard .ep-identity-person{flex-direction:column;gap:24px;align-items:flex-start}
  .eco-live .el-dashboard .ep-identity-person .profile-avatar{width:132px;height:132px}
  .eco-live .el-dashboard .ep-identity-person>div{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0}
  .eco-live .el-dashboard .ep-identity-person :is(h3,p,.ep-tags,.profile-social-links){margin:0}
