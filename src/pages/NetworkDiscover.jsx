@@ -5,5 +5,5 @@ import NetworkDiscoverResults from '@/components/solhandle/network/NetworkDiscov
 export default function NetworkDiscover() {
   const [params] = useSearchParams();
   const q = (params.get('q') || '').slice(0, 80);
-  return <><NetworkSectionHeader title="Ontdekken"/><div className="border-b border-identity-border p-5"><NetworkSearch key={q}/>{q ? <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-identity-muted"><p>Resultaten voor “{q}”</p><Link to="/network/discover" className="social-action text-names-accent">Zoekopdracht wissen</Link></div> : null}</div><NetworkDiscoverResults key={q} q={q}/></>;
+  return <><NetworkSectionHeader title="Discover"/><div className="border-b border-identity-border p-5"><NetworkSearch key={q}/>{q ? <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-identity-muted"><p>Results for “{q}”</p><Link to="/network/discover" className="social-action text-names-accent">Clear search</Link></div> : null}</div><NetworkDiscoverResults key={q} q={q}/></>;
 }

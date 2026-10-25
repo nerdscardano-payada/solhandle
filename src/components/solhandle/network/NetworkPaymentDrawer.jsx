@@ -26,7 +26,7 @@ export default function NetworkPaymentDrawer({ children, showContacts = false, r
   return <Sheet open={open} onOpenChange={changeOpen}>
     {controlledOpen === undefined && <SheetTrigger asChild>{children || <button type="button" onClick={() => choose('pay')} className={triggerClassName}><Send className="h-4 w-4"/>Pay</button>}</SheetTrigger>}
     {showContacts && <SheetTrigger asChild><button type="button" onClick={() => choose('contacts')} className={triggerClassName}><ContactRound className="h-4 w-4"/>My Contacts</button></SheetTrigger>}
-    <SheetContent data-social-theme={theme} className="network-surface network-pay-drawer overflow-y-auto border-identity-border bg-hero-surface text-identity-text">
+    <SheetContent lang="en" translate="no" data-no-translate data-social-theme={theme} className="network-surface network-pay-drawer overflow-y-auto border-identity-border bg-hero-surface text-identity-text">
       <SheetHeader><SheetTitle className="text-identity-text">{mode === 'contacts' ? 'My Contacts' : 'SolHandle Pay'}</SheetTitle><SheetDescription className="text-identity-muted">{mode === 'contacts' ? 'Your existing private, wallet-linked address book. Saved wallets never follow a transferred handle.' : 'Review the recipient and amount, then confirm in your wallet. No payment is sent automatically.'}</SheetDescription></SheetHeader>
       <div className="my-4"><WalletButton/></div>
       {contactSelection && <button type="button" onClick={() => choose('contacts')} className="mb-4 text-sm text-names-accent">← My Contacts</button>}

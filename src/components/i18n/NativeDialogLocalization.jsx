@@ -8,7 +8,7 @@ export default function NativeDialogLocalization() {
   useEffect(() => {
     const restore = ['alert', 'confirm', 'prompt'].map(name => {
       const original = window[name];
-      const localized = (message, ...args) => original.call(window, translate(message), ...args);
+      const localized = (message, ...args) => original.call(window, window.location.pathname.startsWith('/network') ? message : translate(message), ...args);
       window[name] = localized;
       return () => { if (window[name] === localized) window[name] = original; };
     });
