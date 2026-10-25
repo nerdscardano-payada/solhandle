@@ -1,0 +1,18 @@
+import { UserRound, Fingerprint, Shield, ArrowUpRight, Wallet, Copy } from 'lucide-react';
+import { useState } from 'react';
+import { Image } from '@/components/ui/image';
+import { demoWallet, ecosystemAssets } from '@/components/solhandle/ecosystem/previewData';
+import { useEcosystem } from '@/components/solhandle/ecosystem/EcosystemContext';
+export default function EcosystemIdentity({ full = false }) {
+  const d = useEcosystem(), [copy, setCopy] = useState('');
+  const uncertain = ['uncertain', 'transferred'].includes(d.scenario);
+  const label = !d.wallet ? 'Connect your wallet' : !d.hasHandles ? 'Claim your first @handle' : d.handle || 'Choose your Primary Handle';
+  const copyWallet = async () => { try { await navigator.clipboard.writeText(demoWallet); setCopy('Demo wallet identifier copied.'); } catch { setCopy('Copy unavailable. The full demo identifier is shown below.'); } };
+  return <section className={`ep-card ep-identity ${full ? 'ep-identity-full' : ''}`}>
+    {full && <div className="ep-profile-banner"><Image src={ecosystemAssets.city} alt="Illustrative SolHandle city banner" className="ep-cover-image" focalPointX={0.74} focalPointY={0.5}/><span>YOUR NAME. YOUR CORNER OF SOLANA.</span></div>}
+    <div className="ep-card-heading"><h2><Fingerprint size={20}/>{full ? 'Identity Profile' : 'Your Identity'}</h2><button className="ep-button ep-small-button" onClick={() => d.setModal({ type: 'handles' })}>Manage Handles <ArrowUpRight size={14}/></button></div>
+    <div className="ep-identity-layout"><div className="ep-identity-person"><div className="ep-avatar"><UserRound size={54} strokeWidth={1.2}/><span>DEMO</span></div><div><h3>{label}</h3><p>{d.hasHandles ? 'Ansem · example identity' : 'One name. All your possibilities.'}</p><div className="ep-tags"><span>Creator · self-selected</span><span>Solana</span></div><p className="ep-bio">Exploring a more open Solana.<br/>Building with people, not just addresses.</p><button className="ep-link" onClick={() => d.go(full ? 'home' : 'profile')}>{full ? 'Back to dashboard' : 'View profile preview'} <ArrowUpRight size={14}/></button></div></div>
+    <div className="ep-identity-details"><div className={`ep-ownership ${uncertain ? 'ep-warning' : ''}`}><Shield size={21}/><div><strong>{!d.wallet ? 'Wallet not connected' : uncertain ? d.scenario === 'transferred' ? 'Previous binding invalidated' : 'Ownership not confirmed' : !d.hasHandles ? 'No handle linked' : 'Ownership checked · demo'}</strong><p>{uncertain ? 'Sensitive actions paused. Private account data does not transfer with an NFT.' : 'Illustration only. NFT ownership is not Official Project or person verification.'}</p></div></div><dl><div><dt>Primary Handle</dt><dd>{d.handle || 'Not selected'}</dd></div><div><dt>Wallet</dt><dd>{d.wallet ? '7xQ9e3…L0aE · demo' : 'Not connected'}{d.wallet && <button className="ep-icon" aria-label="Copy demo wallet identifier" onClick={copyWallet}><Copy size={15}/></button>}</dd></div><div><dt>Owned handles</dt><dd>{d.hasHandles ? `${d.handles.length} · demo` : 'None'}</dd></div><div><dt>Saved contacts</dt><dd>{d.contacts.length} · demo</dd></div></dl>{(full || copy) && d.wallet && <p className="ep-small ep-break" data-copyable>{demoWallet}</p>}{copy && <p role="status" className="ep-small">{copy}</p>}</div></div>
+    {full && <div className="ep-profile-footer"><span><Wallet size={16}/>Wallet connection and account sign-in are separate.</span><button className="ep-button" onClick={() => d.setModal({ type: 'account' })}>Account status</button></div>}
+  </section>;
+}

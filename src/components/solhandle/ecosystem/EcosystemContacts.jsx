@@ -1,0 +1,12 @@
+import { ContactRound, ArrowUpRight, Plus, MoreHorizontal, LockKeyhole, Search } from 'lucide-react';
+import { useState } from 'react';
+import { useEcosystem } from '@/components/solhandle/ecosystem/EcosystemContext';
+export default function EcosystemContacts({ compact = false }) {
+  const d = useEcosystem(), [search, setSearch] = useState('');
+  const contacts = d.contacts.filter(person => `${person.name} ${person.handle}`.toLowerCase().includes(search.toLowerCase()));
+  return <section className="ep-card ep-contacts"><div className="ep-card-heading"><h2><ContactRound size={19}/>{compact ? 'Contacts' : 'Your Contacts'}</h2><button className="ep-link" onClick={() => compact ? d.go('contacts') : d.setModal({ type: 'addContact' })}>{compact ? 'View all' : 'Add contact'}{compact ? <ArrowUpRight size={14}/> : <Plus size={15}/>}</button></div><p>Your people. Privately saved, never publicly followed.</p><p className="ep-small"><LockKeyhole size={13}/>Private address book · demo only</p>
+    {!compact && <label className="ep-search-field"><Search size={18}/><input aria-label="Search demo contacts" value={search} maxLength={80} onChange={event => setSearch(event.target.value)} placeholder="Search name or @handle"/></label>}
+    {contacts.length ? <div className="ep-contact-list">{(compact ? contacts.slice(0, 3) : contacts).map(person => <article key={person.handle} className="ep-contact-row"><span className="ep-contact-avatar">{person.initials}</span><button className="ep-contact-name" onClick={() => d.setModal({ type: 'contact', person })}><strong>{person.handle}</strong><small>{person.name}</small></button><button className="ep-button ep-small-button" onClick={() => d.openPay(person.handle, true)}>Pay</button><details className="ep-more"><summary aria-label={`More options for ${person.handle}`}><MoreHorizontal size={18}/></summary><div><button onClick={() => d.setModal({ type: 'contact', person })}>Open contact</button><button onClick={() => d.setModal({ type: 'removeContact', person })}>Remove contact</button></div></details></article>)}</div> : <div className="ep-empty"><ContactRound size={28}/><h3>{search ? 'No matching contacts' : 'No contacts saved yet'}</h3><p>Search for your first @handle.</p><button className="ep-button" onClick={() => { d.setSearch(''); d.setCategory('People'); d.go('discover'); }}>Find people</button></div>}
+    {compact && <button className="ep-link ep-contact-add" onClick={() => d.setModal({ type: 'addContact' })}><Plus size={15}/>Add a contact</button>}
+  </section>;
+}

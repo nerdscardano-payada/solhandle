@@ -1,0 +1,10 @@
+import { UsersRound, Fingerprint, Wallet, ArrowUpRight, Globe2 } from 'lucide-react';
+import { useEcosystem } from '@/components/solhandle/ecosystem/EcosystemContext';
+export default function EcosystemSummary() {
+  const d = useEcosystem();
+  return <div className="ep-summary">
+    <article className="ep-card ep-summary-network"><div className="ep-card-heading"><h2><UsersRound size={19}/>Your Network</h2><ArrowUpRight size={17}/></div><p>Your connections,<br/>across Solana.</p><div className="ep-network-visual" aria-hidden="true"><Globe2 size={100}/></div><div className="ep-avatar-stack">{d.contacts.map(person => <span key={person.handle} className="ep-mini-avatar">{person.initials}</span>)}<span>{d.contacts.length} saved · demo</span></div><button className="ep-link" onClick={() => d.go('contacts')}>Open Contacts <ArrowUpRight size={14}/></button></article>
+    <article className="ep-card ep-summary-identity"><div className="ep-card-heading"><h2><Fingerprint size={19}/>Identity</h2><ArrowUpRight size={17}/></div><p>Your onchain name.<br/>Made simple.</p><strong className="ep-summary-handle">{d.handle || (!d.hasHandles ? 'Claim your first @handle' : 'Choose your Primary Handle')}</strong><p className="ep-small">{d.hasHandles ? `${d.handles.length} owned handles · demo` : 'Your identity starts with a name.'}</p><button className="ep-link" onClick={() => d.setModal({ type: d.hasHandles ? 'handles' : 'claim' })}>{d.hasHandles ? 'Manage Handles' : 'Claim Handle'} <ArrowUpRight size={14}/></button></article>
+    <article className="ep-card ep-summary-pay"><div className="ep-card-heading"><h2><Wallet size={19}/>Pay</h2><ArrowUpRight size={17}/></div><p>Send & receive.<br/>With just an @handle.</p><strong>SolHandle Pay</strong><div className="ep-assets"><span>SOL</span><span>USDC</span><span>USDT</span></div><button className="ep-link" onClick={() => d.openPay()}>Send & Receive <ArrowUpRight size={14}/></button></article>
+  </div>;
+}

@@ -17,6 +17,7 @@ import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
 
 const Home = lazy(() => import('@/pages/Home'));
 const DesignPreview = lazy(() => import('@/pages/DesignPreview'));
+const EcosystemPreview = lazy(() => import('@/pages/EcosystemPreview'));
 const AndroidDownload = lazy(() => import('@/pages/AndroidDownload'));
 const Demos = lazy(() => import('@/pages/Demos'));
 const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
@@ -281,6 +282,7 @@ function App() {
           <ScrollToTop />
           <ProtocolPageTracker />
           <Routes>
+            <Route path="/ecosystem-preview" element={<Suspense fallback={<div role="status">Ecosystem-ontwerp laden…</div>}><EcosystemPreview /></Suspense>} />
             <Route path="/design-preview" element={<Suspense fallback={<div role="status">Ontwerp laden…</div>}><DesignPreview /></Suspense>} />
             <Route path="/DesignPreview" element={<Suspense fallback={<div role="status">Ontwerp laden…</div>}><DesignPreview /></Suspense>} />
             <Route path="*" element={<AuthenticatedApp />} />

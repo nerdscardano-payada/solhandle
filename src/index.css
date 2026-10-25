@@ -4,6 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root, .dark {
+  --eco-canvas: #080E1C;
+  --eco-sidebar: #0B1324;
+  --eco-card: #101C32;
+  --eco-raised: #172540;
+  --eco-border: #293C5D;
+  --eco-text: #F5F7FC;
+  --eco-muted: #A8B6CF;
+  --eco-purple: #9655F4;
+  --eco-blue: #4778FF;
+  --eco-cyan: #19D2E5;
+  --eco-success: #20D6A3;
+  --eco-warning: #F2BD65;
+  --eco-error: #F07B87;
+  --eco-font: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --eco-gradient: linear-gradient(110deg, var(--eco-purple), var(--eco-blue) 55%, var(--eco-cyan));
+}
+
 html, body { overscroll-behavior: none; }
 * { -webkit-tap-highlight-color: transparent; }
 :is(button, [role="button"], [role="tab"], nav, [role="navigation"], svg),

@@ -19,6 +19,7 @@ module.exports = {
   		},
   		colors: {
         hero: { canvas: 'hsl(var(--hero-canvas))' },
+        ecosystem: { canvas: 'var(--eco-canvas)', sidebar: 'var(--eco-sidebar)', card: 'var(--eco-card)', raised: 'var(--eco-raised)', border: 'var(--eco-border)', text: 'var(--eco-text)', muted: 'var(--eco-muted)', purple: 'var(--eco-purple)', blue: 'var(--eco-blue)', cyan: 'var(--eco-cyan)', success: 'var(--eco-success)', warning: 'var(--eco-warning)', error: 'var(--eco-error)' },
         identity: { text: 'hsl(var(--identity-text))', muted: 'hsl(var(--identity-muted))', border: 'hsl(var(--identity-border))' },
         button: { start: 'var(--button-gradient-start)', middle: 'var(--button-gradient-middle)', end: 'var(--button-gradient-end)', foreground: 'hsl(var(--button-foreground))' },
   			names: { accent: 'hsl(var(--names-accent))', secondary: 'hsl(var(--names-secondary))', success: 'hsl(var(--names-success))', warning: 'hsl(var(--names-warning))' },
