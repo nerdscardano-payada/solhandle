@@ -56,6 +56,7 @@
 .eco-live .el-footer nav a:hover{color:var(--eco-cyan)}
 .eco-live .el-footer>p{width:100%;font-size:11px}
 @media (min-width:768px){
+ .eco-live:has(.el-dashboard)>.ep-viewport{max-width:none;width:100%}
  .eco-live .ep-public-app{overflow:visible}
  .eco-live .ep-public-hero{--hero-right-bleed:max(0px,calc((100vw - 1256px)/2 + 1px));overflow:visible}
  .eco-live .ep-public-city{right:auto;width:calc(100% + var(--hero-right-bleed));filter:brightness(1.08)}
