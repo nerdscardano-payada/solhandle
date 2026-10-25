@@ -1,0 +1,71 @@
+{
+  "name": "HandleProfileChallenge",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string",
+      "enum": [
+        "load",
+        "save"
+      ]
+    },
+    "payload_hash": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "issued",
+        "used"
+      ]
+    }
+  },
+  "required": [
+    "key",
+    "wallet",
+    "handle",
+    "purpose",
+    "payload_hash",
+    "message",
+    "expires_at",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

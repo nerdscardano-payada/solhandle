@@ -7,6 +7,7 @@ import SimilarHandles from "@/components/solhandle/SimilarHandles";
 import HandleShareActions from "@/components/solhandle/HandleShareActions";
 import HandleMarketplacePanel from "@/components/solhandle/HandleMarketplacePanel";
 import NameInterest from "@/components/solhandle/names/NameInterest";
+import HandlePublicProfile from '@/components/solhandle/profile/HandlePublicProfile';
 import { setHandleShareMetadata } from "@/lib/shareSolHandle";
 import { normalizeHandle, validateHandle, lamportsToSol, shortenAddress } from "@/lib/solhandle";
 
@@ -65,6 +66,7 @@ export default function HandlePage() {
           </span>
           {!invalid && data && <div className="mt-3 flex justify-center"><HandleShareActions handle={handle} isPremium={data?.nameClass === "Premium"} location="handle_detail" /></div>}
 
+          {handle && !validateHandle(handle) && <HandlePublicProfile key={handle} handle={handle}/>}
           <div className="mx-auto mt-8 max-w-xl">
             <HandleCard handle={handle} display={`@${handle || "—"}`} />
           </div>

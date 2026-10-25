@@ -30,6 +30,7 @@ const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
 const Search = lazy(() => import('@/pages/Search'));
 const MyHandles = lazy(() => import('@/pages/MyHandles'));
 const Profile = lazy(() => import('@/pages/Profile'));
+const PublicProfile = lazy(() => import('@/pages/PublicProfile'));
 const Network = lazy(() => import('@/pages/Network'));
 const NetworkDiscover = lazy(() => import('@/pages/NetworkDiscover'));
 const NetworkSearch = lazy(() => import('@/pages/NetworkSearch'));
@@ -164,6 +165,7 @@ const AuthenticatedApp = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/my-handles" element={<MyHandles />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:handle" element={<PublicProfile />} />
           <Route path="/pay" element={<Pay />} />
           <Route path="/contacts" element={<MyContacts />} />
           <Route path="/receive" element={<Receive />} />
