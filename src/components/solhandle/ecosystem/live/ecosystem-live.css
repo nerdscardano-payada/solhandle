@@ -54,6 +54,8 @@
 .eco-live .el-profile .identity-details{background:var(--eco-card);border-color:var(--eco-border)}
 .eco-live .ep-identity-person h3{font-size:clamp(20px,2.4cqw,28px)}
 .eco-live .el-identity-inline-mint,.eco-live .el-identity-summary{display:none}
+.eco-live .el-identity-avatar-column{display:contents}
+.eco-live .el-avatar-identity-link{display:none}
 .eco-live .identity-copy{display:inline-flex;margin-left:6px}
 .eco-live .identity-copy button{min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center;border:1px solid var(--eco-border);border-radius:6px;color:var(--eco-cyan)}
 .eco-live .el-footer{padding:28px 30px;border-top:1px solid var(--eco-border);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;background:var(--eco-sidebar)}
@@ -73,7 +75,10 @@
  .eco-live .el-dashboard .ep-identity{padding:30px}
  .eco-live .el-dashboard .ep-identity>.ep-card-heading{margin-bottom:28px}
  .eco-live .el-dashboard .ep-identity-layout{row-gap:32px}
- .eco-live .el-dashboard .ep-identity-person{flex-direction:column;gap:24px;align-items:flex-start}
+ .eco-live .el-dashboard .ep-identity-person{gap:28px;align-items:flex-start}
+ .eco-live .el-dashboard .ep-identity-person>.el-identity-avatar-column{display:flex;flex-direction:column;align-items:flex-start;gap:16px;flex-shrink:0}
+ .eco-live .el-dashboard .el-avatar-identity-link{display:inline-flex;white-space:nowrap}
+ .eco-live .el-dashboard .el-inline-identity-link{display:none}
  .eco-live .el-dashboard .ep-identity-person .profile-avatar{width:132px;height:132px}
  .eco-live .el-dashboard .ep-identity-person>div{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0}
  .eco-live .el-dashboard .ep-identity-person :is(h3,p,.ep-tags,.profile-social-links){margin:0}
