@@ -106,3 +106,7 @@ Alle ontvangen secties 1–70 zijn opgenomen. De volgende onderdelen zijn niet s
 - Contacts gebruikt de bestaande private walletsessie en bewaart expliciet de vaste geverifieerde ontvanger. Opslaan is een gebruikersactie, geen automatische import.
 
 Entitlementarchitectuur bestaat al voor optionele accountcapabilities met expiratie/intrekking. Testgrants implementeren de premiumtools niet automatisch en geven nooit vertrouwen, verificatie, moderatieprioriteit of rankingvoordeel.
+
+## Ontwerpaanvulling 25 oktober 2026 — wederzijdse connecties
+
+`CONNECTION_MODEL_DESIGN.md` v0.1 werkt op verzoek van de eigenaar wederzijds aanvaarde accountconnecties uit, gescheiden van bestaande private betaalcontacten en eenzijdige follows. Besloten updates zijn een latere fase, met toegang vanaf de huidige connectieperiode en intrekking na removal/block. Het huidige Connections-tabblad leest followers; dat is geen implementatie van dit model. Status: uitsluitend documentatie, geen runtime-/prototypewijziging, nieuwe rechten, migratie of live activatie. Alle nieuwe acceptatiepunten staan NOT RUN; uitvoering en vrijgave vergen afzonderlijke toestemming.
