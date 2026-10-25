@@ -6,6 +6,16 @@
     width: calc(100% - 56px);
     max-width: 1256px;
     margin-inline: auto;
+    overflow: visible;
+    background: transparent;
+  }
+  .network-preview-parity:has(> .sd-network-frame:not(.sd-phone)) {
+    position: relative;
+    isolation: isolate;
+  }
+  .network-preview-parity > .sd-network-frame:not(.sd-phone) > .sd-screen {
+    position: static;
+    isolation: auto;
   }
 }
 .network-preview-parity .sd-phone > .sd-screen { max-height: none; overflow: visible; }
