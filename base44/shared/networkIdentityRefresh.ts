@@ -5,7 +5,9 @@ import { fail, testScope } from './networkLabContext.ts';
 export async function refreshTestIdentity(db, userId, force = false) {
   let registry = await readIdentityRegistry(db);
   const binding = registry.bindings.find(row => row.user_id === userId && row.status !== 'ENDED');
-  if (!binding || (!force && binding.status === 'ACTIVE' && Date.parse(binding.valid_until) > Date.now())) return currentIdentity(registry, userId);
+  // Renew before the next 30-second profile poll can cross the expiry boundary.
+  // Writes still force an on-chain check; failed checks still revoke verification.
+  if (!binding || (!force && binding.status === 'ACTIVE' && Date.parse(binding.valid_until) > Date.now() + 35000)) return currentIdentity(registry, userId);
   let resolved, primary;
   try { resolved = await resolveOnChain(secrets.get('SOLANA_RPC_URL'), binding.handle); if (resolved?.address === binding.wallet_address) primary = await reverseOnChain(secrets.get('SOLANA_RPC_URL'), binding.wallet_address); }
   catch (error) {
