@@ -1,0 +1,81 @@
+{
+  "name": "NetworkProject",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "WALLET",
+        "DEFI",
+        "NFT",
+        "INFRASTRUCTURE",
+        "GAMING",
+        "COMMUNITY",
+        "OTHER"
+      ]
+    },
+    "website": {
+      "type": "string",
+      "maxLength": 500,
+      "pattern": "^https://[^\\s]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "PUBLISHED"
+      ],
+      "default": "DRAFT"
+    }
+  },
+  "required": [
+    "name",
+    "summary",
+    "category",
+    "website",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "PUBLISHED"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -42,6 +42,8 @@ const Faq = lazy(() => import('@/pages/Faq'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Admin = lazy(() => import('@/pages/Admin'));
 const AdminNetworkSafety = lazy(() => import('@/pages/AdminNetworkSafety'));
+const AdminProjects = lazy(() => import('@/pages/AdminProjects'));
+const NetworkProject = lazy(() => import('@/pages/NetworkProject'));
 const AdminMainnetTests = lazy(() => import('@/pages/AdminMainnetTests'));
 const HandlePage = lazy(() => import('@/pages/HandlePage'));
 const Login = lazy(() => import('@/pages/Login'));
@@ -164,6 +166,7 @@ const AuthenticatedApp = () => {
           <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
             <Route path="/network/lab" element={<Navigate to={`/network${location.search}`} replace />} />
           </Route>
+          <Route path="/network/projects/:projectId" element={<NetworkProject />} />
           <Route path="/network/account/:publicId" element={<NetworkProfile />} />
           <Route path="/network/post/:postId" element={<NetworkPost />} />
           <Route path="/network/:handle" element={<NetworkHandleIdentity />} />
@@ -228,8 +231,9 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fnetwork-safety" replace />} />}>
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
           <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
+          <Route path="/admin/projects" element={user?.role === 'admin' ? <AdminProjects /> : <Navigate to="/" replace />} />
         </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fmainnet-tests" replace />} />}>
           <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
