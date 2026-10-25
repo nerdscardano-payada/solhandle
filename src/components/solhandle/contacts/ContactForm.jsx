@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Check, Search, X } from 'lucide-react';
 import { contactMessage, contactRequest } from '@/components/solhandle/contacts/contactClient';
 const input = 'mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-names-accent';
-export default function ContactForm({ wallet, contact, payment, onSaved, onCancel }) {
-  const [name, setName] = useState(contact?.name || '');
-  const [handle, setHandle] = useState(contact?.handle || payment?.handle || '');
+export default function ContactForm({ wallet, contact, payment, initialHandle = '', onSaved, onCancel }) {
+  const [name, setName] = useState(contact?.name || (initialHandle ? `@${initialHandle.replace(/^@/, '')}` : ''));
+  const [handle, setHandle] = useState(contact?.handle || payment?.handle || initialHandle);
   const [verified, setVerified] = useState(contact ? { address: contact.recipient_wallet } : payment ? { address: payment.receiver_wallet } : null);
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
   const submit = async event => {
