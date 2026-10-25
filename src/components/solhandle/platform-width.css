@@ -1,0 +1,28 @@
+/* One centered desktop frame for the Ecosystem, homepage and existing page shells. */
+@media (min-width:1280px){
+  :root{--platform-frame-max:1520px;--platform-frame-gutter:48px}
+  .platform-shell{
+    width:calc(100% - var(--platform-frame-gutter));
+    max-width:var(--platform-frame-max);
+    margin-inline:auto;
+  }
+  .platform-shell.platform-inner .platform-page-content main>div.mx-auto{
+    width:100%;
+    max-width:none;
+    margin-inline:auto;
+  }
+  .platform-shell .platform-page-content .solhandle-platform-header{
+    width:100%;
+    max-width:none;
+    margin-inline:auto;
+  }
+  .platform-shell .platform-page-content footer>div.mx-auto{
+    width:100%;
+    max-width:none;
+  }
+  .platform-shell .network-preview-parity>.sd-network-frame:not(.sd-phone){
+    width:100%;
+    max-width:none;
+    margin-inline:auto;
+  }
+}
