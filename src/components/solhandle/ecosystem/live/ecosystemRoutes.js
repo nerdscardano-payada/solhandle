@@ -1,4 +1,4 @@
-export const ecosystemInformationPaths = ['/about', '/names', '/developers', '/integrations', '/faq', '/contact', '/privacy', '/legal', '/docs', '/demos', '/integrate', '/roadmap', '/statistics', '/last-minted', '/directory', '/protected-brands'];
+export const ecosystemInformationPaths = ['/about', '/names', '/developers', '/integrations', '/faq', '/contact', '/privacy', '/legal', '/docs', '/demos', '/integrate', '/roadmap', '/statistics', '/last-minted', '/directory', '/protected-brands', '/upcoming/token-launch'];
 export const isEcosystemInformationPath = path => ecosystemInformationPaths.includes(path) || path.startsWith('/demos/');
 export const ecosystemPaths = ['/', '/ecosystem', '/discover', '/profiles', '/discover/submit', '/admin', '/admin/projects', '/search', '/profile', '/my-handles', '/contacts', '/pay', '/receive', ...ecosystemInformationPaths];
 // Static destinations outside the Ecosystem shell must not be mistaken for /:handle.

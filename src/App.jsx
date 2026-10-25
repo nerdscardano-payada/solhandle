@@ -204,6 +204,7 @@ const AuthenticatedApp = () => {
             <Route path="/last-minted" element={<LastMinted />} />
             <Route path="/directory" element={<PremiumDirectory />} />
             <Route path="/protected-brands" element={<ProtectedBrands />} />
+            <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
             <Route path="/:handle" element={<HandlePage />} />
           </Route>
         </Route>
@@ -242,7 +243,6 @@ const AuthenticatedApp = () => {
         </Route>
         <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/upcoming/marketplace" element={<Market />} />
-        <Route path="/upcoming/token-launch" element={<TokenLaunchPreview />} />
         <Route path="/promo" element={<Promo />} />
         <Route path="/protocol-paper" element={<ProtocolPaper />} />
         {growthHubVisible ? <Route element={<GrowthHubLayout />}>
