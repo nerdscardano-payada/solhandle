@@ -15,6 +15,7 @@ import '@/components/solhandle/design/hero-cinematic.css';
 import '@/components/solhandle/design/hero-mobile-readability.css';
 import '@/components/solhandle/home/platform-live.css';
 import '@/components/solhandle/home/home-mobile-landing.css';
+import '@/components/solhandle/home/home-desktop-compact.css';
 
 export default function Home() {
   const mobile = usePresentationMobile();

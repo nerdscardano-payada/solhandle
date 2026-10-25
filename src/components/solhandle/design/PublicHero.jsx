@@ -4,7 +4,7 @@ import { useDesign } from '@/components/solhandle/design/DesignContext';
 import HeroEcosystemVisual from '@/components/solhandle/design/HeroEcosystemVisual';
 import ClaimTokenNote from '@/components/solhandle/design/ClaimTokenNote';
 import '@/components/solhandle/design/hero-cinematic.css';
-export default function PublicHero({ searchSlot, visualSlot, onExplore }) {
+export default function PublicHero({ searchSlot, visualSlot, tokenSlot, onExplore }) {
   const d = useDesign();
   const submit = e => { e.preventDefault(); d.setDialog('claim'); };
   return <section className="sd-public-hero sd-hero-cinematic">
@@ -18,7 +18,7 @@ export default function PublicHero({ searchSlot, visualSlot, onExplore }) {
         <label htmlFor="sd-claim">Find your @handle</label>
         <div className="sd-cinematic-search-row"><div className="sd-cinematic-input"><Search size={17}/><input id="sd-claim" placeholder="yourname" value={d.search} onChange={e => d.setSearch(e.target.value.replace(/^@/, ''))} maxLength={20} required autoComplete="off"/><span>@</span></div><button className="sd-button sd-gradient" type="submit">Search <ArrowRight size={16}/></button></div>
       </form>}
-      <ClaimTokenNote/>
+      {tokenSlot || <ClaimTokenNote/>}
       <div className="sd-cinematic-cta-row"><button className="sd-cinematic-explore" onClick={onExplore || (() => d.go('home'))}><Users size={19}/> Explore Social <ArrowRight size={15}/></button><span><ShieldCheck size={14}/> Your wallet. Your ownership.</span></div>
     </div>
     {visualSlot || <HeroEcosystemVisual/>}
