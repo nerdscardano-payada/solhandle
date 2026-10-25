@@ -1,0 +1,9 @@
+.identity-details-with-phone{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:48px;align-items:center}
+.identity-details-content{min-width:0}
+.identity-mint-phone{width:264px;max-width:100%;margin:0 auto;padding:7px;border:2px solid hsl(var(--identity-muted)/.55);border-radius:39px;background:hsl(var(--hero-canvas));box-shadow:0 18px 45px hsl(var(--hero-canvas)/.5)}
+.identity-mint-phone-screen{position:relative;display:flex;flex-direction:column;justify-content:center;gap:24px;min-height:460px;padding:55px 15px 46px;overflow:hidden;border:1px solid hsl(var(--identity-border));border-radius:30px;background:linear-gradient(155deg,hsl(var(--names-secondary)/.13),transparent 55%),hsl(var(--hero-surface))}
+.identity-mint-phone-camera{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:75px;height:20px;border-radius:20px;background:hsl(var(--hero-canvas));border:1px solid hsl(var(--identity-border))}
+.identity-mint-phone-screen>.identity-eyebrow{justify-content:center}
+.identity-mint-phone figcaption{text-align:center;font-size:11px;line-height:1.6;color:hsl(var(--identity-muted))}
+.identity-mint-phone-home{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:80px;height:4px;border-radius:4px;background:hsl(var(--identity-text)/.6)}
+@media(max-width:1023px){.identity-details-with-phone{display:block}.identity-mint-phone{display:none}}

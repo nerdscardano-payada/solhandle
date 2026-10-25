@@ -1,9 +1,11 @@
 import { ArrowUpRight, RefreshCw, ShieldCheck, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import IdentityCopy from '@/components/solhandle/profile/IdentityCopy';
+import IdentityMintPhone from '@/components/solhandle/profile/IdentityMintPhone';
 
 export default function IdentityDetails({ address, identity, refresh, refreshing }) {
-  return <section className="identity-details" aria-label="Wallet and identity details">
+  return <section className={`identity-details ${identity ? 'identity-details-with-phone' : ''}`} aria-label="Wallet and identity details">
+    <div className="identity-details-content">
     <div className="identity-panel-heading"><Wallet size={20}/><h2>Your wallet</h2><span className="identity-connected">Connected</span></div>
     <p className="identity-detail-intro">The wallet currently connected to SolHandle.</p>
     <div className="identity-address"><span className="identity-eyebrow">SOLANA WALLET ADDRESS</span><div><code>{address}</code><IdentityCopy value={address} label="Copy wallet address"/></div></div>
@@ -11,5 +13,7 @@ export default function IdentityDetails({ address, identity, refresh, refreshing
     <div className="identity-detail-actions"><a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer">View on Solscan <ArrowUpRight size={15}/></a><button type="button" onClick={refresh} disabled={refreshing}><RefreshCw size={15} className={refreshing ? 'animate-spin' : ''}/>{refreshing ? 'Checking…' : 'Refresh'}</button></div>
     <Link to="/my-handles" className="identity-manage">Manage my handles <ArrowUpRight size={17}/></Link>
     <p className="identity-boundary">Your handle can change. Your Network account and its history do not transfer with the NFT. This wallet view does not create or sign you into a Network account.</p>
+    </div>
+    {identity && <IdentityMintPhone handle={identity.primaryHandle}/>}
   </section>;
 }
