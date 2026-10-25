@@ -24,7 +24,7 @@
     min-height: 0;
     overflow: hidden;
   }
-  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-app-layout > :is(.sd-main, .sd-sidebar) {
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-app-layout > .sd-main {
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior-y: contain;
@@ -33,5 +33,33 @@
   }
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-app-layout > .sd-main {
     scrollbar-gutter: stable;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-main:has(> .sd-network-home) {
+    overflow: hidden;
+    scrollbar-gutter: auto;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home > .sd-page-title {
+    flex-shrink: 0;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home-layout {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-social-stream {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--sd-muted) transparent;
   }
 }
