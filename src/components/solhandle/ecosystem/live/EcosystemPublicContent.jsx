@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { UsersRound, Send, ArrowRight } from 'lucide-react';
+import EcosystemLiveProjects from '@/components/solhandle/ecosystem/live/EcosystemLiveProjects';
+export default function EcosystemPublicContent() {
+  return <div className="ep-public-content"><section className="ep-public-intro"><span className="ep-eyebrow">WHAT IS SOLHANDLE?</span><h2>One identity.<br/>More possibilities.</h2><p>Your unique human-readable @handle, owned as an NFT on Solana. Bring identity, discovery, private contacts and payments together without giving up control of your wallet.</p></section><EcosystemLiveProjects compact/><div className="ep-public-bottom"><section className="ep-card"><UsersRound size={25}/><h2>Connect with @handles.</h2><p>Keep your people close in a private address book. Saved contacts are private, with no automatic follows or social connections.</p><Link className="ep-link" to="/contacts">Explore Contacts <ArrowRight size={16}/></Link></section><section className="ep-card"><Send size={25}/><h2>Pay with SolHandle.</h2><p>Send to a name. Check the recipient. Approve in your own wallet. No internal balance or custody.</p><Link className="ep-link" to="/pay">Explore SolHandle Pay <ArrowRight size={16}/></Link></section></div></div>;
+}

@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { isEcosystemPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 import { Image } from '@/components/ui/image';
 import '@/components/solhandle/platform-theme.css';
 import '@/components/solhandle/mobile-app.css';
@@ -8,7 +9,7 @@ import '@/components/solhandle/demos/demo-mobile.css';
 
 export default function PlatformSurface({ children }) {
   const { pathname } = useLocation();
-  if (pathname.startsWith('/widgets/')) return children;
+  if (pathname.startsWith('/widgets/') || isEcosystemPath(pathname)) return children;
   const home = pathname === '/';
   const social = pathname === '/network' || pathname.startsWith('/network/');
   const appNavigation = !social && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname) && !pathname.startsWith('/admin');

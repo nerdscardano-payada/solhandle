@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { Fingerprint, ContactRound, Send, ArrowUpRight } from 'lucide-react';
+export default function EcosystemLiveSummary({ state }) {
+  const primary = !state.error && state.identity?.address === state.address ? state.identity?.primaryHandle : null;
+  return <div className="ep-summary"><section className="ep-card ep-summary-identity"><div className="ep-card-heading"><h2><Fingerprint size={18}/>Identity</h2></div><p>Your name on Solana.</p><strong>{state.loading ? 'Checking…' : primary || 'Make it yours.'}</strong><Link to="/profile" className="ep-link">Your identity <ArrowUpRight size={13}/></Link></section><section className="ep-card"><div className="ep-card-heading"><h2><ContactRound size={18}/>Contacts</h2></div><p>Your private wallet-linked address book.</p><strong>Private by default.</strong><Link to="/contacts" className="ep-link">Open contacts <ArrowUpRight size={13}/></Link></section><section className="ep-card ep-summary-pay"><div className="ep-card-heading"><h2><Send size={18}/>SolHandle Pay</h2></div><p>Send directly. Review and approve in your wallet.</p><div className="ep-assets">{['SOL', 'USDC', 'USDT', 'HANDLE'].map(asset => <span key={asset}>{asset}</span>)}</div><Link to="/pay" className="ep-link">Send a payment <ArrowUpRight size={13}/></Link></section></div>;
+}

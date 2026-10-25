@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useQueryClient } from '@tanstack/react-query';
 import usePullToRefresh from '@/hooks/usePullToRefresh';
 import PullRefreshStatus from '@/components/solhandle/PullRefreshStatus';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Header from '@/components/solhandle/Header';
 import HandleSearch from '@/components/solhandle/HandleSearch';
 import PublicHandleMintRecovery from '@/components/solhandle/PublicHandleMintRecovery';
@@ -11,7 +12,9 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import SearchDesktopHero from '@/components/solhandle/home/SearchDesktopHero';
 export default function Search() {
   const { t } = useLanguage();
-  const [wallet, setWallet] = useState(() => localStorage.getItem('solhandle_wallet') || '');
+  const initialHandle = new URLSearchParams(useLocation().search).get('q') || '';
+  const { publicKey } = useWallet();
+  const wallet = publicKey?.toBase58() || '';
   const isMobile = useIsMobile();
   const client = useQueryClient();
   const [refreshVersion, setRefreshVersion] = useState(0);
@@ -20,13 +23,13 @@ export default function Search() {
     setRefreshVersion(version => version + 1);
   });
   return <main ref={pull.ref} data-mobile-scroll-panel className="dark min-h-screen bg-background text-foreground"><PullRefreshStatus refreshing={pull.refreshing} distance={pull.distance} ready={pull.ready}/><div className="mx-auto min-h-screen max-w-7xl border-x border-border">
-    <Header onConnected={setWallet}/><PublicHandleMintRecovery/>
-    {!isMobile ? <SearchDesktopHero wallet={wallet}/> : <div className="mx-auto max-w-6xl px-5 py-8 sm:px-9 sm:py-12">
+    <Header/><PublicHandleMintRecovery/>
+    {!isMobile ? <SearchDesktopHero key={initialHandle} wallet={wallet} initialHandle={initialHandle}/> : <div className="mx-auto max-w-6xl px-5 py-8 sm:px-9 sm:py-12">
       <Link to="/" className="text-sm text-names-accent">← {t('Back to home')}</Link>
       <h1 className="mt-5 text-3xl font-semibold sm:text-5xl">{t('Find your SolHandle')}</h1>
       <p className="mt-3 text-sm text-muted-foreground">{t('Search, claim, and own your unique NFT-backed identity on Solana.')}</p>
       <div className="mt-7">
-        <div className="min-w-0"><HandleSearch wallet={wallet} refreshVersion={refreshVersion}/></div>
+        <div className="min-w-0"><HandleSearch key={initialHandle} wallet={wallet} initialHandle={initialHandle} refreshVersion={refreshVersion}/></div>
       </div>
     </div>}
   </div></main>;

@@ -18,6 +18,10 @@ import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
 const Home = lazy(() => import('@/pages/Home'));
 const DesignPreview = lazy(() => import('@/pages/DesignPreview'));
 const EcosystemPreview = lazy(() => import('@/pages/EcosystemPreview'));
+const Ecosystem = lazy(() => import('@/pages/Ecosystem'));
+const EcosystemDiscover = lazy(() => import('@/pages/EcosystemDiscover'));
+const EcosystemLiveFrame = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemLiveFrame'));
+import { isEcosystemPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 const AndroidDownload = lazy(() => import('@/pages/AndroidDownload'));
 const Demos = lazy(() => import('@/pages/Demos'));
 const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
@@ -101,7 +105,6 @@ import ProtocolPageTracker from '@/components/solhandle/ProtocolPageTracker';
 import AttoChat from '@/components/solhandle/AttoChat';
 import PlatformSurface from '@/components/solhandle/PlatformSurface';
 import MobileAppNavigation from '@/components/solhandle/MobileAppNavigation';
-import HomeMobileNavigation from '@/components/solhandle/home/HomeMobileNavigation';
 import MobileBackHeader from '@/components/solhandle/MobileBackHeader';
 import MobileTabProvider from '@/components/solhandle/navigation/MobileTabProvider';
 import LanguageProvider from '@/components/i18n/LanguageProvider';
@@ -114,8 +117,9 @@ const AuthenticatedApp = () => {
 
   const isWidget = pathname.startsWith('/widgets/');
   const isSocial = pathname === '/network' || pathname.startsWith('/network/');
-  const showMobileTabs = pathname !== '/' && !isSocial && !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
-  const isChildPage = !isSocial && !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/explore', '/names'].includes(pathname);
+  const isEcosystem = isEcosystemPath(pathname);
+  const showMobileTabs = !isEcosystem && !isSocial && !isWidget && !pathname.startsWith('/admin') && !['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname);
+  const isChildPage = !isEcosystem && !isSocial && !isWidget && !['/', '/search', '/my-handles', '/pay', '/receive', '/quests', '/explore', '/names'].includes(pathname);
   const { user, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
@@ -145,16 +149,24 @@ const AuthenticatedApp = () => {
       <MobileTabCache className={isChildPage ? 'mobile-child-page min-w-0' : 'min-w-0'}>
           <Suspense fallback={<div role="status" aria-label="Loading page" className="flex min-h-[50dvh] items-center justify-center"><span className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-names-accent"/></div>}>
       <Routes location={location}>
-        <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
-        <Route path="/search" element={<Search />} />
+        <Route element={<EcosystemLiveFrame />}>
+          <Route path="/" element={<HomeEntrance><Home /></HomeEntrance>} />
+          <Route path="/ecosystem" element={<Ecosystem />} />
+          <Route path="/discover" element={<EcosystemDiscover />} />
+          <Route path="/discover/projects/:projectId" element={<NetworkProject backTo="/discover" />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/my-handles" element={<MyHandles />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/pay" element={<Pay />} />
+          <Route path="/contacts" element={<MyContacts />} />
+          <Route path="/receive" element={<Receive />} />
+        </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
           <Route path="/android" element={user?.role === 'admin' ? <AndroidDownload /> : <Navigate to="/" replace />} />
         </Route>
         <Route path="/demos" element={<Demos />} />
         <Route path="/demos/:slug" element={<DemoDetail />} />
         <Route path="/mint-weekend" element={<Navigate to="/" replace />} />
-        <Route path="/my-handles" element={<MyHandles />} />
-        <Route path="/profile" element={<Profile />} />
         <Route element={<NetworkLayout />}>
           <Route path="/network" element={<Network />} />
           <Route path="/network/discover" element={<NetworkDiscover />} />
@@ -249,9 +261,6 @@ const AuthenticatedApp = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/mint-success" element={<MintSuccess />} />
         <Route path="/discord-verify" element={<DiscordVerify />} />
-        <Route path="/pay" element={<Pay />} />
-        <Route path="/contacts" element={<MyContacts />} />
-        <Route path="/receive" element={<Receive />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
         <Route path="/growth/burn" element={<BurnDashboard />} />
@@ -261,9 +270,9 @@ const AuthenticatedApp = () => {
       </Routes>
           </Suspense>
       </MobileTabCache>
-      {pathname !== '/' && !isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
-      {pathname !== '/' && !isWidget && !isSocial && <AttoChat />}
-      {pathname === '/' && <HomeMobileNavigation />}
+      {!isEcosystem && !isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
+      {!isEcosystem && !isWidget && !isSocial && <AttoChat />}
+
       {showMobileTabs && <MobileAppNavigation />}
     </PlatformSurface>
   );

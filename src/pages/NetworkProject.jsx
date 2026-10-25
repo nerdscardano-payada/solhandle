@@ -5,7 +5,7 @@ import { projectCategories, projectFields } from '@/components/solhandle/network
 import NetworkExternalLink from '@/components/solhandle/network/NetworkExternalLink';
 import NetworkState from '@/components/solhandle/network/NetworkState';
 
-export default function NetworkProject() {
+export default function NetworkProject({ backTo = '/network/discover' }) {
   const { projectId } = useParams();
   const query = useQuery({
     queryKey: ['network-project', projectId], staleTime: 0, refetchInterval: 30000, retry: 1,
@@ -17,7 +17,7 @@ export default function NetworkProject() {
   });
   const project = query.data;
   return <section lang="en" translate="no" className="space-y-5 p-5 sm:p-6">
-    <Link to="/network/discover" className="text-sm text-names-accent underline">Back to Discover</Link>
+    <Link to={backTo} className="text-sm text-names-accent underline">Back to Discover</Link>
     <NetworkState query={query}>{project ? <article className="space-y-5">
       <p className="text-xs text-identity-muted">{projectCategories[project.category] || 'Other'} · DIRECTORY LISTING</p>
       <h1 className="break-words text-3xl font-bold text-foreground" data-no-translate>{project.name}</h1>

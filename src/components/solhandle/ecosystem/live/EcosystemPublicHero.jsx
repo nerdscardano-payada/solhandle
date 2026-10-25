@@ -1,0 +1,15 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, ArrowRight, Fingerprint, Compass, Send } from 'lucide-react';
+import { Image } from '@/components/ui/image';
+import { ecosystemAssets } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
+const panels = [[Fingerprint, 'Identity', 'Your name.', 'A wallet-owned identity.', '/profile'], [Compass, 'Discover', 'Explore Solana.', 'Find projects and possibilities.', '/discover'], [Send, 'Pay', 'Pay an @handle.', 'Your wallet. Your approval.', '/pay']];
+export default function EcosystemPublicHero() {
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
+  const submit = event => { event.preventDefault(); navigate(`/search?q=${encodeURIComponent(search.trim().replace(/^@/, '').toLowerCase())}`); };
+  return <section className="ep-public-hero"><Image src={ecosystemAssets.city} alt="Futuristic SolHandle city at sunset" className="ep-public-city" loading="eager" focalPointX={0.72}/>
+    <div className="ep-public-copy"><span className="ep-eyebrow">SIMPLE NAMES. BIGGER POSSIBILITIES.</span><h1>Your @handle.<br/>Your identity.<br/><span>Your Solana network.</span></h1><p>A name that is yours. People worth knowing.<br/>A simpler way to connect and pay on Solana.</p><form onSubmit={submit} className="ep-claim-search"><span>@</span><input value={search} onChange={event => setSearch(event.target.value.replace(/^@/, ''))} aria-label="Find your SolHandle" placeholder="Find your name" maxLength={20} required pattern="[a-zA-Z0-9]+" title="Use 1–20 letters or numbers"/><button className="ep-button ep-primary" type="submit"><Search size={17}/><span>Search</span></button></form><small>Check availability and price. Claim with your own wallet.</small><Link className="ep-button ep-secondary" to="/ecosystem">Explore Ecosystem <ArrowRight size={17}/></Link></div>
+    <div className="ep-hero-preview"><div className="ep-mini-window"><Image src={ecosystemAssets.logo} alt="SolHandle" fittingType="fit" className="ep-logo"/><span>YOUR SOLHANDLE ECOSYSTEM</span></div><div className="ep-hero-panels">{panels.map(([Icon, title, heading, copy, to]) => <Link to={to} key={title}><Icon size={25}/><span>{title}</span><strong>{heading}</strong><small>{copy}</small><ArrowRight size={17}/></Link>)}</div><p className="ep-small">Identity, discovery and payments. One connected experience.</p></div>
+  </section>;
+}

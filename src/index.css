@@ -22,6 +22,22 @@
   --eco-gradient: linear-gradient(110deg, var(--eco-purple), var(--eco-blue) 55%, var(--eco-cyan));
 }
 
+/* Existing feature modules inherit the Ecosystem palette inside the production frame. */
+.ecosystem-tokens, .ecosystem-tokens .dark {
+  --background: 222 56% 7%; --foreground: 223 54% 97%;
+  --card: 219 52% 13%; --card-foreground: 223 54% 97%;
+  --popover: 219 52% 13%; --popover-foreground: 223 54% 97%;
+  --border: 219 39% 26%; --input: 219 39% 26%;
+  --muted: 220 47% 17%; --muted-foreground: 219 29% 74%;
+  --accent: 220 47% 17%; --accent-foreground: 223 54% 97%;
+  --primary: 186 83% 50%; --primary-foreground: 222 56% 7%; --ring: 186 83% 50%;
+  --hero-canvas: 222 56% 7%; --hero-surface: 219 52% 13%;
+  --identity-text: 223 54% 97%; --identity-muted: 219 29% 74%; --identity-border: 219 39% 26%;
+  --names-accent: 186 83% 50%; --names-secondary: 264 88% 65%;
+  --font-heading: var(--eco-font); --font-body: var(--eco-font); --font-display: var(--eco-font);
+  --button-gradient: var(--eco-gradient); --button-foreground: 222 56% 7%;
+}
+
 html, body { overscroll-behavior: none; }
 * { -webkit-tap-highlight-color: transparent; }
 :is(button, [role="button"], [role="tab"], nav, [role="navigation"], svg),

@@ -1,0 +1,8 @@
+import { useState } from 'react';
+import { Search } from 'lucide-react';
+import EcosystemLiveProjects from '@/components/solhandle/ecosystem/live/EcosystemLiveProjects';
+import { projectCategories } from '@/components/solhandle/network/projects/projectDirectory';
+export default function EcosystemDiscover() {
+  const [search, setSearch] = useState(''), [q, setQ] = useState(''), [category, setCategory] = useState('ALL');
+  return <main className="ep-page ep-discover"><header className="ep-page-heading"><span className="ep-eyebrow">A WIDER WORLD OF SOLANA.</span><h1>Discover</h1><p>Explore published projects across the SolHandle ecosystem.</p></header><form className="ep-search-field" onSubmit={event => { event.preventDefault(); setQ(search.trim()); }} role="search"><Search size={19}/><input aria-label="Search published projects" placeholder="Search projects..." value={search} onChange={event => { setSearch(event.target.value); if (!event.target.value) setQ(''); }} maxLength={80}/><button className="ep-link" type="submit">Search</button></form><label className="el-category">Category<select value={category} onChange={event => setCategory(event.target.value)}><option value="ALL">All categories</option>{Object.entries(projectCategories).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><EcosystemLiveProjects q={q} category={category}/></main>;
+}

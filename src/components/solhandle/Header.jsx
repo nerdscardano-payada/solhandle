@@ -1,4 +1,5 @@
 import '@/components/solhandle/header-desktop.css';
+import { useEcosystemFrame } from '@/components/solhandle/ecosystem/live/EcosystemFrameContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Search } from "lucide-react";
@@ -17,6 +18,8 @@ export default function Header({ onConnected, funnel = false }) {
   const { publicKey } = useWallet();
   const wallet = publicKey?.toBase58() || "";
   const notifications = useMarketplaceNotifications(wallet);
+  const ecosystemFrame = useEcosystemFrame();
+  if (ecosystemFrame) return null;
 
   return <><header className="solhandle-platform-header relative mx-auto flex max-w-7xl items-center justify-between border-b border-white/10 px-5 py-4 lg:px-9">
     <Brand prominent />
