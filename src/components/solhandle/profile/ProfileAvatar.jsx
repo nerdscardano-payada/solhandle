@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { UserRound } from 'lucide-react';
+import { Fingerprint, UserRound } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import HandleCard from '@/components/solhandle/HandleCard';
 import { readProfileAvatar } from '@/components/solhandle/profile/profileAvatarStorage';
-export default function ProfileAvatar({ avatar, handle = '', className = '' }) {
+export default function ProfileAvatar({ avatar, handle = '', className = '', mintFallback = true }) {
   const [image, setImage] = useState(null), [failed, setFailed] = useState(false);
   const fingerprint = avatar ? JSON.stringify(avatar) : '';
   useEffect(() => {
@@ -16,8 +16,8 @@ export default function ProfileAvatar({ avatar, handle = '', className = '' }) {
     return () => { controller.abort(); if (url) URL.revokeObjectURL(url); };
   }, [fingerprint]);
   return <span className={`profile-avatar ${className}`}>
-    {image?.fingerprint === fingerprint ? <Image src={image.url} alt={`Profile photo for @${handle.replace(/^@/, '')}`} className="h-full w-full object-cover"/> : handle ? <HandleCard handle={handle}/> : <UserRound size={42} strokeWidth={1.2}/>}
+    {image?.fingerprint === fingerprint ? <Image src={image.url} alt={`Profile photo for @${handle.replace(/^@/, '')}`} className="h-full w-full object-cover"/> : handle && mintFallback ? <HandleCard handle={handle}/> : mintFallback ? <UserRound size={42} strokeWidth={1.2}/> : <Fingerprint size={42} strokeWidth={1.2}/>}
     {avatar && !image && !failed && <span className="sr-only" role="status">Loading private photo…</span>}
-    {failed && <span className="sr-only" role="status">Photo unavailable; showing handle artwork.</span>}
+    {failed && <span className="sr-only" role="status">Photo unavailable; showing the identity placeholder.</span>}
   </span>;
 }
