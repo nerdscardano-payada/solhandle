@@ -17,6 +17,7 @@ import '@/components/solhandle/home/platform-live.css';
 import '@/components/solhandle/network/network-preview-parity.css';
 import '@/components/solhandle/network/network-profile-parity.css';
 import '@/components/solhandle/design/profile-identity-preview.css';
+import '@/components/solhandle/network/network-viewport-scroll.css';
 export default function NetworkLayout() {
   return <NetworkSessionProvider><NetworkThemeProvider><NetworkShell/></NetworkThemeProvider></NetworkSessionProvider>;
 }
