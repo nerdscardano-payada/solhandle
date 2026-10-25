@@ -34,28 +34,33 @@
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-app-layout > .sd-main {
     scrollbar-gutter: stable;
   }
+  html:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home),
+  body:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home) {
+    scrollbar-width: none;
+  }
+  html:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home)::-webkit-scrollbar,
+  body:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home)::-webkit-scrollbar {
+    display: none;
+  }
+  .network-preview-parity:has(.sd-network-frame:not(.sd-phone) .sd-network-home),
+  .network-preview-parity .sd-network-frame:not(.sd-phone):has(.sd-network-home),
+  .network-preview-parity .sd-network-frame:not(.sd-phone) > .sd-screen:has(.sd-network-home) {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-app-layout:has(.sd-network-home),
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-main:has(> .sd-network-home) {
-    overflow: hidden;
+    overflow: visible;
     scrollbar-gutter: auto;
   }
-  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-  }
-  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home > .sd-page-title {
-    flex-shrink: 0;
-  }
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home-layout {
-    flex: 1;
-    min-height: 0;
     width: 100%;
-    grid-template-rows: minmax(0, 1fr);
-    align-items: stretch;
+    align-items: start;
   }
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-social-stream {
     min-height: 0;
+    max-height: calc(100dvh - 220px);
     overflow-y: auto;
     overscroll-behavior-y: contain;
     scrollbar-gutter: stable;
@@ -63,16 +68,8 @@
     scrollbar-color: var(--sd-muted) transparent;
   }
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-context-stack {
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-context-stack::-webkit-scrollbar {
-    display: none;
-  }
-  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-context-stack > * {
-    flex-shrink: 0;
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
 }
