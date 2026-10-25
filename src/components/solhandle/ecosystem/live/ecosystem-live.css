@@ -88,7 +88,8 @@
  .eco-live .el-mobile-actions{display:none}
  .eco-live .ep-dashboard-lower{grid-template-columns:minmax(0,1.3fr) minmax(220px,1fr)}
  .eco-live .ep-identity-layout{grid-template-columns:minmax(0,1fr)}
- .eco-live .el-identity-inline-mint{display:block;flex:0 0 180px;min-width:0;order:2;margin-left:auto}
+ .eco-live .el-identity-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 180px;align-items:start}
+ .eco-live .el-identity-inline-mint{display:block;min-width:0}
  .eco-live .el-identity-inline-mint .profile-mint-image{margin:0}
  .eco-live .ep-identity-full .ep-identity-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
