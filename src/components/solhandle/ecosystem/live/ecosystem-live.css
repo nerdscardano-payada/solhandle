@@ -4,6 +4,9 @@
 .eco-live .ep-app{border-radius:0;min-height:100dvh}
 .eco-live .ep-header{grid-template-columns:210px minmax(0,1fr) auto}
 .eco-live .ep-brand{text-decoration:none}
+.eco-live .el-home-navigation{display:flex;align-items:center;justify-content:center;gap:28px;min-width:0}
+.eco-live .el-home-navigation a{display:inline-flex;align-items:center;min-height:44px;color:var(--eco-muted);font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap}
+.eco-live .el-home-navigation a:hover{color:var(--eco-cyan)}
 .eco-live .el-wallet-button{white-space:nowrap;font-size:12px;background:var(--eco-card);max-width:220px}
 .eco-live .el-wallet-button>svg{color:var(--eco-cyan)}
 .eco-live .ep-public-copy h1{font-weight:900}
@@ -86,6 +89,7 @@
 @container ecosystem (max-width:767px){
  .eco-live .ep-app{border:0;border-radius:0;padding-bottom:0;overflow:visible}
  .eco-live .ep-header{display:flex;padding:0 14px;gap:8px}
+ .eco-live .el-home-navigation{display:none}
  .eco-live .ep-brand>span{font-size:19px}
  .eco-live .el-wallet-button{max-width:150px;padding:8px 10px;font-size:11px;gap:5px;min-height:40px}
  .eco-live .el-wallet-button>svg{width:14px}
