@@ -88,21 +88,12 @@
  .eco-live .el-mobile-actions{display:none}
  .eco-live .ep-dashboard-lower{grid-template-columns:minmax(0,1.3fr) minmax(220px,1fr)}
  .eco-live .ep-identity-layout{grid-template-columns:minmax(0,1fr)}
- .eco-live .el-identity-columns{grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr) 160px;gap:32px;align-items:start}
+ .eco-live .el-identity-columns{grid-template-columns:minmax(0,1fr) 260px;gap:24px;align-items:start}
  .eco-live .el-identity-columns>div{min-width:0}
- .eco-live .el-identity-columns>.ep-identity-details{display:none}
- .eco-live .el-identity-columns>.el-identity-summary{display:block}
- .eco-live .el-identity-columns>.ep-identity-person>div>.ep-link{margin-top:4px}
- .eco-live .el-identity-verified{display:flex;align-items:center;gap:7px;color:var(--eco-cyan);font-size:12px;font-weight:500;margin:0 0 10px;min-height:26px}
- .eco-live .el-identity-verified>svg{flex-shrink:0}
- .eco-live .el-identity-info,.eco-live .el-identity-refresh{display:inline-flex;align-items:center;justify-content:center;min-width:28px;min-height:28px;flex-shrink:0;border:0;background:transparent;color:var(--eco-muted);border-radius:6px}
- .eco-live .el-identity-info:hover,.eco-live .el-identity-refresh:hover{color:var(--eco-cyan);background:var(--eco-raised)}
- .eco-live .el-identity-refresh{margin-left:6px;color:var(--eco-cyan)}
- .eco-live .el-identity-refresh:disabled{opacity:.5;cursor:wait}
- .eco-live .el-identity-summary dl{padding:4px 12px}
- .eco-live .el-identity-summary dl>div{align-items:center;padding:6px 0;min-height:36px}
- .eco-live .el-identity-inline-mint{display:block;width:100%;min-width:0}
- .eco-live .el-identity-inline-mint .profile-mint-image{max-width:160px;margin:0}
+ .eco-live .el-identity-columns>.ep-identity-person{grid-column:1;grid-row:1}
+ .eco-live .el-identity-columns>.ep-identity-details{grid-column:1/-1;grid-row:2}
+ .eco-live .el-identity-inline-mint{display:flex;grid-column:2;grid-row:1;align-self:center;justify-content:center;width:100%;min-width:0}
+ .eco-live .el-identity-inline-mint .profile-mint-image{width:160px;max-width:100%;margin:0}
  .eco-live .el-identity-inline-mint .profile-mint-image>.ep-small{display:none}
  .eco-live .ep-identity-full .ep-identity-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
