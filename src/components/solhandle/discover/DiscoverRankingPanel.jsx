@@ -22,7 +22,7 @@ export default function DiscoverRankingPanel({ id }) {
   if (query.isPending) return <p role="status">Loading ranking reviews…</p>;
   if (query.isError) return <div role="alert">Ranking reviews could not load. <button type="button" onClick={() => query.refetch()}>Retry</button></div>;
   const listing = query.data, benefits = rankingBenefits(listing);
-  return <section className="space-y-4 rounded-xl border border-border bg-card p-5 text-foreground">
+  return <section className="ep-card el-admin-ranking space-y-4">
     <h3 className="text-lg font-semibold">Ranking review: {listing.name}</h3>
     <p className="text-sm text-muted-foreground">Integration first, active linked handle second, then other listings. Alphabetical within each group. No token-based Featured. Only publish public evidence links.</p>
     {['integration', 'handle'].map(kind => <div key={kind} className="space-y-3">

@@ -1,0 +1,49 @@
+.eco-live .el-admin.ep-page{width:100%;max-width:none;min-width:0}
+.eco-live .el-admin .el-admin-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.eco-live .el-admin .el-admin-heading>.ep-button{flex-shrink:0}
+.eco-live .el-admin-navigation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.eco-live .el-admin-navigation .ep-button{justify-content:flex-start;text-align:left;min-width:0;min-height:52px;padding:13px 15px}
+.eco-live .el-admin-navigation .ep-button span{overflow-wrap:anywhere}
+.eco-live .el-admin-navigation .ep-button:not(.ep-primary)>svg{color:var(--eco-purple)}
+.eco-live .el-admin .el-admin-content{min-width:0}
+.eco-live .el-admin .card-glow{border:1px solid var(--eco-border);background:var(--eco-card);border-radius:16px;padding:21px;box-shadow:none;min-width:0}
+.eco-live .el-admin .card-glow.p-0{padding:0}
+.eco-live .el-admin :is(.text-white,.text-slate-200,.text-slate-300){color:var(--eco-text)}
+.eco-live .el-admin :is(.text-slate-400,.text-slate-500){color:var(--eco-muted)}
+.eco-live .el-admin :is(.text-cyan-200,.text-cyan-300){color:var(--eco-cyan)}
+.eco-live .el-admin :is(.text-violet-200,.text-violet-300){color:var(--eco-purple)}
+.eco-live .el-admin .bg-slate-950{background:var(--eco-sidebar)}
+.eco-live .el-admin button.bg-gradient-to-r{background:var(--eco-gradient);color:var(--eco-canvas)}
+.eco-live .el-admin :is([class~="border-white/5"],[class~="border-white/10"],[class~="border-white/15"]){border-color:var(--eco-border)}
+.eco-live .el-admin thead{background:var(--eco-sidebar);color:var(--eco-muted)}
+.eco-live .el-admin .discover-tabs{margin:0;gap:8px}
+.eco-live .el-admin .discover-tabs button{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--eco-card)}
+.eco-live .el-admin .discover-tabs button[aria-pressed=true]{background:color-mix(in srgb,var(--eco-purple) 15%,var(--eco-card));border-color:var(--eco-purple);color:var(--eco-text)}
+.eco-live .el-admin-listings{min-width:0;width:100%}
+.eco-live .el-admin-listings>div:first-child h2{font-size:19px}
+.eco-live .el-admin-listings .el-admin-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.3fr);gap:14px;padding:16px;border:1px solid var(--eco-border);border-radius:12px;background:var(--eco-sidebar)}
+.eco-live .el-admin .el-admin-form fieldset{display:grid;gap:22px;min-width:0}
+.eco-live .el-admin :is(form,label,fieldset){min-width:0}
+.eco-live .el-admin :is(input:not([type=checkbox]),select,textarea){max-width:100%}
+.eco-live .el-admin input[type=checkbox]{accent-color:var(--eco-cyan);flex-shrink:0}
+.eco-live .el-admin .discover-review{margin-top:0}
+.eco-live .el-admin .discover-review-list button{display:grid;gap:7px}
+.eco-live .el-admin .discover-review-list button:hover{border-color:var(--eco-purple);background:var(--eco-raised)}
+.eco-live .el-admin .discover-review-list :is(strong,p){overflow-wrap:anywhere}
+.eco-live .el-admin .discover-card .discover-actions .ep-button{margin-top:0}
+.eco-live .el-admin .el-admin-ranking .discover-form{max-width:none;margin-inline:0}
+.eco-live .el-admin .el-admin-ranking .discover-form label:has(input[type=checkbox]){display:flex;align-items:flex-start;gap:10px}
+.eco-live .el-admin .el-admin-ranking .discover-form input[type=checkbox]{margin-top:5px}
+@container ecosystem (max-width:1099px){.eco-live .el-admin-navigation{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container ecosystem (max-width:767px){
+ .eco-live .el-admin .el-admin-heading{gap:14px}
+ .eco-live .el-admin .el-admin-heading h1{font-size:28px}
+ .eco-live .el-admin-navigation{gap:8px}
+ .eco-live .el-admin-navigation .ep-button{font-size:12px;gap:8px;padding:12px 10px;align-items:flex-start}
+ .eco-live .el-admin-navigation .ep-button svg{width:16px;height:16px;margin-top:1px}
+ .eco-live .el-admin .card-glow{padding:17px}
+ .eco-live .el-admin .card-glow.p-0{padding:0}
+ .eco-live .el-admin-listings .el-admin-filters{grid-template-columns:minmax(0,1fr);padding:14px}
+ .eco-live .el-admin :is(.discover-actions,.el-admin-form>div:last-child){display:grid;grid-template-columns:minmax(0,1fr)}
+ .eco-live .el-admin :is(.ep-card,.card-glow) h2{flex-wrap:wrap}
+}

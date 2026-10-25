@@ -156,6 +156,7 @@ const AuthenticatedApp = () => {
           <Route path="/ecosystem" element={<Ecosystem />} />
           <Route path="/discover" element={<EcosystemDiscover />} />
           <Route path="/discover/submit" element={<DiscoverSubmit />} />
+          <Route path="/admin" element={<Admin />} />
           <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fprojects" replace />} />}>
             <Route path="/admin/projects" element={user?.role === 'admin' ? <AdminProjects /> : <Navigate to="/discover" replace />} />
           </Route>
@@ -252,7 +253,6 @@ const AuthenticatedApp = () => {
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/last-minted" element={<LastMinted />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
-        <Route path="/admin" element={<Admin />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
           <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
         </Route>
