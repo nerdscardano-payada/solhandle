@@ -103,4 +103,21 @@ Product/scope: eigenaar nog te bevestigen. Technische uitvoering: ontwikkelaar; 
 
 ## 7. Vervolg
 
-Eerst de bevindingen en keuzes beoordelen. Geen nieuwe loginservice, productieflag, datamodel, betaalgedrag of publieke pagina veranderd door deze fase-0-oplevering. De inventaris is beschikbaar; fase 0 als volledige bewijs- en goedkeuringsfase is nog niet afgesloten.
+Bij de oorspronkelijke inventaris is geen productiegedrag gewijzigd. De inventaris is beschikbaar; fase 0 als volledige bewijs- en goedkeuringsfase is nog niet afgesloten.
+
+## 8. Eerste implementatie na verzoek eigenaar — 25 oktober 2026
+
+De eigenaar vroeg de aanbevolen beslissingen toe te passen waar nodig. Dit is een beperkte veiligheids- en routeverbetering, geen volledige implementatie of publieke vrijgave van de Hub.
+
+Toegepast:
+- B0-04: bestaande vaste contactwallet behouden. Als de servervoorbereiding meldt dat de handleowner afwijkt, vraagt de betaalreview nu expliciet bevestiging dat de opgeslagen wallet bedoeld wordt. Dit geldt voor SOL en de bestaande tokenbetaalreviews; normale betalingen krijgen geen extra checkbox. De bevestiging geldt uitsluitend voor het getoonde reviewobject en vervalt bij een nieuwe review.
+- SOL vergelijkt bij de verse voorbereiding nu ook savedContact en handleChanged met de gereviewde status. Een statuswijziging stopt vóór walletsigning en toont de bijgewerkte review, zelfs als de vastgepinde wallet gelijk blijft. De tokenflow had deze vergelijking al.
+- B0-06 gedeeltelijk: /network/:handle opent nu een live geverifieerde handle-NFT-identiteit via de bestaande identitylookup, niet een profielquery met ontbrekend publicId. /network/account/:publicId blijft de vaste profielroute. Er wordt geen fictieve handle-accountmapping toegevoegd. Onzekerheid, fout en ongeldig formaat hebben expliciete weergaven. Dit maakt de handle-identiteitsroute bruikbaar maar realiseert nog geen productie-accountbinding.
+
+Bewust niet gewijzigd:
+- Geen loginprovider, algemene walletsessie, permissieversoepeling of productieledenactivatie.
+- Geen automatische Official Project-badge op basis van NFT-, domein- of sociallinkbewijs.
+- Geen sociale code/navigatie of publieke leesroutes verwijderd en geen data gemigreerd.
+- Geen betaalbestemming of gesigneerde transactiestructuur aangepast; de nieuwe checkbox is een gebruikersbevestiging, geen serverauthenticatie of atomische garantie tegen on-chain races.
+
+Volgende afzonderlijke werkpakketten: admin-beheerde projectdirectory met publieke meldafhandeling; ondersteunde ledenauth met concurrency-/intrekkingsbewijs; privacy-/verwijderbeleid en MVP-navigatie. B0-01/B0-02/B0-03/B0-05 en alle vrijgavepoorten blijven open. Transfer- en betaaldemonstraties moeten nog feitelijk worden uitgevoerd; geen transactie verstuurd door deze wijziging.

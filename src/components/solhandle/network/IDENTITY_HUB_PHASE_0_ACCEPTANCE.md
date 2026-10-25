@@ -28,6 +28,9 @@ De Testing Agent is bereikbaar via het reageerbuisje in het zijpaneel. Start all
 | F12 | Doorloop de vier kernen op 360px mobiel en desktop; geen onvoltooide sociale functies als werkende publieke opties. | NOT RUN |
 | F13 | Open standalone Pay en Contacts zonder Network-activatie; bestaande toegang en walletcontrole blijven onafhankelijk. | NOT RUN |
 | F14 | Simuleer RPC-uitval in testmilieu; eigendom wordt onbekend/onzeker, geen oude cache als nieuwe verificatie en geen onterecht toegestane account-/betaalactie. | NOT RUN |
+| F15 | Review SOL en iedere bestaande tokenasset voor een contact waarvan de handleowner afwijkt: verzenden blijft uit tot expliciete bevestiging; edit/nieuwe review vraagt opnieuw bevestiging. Normale betalingen krijgen geen extra checkbox. | NOT RUN |
+| F16 | Laat handleChanged tussen review en verse SOL-voorbereiding veranderen terwijl de contactwallet gelijk blijft: geen walletsigneervraag, bijgewerkte review en opnieuw expliciete bevestiging als handleChanged waar is. | NOT RUN |
+| F17 | Open /network/ansem: live handle-NFT-identiteit of eerlijke verificatiefout; geen willekeurig Network-profiel. Open een bekende /network/account/:publicId: bestaande profielwerking behouden. | NOT RUN |
 
 ## Technische negatieve controles / reviewbewijs
 

@@ -27,6 +27,7 @@ const Network = lazy(() => import('@/pages/Network'));
 const NetworkDiscover = lazy(() => import('@/pages/NetworkDiscover'));
 const NetworkSearch = lazy(() => import('@/pages/NetworkSearch'));
 const NetworkProfile = lazy(() => import('@/pages/NetworkProfile'));
+const NetworkHandleIdentity = lazy(() => import('@/pages/NetworkHandleIdentity'));
 const NetworkPost = lazy(() => import('@/pages/NetworkPost'));
 const NetworkAccess = lazy(() => import('@/pages/NetworkAccess'));
 const AdminNetworkPreview = lazy(() => import('@/pages/AdminNetworkPreview'));
@@ -165,7 +166,7 @@ const AuthenticatedApp = () => {
           </Route>
           <Route path="/network/account/:publicId" element={<NetworkProfile />} />
           <Route path="/network/post/:postId" element={<NetworkPost />} />
-          <Route path="/network/:handle" element={<NetworkProfile />} />
+          <Route path="/network/:handle" element={<NetworkHandleIdentity />} />
         </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fnetwork-preview" replace />} />}>
           <Route path="/admin/network-preview" element={user?.role === 'admin' ? <AdminNetworkPreview /> : <Navigate to="/network" replace />} />
