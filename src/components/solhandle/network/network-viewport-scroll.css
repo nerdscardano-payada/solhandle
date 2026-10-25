@@ -62,4 +62,17 @@
     scrollbar-width: thin;
     scrollbar-color: var(--sd-muted) transparent;
   }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-context-stack {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-context-stack::-webkit-scrollbar {
+    display: none;
+  }
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-context-stack > * {
+    flex-shrink: 0;
+  }
 }
