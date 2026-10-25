@@ -1,0 +1,5 @@
+import HandleShareActions from '@/components/solhandle/HandleShareActions';
+export default function HandleDetailHeading({ handle, data, invalid, available }) {
+  const status = !data ? 'Checking handle…' : invalid ? 'Invalid handle' : available ? 'Available to mint' : data.status === 'RESERVED' ? 'Reserved for official claim' : data.status === 'PROTECTED' ? 'Protected brand name' : 'Official SolHandle ✓';
+  return <header className="el-handle-heading"><div className="ep-page-heading"><span className="ep-eyebrow">SOLHANDLE IDENTITY</span><h1>@{handle || '—'}</h1><span className={`el-handle-status ${invalid ? 'el-handle-invalid' : available ? 'el-handle-available' : ''}`} role="status">{status}</span></div>{!invalid && data && <div className="el-handle-share"><HandleShareActions handle={handle} isPremium={data.nameClass === 'Premium'} location="handle_detail" prominent/></div>}</header>;
+}

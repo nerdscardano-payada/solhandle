@@ -185,6 +185,11 @@ const AuthenticatedApp = () => {
             <Route path="/demos/:slug" element={<DemoDetail />} />
             <Route path="/integrate" element={<Integrate />} />
             <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/last-minted" element={<LastMinted />} />
+            <Route path="/directory" element={<PremiumDirectory />} />
+            <Route path="/protected-brands" element={<ProtectedBrands />} />
+            <Route path="/:handle" element={<HandlePage />} />
           </Route>
         </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
@@ -251,12 +256,8 @@ const AuthenticatedApp = () => {
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
         <Route path="/fun" element={<Fun />} />
         <Route path="/explore" element={<Navigate to="/names" replace />} />
-        <Route path="/directory" element={<PremiumDirectory />} />
         <Route path="/market" element={<Market />} />
         <Route path="/marketplace-recovery" element={<MarketplaceRecovery />} />
-        <Route path="/statistics" element={<Statistics />} />
-        <Route path="/last-minted" element={<LastMinted />} />
-        <Route path="/protected-brands" element={<ProtectedBrands />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
           <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
         </Route>
@@ -277,7 +278,6 @@ const AuthenticatedApp = () => {
         <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
         <Route path="/growth/burn" element={<BurnDashboard />} />
         <Route path="/flywheel" element={<Flywheel />} />
-        <Route path="/:handle" element={<HandlePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
           </Suspense>

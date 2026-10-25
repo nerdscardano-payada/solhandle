@@ -8,9 +8,9 @@ const promises = [[ShieldCheck, "Protected, never owned", "Reserved handles rema
 export default function ProtectedBrands() {
   return (
     <main className="min-h-screen bg-[#050811] text-white">
-      <div className="mx-auto min-h-screen max-w-7xl border-x border-white/10 bg-[radial-gradient(circle_at_20%_10%,rgba(36,177,190,.14),transparent_28%),radial-gradient(circle_at_85%_35%,rgba(130,58,255,.13),transparent_30%)]">
+      <div className="mx-auto min-h-screen max-w-7xl border-x border-white/10">
         <Header/>
-        <div className="px-5 py-14 md:px-9 md:py-20">
+        <div className="el-protected-brands">
           <section className="mx-auto max-w-4xl text-center">
             <p className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/5 px-3 py-1 text-xs text-emerald-200"><ShieldCheck className="h-3.5 w-3.5"/>Brand & Ecosystem Protection</p>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight sm:text-6xl">Protected before launch. <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent">Claimed by the rightful organization.</span></h1>

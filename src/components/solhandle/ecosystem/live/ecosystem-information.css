@@ -37,16 +37,22 @@
 .eco-live .el-information-about>main>div>section:first-child h1{font-size:clamp(30px,3.5cqw,44px)}
 .eco-live .el-information-about .bg-clip-text{background-image:var(--eco-gradient)}
 .eco-live .el-information-resources>main>div{padding:8px 0 28px}
-.eco-live .el-information-resources :is(.bg-card,.bg-background){background:var(--eco-card)}
-.eco-live .el-information-resources .text-muted-foreground{color:var(--eco-muted)}
-.eco-live .el-information-resources :is(.text-names-accent,.text-primary){color:var(--eco-cyan)}
-.eco-live .el-information-resources .border-border{border-color:var(--eco-border)}
-.eco-live .el-information-resources :is(h1,h2,h3){font-family:var(--eco-font)}
+.eco-live :is(.el-information-resources,.el-information-utility) :is(.bg-card,.bg-background){background:var(--eco-card)}
+.eco-live :is(.el-information-resources,.el-information-utility) .text-muted-foreground{color:var(--eco-muted)}
+.eco-live :is(.el-information-resources,.el-information-utility) :is(.text-names-accent,.text-primary){color:var(--eco-cyan)}
+.eco-live :is(.el-information-resources,.el-information-utility) .border-border{border-color:var(--eco-border)}
+.eco-live :is(.el-information-resources,.el-information-utility) :is(h1,h2,h3){font-family:var(--eco-font)}
 .eco-live .el-information-docs>main>div>section>article{max-width:none;margin:0;padding:0;border:0;background:transparent}
 .eco-live .el-information-docs article>section,.eco-live .el-information-roadmap article{padding:24px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card);margin-top:18px}
 .eco-live .el-information-docs :is(section[id],aside a){scroll-margin-top:24px}
 .eco-live .el-information-demos>main>div>section:first-child{max-width:none;padding:28px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card)}
 .eco-live .el-information-demos>main>div>section:first-child h1{font-size:32px}
+.eco-live .el-information-utility>main>div,.eco-live .el-information-utility>main>section{max-width:none;padding:8px 0 28px;margin:0;border:0}
+.eco-live .el-information-utility .el-protected-brands{padding:8px 0 28px}
+.eco-live .el-information-utility .el-protected-brands>section:first-child{text-align:left;max-width:none;padding:24px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card)}
+.eco-live .el-information-utility .bg-clip-text{background-image:var(--eco-gradient)}
+.eco-live .el-information-utility .text-foreground{color:var(--eco-text)}
+.eco-live .el-information-utility [class~="border-names-accent/25"]{border-color:var(--eco-border)}
 @container ecosystem (max-width:1099px){
  .eco-live .el-information-docs>main>div>section{grid-template-columns:minmax(0,1fr);gap:24px}
  .eco-live .el-information-docs>main>div>section>aside{position:static;display:flex;flex-wrap:wrap;gap:8px 16px}
