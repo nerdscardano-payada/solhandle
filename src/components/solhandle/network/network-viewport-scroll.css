@@ -35,22 +35,31 @@
     scrollbar-gutter: stable;
   }
   html:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home),
-  body:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home) {
+  body:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home),
+  html:has(.network-preview-parity .sd-profile-frame:not(.sd-phone)),
+  body:has(.network-preview-parity .sd-profile-frame:not(.sd-phone)) {
     scrollbar-width: none;
   }
   html:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home)::-webkit-scrollbar,
-  body:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home)::-webkit-scrollbar {
+  body:has(.network-preview-parity .sd-network-frame:not(.sd-phone) .sd-network-home)::-webkit-scrollbar,
+  html:has(.network-preview-parity .sd-profile-frame:not(.sd-phone))::-webkit-scrollbar,
+  body:has(.network-preview-parity .sd-profile-frame:not(.sd-phone))::-webkit-scrollbar {
     display: none;
   }
   .network-preview-parity:has(.sd-network-frame:not(.sd-phone) .sd-network-home),
   .network-preview-parity .sd-network-frame:not(.sd-phone):has(.sd-network-home),
-  .network-preview-parity .sd-network-frame:not(.sd-phone) > .sd-screen:has(.sd-network-home) {
+  .network-preview-parity .sd-network-frame:not(.sd-phone) > .sd-screen:has(.sd-network-home),
+  .network-preview-parity:has(> .sd-profile-frame:not(.sd-phone)),
+  .network-preview-parity > .sd-profile-frame:not(.sd-phone),
+  .network-preview-parity > .sd-profile-frame:not(.sd-phone) > .sd-screen {
     height: auto;
     min-height: 100dvh;
     overflow: visible;
   }
   .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-app-layout:has(.sd-network-home),
-  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-main:has(> .sd-network-home) {
+  .network-preview-parity .sd-network-frame:not(.sd-phone) .sd-main:has(> .sd-network-home),
+  .network-preview-parity .sd-profile-frame:not(.sd-phone) > .sd-screen > .sd-app-layout,
+  .network-preview-parity .sd-profile-frame:not(.sd-phone) .sd-app-layout > .sd-main {
     overflow: visible;
     scrollbar-gutter: auto;
   }
