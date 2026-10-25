@@ -24,7 +24,7 @@ export default async function(req) {
       const profile = page.items.find(row => current?.verified && row.wallet === current.address && row.asset === current.assetAddress);
       // Permanently hide observed former-owner publications, retaining their private drafts.
       if (current) await db.HandlePublicProfile.updateMany({ handle, published: true, wallet: { $ne: current.address } }, { $set: { published: false } });
-      return Response.json({ profile: profile ? { handle, bio: profile.bio, social_links: profile.social_links } : null }, { headers });
+      return Response.json({ profile: profile ? { handle, bio: profile.bio, social_links: profile.social_links, avatar: profile.avatar || null } : null }, { headers });
     }
     const origin = new URL(req.headers.get('X-Base44-App-Url') || 'https://sol-handle-core.base44.app').origin;
     // Proof is bound to the exact operation, payload, wallet, handle and application.
@@ -40,7 +40,7 @@ export default async function(req) {
       if (profile) { await db.HandlePublicProfile.updateMany({ wallet: body.wallet, handle, asset: current.assetAddress }, { $set: fields }); profile = fields; }
       else profile = await db.HandlePublicProfile.create(fields);
     } else if (!profile) profile = await db.HandlePublicProfile.create({ wallet: body.wallet, handle, asset: current.assetAddress, bio: '', social_links: [], published: false });
-    return Response.json({ profile: { handle, bio: profile.bio, social_links: profile.social_links, published: profile.published } }, { headers });
+    return Response.json({ profile: { handle, bio: profile.bio, social_links: profile.social_links, published: profile.published, avatar: profile.avatar || null } }, { headers });
   } catch (error) {
     return Response.json({ error: error.status ? error.message : 'Profile verification is temporarily unavailable. Please retry.' }, { status: error.status || 503, headers });
   }

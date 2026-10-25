@@ -13,7 +13,9 @@ export function profilePayload(body) {
     if (url.protocol !== 'https:' || url.username || url.password) throw profileError('Social links must use HTTPS without credentials.');
     return url.href;
   });
-  return { bio: body.bio.trim(), social_links, published: body.published };
+  const avatar = body.avatar ?? null;
+  if (avatar !== null && (typeof avatar !== 'object' || Array.isArray(avatar) || typeof avatar.file_uri !== 'string' || !avatar.file_uri || avatar.file_uri.length > 2048 || /^(?:https?:|data:|javascript:)/i.test(avatar.file_uri) || /[\s\x00-\x1f]/.test(avatar.file_uri) || typeof avatar.key !== 'string' || !/^[A-Za-z0-9+/]{43}=$/.test(avatar.key) || typeof avatar.iv !== 'string' || !/^[A-Za-z0-9+/]{16}$/.test(avatar.iv))) throw profileError('Upload a valid encrypted profile photo to private storage.');
+  return { bio: body.bio.trim(), social_links, published: body.published, avatar: avatar ? { file_uri: avatar.file_uri, key: avatar.key, iv: avatar.iv } : null };
 }
 export async function profileHash(value) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(value)));
@@ -29,7 +31,7 @@ export async function profileProof(db, body, origin) {
   if (body.action === 'challenge') {
     if (await db.HandleProfileChallenge.count({ wallet, created_date: { $gt: new Date(Date.now() - 60000).toISOString() } }) >= 5) throw profileError('Please wait a minute before signing again.', 429);
     const key = crypto.randomUUID(), expires_at = new Date(Date.now() + 180000).toISOString();
-    const message = `SolHandle profile authorization\nOrigin: ${origin}\nWallet: ${wallet}\nHandle: @${handle}\nOperation: ${purpose === 'load' ? 'Read my private profile' : payload.published ? 'Save and PUBLISH my bio and social links' : 'Save my profile PRIVATELY; hide public profile'}\nChanges SHA-256: ${payload_hash}\nNonce: ${key}\nExpires: ${expires_at}\nNo transaction, funds, or spending permissions.`;
+    const message = `SolHandle profile authorization\nOrigin: ${origin}\nWallet: ${wallet}\nHandle: @${handle}\nOperation: ${purpose === 'load' ? 'Read my private profile' : payload.published ? 'Save and PUBLISH my bio, social links and profile photo' : 'Save my profile PRIVATELY; hide public profile'}\nChanges SHA-256: ${payload_hash}\nNonce: ${key}\nExpires: ${expires_at}\nNo transaction, funds, or spending permissions.`;
     await db.HandleProfileChallenge.create({ key, wallet, handle, purpose, payload_hash, message, expires_at, status: 'issued' });
     return { challengeKey: key, message };
   }

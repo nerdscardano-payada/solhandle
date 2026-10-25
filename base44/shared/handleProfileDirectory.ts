@@ -9,7 +9,7 @@ export async function handleProfileDirectory(db, rpcUrl, body) {
     const verified = await Promise.all(page.items.slice(offset, offset + 6).map(async row => {
       const current = await resolveOnChain(rpcUrl, row.handle);
       return current?.verified && current.address === row.wallet && current.assetAddress === row.asset
-        ? { handle: row.handle, bio: row.bio, social_links: row.social_links } : null;
+        ? { handle: row.handle, bio: row.bio, social_links: row.social_links, avatar: row.avatar || null } : null;
     }));
     for (const profile of verified) if (profile) profiles.set(profile.handle, profile);
   }

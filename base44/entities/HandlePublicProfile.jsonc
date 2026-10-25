@@ -27,6 +27,32 @@
     "published": {
       "type": "boolean",
       "default": false
+    },
+    "avatar": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "file_uri": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "key": {
+          "type": "string",
+          "maxLength": 44
+        },
+        "iv": {
+          "type": "string",
+          "maxLength": 16
+        }
+      },
+      "required": [
+        "file_uri",
+        "key",
+        "iv"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
