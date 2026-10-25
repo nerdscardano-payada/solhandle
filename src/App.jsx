@@ -15,6 +15,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { growthHubVisible } from '@/components/solhandle/navigationLinks';
 import GrowthHubLayout from '@/components/solhandle/quests/GrowthHubLayout';
 import AdminSectionLayout from '@/components/solhandle/admin/AdminSectionLayout';
+import AdminRoute from '@/components/solhandle/admin/AdminRoute';
 
 const Home = lazy(() => import('@/pages/Home'));
 const DesignPreview = lazy(() => import('@/pages/DesignPreview'));
@@ -159,21 +160,22 @@ const AuthenticatedApp = () => {
           <Route path="/ecosystem" element={<Ecosystem />} />
           <Route path="/discover" element={<EcosystemDiscover />} />
           <Route path="/discover/submit" element={<DiscoverSubmit />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fprojects" replace />} />}>
-            <Route path="/admin/projects" element={user?.role === 'admin' ? <AdminProjects /> : <Navigate to="/discover" replace />} />
-          </Route>
-          <Route element={<AdminSectionLayout />}>
-            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
-              <Route path="/admin/network-preview" element={user?.role === 'admin' ? <AdminNetworkPreview /> : <Navigate to="/network" replace />} />
-              <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
-              <Route path="/admin/growth" element={growthHubVisible ? <AdminGrowthHub /> : <Navigate to="/" replace />} />
-              <Route path="/admin/integrations" element={<AdminIntegrations />} />
-              <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
+          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/projects" element={<AdminProjects />} />
+              <Route element={<AdminSectionLayout />}>
+                <Route path="/admin/network-preview" element={<AdminNetworkPreview />} />
+                <Route path="/admin/network-safety" element={<AdminNetworkSafety />} />
+                <Route path="/admin/growth" element={growthHubVisible ? <AdminGrowthHub /> : <Navigate to="/" replace />} />
+                <Route path="/admin/integrations" element={<AdminIntegrations />} />
+                <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
+                <Route path="/admin/financials" element={<Financials />} />
+                <Route path="/admin/burn" element={<AdminBurn />} />
+                <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                <Route path="/admin/*" element={<PageNotFound />} />
+              </Route>
             </Route>
-            <Route path="/admin/financials" element={<Financials />} />
-            <Route path="/admin/burn" element={<AdminBurn />} />
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
           </Route>
           <Route path="/discover/projects/:projectId" element={<NetworkProject backTo="/discover" />} />
           <Route path="/search" element={<Search />} />
@@ -266,7 +268,6 @@ const AuthenticatedApp = () => {
         <Route path="/market" element={<Market />} />
         <Route path="/marketplace-recovery" element={<MarketplaceRecovery />} />
 
-        <Route path="/admin/referrals" element={<PageNotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
