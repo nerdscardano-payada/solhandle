@@ -21,7 +21,8 @@ const EcosystemPreview = lazy(() => import('@/pages/EcosystemPreview'));
 const Ecosystem = lazy(() => import('@/pages/Ecosystem'));
 const EcosystemDiscover = lazy(() => import('@/pages/EcosystemDiscover'));
 const EcosystemLiveFrame = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemLiveFrame'));
-import { isEcosystemPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
+import { isEcosystemPath, isEcosystemInformationPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
+const EcosystemInformationLayout = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemInformationLayout'));
 const AndroidDownload = lazy(() => import('@/pages/AndroidDownload'));
 const Demos = lazy(() => import('@/pages/Demos'));
 const DemoDetail = lazy(() => import('@/pages/DemoDetail'));
@@ -160,6 +161,16 @@ const AuthenticatedApp = () => {
           <Route path="/pay" element={<Pay />} />
           <Route path="/contacts" element={<MyContacts />} />
           <Route path="/receive" element={<Receive />} />
+          <Route element={<EcosystemInformationLayout />}>
+            <Route path="/about" element={<About />} />
+            <Route path="/names" element={<Explore />} />
+            <Route path="/developers" element={<Developers />} />
+            <Route path="/integrations" element={<Integrations />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/legal" element={<Legal />} />
+          </Route>
         </Route>
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
           <Route path="/android" element={user?.role === 'admin' ? <AndroidDownload /> : <Navigate to="/" replace />} />
@@ -188,7 +199,6 @@ const AuthenticatedApp = () => {
           <Route path="/admin/network-preview" element={user?.role === 'admin' ? <AdminNetworkPreview /> : <Navigate to="/network" replace />} />
         </Route>
         <Route path="/docs" element={<Docs />} />
-        <Route path="/developers" element={<Developers />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>
           <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
         </Route>
@@ -225,11 +235,9 @@ const AuthenticatedApp = () => {
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fadmin%2Fintegrations" replace />} />}>
           <Route path="/admin/integrations" element={<AdminIntegrations />} />
         </Route>
-        <Route path="/integrations" element={<Integrations />} />
         <Route path="/live-integrations" element={<LiveIntegrations />} />
         <Route path="/integrations/parallax" element={<ParallaxIntegration />} />
         <Route path="/integrations/:slug" element={<IntegrationGuide />} />
-        <Route path="/names" element={<Explore />} />
         <Route path="/fun" element={<Fun />} />
         <Route path="/explore" element={<Navigate to="/names" replace />} />
         <Route path="/directory" element={<PremiumDirectory />} />
@@ -238,11 +246,6 @@ const AuthenticatedApp = () => {
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/last-minted" element={<LastMinted />} />
         <Route path="/protected-brands" element={<ProtectedBrands />} />
-        <Route path="/legal" element={<Legal />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/faq" element={<Faq />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
           <Route path="/admin/network-safety" element={user?.role === 'admin' ? <AdminNetworkSafety /> : <Navigate to="/" replace />} />
@@ -271,7 +274,7 @@ const AuthenticatedApp = () => {
           </Suspense>
       </MobileTabCache>
       {!isEcosystem && !isWidget && !isSocial && <div className="hidden md:block"><Footer /></div>}
-      {!isEcosystem && !isWidget && !isSocial && <AttoChat />}
+      {(!isEcosystem || isEcosystemInformationPath(pathname)) && !isWidget && !isSocial && <AttoChat />}
 
       {showMobileTabs && <MobileAppNavigation />}
     </PlatformSurface>

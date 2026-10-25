@@ -1,0 +1,47 @@
+/* Footer destinations share the live Ecosystem shell; their existing content and controls remain intact. */
+.eco-live .el-information{min-width:0;color:var(--eco-text);font-family:var(--eco-font);font-size:14px;line-height:1.65}
+.eco-live .el-information>main{min-height:0;background:transparent;color:var(--eco-text)}
+.eco-live .el-information>main>div{min-height:0;max-width:none;margin:0;border:0}
+.eco-live .el-information>main>div>section{padding:10px 0 28px}
+.eco-live .el-information>main>div>article{max-width:780px;margin-inline:auto;padding:12px 0 28px}
+.eco-live .el-information h1{font-size:32px;line-height:1.2;font-weight:750;letter-spacing:-.045em;color:var(--eco-text)}
+.eco-live .el-information :is(h2,h3){display:block;letter-spacing:-.025em;color:var(--eco-text)}
+.eco-live .el-information h2{font-size:21px;line-height:1.4;font-weight:650}
+.eco-live .el-information h3{font-size:17px;line-height:1.4;font-weight:650}
+.eco-live .el-information :is(.text-slate-300,.text-slate-400,.text-slate-500){color:var(--eco-muted)}
+.eco-live .el-information .text-white{color:var(--eco-text)}
+.eco-live .el-information :is(.text-cyan-100,.text-cyan-200,.text-cyan-300){color:var(--eco-cyan)}
+.eco-live .el-information :is(.text-violet-100,.text-violet-300){color:var(--eco-purple)}
+.eco-live .el-information :is([class~="border-white/10"],[class~="border-white/20"]){border-color:var(--eco-border)}
+.eco-live .el-information :is([class~="bg-slate-950/70"],[class~="bg-slate-950/60"],[class~="bg-slate-950/45"],.bg-slate-950,[class~="bg-white/[0.03]"]){background:var(--eco-card)}
+.eco-live .el-information :is(.bg-slate-900,[class~="bg-black/40"]){background:var(--eco-sidebar)}
+.eco-live .el-information :is(.bg-slate-900,[class~="bg-black/40"]):not(pre){border-color:var(--eco-border)}
+.eco-live .el-information [class~="bg-white/10"]{background:var(--eco-border)}
+.eco-live .el-information .card-glow{padding:21px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card);box-shadow:0 7px 22px color-mix(in srgb,var(--eco-canvas) 30%,transparent)}
+.eco-live .el-information :is(a,button).bg-gradient-to-r:not(.bg-clip-text){background:var(--eco-gradient);color:var(--eco-canvas);border-radius:9px;min-height:44px;font-weight:650}
+.eco-live .el-information :is(a,button).bg-cyan-300{background:var(--eco-cyan);color:var(--eco-canvas);border-radius:9px}
+.eco-live .el-information :is(a,button).text-slate-950{color:var(--eco-canvas)}
+.eco-live .el-information input:not([type="checkbox"]):not([type="radio"]),.eco-live .el-information :is(textarea,select){color:var(--eco-text);border-color:var(--eco-border);background:var(--eco-sidebar);border-radius:10px;min-height:44px}
+.eco-live .el-information :is(input,textarea,select):focus-visible{outline-color:var(--eco-cyan)}
+.eco-live .el-information :is(a.rounded-xl,a.rounded-2xl,article.rounded-2xl,details){border-color:var(--eco-border)}
+.eco-live .el-information :is(a.rounded-xl,a.rounded-2xl):hover{border-color:var(--eco-cyan)}
+.eco-live .el-information :is(pre,code){max-width:100%;overflow-wrap:anywhere}
+.eco-live .el-information pre{border:1px solid var(--eco-border);border-radius:11px;padding:18px;line-height:1.7}
+.eco-live .el-information pre code{overflow-wrap:normal}
+.eco-live .el-information:not(.el-information-about):not(.el-information-names)>main>div>section>h1{margin-top:7px;margin-bottom:12px}
+.eco-live .el-information:not(.el-information-about):not(.el-information-names)>main>div>section>article{padding:22px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card);margin-top:16px}
+.eco-live .el-information>main>div>article>section{padding:23px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card);margin-top:18px}
+.eco-live .el-information-about>main>div>section{padding-block:28px}
+.eco-live .el-information-about>main>div>section:first-child{padding:38px 28px;margin-bottom:6px;border:1px solid var(--eco-border);border-radius:16px;background:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--eco-purple) 16%,transparent),transparent 65%),var(--eco-card)}
+.eco-live .el-information-about>main>div>section:first-child>.absolute{display:none}
+.eco-live .el-information-about>main>div>section:first-child h1{font-size:clamp(30px,3.5cqw,44px)}
+.eco-live .el-information-about .bg-clip-text{background-image:var(--eco-gradient)}
+@container ecosystem (max-width:767px){
+ .eco-live .el-information h1{font-size:27px}
+ .eco-live .el-information h2{font-size:19px}
+ .eco-live .el-information>main>div>section,.eco-live .el-information>main>div>article{padding-block:5px 22px}
+ .eco-live .el-information-about>main>div>section{padding-block:23px}
+ .eco-live .el-information-about>main>div>section:first-child{padding:27px 20px}
+ .eco-live .el-information-about>main>div>section:first-child h1{font-size:30px}
+ .eco-live .el-information .card-glow,.eco-live .el-information>main>div>article>section,.eco-live .el-information:not(.el-information-about):not(.el-information-names)>main>div>section>article{padding:17px;border-radius:14px}
+}

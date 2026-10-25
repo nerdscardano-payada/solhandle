@@ -1,4 +1,6 @@
-export const ecosystemPaths = ['/', '/ecosystem', '/discover', '/search', '/profile', '/my-handles', '/contacts', '/pay', '/receive'];
+export const ecosystemInformationPaths = ['/about', '/names', '/developers', '/integrations', '/faq', '/contact', '/privacy', '/legal'];
+export const isEcosystemInformationPath = path => ecosystemInformationPaths.includes(path);
+export const ecosystemPaths = ['/', '/ecosystem', '/discover', '/search', '/profile', '/my-handles', '/contacts', '/pay', '/receive', ...ecosystemInformationPaths];
 export const isEcosystemPath = path => ecosystemPaths.includes(path) || path.startsWith('/discover/projects/');
 export const ecosystemAssets = {
   logo: 'https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/c9341a9b4_logo.png',
