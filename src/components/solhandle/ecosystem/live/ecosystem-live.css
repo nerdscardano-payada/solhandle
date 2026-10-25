@@ -70,6 +70,15 @@
  .eco-live .ep-public-hero:after{right:calc(0px - var(--hero-right-bleed));background:linear-gradient(90deg,color-mix(in srgb,var(--eco-canvas) 96%,transparent),color-mix(in srgb,var(--eco-canvas) 65%,transparent) 50%,color-mix(in srgb,var(--eco-canvas) 16%,transparent)),linear-gradient(transparent 70%,var(--eco-canvas))}
 }
 @media (min-width:1280px){
+ .eco-live .el-dashboard .ep-identity{padding:30px}
+ .eco-live .el-dashboard .ep-identity>.ep-card-heading{margin-bottom:28px}
+ .eco-live .el-dashboard .ep-identity-layout{row-gap:32px}
+ .eco-live .el-dashboard .ep-identity-person{gap:28px;align-items:flex-start}
+ .eco-live .el-dashboard .ep-identity-person .profile-avatar{width:132px;height:132px}
+ .eco-live .el-dashboard .ep-identity-person>div{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0}
+ .eco-live .el-dashboard .ep-identity-person :is(h3,p,.ep-tags,.profile-social-links){margin:0}
+ .eco-live .el-dashboard .ep-identity-person .ep-bio{max-width:60ch;line-height:1.8}
+ .eco-live .el-dashboard .ep-identity-person .ep-link{margin-top:6px;min-height:36px}
  .eco-live .ep-identity-person h3{font-size:32px}
  .eco-live .ep-identity-person p{font-size:15px;line-height:1.7}
  .eco-live .ep-identity-person .ep-link{font-size:14px}
