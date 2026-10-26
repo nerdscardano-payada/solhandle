@@ -28,6 +28,7 @@
 .public-profile-summary .profile-contact-text-action{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 0;background:none;border:0;box-shadow:none;color:hsl(var(--identity-muted));font-size:13px;font-weight:400;cursor:pointer}
 .public-profile-summary .profile-contact-text-action:hover{color:hsl(var(--names-accent))}
 .public-profile-summary .profile-contact-text-action:focus-visible{outline:2px solid hsl(var(--names-accent));outline-offset:4px}
+.public-profile-social-announcement{grid-column:1/-1;margin:0;color:hsl(var(--identity-muted));font-size:14px;line-height:1.7}
 .public-profile-record>.ep-card{margin:0}
 .public-profile-artwork{display:flex;flex-direction:column;perspective:1200px}
 .public-profile-artwork>.identity-mint-tablet{margin-block:auto}

@@ -31,6 +31,7 @@ export default function PublicProfileCard({ profile }) {
         {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded.</p> : <dl><div><dt>Handle</dt><dd>@{profile.handle}</dd></div><div><dt>Wallet</dt><dd>{owner ? <>{owner.slice(0, 6)}…{owner.slice(-4)}<IdentityCopy value={owner} label="Copy wallet address"/></> : 'Not verified'}</dd></div>{owner && <div><dt>Last checked</dt><dd>{new Date(query.dataUpdatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</dd></div>}</dl>}
         <button type="button" className="ep-link" disabled={query.isFetching} onClick={() => query.refetch()}><RefreshCw size={14} className={query.isFetching ? 'animate-spin' : ''}/>{query.isFetching ? 'Checking…' : 'Refresh identity'}</button>
       </section>
+      <p className="public-profile-social-announcement">We’re expanding socials with live feeds, following and likes. Coming real soon.</p>
       <div className="public-profile-record"><HandleDetailRecord handle={profile.handle} data={data} owner={owner} invalid={data?.status === 'INVALID'} available={data?.available}/></div>
       <section className="handle-profile-panel public-profile-artwork !mt-0"><h2>Handle mint artwork</h2><IdentityMintTablet handle={profile.handle}/></section>
     </div>
