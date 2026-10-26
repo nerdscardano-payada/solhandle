@@ -43,7 +43,7 @@ export default function Pay({ embedded = false, contactSelection = null, network
   const [selection, setSelection] = useState(null);
   const [asset, setAsset] = useState('SOL'), [usdtLocked, setUsdtLocked] = useState(false);
   const selectedContact = selection?.ownerWallet === address ? selection.contact : null;
-  const [handle, setHandle] = useState(() => networkContext?.handle || params.get('handle') || '');
+  const [handle, setHandle] = useState(() => networkContext?.handle || location.state?.profileHandle || params.get('handle') || '');
   const [amount, setAmount] = useState(() => params.get('amount') || '');
   const [preview, setPreview] = useState(null), [quote, setQuote] = useState(null), [receipt, setReceipt] = useState(null);
   const [loading, setLoading] = useState(''), [error, setError] = useState(''), [pending, setPending] = useState(null);
@@ -62,6 +62,7 @@ export default function Pay({ embedded = false, contactSelection = null, network
     setQuote(null); setPending(null); setLoading(''); setError('');
     if (selection && selection.ownerWallet !== address) clearContact();
     if (networkContext && !requestId && !receiptId) { setSelection(null); setHandle(networkContext.handle); }
+    else if (location.state?.profileHandle && !incomingContact && !requestId && !receiptId && !legacyLink) { setSelection(null); setHandle(location.state.profileHandle); }
     else if (previousNetworkContext.current && !networkContext && !incomingContact && !requestId && !receiptId && !legacyLink) setHandle('');
     previousNetworkContext.current = networkContext;
     if (incomingContact && incomingContactOwner === address && !requestId && !receiptId) selectContact(incomingContact);
