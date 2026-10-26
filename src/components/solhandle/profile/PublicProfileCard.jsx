@@ -3,6 +3,7 @@ import { Shield, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Image } from '@/components/ui/image';
 import ProfileAvatar from '@/components/solhandle/profile/ProfileAvatar';
+import ProfileHandleTitle from '@/components/solhandle/profile/ProfileHandleTitle';
 import IdentityMintTablet from '@/components/solhandle/profile/IdentityMintTablet';
 import HandleDetailRecord from '@/components/solhandle/handles/HandleDetailRecord';
 import IdentityCopy from '@/components/solhandle/profile/IdentityCopy';
@@ -19,7 +20,7 @@ export default function PublicProfileCard({ profile }) {
     <div className="public-profile-banner"><Image src={ecosystemAssets.city} alt="SolHandle city banner" className="h-full w-full" focalPointX={0.74}/></div>
     <div className="public-profile-original-grid">
       <section className="handle-profile-panel public-profile-summary !mt-0" aria-label="Public handle profile">
-        <div className="public-profile-personal"><ProfileAvatar avatar={profile.avatar} handle={profile.handle}/><div className="min-w-0"><h1>@{profile.handle}</h1><p className="handle-profile-bio !mt-4">{profile.bio || 'No bio added.'}</p></div></div>
+        <div className="public-profile-personal"><ProfileAvatar avatar={profile.avatar} handle={profile.handle}/><div className="min-w-0"><ProfileHandleTitle handle={profile.handle}/><p className="handle-profile-bio !mt-4">{profile.bio || 'No bio added.'}</p></div></div>
         <div className="public-profile-social-actions">
           <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
           <SaveProfileContact key={profile.handle} handle={profile.handle} quiet/>
