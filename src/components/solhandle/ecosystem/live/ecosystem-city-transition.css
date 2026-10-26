@@ -1,0 +1,15 @@
+.eco-live .el-city-entrance{position:absolute;z-index:2;left:74%;top:59%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:16px;text-decoration:none;color:var(--eco-text);text-align:center}
+.eco-live .el-city-entrance-marker{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;border:1px solid color-mix(in srgb,var(--eco-cyan) 70%,transparent);background:color-mix(in srgb,var(--eco-canvas) 55%,transparent);box-shadow:0 0 35px color-mix(in srgb,var(--eco-cyan) 20%,transparent),inset 0 0 20px color-mix(in srgb,var(--eco-cyan) 12%,transparent);backdrop-filter:blur(10px);color:var(--eco-cyan);transition:box-shadow .3s,transform .3s}
+.eco-live .el-city-entrance-label{display:flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--eco-border);border-radius:30px;background:color-mix(in srgb,var(--eco-canvas) 78%,transparent);backdrop-filter:blur(12px);font-size:13px;font-weight:600;white-space:nowrap}
+.eco-live .el-city-entrance:hover .el-city-entrance-marker{transform:scale(1.1);box-shadow:0 0 55px color-mix(in srgb,var(--eco-cyan) 38%,transparent)}
+.eco-live .el-city-entrance:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:8px;border-radius:12px}
+.el-city-flight{position:fixed!important;inset:0;z-index:9999;pointer-events:auto;background:transparent;transition:opacity .55s ease}
+.el-city-flight-scene{position:absolute;overflow:hidden;top:var(--flight-top);left:var(--flight-left);width:var(--flight-width);height:var(--flight-height);background:var(--eco-canvas);animation:el-city-expand .95s cubic-bezier(.65,0,.25,1) forwards}
+.el-city-flight .el-city-flight-image{width:100%;height:100%;transform-origin:74% 48%;animation:el-city-approach 1.05s cubic-bezier(.55,.05,.35,1) forwards}
+.el-city-flight-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 74% 48%,transparent 8%,color-mix(in srgb,var(--eco-canvas) 50%,transparent) 65%,var(--eco-canvas));animation:el-city-shade .95s ease forwards}
+.el-city-flight--reveal{opacity:0;pointer-events:none}
+@keyframes el-city-expand{to{top:0;left:0;width:100%;height:100%}}
+@keyframes el-city-approach{from{transform:scale(1);filter:brightness(1.2) blur(0)}to{transform:scale(3.6);filter:brightness(.65) blur(3px)}}
+@keyframes el-city-shade{from{opacity:.6}to{opacity:1}}
+@media(max-width:767px){.eco-live .ep-public-hero{padding-bottom:160px}.eco-live .el-city-entrance{left:auto;right:22px;top:auto;bottom:28px;transform:none;flex-direction:row;gap:12px}.eco-live .el-city-entrance-marker{width:46px;height:46px}.el-city-flight .el-city-flight-image{animation-name:el-city-approach-mobile}@keyframes el-city-approach-mobile{to{transform:scale(1.8);filter:brightness(.65) blur(2px)}}}
+@media(prefers-reduced-motion:reduce){.eco-live .el-city-entrance-marker{transition:none}.el-city-flight,.el-city-flight *{animation:none!important;transition:none!important}}
