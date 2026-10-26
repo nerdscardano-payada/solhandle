@@ -1,30 +1,14 @@
 .public-profile-layout{display:flex;flex-direction:column;gap:22px;width:100%;margin:0 auto}
-.public-profile-card.handle-profile-panel{padding:0;overflow:hidden}
-.public-profile-banner{height:160px;position:relative;background:var(--eco-raised)}
-.public-profile-banner>span{position:absolute;bottom:22px;left:28px;font-size:10px;letter-spacing:.18em;color:hsl(var(--identity-text))}
-.public-profile-section-heading{display:flex;align-items:center;gap:10px;padding:24px 28px 0}
-.public-profile-section-heading svg{color:hsl(var(--names-secondary))}
-.public-profile-section-heading h2{margin:0;font-size:18px}
-.public-profile-card-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,1fr);gap:32px;padding:36px 28px 32px;align-items:center}
-.public-profile-personal{display:flex;align-items:flex-start;gap:20px;min-width:0}
-.public-profile-personal>.profile-avatar{width:100px;height:100px;flex-shrink:0}
-.public-profile-introduction{min-width:0}
-.public-profile-card-body h1{margin:0;font-size:32px;font-weight:700;line-height:1.2}
-.public-profile-card-body .public-profile-caption{font-size:15px;margin:8px 0 12px}
-.public-profile-card-body .handle-profile-bio{margin:16px 0;max-width:60ch}
-.public-profile-socials{display:flex;flex-wrap:wrap;gap:10px 18px;margin:16px 0}
-.public-profile-socials a{overflow-wrap:anywhere}
-.public-profile-actions{min-width:0}
-.public-profile-actions>div{padding-top:0}
-.public-profile-wallet{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:48px;align-items:start}
-.public-profile-artwork,.public-profile-technical{min-width:0}
-.public-profile-disclosure.handle-profile-panel{margin-top:0;padding:20px;min-width:0}
-.public-profile-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;font-weight:600;font-size:16px;min-height:36px}
-.public-profile-disclosure>summary svg{flex-shrink:0}
-.public-profile-disclosure-content .handle-profile-panel{padding:18px}
-.public-profile-disclosure-content .identity-address code{overflow-wrap:anywhere;word-break:break-all}
-.public-profile-disclosure>summary::-webkit-details-marker{display:none}
-.public-profile-disclosure[open]>summary svg{transform:rotate(180deg)}
-.public-profile-disclosure-content{margin-top:24px}
-.public-profile-artwork .identity-mint-phone{display:block}
-@media(max-width:767px){.public-profile-banner{height:125px}.public-profile-banner>span{left:20px;font-size:8px}.public-profile-section-heading{padding:20px 20px 0}.public-profile-card-body{display:flex;flex-direction:column;align-items:stretch;gap:24px;padding:24px 20px}.public-profile-personal{gap:16px}.public-profile-personal>.profile-avatar{width:72px;height:72px}.public-profile-card-body h1{font-size:28px}.public-profile-wallet{display:flex;flex-direction:column;gap:24px}.public-profile-technical{width:100%}.public-profile-artwork{width:100%;max-width:300px;align-self:center}.public-profile-disclosure.handle-profile-panel{padding:16px}}
+.public-profile-banner{height:160px;overflow:hidden;border:1px solid hsl(var(--identity-border));border-radius:20px;background:var(--eco-raised)}
+.public-profile-original-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start}
+.public-profile-original-grid>*,.public-profile-personal>div{min-width:0}
+.public-profile-summary{display:flex;flex-direction:column;height:100%}
+.public-profile-personal{display:flex;align-items:center;gap:20px;min-width:0}
+.public-profile-personal>.profile-avatar{width:88px;height:88px;flex-shrink:0}
+.public-profile-personal h1{margin:0;line-height:1.2}
+.public-profile-summary .handle-profile-bio{margin-bottom:0}
+.public-profile-summary .handle-profile-links{margin-bottom:18px}
+.public-profile-summary button.ep-button{margin-left:0}
+.public-profile-record>.ep-card{margin:0}
+.public-profile-original-grid .identity-address code{overflow-wrap:anywhere;word-break:break-all}
+@media(max-width:767px){.public-profile-banner{height:125px}.public-profile-original-grid{grid-template-columns:minmax(0,1fr)}.public-profile-personal{gap:16px}.public-profile-personal>.profile-avatar{width:72px;height:72px}}

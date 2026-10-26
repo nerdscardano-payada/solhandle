@@ -1,36 +1,32 @@
-import { Link } from 'react-router-dom';
-import { Send, ExternalLink, Fingerprint } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { Image } from '@/components/ui/image';
 import ProfileAvatar from '@/components/solhandle/profile/ProfileAvatar';
-import IdentityMintPhone from '@/components/solhandle/profile/IdentityMintPhone';
+import HandleCard from '@/components/solhandle/HandleCard';
+import HandleDetailRecord from '@/components/solhandle/handles/HandleDetailRecord';
+import IdentityCopy from '@/components/solhandle/profile/IdentityCopy';
 import SaveProfileContact from '@/components/solhandle/profile/SaveProfileContact';
-import PublicProfileDetails from '@/components/solhandle/profile/PublicProfileDetails';
 import { ecosystemAssets } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
+import '@/components/solhandle/handles/handle-detail.css';
+import '@/components/solhandle/profile/profile.css';
 import '@/components/solhandle/profile/public-profile-card.css';
 
 export default function PublicProfileCard({ profile }) {
+  const query = useQuery({ queryKey: ['public-profile-handle-details', profile.handle], queryFn: async () => (await base44.functions.invoke('getHandleAvailability', { handle: profile.handle })).data, retry: false, staleTime: 0 });
+  const data = query.data, owner = data?.currentOwner;
   return <div className="public-profile-layout">
-    <section className="handle-profile-panel public-profile-card !mt-0" aria-label="Public handle profile">
-      <div className="public-profile-banner"><Image src={ecosystemAssets.city} alt="" className="h-full w-full" focalPointX={0.74}/><span>YOUR NAME. YOUR CORNER OF SOLANA.</span></div>
-      <div className="public-profile-section-heading"><Fingerprint size={20}/><h2>Identity Profile</h2></div>
-      <div className="public-profile-card-body">
-        <div className="public-profile-personal">
-          <ProfileAvatar avatar={profile.avatar} handle={profile.handle}/>
-          <div className="public-profile-introduction">
-            <h1>@{profile.handle}</h1>
-            <p className="public-profile-caption">Your wallet-owned SolHandle</p>
-            <div className="ep-tags"><span>Solana Mainnet</span></div>
-            <p className="handle-profile-bio">{profile.bio || 'No bio added.'}</p>
-            {!!profile.social_links.length && <nav className="public-profile-socials" aria-label="Profile links">{profile.social_links.map((url, index) => <a className="ep-link" key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc"><ExternalLink size={16}/>{new URL(url).hostname.replace(/^www\./, '')}</a>)}</nav>}
-            <Link className="ep-link" to={`/${profile.handle}`}>View handle <ExternalLink size={14}/></Link>
-          </div>
-        </div>
-        <div className="public-profile-actions"><SaveProfileContact key={profile.handle} handle={profile.handle} inlineAction={<Link className="ep-button" to="/pay" state={{ profileHandle: profile.handle }}><Send size={16}/>Pay</Link>}/></div>
-      </div>
-    </section>
-    <section className="handle-profile-panel public-profile-wallet !mt-0" aria-label="On-chain identity and mint artwork">
-      <div className="public-profile-technical"><PublicProfileDetails handle={profile.handle}/></div>
-      <div className="public-profile-artwork"><IdentityMintPhone handle={profile.handle} caption="Handle mint artwork"/></div>
-    </section>
+    <div className="public-profile-banner"><Image src={ecosystemAssets.city} alt="SolHandle city banner" className="h-full w-full" focalPointX={0.74}/></div>
+    <div className="public-profile-original-grid">
+      <section className="handle-profile-panel public-profile-summary !mt-0" aria-label="Public handle profile">
+        <div className="public-profile-personal"><ProfileAvatar avatar={profile.avatar} handle={profile.handle}/><div className="min-w-0"><h1>@{profile.handle}</h1><p className="handle-profile-bio !mt-4">{profile.bio || 'No bio added.'}</p></div></div>
+        <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
+        <SaveProfileContact key={profile.handle} handle={profile.handle}/>
+      </section>
+      <section className="handle-profile-panel !mt-0"><h2>Wallet &amp; handle</h2><p>Solana Mainnet</p>
+        {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded. <button className="ep-link" onClick={() => query.refetch()}>Retry</button></p> : owner && <div className="identity-address"><span className="identity-eyebrow">CURRENT OWNER WALLET</span><div><code>{owner}</code><IdentityCopy value={owner} label="Copy wallet address"/></div><a className="ep-link" href={`https://solscan.io/account/${owner}`} target="_blank" rel="noopener noreferrer">View wallet on Solscan</a></div>}
+      </section>
+      <div className="public-profile-record"><HandleDetailRecord handle={profile.handle} data={data} owner={owner} invalid={data?.status === 'INVALID'} available={data?.available}/></div>
+      <section className="handle-profile-panel !mt-0"><h2>Handle mint artwork</h2><HandleCard handle={profile.handle}/></section>
+    </div>
   </div>;
 }
