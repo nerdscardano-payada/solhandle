@@ -190,6 +190,9 @@ const AuthenticatedApp = () => {
             <Route path="/about" element={<About />} />
             <Route path="/names" element={<Explore />} />
             <Route path="/developers" element={<Developers />} />
+            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>
+              <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
+            </Route>
             <Route path="/integrations" element={<Integrations />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/contact" element={<Contact />} />
@@ -231,9 +234,7 @@ const AuthenticatedApp = () => {
           <Route path="/network/:handle" element={<NetworkHandleIdentity />} />
         </Route>
 
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login?returnTo=%2Fdevelopers%2Fpartner-mint" replace />} />}>
-          <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
-        </Route>
+
         <Route path="/developers/resolve" element={<PageNotFound />} />
         <Route path="/widgets/*" element={<PageNotFound />} />
         <Route path="/developers/token-handles" element={<TokenHandlesPlan />} />
