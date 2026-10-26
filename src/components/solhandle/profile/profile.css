@@ -1,4 +1,11 @@
 .identity-page{min-height:100dvh;background:hsl(var(--hero-canvas));color:hsl(var(--identity-text));font-family:var(--font-body)}
+@media(min-width:768px){
+ .eco-live .el-profile .ep-identity-full .ep-identity-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+ .eco-live .el-profile .ep-identity-full .ep-identity-layout>div{min-width:0}
+ .eco-live .el-profile .ep-identity-full .ep-identity-details{grid-column:2;grid-row:1}
+ .eco-live .el-profile .ep-identity-full .ep-identity-person{grid-column:1;grid-row:1;align-items:flex-start}
+ .eco-live .el-profile .ep-identity-full .ep-identity-details dl>div{display:flex;justify-content:space-between;align-items:center}
+}
 .identity-layout{max-width:1160px;margin:auto;padding:30px 30px 65px}
 .identity-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:10px;font-weight:600;letter-spacing:.19em;color:hsl(var(--names-accent));line-height:1.7}
 .identity-hero{position:relative;overflow:hidden;isolation:isolate;min-height:255px;padding:40px 44px;border:1px solid hsl(var(--identity-border));border-radius:22px;background:radial-gradient(ellipse at 78% 120%,hsl(var(--names-accent)/.22),transparent 50%),radial-gradient(ellipse at 65% 0%,hsl(var(--names-secondary)/.16),transparent 60%),hsl(var(--hero-surface))}
