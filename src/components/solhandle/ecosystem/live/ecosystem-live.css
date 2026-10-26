@@ -26,6 +26,7 @@
 .eco-live .el-manage{margin-top:12px;justify-content:center}
 .eco-live .el-resource-navigation{margin-top:24px;padding-top:20px;border-top:1px solid var(--eco-border)}
 .eco-live .el-resource-navigation .ep-eyebrow{margin-bottom:10px}
+.eco-live .ep-sidebar>.ep-eyebrow,.eco-live .el-resource-navigation>.ep-eyebrow{font-size:13px}
 .eco-live .el-resource-navigation nav a{font-size:12px;gap:10px;padding:10px;min-height:43px}
 .eco-live .el-resource-navigation nav a svg{flex-shrink:0;color:var(--eco-purple)}
 .eco-live .ep-main{padding:24px;min-width:0}
