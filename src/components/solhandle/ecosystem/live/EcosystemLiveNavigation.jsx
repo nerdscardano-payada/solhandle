@@ -4,7 +4,7 @@ import { Image } from '@/components/ui/image';
 import EcosystemResourceNavigation from '@/components/solhandle/ecosystem/live/EcosystemResourceNavigation';
 import AdminEcosystemLinks from '@/components/solhandle/admin/AdminEcosystemLinks';
 import { ecosystemAssets } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
-const items = [[Home, 'Home', '/ecosystem'], [Compass, 'Discover', '/discover'], [UsersRound, 'Profiles', '/profiles'], [ContactRound, 'Contacts', '/contacts'], [Send, 'Pay', '/pay'], [UserRound, 'Profile', '/profile'], [ArrowLeftRight, 'Trade $HANDLE', '/upcoming/token-launch']];
+const items = [[Home, 'Home', '/ecosystem'], [Compass, 'Discover', '/discover'], [UsersRound, 'People', '/profiles'], [ContactRound, 'Contacts', '/contacts'], [Send, 'Pay', '/pay'], [UserRound, 'My Identity', '/profile'], [ArrowLeftRight, 'Trade $HANDLE', '/upcoming/token-launch']];
 export default function EcosystemLiveNavigation({ mobile = false }) {
   const searchPage = useLocation().pathname === '/search';
   return <aside className={mobile ? 'ep-bottomnav' : 'ep-sidebar'}>
