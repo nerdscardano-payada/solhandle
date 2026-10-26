@@ -1,4 +1,5 @@
 import Header from "@/components/solhandle/Header";
+import '@/components/solhandle/protocol-paper.css';
 import ProtocolPaperNav from "@/components/solhandle/ProtocolPaperNav";
 import ProtocolPaperSection from "@/components/solhandle/ProtocolPaperSection";
 import { protocolPaperMeta, protocolSections } from "@/lib/protocolPaperContent";
@@ -10,6 +11,6 @@ export default function ProtocolPaper() {
       <p className="mt-8 text-sm font-medium uppercase tracking-[0.2em] text-violet-300">{protocolPaperMeta.tagline}</p><h1 className="mt-3 text-4xl font-semibold tracking-tight md:text-6xl">{protocolPaperMeta.title} <span className="text-cyan-300">v{protocolPaperMeta.version}</span></h1><p className="mt-5 text-xl text-slate-300 md:text-2xl">{protocolPaperMeta.subtitle}</p>
       <p className="mt-7 max-w-3xl leading-relaxed text-slate-400">A concise specification of SolHandle’s ownership, resolution, marketplace, integration and security model, covering the identity protocol and $HANDLE community launch. It includes no market forecasts or price predictions.</p>
     </div></div></header>
-    <div className="grid gap-10 px-5 py-12 md:px-9 lg:grid-cols-[230px_minmax(0,1fr)]"><ProtocolPaperNav sections={protocolSections} /><article className="max-w-3xl">{protocolSections.map((section) => <ProtocolPaperSection key={section.id} section={section} />)}<p className="border-t border-white/10 pt-8 text-xs leading-relaxed text-slate-500">This document is technical information, not financial, investment, tax or legal advice. Mainnet state, the official token address and the current published protocol configuration remain authoritative.</p></article></div>
+    <div className="el-paper-content grid gap-10 px-5 py-12 md:px-9 lg:grid-cols-[230px_minmax(0,1fr)]"><ProtocolPaperNav sections={protocolSections} /><article className="max-w-3xl">{protocolSections.map((section) => <ProtocolPaperSection key={section.id} section={section} />)}<p className="border-t border-white/10 pt-8 text-xs leading-relaxed text-slate-500">This document is technical information, not financial, investment, tax or legal advice. Mainnet state, the official token address and the current published protocol configuration remain authoritative.</p></article></div>
   </div></main>;
 }

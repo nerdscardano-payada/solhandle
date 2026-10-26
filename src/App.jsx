@@ -199,6 +199,7 @@ const AuthenticatedApp = () => {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/legal" element={<Legal />} />
             <Route path="/docs" element={<Docs />} />
+            <Route path="/protocol-paper" element={<ProtocolPaper />} />
             <Route path="/demos" element={<Demos />} />
             <Route path="/demos/:slug" element={<DemoDetail />} />
             <Route path="/integrate" element={<Integrate />} />
@@ -245,7 +246,7 @@ const AuthenticatedApp = () => {
         <Route path="/upcoming" element={<UpcomingProjects />} />
         <Route path="/upcoming/marketplace" element={<Market />} />
         <Route path="/promo" element={<Promo />} />
-        <Route path="/protocol-paper" element={<ProtocolPaper />} />
+
         {growthHubVisible ? <Route element={<GrowthHubLayout />}>
           <Route path="/quests" element={<GrowthHub />} />
           <Route path="/quests/dashboard" element={<GrowthHubDashboard />} />

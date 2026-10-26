@@ -1,0 +1,18 @@
+.eco-live .el-information-protocol-paper>main>div>header{padding:32px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card)}
+.eco-live .el-information-protocol-paper>main>div>header>.absolute{display:none}
+.eco-live .el-information-protocol-paper .el-paper-content{padding:28px 0;min-width:0;gap:24px}
+.eco-live .el-information-protocol-paper article{max-width:none;min-width:0}
+.eco-live .el-information-protocol-paper article>section{padding:24px;margin-bottom:18px;border:1px solid var(--eco-border);border-radius:16px;background:var(--eco-card)}
+.eco-live .el-information-protocol-paper aside>div{border-color:var(--eco-border);background:var(--eco-card)}
+.eco-live .el-information-protocol-paper .text-slate-600{color:var(--eco-muted)}
+.eco-live .el-information-protocol-paper dl>div{background:var(--eco-sidebar);border-color:var(--eco-border)}
+.eco-live .el-information-protocol-paper .bg-violet-300{background:var(--eco-purple)}
+.eco-live .el-information-protocol-paper [class~="bg-cyan-300/5"]{background:color-mix(in srgb,var(--eco-cyan) 6%,var(--eco-card));border-color:var(--eco-border)}
+@container ecosystem (max-width:1099px){
+ .eco-live .el-information-protocol-paper .el-paper-content{grid-template-columns:minmax(0,1fr)}
+ .eco-live .el-information-protocol-paper aside{display:none}
+}
+@container ecosystem (max-width:767px){
+ .eco-live .el-information-protocol-paper>main>div>header{padding:24px 18px}
+ .eco-live .el-information-protocol-paper article>section{padding:18px}
+}
