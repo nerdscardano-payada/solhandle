@@ -7,10 +7,11 @@ export default function ProfileHandleTitle({ handle }) {
   useLayoutEffect(() => {
     const fit = () => {
       if (!container.current || !title.current) return;
-      title.current.style.fontSize = '44px';
+      const baseSize = window.matchMedia('(max-width: 767px)').matches ? 28 : 44;
+      title.current.style.fontSize = `${baseSize}px`;
       const width = title.current.getBoundingClientRect().width;
       const available = container.current.clientWidth;
-      const size = width > 0 ? Math.min(44, Math.floor(44 * available / width)) : 44;
+      const size = width > 0 ? Math.min(baseSize, Math.floor(baseSize * available / width)) : baseSize;
       title.current.style.fontSize = `${size}px`;
       setFontSize(size);
     };
