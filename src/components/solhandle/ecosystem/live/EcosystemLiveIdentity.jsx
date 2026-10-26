@@ -5,9 +5,11 @@ import ProfileSocialLinks from '@/components/solhandle/profile/ProfileSocialLink
 import '@/components/solhandle/profile/profile-media.css';
 import { Image } from '@/components/ui/image';
 import IdentityCopy from '@/components/solhandle/profile/IdentityCopy';
+import EcosystemIdentityWelcome from '@/components/solhandle/ecosystem/live/EcosystemIdentityWelcome';
 import { ecosystemAssets } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 export default function EcosystemLiveIdentity({ state, full = false, profile = null }) {
   const { address, loading, error, refreshing, refresh } = state;
+  if (!address && !full) return <EcosystemIdentityWelcome/>;
   const identity = !error && state.identity?.address === address ? state.identity : null;
   const label = loading ? 'Finding your identity…' : error ? 'Identity unavailable' : identity?.primaryHandle || (address ? 'Choose your Primary Handle' : 'Your wallet. Your identity.');
   return <section className={`ep-card ep-identity ${full ? 'ep-identity-full' : ''}`}>
