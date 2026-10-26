@@ -68,7 +68,7 @@
 @media (min-width:768px){
  .eco-live .ep-public-app{overflow:visible}
  .eco-live .ep-public-hero{--hero-right-bleed:max(0px,calc((100vw - min(var(--platform-frame-max,1256px),calc(100vw - var(--platform-frame-gutter,0px))))/2 + 1px));overflow:visible}
- .eco-live .ep-public-city{right:auto;width:calc(100% + var(--hero-right-bleed));filter:brightness(1.08)}
+ .eco-live .ep-public-city{right:auto;width:calc(100% + var(--hero-right-bleed));filter:brightness(1.2)}
  .eco-live .ep-public-hero:after{right:calc(0px - var(--hero-right-bleed));background:linear-gradient(90deg,color-mix(in srgb,var(--eco-canvas) 96%,transparent),color-mix(in srgb,var(--eco-canvas) 65%,transparent) 50%,color-mix(in srgb,var(--eco-canvas) 16%,transparent)),linear-gradient(transparent 70%,var(--eco-canvas))}
 }
 @media (min-width:1280px){
