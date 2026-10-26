@@ -1,0 +1,12 @@
+.eco-live .el-footer .el-mobile-footer{display:none}
+@media (max-width:767px){
+  .eco-live .el-footer .el-footer-desktop{display:none}
+  .eco-live .el-footer .el-mobile-footer{display:flex;flex-direction:column;width:100%;gap:0}
+  .eco-live .el-footer-group{border-bottom:1px solid var(--eco-border)}
+  .eco-live .el-footer-group summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;list-style:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--eco-text)}
+  .eco-live .el-footer-group summary::-webkit-details-marker{display:none}
+  .eco-live .el-footer-group[open] summary svg{transform:rotate(180deg)}
+  .eco-live .el-footer-group-links{display:flex;flex-direction:column;padding:0 0 8px 12px}
+  .eco-live .el-footer .el-mobile-footer a{min-height:44px}
+  .eco-live .el-footer-group summary:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:2px}
+}
