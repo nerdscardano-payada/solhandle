@@ -14,6 +14,7 @@
 .public-profile-personal h1{margin:0;line-height:1.2}
 .public-profile-summary .handle-profile-bio{margin-bottom:0}
 .public-profile-social-actions{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;margin-top:16px}
+@media(min-width:768px){.public-profile-social-actions{padding-inline:12px}}
 .public-profile-summary .public-profile-social-actions>.handle-profile-links{flex:1 1 auto;min-width:0;margin:0;overflow-wrap:anywhere}
 .public-profile-social-actions>.mt-auto{flex:0 0 auto;max-width:100%;margin-top:0;padding-top:0}
 .public-profile-social-actions>.mt-auto:has(button[aria-expanded="true"]){flex:1 1 100%}
