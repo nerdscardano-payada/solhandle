@@ -23,6 +23,7 @@
   --eco-gradient: linear-gradient(110deg, var(--eco-purple), var(--eco-blue) 55%, var(--eco-cyan));
   --brand-action-gradient: linear-gradient(90deg, var(--button-gradient-start) 0%, var(--button-gradient-middle) 50%, var(--button-gradient-end) 100%);
   --brand-action-foreground: 222 56% 7%;
+  --wallet-action-background: 0 0% 100%;
 }
 
 /* Existing feature modules inherit the Ecosystem palette inside the production frame. */
@@ -331,5 +332,14 @@ html, body { overscroll-behavior: none; }
   color: hsl(var(--brand-action-foreground)) !important;
 }
 :root body :is(.solhandle-action-button, .solhandle-primary-button, .ep-button, .wallet-adapter-button) svg {
+  color: inherit !important;
+}
+
+:root body .solhandle-wallet-button {
+  background: hsl(var(--wallet-action-background)) !important;
+  color: hsl(var(--brand-action-foreground)) !important;
+  border-color: hsl(var(--wallet-action-background)) !important;
+}
+:root body .solhandle-wallet-button svg {
   color: inherit !important;
 }
