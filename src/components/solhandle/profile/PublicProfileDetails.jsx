@@ -7,15 +7,13 @@ import IdentityCopy from '@/components/solhandle/profile/IdentityCopy';
 import '@/components/solhandle/handles/handle-detail.css';
 import '@/components/solhandle/profile/profile.css';
 
-export default function PublicProfileDetails({ handle, children }) {
+export default function PublicProfileDetails({ handle }) {
   const query = useQuery({ queryKey: ['public-profile-handle-details', handle], queryFn: async () => (await base44.functions.invoke('getHandleAvailability', { handle })).data, retry: false, staleTime: 0 });
   const data = query.data, owner = data?.currentOwner;
-  return <div className="min-w-0 space-y-6 pt-6">
-    {children}
-    <details className="handle-profile-panel public-profile-disclosure">
+  return <details className="handle-profile-panel public-profile-disclosure">
       <summary>On-chain Identity Details <ChevronDown size={18}/></summary>
       <div className="public-profile-disclosure-content">
-      {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded. <button className="ep-link" onClick={() => query.refetch()}>Retry</button></p> : <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+      {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded. <button className="ep-link" onClick={() => query.refetch()}>Retry</button></p> : <div className="grid min-w-0 gap-4">
     <div className="min-w-0 flex flex-col gap-6">
       <HandleDetailRecord handle={handle} data={data} owner={owner} invalid={data?.status === 'INVALID'} available={data?.available}/>
     </div>
@@ -25,6 +23,5 @@ export default function PublicProfileDetails({ handle, children }) {
     </div>
       </div>}
       </div>
-    </details>
-  </div>;
+    </details>;
 }
