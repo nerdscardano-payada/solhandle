@@ -20,7 +20,7 @@ export default function PublicProfileCard({ profile }) {
       <section className="handle-profile-panel public-profile-summary !mt-0" aria-label="Public handle profile">
         <div className="public-profile-personal"><ProfileAvatar avatar={profile.avatar} handle={profile.handle}/><div className="min-w-0"><h1>@{profile.handle}</h1><p className="handle-profile-bio !mt-4">{profile.bio || 'No bio added.'}</p></div></div>
         <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
-        <SaveProfileContact key={profile.handle} handle={profile.handle}/>
+        <SaveProfileContact key={profile.handle} handle={profile.handle} quiet/>
       </section>
       <section className="handle-profile-panel !mt-0"><h2>Wallet &amp; handle</h2><p>Solana Mainnet</p>
         {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded. <button className="ep-link" onClick={() => query.refetch()}>Retry</button></p> : owner && <div className="identity-address"><span className="identity-eyebrow">CURRENT OWNER WALLET</span><div><code>{owner}</code><IdentityCopy value={owner} label="Copy wallet address"/></div><a className="ep-link" href={`https://solscan.io/account/${owner}`} target="_blank" rel="noopener noreferrer">View wallet on Solscan</a></div>}

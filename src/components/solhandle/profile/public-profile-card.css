@@ -9,6 +9,9 @@
 .public-profile-summary .handle-profile-bio{margin-bottom:0}
 .public-profile-summary .handle-profile-links{margin-bottom:18px}
 .public-profile-summary button.ep-button{margin-left:0}
+.public-profile-summary .profile-contact-text-action{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 0;background:none;border:0;box-shadow:none;color:hsl(var(--identity-muted));font-size:13px;font-weight:400;cursor:pointer}
+.public-profile-summary .profile-contact-text-action:hover{color:hsl(var(--names-accent))}
+.public-profile-summary .profile-contact-text-action:focus-visible{outline:2px solid hsl(var(--names-accent));outline-offset:4px}
 .public-profile-record>.ep-card{margin:0}
 .public-profile-original-grid .identity-address code{overflow-wrap:anywhere;word-break:break-all}
 @media(max-width:767px){.public-profile-banner{height:125px}.public-profile-original-grid{grid-template-columns:minmax(0,1fr)}.public-profile-personal{gap:16px}.public-profile-personal>.profile-avatar{width:72px;height:72px}}
