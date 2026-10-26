@@ -23,5 +23,8 @@
 .public-profile-summary .profile-contact-text-action:hover{color:hsl(var(--names-accent))}
 .public-profile-summary .profile-contact-text-action:focus-visible{outline:2px solid hsl(var(--names-accent));outline-offset:4px}
 .public-profile-record>.ep-card{margin:0}
+.public-profile-artwork{display:flex;flex-direction:column;perspective:1200px}
+.public-profile-artwork>.identity-mint-tablet{margin-block:auto}
+@media(min-width:768px){.public-profile-original-grid>.public-profile-record,.public-profile-original-grid>.public-profile-artwork{align-self:stretch}.public-profile-record>.ep-card{height:100%}}
 .public-profile-original-grid .identity-address code{overflow-wrap:anywhere;word-break:break-all}
 @media(max-width:767px){.public-profile-banner{height:125px}.public-profile-original-grid{grid-template-columns:minmax(0,1fr)}.public-profile-personal{gap:16px}.public-profile-personal>.profile-avatar{width:72px;height:72px}}
