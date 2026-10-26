@@ -3,7 +3,7 @@ import { Shield, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Image } from '@/components/ui/image';
 import ProfileAvatar from '@/components/solhandle/profile/ProfileAvatar';
-import HandleCard from '@/components/solhandle/HandleCard';
+import IdentityMintTablet from '@/components/solhandle/profile/IdentityMintTablet';
 import HandleDetailRecord from '@/components/solhandle/handles/HandleDetailRecord';
 import IdentityCopy from '@/components/solhandle/profile/IdentityCopy';
 import SaveProfileContact from '@/components/solhandle/profile/SaveProfileContact';
@@ -31,7 +31,7 @@ export default function PublicProfileCard({ profile }) {
         <button type="button" className="ep-link" disabled={query.isFetching} onClick={() => query.refetch()}><RefreshCw size={14} className={query.isFetching ? 'animate-spin' : ''}/>{query.isFetching ? 'Checking…' : 'Refresh identity'}</button>
       </section>
       <div className="public-profile-record"><HandleDetailRecord handle={profile.handle} data={data} owner={owner} invalid={data?.status === 'INVALID'} available={data?.available}/></div>
-      <section className="handle-profile-panel !mt-0"><h2>Handle mint artwork</h2><HandleCard handle={profile.handle}/></section>
+      <section className="handle-profile-panel !mt-0"><h2>Handle mint artwork</h2><IdentityMintTablet handle={profile.handle}/></section>
     </div>
   </div>;
 }
