@@ -5,6 +5,6 @@ import { useAuth } from '@/lib/AuthContext';
 export default function AdminEcosystemLinks({ inline = false }) {
   const { user } = useAuth();
   if (user?.role !== 'admin') return null;
-  if (inline) return <Link to="/admin">Administration</Link>;
-  return <div className="el-resource-navigation"><p className="ep-eyebrow">ADMINISTRATION</p><nav aria-label="Administrator navigation"><NavLink to="/admin" end><ShieldCheck size={18}/><span>Admin overview</span></NavLink><NavLink to="/admin/projects"><ListChecks size={18}/><span>Discover management</span></NavLink></nav></div>;
+  if (inline) return <Link to="/admin" className="hidden">Administration</Link>;
+  return <div className="el-resource-navigation"><p className="ep-eyebrow">ADMINISTRATION</p><nav aria-label="Administrator navigation"><NavLink to="/admin" end><ShieldCheck size={18} /><span>Admin overview</span></NavLink><NavLink to="/admin/projects"><ListChecks size={18} /><span>Discover management</span></NavLink></nav></div>;
 }
