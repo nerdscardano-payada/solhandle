@@ -13,7 +13,10 @@
 .public-profile-personal>.profile-avatar{width:156px;height:156px;flex-shrink:0}
 .public-profile-personal h1{margin:0;line-height:1.2}
 .public-profile-summary .handle-profile-bio{margin-bottom:0}
-.public-profile-summary .handle-profile-links{margin-bottom:18px}
+.public-profile-social-actions{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;margin-top:16px}
+.public-profile-summary .public-profile-social-actions>.handle-profile-links{flex:1 1 auto;min-width:0;margin:0;overflow-wrap:anywhere}
+.public-profile-social-actions>.mt-auto{flex:0 0 auto;max-width:100%;margin-top:0;padding-top:0}
+.public-profile-social-actions>.mt-auto:has(button[aria-expanded="true"]){flex:1 1 100%}
 .public-profile-summary button.ep-button{margin-left:0}
 .public-profile-summary .profile-contact-text-action{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 0;background:none;border:0;box-shadow:none;color:hsl(var(--identity-muted));font-size:13px;font-weight:400;cursor:pointer}
 .public-profile-summary .profile-contact-text-action:hover{color:hsl(var(--names-accent))}

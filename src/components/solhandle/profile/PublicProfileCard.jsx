@@ -20,8 +20,10 @@ export default function PublicProfileCard({ profile }) {
     <div className="public-profile-original-grid">
       <section className="handle-profile-panel public-profile-summary !mt-0" aria-label="Public handle profile">
         <div className="public-profile-personal"><ProfileAvatar avatar={profile.avatar} handle={profile.handle}/><div className="min-w-0"><h1>@{profile.handle}</h1><p className="handle-profile-bio !mt-4">{profile.bio || 'No bio added.'}</p></div></div>
-        <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
-        <SaveProfileContact key={profile.handle} handle={profile.handle} quiet/>
+        <div className="public-profile-social-actions">
+          <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
+          <SaveProfileContact key={profile.handle} handle={profile.handle} quiet/>
+        </div>
       </section>
       <section className="public-profile-ownership" aria-label="On-chain handle ownership">
         <div className="ep-ownership" role="status"><Shield size={21}/><div><strong>{query.isPending ? 'Checking Solana…' : query.isError || !owner ? 'Ownership not confirmed' : 'Handle ownership checked on-chain'}</strong><p>Handle ownership is not personal identity or Official Project verification.</p></div></div>
