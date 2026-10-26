@@ -10,7 +10,7 @@
 @media(min-width:768px){.public-profile-original-grid>.public-profile-summary{grid-column:1;grid-row:1;justify-content:center;border:0;background:transparent;padding:0}.public-profile-original-grid>.public-profile-ownership{grid-column:2;grid-row:1}}
 .public-profile-summary{display:flex;flex-direction:column;height:100%}
 .public-profile-personal{display:flex;align-items:center;gap:20px;min-width:0}
-.public-profile-personal>.profile-avatar{width:180px;height:180px;flex-shrink:0}
+.public-profile-personal>.profile-avatar{width:156px;height:156px;flex-shrink:0}
 .public-profile-personal h1{margin:0;line-height:1.2}
 .public-profile-summary .handle-profile-bio{margin-bottom:0}
 .public-profile-summary .handle-profile-links{margin-bottom:18px}
