@@ -4,7 +4,7 @@
 .public-profile-original-grid>*,.public-profile-personal>div{min-width:0}
 .public-profile-summary{display:flex;flex-direction:column;height:100%}
 .public-profile-personal{display:flex;align-items:center;gap:20px;min-width:0}
-.public-profile-personal>.profile-avatar{width:88px;height:88px;flex-shrink:0}
+.public-profile-personal>.profile-avatar{width:180px;height:180px;flex-shrink:0}
 .public-profile-personal h1{margin:0;line-height:1.2}
 .public-profile-summary .handle-profile-bio{margin-bottom:0}
 .public-profile-summary .handle-profile-links{margin-bottom:18px}
