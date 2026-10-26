@@ -327,7 +327,7 @@ html, body { overscroll-behavior: none; }
     [class~="from-names-success"],
     [class~="from-names-accent"]
   )
-) {
+):not(.el-integration-action) {
   background-image: var(--brand-action-gradient) !important;
   color: hsl(var(--brand-action-foreground)) !important;
 }
