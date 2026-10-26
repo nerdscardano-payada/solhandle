@@ -1,6 +1,7 @@
 .eco-live .el-city-entrance{position:absolute;z-index:2;left:74%;top:59%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:16px;text-decoration:none;color:var(--eco-text);text-align:center}
 .eco-live .el-city-entrance-marker{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;border:1px solid color-mix(in srgb,var(--eco-cyan) 70%,transparent);background:color-mix(in srgb,var(--eco-canvas) 55%,transparent);box-shadow:0 0 35px color-mix(in srgb,var(--eco-cyan) 20%,transparent),inset 0 0 20px color-mix(in srgb,var(--eco-cyan) 12%,transparent);backdrop-filter:blur(10px);color:var(--eco-cyan);transition:box-shadow .3s,transform .3s}
 .eco-live .el-city-entrance-label{display:flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--eco-border);border-radius:30px;background:color-mix(in srgb,var(--eco-canvas) 78%,transparent);backdrop-filter:blur(12px);font-size:13px;font-weight:600;white-space:nowrap}
+@media(min-width:768px){.eco-live .el-city-entrance-label{padding:15px 24px;font-size:16px;background:color-mix(in srgb,var(--eco-canvas) 88%,transparent)}}
 @keyframes el-city-heartbeat{0%,38%,100%{scale:1}12%{scale:1.13}22%{scale:1.02}29%{scale:1.09}}
 @media(prefers-reduced-motion:no-preference){.eco-live .el-city-entrance-marker{animation:el-city-heartbeat 2.2s ease-in-out infinite}}
 .eco-live .el-city-entrance:hover .el-city-entrance-marker{transform:scale(1.1);box-shadow:0 0 55px color-mix(in srgb,var(--eco-cyan) 38%,transparent)}
