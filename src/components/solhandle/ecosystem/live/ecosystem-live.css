@@ -67,6 +67,10 @@
 .eco-live .el-footer nav a:hover{color:var(--eco-cyan)}
 .eco-live .el-footer>p{width:100%;font-size:11px}
 @media (min-width:768px){
+ .eco-live .ep-claim-search{min-height:64px;padding-block:7px}
+ .eco-live .ep-claim-search>span{font-size:26px}
+ .eco-live .ep-claim-search input{font-size:18px;padding-block:12px}
+ .eco-live .ep-claim-search .ep-button{min-height:49px;font-size:15px}
  .eco-live .ep-public-app{overflow:visible}
  .eco-live .ep-public-hero{--hero-right-bleed:max(0px,calc((100vw - min(var(--platform-frame-max,1256px),calc(100vw - var(--platform-frame-gutter,0px))))/2 + 1px));overflow:visible}
  .eco-live .ep-public-city{right:auto;width:calc(100% + var(--hero-right-bleed));filter:brightness(1.2)}
