@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Shield, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Image } from '@/components/ui/image';
 import ProfileAvatar from '@/components/solhandle/profile/ProfileAvatar';
@@ -22,8 +23,10 @@ export default function PublicProfileCard({ profile }) {
         <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
         <SaveProfileContact key={profile.handle} handle={profile.handle} quiet/>
       </section>
-      <section className="handle-profile-panel !mt-0"><h2>Wallet &amp; handle</h2><p>Solana Mainnet</p>
-        {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded. <button className="ep-link" onClick={() => query.refetch()}>Retry</button></p> : owner && <div className="identity-address"><span className="identity-eyebrow">CURRENT OWNER WALLET</span><div><code>{owner}</code><IdentityCopy value={owner} label="Copy wallet address"/></div><a className="ep-link" href={`https://solscan.io/account/${owner}`} target="_blank" rel="noopener noreferrer">View wallet on Solscan</a></div>}
+      <section className="public-profile-ownership" aria-label="On-chain handle ownership">
+        <div className="ep-ownership" role="status"><Shield size={21}/><div><strong>{query.isPending ? 'Checking Solana…' : query.isError || !owner ? 'Ownership not confirmed' : 'Handle ownership checked on-chain'}</strong><p>Handle ownership is not personal identity or Official Project verification.</p></div></div>
+        {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded.</p> : <dl><div><dt>Handle</dt><dd>@{profile.handle}</dd></div><div><dt>Wallet</dt><dd>{owner ? <>{owner.slice(0, 6)}…{owner.slice(-4)}<IdentityCopy value={owner} label="Copy wallet address"/></> : 'Not verified'}</dd></div>{owner && <div><dt>Last checked</dt><dd>{new Date(query.dataUpdatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</dd></div>}</dl>}
+        <button type="button" className="ep-link" disabled={query.isFetching} onClick={() => query.refetch()}><RefreshCw size={14} className={query.isFetching ? 'animate-spin' : ''}/>{query.isFetching ? 'Checking…' : 'Refresh identity'}</button>
       </section>
       <div className="public-profile-record"><HandleDetailRecord handle={profile.handle} data={data} owner={owner} invalid={data?.status === 'INVALID'} available={data?.available}/></div>
       <section className="handle-profile-panel !mt-0"><h2>Handle mint artwork</h2><HandleCard handle={profile.handle}/></section>

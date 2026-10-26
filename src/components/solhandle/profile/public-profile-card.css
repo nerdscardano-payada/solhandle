@@ -2,6 +2,12 @@
 .public-profile-banner{height:160px;overflow:hidden;border:1px solid hsl(var(--identity-border));border-radius:20px;background:var(--eco-raised)}
 .public-profile-original-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start}
 .public-profile-original-grid>*,.public-profile-personal>div{min-width:0}
+.public-profile-ownership{min-width:0;align-self:center}
+.public-profile-ownership dl{margin-bottom:8px}
+.public-profile-ownership dl>div{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.public-profile-ownership dd{display:flex;align-items:center;gap:8px;text-align:right;min-width:0}
+.public-profile-ownership>.ep-link{display:inline-flex;align-items:center;gap:6px}
+@media(min-width:768px){.public-profile-original-grid>.public-profile-summary{grid-column:1;grid-row:1;justify-content:center;border:0;background:transparent;padding:0}.public-profile-original-grid>.public-profile-ownership{grid-column:2;grid-row:1}}
 .public-profile-summary{display:flex;flex-direction:column;height:100%}
 .public-profile-personal{display:flex;align-items:center;gap:20px;min-width:0}
 .public-profile-personal>.profile-avatar{width:180px;height:180px;flex-shrink:0}
