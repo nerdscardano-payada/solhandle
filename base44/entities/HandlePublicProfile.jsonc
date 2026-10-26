@@ -14,7 +14,7 @@
     },
     "bio": {
       "type": "string",
-      "maxLength": 500
+      "maxLength": 100
     },
     "social_links": {
       "type": "array",

@@ -6,7 +6,7 @@ export function profileInput(body) {
   return handle;
 }
 export function profilePayload(body) {
-  if (typeof body.bio !== 'string' || body.bio.length > 500 || typeof body.published !== 'boolean' || !Array.isArray(body.social_links) || body.social_links.length > 5) throw profileError('Use a bio up to 500 characters and up to five social links.');
+  if (typeof body.bio !== 'string' || body.bio.length > 100 || typeof body.published !== 'boolean' || !Array.isArray(body.social_links) || body.social_links.length > 5) throw profileError('Use a bio up to 100 characters and up to five social links.');
   const social_links = body.social_links.map(value => {
     if (typeof value !== 'string' || value.length > 500) throw profileError('Invalid social link.');
     let url; try { url = new URL(value); } catch { throw profileError('Social links must be full HTTPS addresses.'); }
