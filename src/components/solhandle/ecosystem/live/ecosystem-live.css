@@ -75,6 +75,8 @@
  .eco-live .el-dashboard .ep-welcome h1{font-size:36px}
  .eco-live .el-dashboard .ep-summary .ep-card-heading h2{font-size:17px}
  .eco-live .el-dashboard .ep-summary .ep-card-heading h2>svg{width:20px;height:20px}
+ .eco-live .el-dashboard .ep-projects .ep-card-heading h2{font-size:19px}
+ .eco-live .el-dashboard .ep-projects .ep-card-heading h2>svg{width:22px;height:22px}
  .eco-live .el-dashboard .ep-identity{padding:30px}
  .eco-live .el-dashboard .ep-identity>.ep-card-heading{margin-bottom:28px}
  .eco-live .el-dashboard .ep-identity-layout{row-gap:32px}
