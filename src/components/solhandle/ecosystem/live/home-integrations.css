@@ -1,0 +1,47 @@
+.eco-live .el-home-integration{padding:clamp(32px,5vw,72px) clamp(20px,4vw,55px);background:radial-gradient(ellipse at 95% 15%,color-mix(in srgb,var(--eco-purple) 20%,transparent),transparent 60%),linear-gradient(135deg,var(--eco-sidebar),var(--eco-card));border-block:1px solid color-mix(in srgb,var(--eco-blue) 40%,var(--eco-border))}
+.eco-live .el-integration-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:center}
+.eco-live .el-integration-copy{display:flex;flex-direction:column;align-items:flex-start;gap:22px;min-width:0}
+.eco-live .el-integration-copy>.ep-eyebrow{color:var(--eco-cyan);line-height:1.7}
+.eco-live .el-integration-copy h2{font-size:clamp(36px,4.4vw,64px);font-weight:800;letter-spacing:-.055em;line-height:1.06;overflow-wrap:anywhere}
+.eco-live .el-integration-copy h3{font-size:clamp(20px,2vw,28px);color:var(--eco-cyan);letter-spacing:-.025em}
+.eco-live .el-integration-copy>p:not(.ep-eyebrow){font-size:16px;line-height:1.85;max-width:62ch}
+.eco-live .el-home-actions{display:flex;flex-wrap:wrap;gap:12px}
+.eco-live .el-home-actions .ep-button{padding:14px 20px;min-height:50px}
+.eco-live .el-integration-visual{min-width:0;border:1px solid color-mix(in srgb,var(--eco-purple) 60%,var(--eco-border));border-radius:22px;padding:26px;background:linear-gradient(155deg,color-mix(in srgb,var(--eco-blue) 15%,var(--eco-canvas)),var(--eco-sidebar));box-shadow:0 0 60px color-mix(in srgb,var(--eco-purple) 12%,transparent);text-align:center}
+.eco-live .el-integration-window{display:flex;justify-content:space-between;gap:12px;text-align:left;font-size:9px;letter-spacing:.1em;color:var(--eco-muted);padding-bottom:24px;border-bottom:1px solid var(--eco-border)}
+.eco-live .el-integration-handle{padding:30px 0 20px;display:flex;flex-direction:column;gap:8px}
+.eco-live .el-integration-handle>span{font-size:12px;color:var(--eco-muted)}
+.eco-live .el-integration-handle strong{font-size:clamp(44px,5vw,72px);line-height:1.15;letter-spacing:-.06em;background:var(--eco-gradient);background-clip:text;color:transparent}
+.eco-live .el-integration-connector{margin:0 auto 20px;color:var(--eco-purple)}
+.eco-live .el-integration-wallet{display:flex;gap:12px;align-items:center;text-align:left;padding:18px;border:1px solid color-mix(in srgb,var(--eco-cyan) 40%,var(--eco-border));border-radius:12px;background:var(--eco-card);color:var(--eco-cyan)}
+.eco-live .el-integration-wallet div{min-width:0;display:flex;flex-direction:column;gap:5px}
+.eco-live .el-integration-wallet strong{color:var(--eco-text);font-size:17px}
+.eco-live .el-integration-wallet span{font-size:12px;color:var(--eco-muted)}
+.eco-live .el-integration-visual>p{display:flex;justify-content:center;gap:7px;font-size:11px;line-height:1.6;margin:20px 0}
+.eco-live .el-integration-visual>p svg{color:var(--eco-cyan)}
+.eco-live .el-integration-contexts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.eco-live .el-integration-contexts span{font-size:11px;padding:5px 12px;border:1px solid var(--eco-border);border-radius:6px;color:var(--eco-muted)}
+.eco-live .el-integration-capabilities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:48px;padding-top:30px;border-top:1px solid var(--eco-border)}
+.eco-live .el-integration-capabilities>div{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0}
+.eco-live .el-integration-capabilities svg{color:var(--eco-purple)}
+.eco-live .el-integration-capabilities>div:nth-child(2) svg{color:var(--eco-blue)}
+.eco-live .el-integration-capabilities>div:nth-child(3) svg{color:var(--eco-cyan)}
+.eco-live .el-integration-capabilities strong{font-size:14px;color:var(--eco-cyan)}
+.eco-live .el-integration-capabilities p{font-size:13px;line-height:1.7}
+.eco-live .el-integration-note{font-size:11px;line-height:1.8;margin-top:28px;max-width:100ch}
+.eco-live .el-home-pillar-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.eco-live .el-home-pillar-grid>a{display:flex;flex-direction:column;gap:15px;align-items:flex-start;text-decoration:none;color:var(--eco-text);padding:22px 18px;min-width:0}
+.eco-live .el-home-pillar-grid svg,.eco-live .el-home-resource-grid svg{color:var(--eco-cyan)}
+.eco-live .el-home-pillar-grid p{font-size:13px;line-height:1.8}
+.eco-live .el-home-pillar-grid>a>svg:last-child{margin-top:auto}
+.eco-live .el-home-pillar-grid>a:hover{border-color:var(--eco-cyan)}
+.eco-live :is(.el-home-how,.el-home-resources){padding-block:26px}
+.eco-live :is(.el-home-how,.el-home-resources)>h2{font-size:clamp(26px,3vw,36px);letter-spacing:-.04em;margin:12px 0 28px}
+.eco-live .el-home-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px}
+.eco-live .el-home-step-grid>div{display:flex;flex-direction:column;gap:14px;padding-top:22px;border-top:1px solid var(--eco-border)}
+.eco-live .el-home-step-grid>div>span{color:var(--eco-cyan);font-size:14px;font-weight:700}
+.eco-live .el-home-step-grid p,.eco-live .el-home-resource-grid p{line-height:1.85}
+.eco-live .el-home-resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.eco-live .el-home-resource-grid>.ep-card{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:28px}
+@media(max-width:1000px){.eco-live .el-integration-layout{grid-template-columns:minmax(0,1fr)}.eco-live .el-integration-visual{width:100%;max-width:550px;justify-self:center}.eco-live .el-home-pillar-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.eco-live .el-home-actions{width:100%;flex-direction:column}.eco-live .el-home-actions .ep-button{width:100%}.eco-live .el-integration-capabilities,.eco-live .el-home-step-grid,.eco-live .el-home-resource-grid{grid-template-columns:minmax(0,1fr)}.eco-live .el-integration-capabilities{gap:26px}.eco-live .el-home-pillar-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.eco-live .el-home-pillar-grid>a:last-child{grid-column:1/-1}.eco-live .el-integration-visual{padding:20px}.eco-live .el-integration-copy>p:not(.ep-eyebrow){font-size:15px}}

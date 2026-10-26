@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { Fingerprint, Compass, ContactRound, Send, Code2, ArrowUpRight } from 'lucide-react';
+const pillars = [[Fingerprint, 'Identity', 'Your @handle, owned as an NFT in your wallet.', '/profile'], [Compass, 'Discover', 'Explore projects across the Solana ecosystem.', '/discover'], [ContactRound, 'Contacts', 'Keep a private address book. No automatic follows.', '/contacts'], [Send, 'Pay', 'Check the recipient and approve in your own wallet. No custody.', '/pay'], [Code2, 'Integrate', 'Bring @handles into your own Solana application.', '/developers']];
+export default function HomeEcosystemPillars() {
+  return <section className="el-home-pillars" aria-labelledby="home-pillars-title"><div className="ep-public-intro"><span className="ep-eyebrow">THE SOLHANDLE ECOSYSTEM</span><h2 id="home-pillars-title">One identity.<br/>More possibilities.</h2><p>Claim and use your own @handle, or build places where others can use theirs. Five pillars connect human-readable identity to the wider Solana ecosystem.</p></div><div className="el-home-pillar-grid">{pillars.map(([Icon, title, description, to]) => <Link className="ep-card" key={title} to={to}><Icon size={25}/><h3>{title}</h3><p>{description}</p><ArrowUpRight size={18}/></Link>)}</div></section>;
+}

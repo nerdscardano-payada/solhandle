@@ -1,0 +1,4 @@
+const steps = [['01', 'Find your name', 'Search for an available @handle that represents you.'], ['02', 'Claim with your wallet', 'Mint your handle as an NFT on Solana. Ownership stays in your wallet.'], ['03', 'Use your identity', 'Use your name for identity, contacts and payments. Developers can resolve it in their own apps.']];
+export default function HomeHowItWorks() {
+  return <section className="el-home-how" aria-labelledby="home-how-title"><span className="ep-eyebrow">FROM ADDRESS TO IDENTITY</span><h2 id="home-how-title">How SolHandle Works</h2><div className="el-home-step-grid">{steps.map(([number, title, text]) => <div key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></div>)}</div></section>;
+}
