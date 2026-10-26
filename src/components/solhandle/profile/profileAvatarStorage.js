@@ -11,9 +11,22 @@ export async function uploadProfileAvatar(file) {
   const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: upload });
   return { file_uri, key: encode(await crypto.subtle.exportKey('raw', key)), iv: encode(iv) };
 }
-export async function readProfileAvatar(avatar, signal) {
+// Session-memory only: reuse downloads and decryption across profile cards.
+const avatarCache = new Map();
+export function readProfileAvatar(avatar) {
+  const cacheKey = JSON.stringify([avatar.file_uri, avatar.key, avatar.iv]);
+  if (avatarCache.has(cacheKey)) return avatarCache.get(cacheKey);
+  const request = loadProfileAvatar(avatar).catch(error => {
+    if (avatarCache.get(cacheKey) === request) avatarCache.delete(cacheKey);
+    throw error;
+  });
+  avatarCache.set(cacheKey, request);
+  if (avatarCache.size > 32) avatarCache.delete(avatarCache.keys().next().value);
+  return request;
+}
+async function loadProfileAvatar(avatar) {
   const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: avatar.file_uri, expires_in: 60 });
-  const response = await fetch(signed_url, { signal, cache: 'no-store' });
+  const response = await fetch(signed_url, { cache: 'no-store' });
   if (!response.ok || Number(response.headers.get('content-length')) > 2 * 1024 * 1024) throw new Error('Profile photo unavailable.');
   const bytes = await response.arrayBuffer();
   if (bytes.byteLength > 2 * 1024 * 1024) throw new Error('Profile photo is too large.');

@@ -9,14 +9,14 @@ export default function ProfileAvatar({ avatar, handle = '', className = '', min
   useEffect(() => {
     const controller = new AbortController(); let url;
     setImage(null); setFailed(false);
-    if (avatar) readProfileAvatar(avatar, controller.signal).then(blob => {
+    if (avatar) readProfileAvatar(avatar).then(blob => {
       if (controller.signal.aborted) return;
       url = URL.createObjectURL(blob); setImage({ fingerprint, url });
     }).catch(() => { if (!controller.signal.aborted) setFailed(true); });
     return () => { controller.abort(); if (url) URL.revokeObjectURL(url); };
   }, [fingerprint]);
   return <span className={`profile-avatar ${className}`}>
-    {image?.fingerprint === fingerprint ? <Image src={image.url} alt={`Profile photo for @${handle.replace(/^@/, '')}`} className="h-full w-full object-cover"/> : handle && mintFallback ? <HandleCard handle={handle}/> : mintFallback ? <UserRound size={42} strokeWidth={1.2}/> : <Fingerprint size={42} strokeWidth={1.2}/>}
+    {image?.fingerprint === fingerprint ? <Image src={image.url} alt={`Profile photo for @${handle.replace(/^@/, '')}`} className="h-full w-full object-cover"/> : avatar && !failed ? <UserRound size={42} strokeWidth={1.2}/> : handle && mintFallback ? <HandleCard handle={handle}/> : mintFallback ? <UserRound size={42} strokeWidth={1.2}/> : <Fingerprint size={42} strokeWidth={1.2}/>}
     {avatar && !image && !failed && <span className="sr-only" role="status">Loading private photo…</span>}
     {failed && <span className="sr-only" role="status">Photo unavailable; showing the identity placeholder.</span>}
   </span>;
