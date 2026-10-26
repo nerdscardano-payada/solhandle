@@ -21,6 +21,8 @@
   --eco-error: #F07B87;
   --eco-font: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --eco-gradient: linear-gradient(110deg, var(--eco-purple), var(--eco-blue) 55%, var(--eco-cyan));
+  --brand-action-gradient: linear-gradient(90deg, var(--button-gradient-start) 0%, var(--button-gradient-middle) 50%, var(--button-gradient-end) 100%);
+  --brand-action-foreground: 222 56% 7%;
 }
 
 /* Existing feature modules inherit the Ecosystem palette inside the production frame. */
@@ -36,7 +38,7 @@
   --identity-text: 223 54% 97%; --identity-muted: 219 29% 74%; --identity-border: 219 39% 26%;
   --names-accent: 186 83% 50%; --names-secondary: 264 88% 65%;
   --font-heading: var(--eco-font); --font-body: var(--eco-font); --font-display: var(--eco-font);
-  --button-gradient: var(--eco-gradient); --button-foreground: 222 56% 7%;
+  --button-gradient: var(--brand-action-gradient); --button-foreground: var(--brand-action-foreground);
 }
 
 html, body { overscroll-behavior: none; }
@@ -97,7 +99,7 @@ html, body { overscroll-behavior: none; }
     --button-gradient-middle: #22d3ee;
     --button-gradient-end: #8b5cf6;
     --button-foreground: 0 0% 0%;
-    --button-gradient: linear-gradient(90deg, var(--button-gradient-start) 0%, var(--button-gradient-middle) 50%, var(--button-gradient-end) 100%);
+    --button-gradient: var(--brand-action-gradient);
     --hero-canvas: 225 50% 3%;
     --hero-cyan: 180 100% 50%;
     --hero-blue: 214 100% 58%;
@@ -131,7 +133,7 @@ html, body { overscroll-behavior: none; }
     --button-gradient-middle: #22d3ee;
     --button-gradient-end: #8b5cf6;
     --button-foreground: 0 0% 0%;
-    --button-gradient: linear-gradient(90deg, var(--button-gradient-start) 0%, var(--button-gradient-middle) 50%, var(--button-gradient-end) 100%);
+    --button-gradient: var(--brand-action-gradient);
     --hero-canvas: 225 50% 3%;
     --hero-cyan: 180 100% 50%;
     --hero-blue: 214 100% 58%;
@@ -295,7 +297,7 @@ html, body { overscroll-behavior: none; }
   --popover: var(--hero-surface); --popover-foreground: var(--identity-text); --border: var(--identity-border); --input: var(--identity-border);
   --muted: var(--hero-canvas); --muted-foreground: var(--identity-muted); --accent: var(--hero-canvas); --accent-foreground: var(--identity-text);
   --primary: var(--names-accent); --primary-foreground: var(--social-night-canvas); --ring: var(--names-accent);
-  --button-foreground: var(--primary-foreground); --button-gradient: linear-gradient(0deg,hsl(var(--primary)),hsl(var(--primary)));
+  --button-foreground: var(--brand-action-foreground); --button-gradient: var(--brand-action-gradient);
 }
 .network-surface[data-social-theme="light"] {
   --hero-canvas: var(--social-day-canvas); --hero-surface: var(--social-day-surface);
@@ -304,10 +306,13 @@ html, body { overscroll-behavior: none; }
   --primary-foreground: var(--social-day-surface); --names-success: 158 70% 26%; --names-warning: 29 85% 30%;
 }
 
-/* Shared primary action colors, including existing desktop and mobile CTAs.
-   Exact color classes leave tinted, outline, navigation and destructive controls unchanged. */
+/* Shared action palette across desktop, mobile, wallet controls and feature modules.
+   Navigation, text links and destructive actions retain their semantic styles. */
 :root body :is(button, a, [role="button"]):is(
   .solhandle-primary-button,
+  .solhandle-action-button,
+  .ep-button,
+  .wallet-adapter-button,
   .home-primary-button,
   [class~="bg-names-accent"],
   [class~="bg-primary"],
@@ -322,6 +327,9 @@ html, body { overscroll-behavior: none; }
     [class~="from-names-accent"]
   )
 ) {
-  background-image: var(--button-gradient);
-  color: hsl(var(--button-foreground));
+  background-image: var(--brand-action-gradient) !important;
+  color: hsl(var(--brand-action-foreground)) !important;
+}
+:root body :is(.solhandle-action-button, .solhandle-primary-button, .ep-button, .wallet-adapter-button) svg {
+  color: inherit !important;
 }
