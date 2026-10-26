@@ -72,6 +72,7 @@
  .eco-live .ep-public-hero:after{right:calc(0px - var(--hero-right-bleed));background:linear-gradient(90deg,color-mix(in srgb,var(--eco-canvas) 96%,transparent),color-mix(in srgb,var(--eco-canvas) 65%,transparent) 50%,color-mix(in srgb,var(--eco-canvas) 16%,transparent)),linear-gradient(transparent 70%,var(--eco-canvas))}
 }
 @media (min-width:1280px){
+ .eco-live .el-dashboard .ep-welcome h1{font-size:36px}
  .eco-live .el-dashboard .ep-identity{padding:30px}
  .eco-live .el-dashboard .ep-identity>.ep-card-heading{margin-bottom:28px}
  .eco-live .el-dashboard .ep-identity-layout{row-gap:32px}
