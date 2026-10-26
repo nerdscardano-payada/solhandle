@@ -14,5 +14,5 @@
 @keyframes el-city-expand{to{top:0;left:0;width:100%;height:100%}}
 @keyframes el-city-approach{from{transform:scale(1);filter:brightness(1.2) blur(0)}to{transform:scale(3.6);filter:brightness(.65) blur(3px)}}
 @keyframes el-city-shade{from{opacity:.6}to{opacity:1}}
-@media(max-width:767px){.eco-live .ep-public-hero{padding-bottom:160px}.eco-live .el-city-entrance{left:auto;right:22px;top:auto;bottom:28px;transform:none;flex-direction:row;gap:12px}.eco-live .el-city-entrance-marker{width:46px;height:46px}.el-city-flight .el-city-flight-image{animation-name:el-city-approach-mobile}@keyframes el-city-approach-mobile{to{transform:scale(1.8);filter:brightness(.65) blur(2px)}}}
+@media(max-width:767px){.eco-live .el-city-entrance{position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;flex-direction:row;gap:12px}.eco-live .el-city-entrance-marker{width:46px;height:46px}.el-city-flight .el-city-flight-image{animation-name:el-city-approach-mobile}@keyframes el-city-approach-mobile{to{transform:scale(1.8);filter:brightness(.65) blur(2px)}}}
 @media(prefers-reduced-motion:reduce){.eco-live .el-city-entrance-marker{transition:none}.el-city-flight,.el-city-flight *{animation:none!important;transition:none!important}}
