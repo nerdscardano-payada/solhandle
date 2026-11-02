@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import ProfileAvatar from '@/components/solhandle/profile/ProfileAvatar';
 import HomeHandleNft from '@/components/solhandle/ecosystem/live/HomeHandleNft';
-import PrimaryHandleBadge from '@/components/solhandle/profile/PrimaryHandleBadge';
 import '@/components/solhandle/profile/profile-media.css';
 
 export default function HomeProfileCard({ profile }) {
@@ -13,7 +12,6 @@ export default function HomeProfileCard({ profile }) {
           <ProfileAvatar avatar={profile.avatar} handle={profile.handle} mintFallback={false} className="profile-directory-avatar"/>
           <h3>@{profile.handle}</h3>
         </div>
-        <PrimaryHandleBadge active={profile.primaryActive}/>
         <p className="home-profile-bio">{profile.bio || 'View this public SolHandle profile.'}</p>
       </div>
       <HomeHandleNft key={`${profile.assetAddress}-${profile.mintImage}`} profile={profile}/>
