@@ -1,7 +1,7 @@
 @media(max-width:767px){
  .eco-preview.eco-live .mobile-home-disclosure{min-width:0;border:1px solid var(--eco-border);border-radius:14px;background:var(--eco-card)}
- .eco-preview.eco-live .mobile-home-disclosure--how{order:4}
- .eco-preview.eco-live .mobile-home-disclosure--projects{order:2}
+ .eco-preview.eco-live .mobile-home-disclosure--how{order:2}
+ .eco-preview.eco-live .mobile-home-disclosure--projects{order:4}
  .eco-preview.eco-live .mobile-home-disclosure--people{order:3}
  .eco-preview.eco-live .mobile-home-disclosure--people .ep-public-intro>.ep-eyebrow{display:none}
  .eco-preview.eco-live .mobile-home-disclosure--projects .mobile-home-disclosure-content>.ep-projects{padding:0;border:0;background:none}
