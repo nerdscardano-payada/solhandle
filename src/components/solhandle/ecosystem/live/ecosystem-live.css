@@ -70,7 +70,7 @@
 .eco-live .el-footer>p{width:100%;font-size:11px}
 @media (min-width:768px){
  .eco-live .ep-public-copy{transform:translateY(-3.5cm)}
- .eco-live .ep-public-content>.el-home-how{order:-1;position:relative;z-index:1;margin-top:-64px;padding-top:0}
+ .eco-live .ep-public-content>.el-home-how{order:-1;position:relative;z-index:1;margin-top:calc(-64px - 1.5cm);padding-top:0}
  .eco-live .ep-claim-search{min-height:64px;padding-block:7px}
  .eco-live .ep-claim-search>span{font-size:26px}
  .eco-live .ep-claim-search input{font-size:18px;padding-block:12px}
