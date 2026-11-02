@@ -7,6 +7,7 @@ import EcosystemCityTransition from '@/components/solhandle/ecosystem/live/Ecosy
 import '@/components/solhandle/ecosystem/ecosystem-preview.css';
 import '@/components/solhandle/ecosystem/live/ecosystem-live.css';
 import '@/components/solhandle/ecosystem/live/ecosystem-mobile-layout.css';
+import '@/components/solhandle/ecosystem/live/home-mobile-header-hero.css';
 export default function EcosystemLiveFrame() {
   const publicPage = useLocation().pathname === '/';
   return <EcosystemCityTransition><EcosystemFrameContext><div className={`eco-preview eco-live ecosystem-tokens dark${publicPage ? ' el-home-fullwidth' : ''}`} lang="en" translate="no" data-no-translate><div className="ep-viewport"><div className={`ep-app ${publicPage ? 'ep-public-app' : ''}`}><EcosystemLiveHeader/>{publicPage ? <Outlet/> : <div className="ep-app-layout"><EcosystemLiveNavigation/><div className="ep-main el-module"><Outlet/></div></div>}<EcosystemLiveFooter/>{!publicPage && <EcosystemLiveNavigation mobile/>}</div></div></div></EcosystemFrameContext></EcosystemCityTransition>;
