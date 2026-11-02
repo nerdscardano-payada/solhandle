@@ -3,7 +3,7 @@ import { rpc } from './solanaRpc.ts';
 
 export async function handleProfileArtwork(rpcUrl, profiles) {
   if (!profiles.length) return [];
-  // One bounded metadata lookup for the six homepage cards, never generated artwork.
+  // One bounded metadata lookup per page, never generated artwork.
   const result = await Promise.allSettled([
     rpc(rpcUrl, 'getAssetBatch', { ids: profiles.map(profile => profile.assetAddress) })
   ]);

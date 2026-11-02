@@ -4,27 +4,7 @@
 .eco-live .home-ownership-note{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(--eco-muted);line-height:1.7}
 .eco-live .home-ownership-note svg{flex-shrink:0;margin-top:3px;color:var(--eco-cyan)}
 .eco-live .home-profiles-more{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:20px}
-.eco-live .home-profile-card{position:relative;isolation:isolate;height:240px;padding:18px;gap:0;text-decoration:none;background:var(--eco-card);border-color:var(--eco-border);transition:border-color .2s,box-shadow .2s}
-.eco-live .home-profile-card:hover,.eco-live .home-profile-card:focus-within{border-color:color-mix(in srgb,var(--eco-cyan) 60%,var(--eco-border));box-shadow:0 0 22px color-mix(in srgb,var(--eco-cyan) 9%,transparent)}
-.eco-live .home-profile-body{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:16px;align-items:center;height:100%}
-.eco-live .home-profile-person{display:flex;flex-direction:column;min-width:0;height:100%}
-.eco-live .home-profile-card .profile-directory-heading{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;min-height:60px}
-.eco-live .home-profile-card .profile-directory-avatar.profile-avatar{width:60px;height:60px}
-.eco-live .home-profile-card h3{font-size:20px;font-weight:700;line-height:1.2;min-width:0;overflow-wrap:anywhere;color:var(--eco-text)}
-.eco-live .home-profile-bio{margin-top:12px;color:var(--eco-muted);font-size:13px;line-height:1.6;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;min-height:3.2em}
-.eco-live .home-profile-checked{position:relative;z-index:2;display:flex;align-items:center;align-self:flex-start;gap:5px;margin-top:auto;font-size:10px;line-height:1.5;color:var(--eco-muted);cursor:help}
-.eco-live .home-profile-checked svg{color:var(--eco-muted);flex-shrink:0}
-.eco-live .home-profile-link{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;min-height:30px;margin-top:5px;color:var(--eco-cyan);font-size:12px}
-.eco-live .home-profile-link:after{content:'';position:absolute;inset:0;z-index:1;border-radius:20px}
-.eco-live .home-profile-card:has(.home-profile-link:focus-visible){outline:2px solid var(--eco-cyan);outline-offset:4px}
-.eco-live .home-handle-nft{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;color:var(--eco-muted);text-decoration:none;min-width:0}
-.eco-live .home-handle-nft-image{display:grid;place-items:center;width:130px;height:130px;border:1px solid color-mix(in srgb,var(--eco-cyan) 30%,var(--eco-border));border-radius:12px;overflow:hidden;background:var(--eco-sidebar);box-shadow:-4px 0 16px color-mix(in srgb,var(--eco-cyan) 9%,transparent),4px 0 16px color-mix(in srgb,var(--eco-purple) 12%,transparent)}
-.eco-live .home-handle-nft-label{font-size:10px;line-height:1.5}
-.eco-live .home-handle-nft-unavailable{padding:10px;font-size:11px;line-height:1.5}
-@media(min-width:1536px){.eco-live .home-profile-body{grid-template-columns:minmax(0,1fr) 145px}.eco-live .home-handle-nft-image{width:145px;height:145px}}
 @media(min-width:601px) and (max-width:1279px){.eco-live .home-public-profiles .profile-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:380px){.eco-live .home-profile-card{padding:14px}.eco-live .home-profile-body{gap:10px}.eco-live .home-profile-card .profile-directory-avatar.profile-avatar{width:56px;height:56px}.eco-live .home-profile-card .profile-directory-heading{gap:6px}.eco-live .home-profile-card h3{font-size:16px}}
-@media(prefers-reduced-motion:reduce){.eco-live .home-profile-card{transition:none}}
 .eco-live .home-use-case-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:24px}
 .eco-live .home-use-case-grid>a{display:flex;flex-direction:column;align-items:flex-start;gap:14px;text-decoration:none;min-width:0;color:var(--eco-text)}
 .eco-live .home-use-case-grid h3{font-size:19px;font-weight:700}
