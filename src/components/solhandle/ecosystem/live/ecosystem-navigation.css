@@ -11,4 +11,5 @@
 .eco-live .discover-primary-tabs a{min-height:44px;display:inline-flex;align-items:center;padding:10px 20px;border:1px solid var(--eco-border);border-radius:10px;color:var(--eco-muted);text-decoration:none}
 .eco-live .discover-primary-tabs a[aria-current]{color:var(--eco-cyan);background:var(--eco-card);border-color:var(--eco-cyan)}
 .eco-live .discover-primary-tabs a:focus-visible,.eco-live .public-mobile-menu :is(summary,a):focus-visible{outline:2px solid var(--eco-cyan);outline-offset:3px}
+@media(min-width:768px) and (max-width:1100px){.eco-live .ep-header .el-home-navigation{gap:10px}}
 @media(max-width:767px){.eco-live .public-mobile-menu{display:block}.eco-live .ep-header-actions{gap:4px}}
