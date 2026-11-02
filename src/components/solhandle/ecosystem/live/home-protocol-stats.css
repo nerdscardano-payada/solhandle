@@ -24,4 +24,18 @@
 .eco-live .home-stats-recent-grid>a{min-width:0;text-decoration:none;color:var(--eco-text)}
 .eco-live .home-stats-recent-grid>a>span{display:block;margin-top:8px;font-size:12px;overflow-wrap:anywhere}
 .eco-live .home-stats-recent-grid>a:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:4px;border-radius:12px}
+@media(min-width:768px) and (max-width:1100px){
+ .eco-live .home-protocol-stats{padding-block:18px}
+ .eco-live .home-protocol-stats dl>div{gap:8px;padding:6px 14px}
+ .eco-live .home-protocol-stats dt{font-size:12px;line-height:1.4;min-width:0}
+ .eco-live .home-protocol-stats dd{font-size:22px;flex-shrink:0;white-space:nowrap;overflow-wrap:normal}
+ .eco-live .home-stats-bottom{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px}
+ .eco-live .home-stats-recent{min-width:0;margin-top:18px}
+ .eco-live .home-stats-recent-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+ .eco-live .home-stats-recent-grid>a>span{font-size:11px}
+ .eco-live .home-mint-claim-cta{margin-top:18px;padding:16px;gap:10px}
+ .eco-live .home-mint-claim-cta h3{font-size:20px}
+ .eco-live .home-mint-claim-cta p{font-size:12px;line-height:1.5}
+ .eco-live .home-mint-claim-cta .ep-button{max-width:100%;font-size:12px;padding:10px 12px}
+}
 @media(max-width:767px){.eco-live .home-protocol-stats dl{grid-template-columns:minmax(0,1fr)}.eco-live .home-protocol-stats dl>div{padding:12px 0;justify-content:space-between}.eco-live .home-protocol-stats dl>div+div{border-left:0;border-top:1px solid var(--eco-border)}.eco-live .home-protocol-stats dd{order:0;font-size:23px;text-align:right}.eco-live .home-protocol-stats dt{font-size:12px}}
