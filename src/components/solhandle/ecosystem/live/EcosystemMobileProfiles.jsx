@@ -14,7 +14,7 @@ export default function EcosystemMobileProfiles() {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
-  const query = useQuery({ queryKey: ['ecosystem-public-profiles'], queryFn: () => publicProfileRequest({ action: 'list' }), enabled: mobile, staleTime: 30000, retry: false });
+  const query = useQuery({ queryKey: ['ecosystem-public-profiles', 'mint-artwork'], queryFn: () => publicProfileRequest({ action: 'list', variant: 'directory', include_mint_artwork: true }), enabled: mobile, staleTime: 30000, retry: false });
   if (!mobile) return null;
   const profiles = query.data?.items || [];
   return <section className="ep-card ep-projects">
