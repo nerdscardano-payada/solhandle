@@ -4,6 +4,21 @@
 .eco-live .home-ownership-note{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(--eco-muted);line-height:1.7}
 .eco-live .home-ownership-note svg{flex-shrink:0;margin-top:3px;color:var(--eco-cyan)}
 .eco-live .home-profiles-more{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:20px}
+.eco-live .home-profile-card{gap:16px;text-decoration:none}
+.eco-live .home-profile-body{display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:14px;align-items:start}
+.eco-live .home-profile-person{min-width:0}
+.eco-live .home-profile-card .profile-directory-heading{flex-wrap:wrap;gap:10px}
+.eco-live .home-profile-card .profile-directory-avatar{width:46px;height:46px}
+.eco-live .home-profile-card h3{font-size:19px;font-weight:600;overflow-wrap:anywhere;color:var(--eco-cyan)}
+.eco-live .home-profile-bio{margin-top:10px;color:var(--eco-muted);font-size:13px;line-height:1.7;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.eco-live .home-profile-checked{display:flex;align-items:center;gap:6px;font-size:11px;line-height:1.5;color:var(--eco-muted)}
+.eco-live .home-profile-checked svg{color:var(--eco-cyan);flex-shrink:0}
+.eco-live .home-profile-card>.ep-link{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;min-height:32px}
+.eco-live .home-handle-nft{display:flex;flex-direction:column;gap:7px;text-align:center;color:var(--eco-muted);text-decoration:none;min-width:0}
+.eco-live .home-handle-nft-image{display:grid;place-items:center;width:100px;height:100px;border:1px solid var(--eco-border);border-radius:12px;overflow:hidden;background:var(--eco-sidebar)}
+.eco-live .home-handle-nft-label{font-size:11px;line-height:1.5}
+.eco-live .home-handle-nft-unavailable{padding:10px;font-size:11px;line-height:1.5}
+@media(max-width:360px){.eco-live .home-profile-card{padding:18px}.eco-live .home-profile-body{grid-template-columns:minmax(0,1fr) 90px;gap:10px}.eco-live .home-handle-nft-image{width:90px;height:90px}}
 .eco-live .home-use-case-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:24px}
 .eco-live .home-use-case-grid>a{display:flex;flex-direction:column;align-items:flex-start;gap:14px;text-decoration:none;min-width:0;color:var(--eco-text)}
 .eco-live .home-use-case-grid h3{font-size:19px;font-weight:700}
