@@ -194,6 +194,10 @@ const AuthenticatedApp = () => {
               <Route path="/developers/partner-mint" element={user?.role === 'admin' ? <PartnerMintPlan /> : <Navigate to="/" replace />} />
             </Route>
             <Route path="/integrations" element={<Integrations />} />
+            <Route path="/live-integrations" element={<LiveIntegrations />} />
+            <Route path="/integrations/parallax" element={<ParallaxIntegration />} />
+            <Route path="/integrations/:slug" element={<IntegrationGuide />} />
+            <Route path="/mint-success" element={<MintSuccess />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
@@ -262,9 +266,7 @@ const AuthenticatedApp = () => {
         <Route path="/leaderboard" element={<PageNotFound />} />
         <Route path="/referral-terms" element={<PageNotFound />} />
 
-        <Route path="/live-integrations" element={<LiveIntegrations />} />
-        <Route path="/integrations/parallax" element={<ParallaxIntegration />} />
-        <Route path="/integrations/:slug" element={<IntegrationGuide />} />
+
         <Route path="/fun" element={<Fun />} />
         <Route path="/explore" element={<Navigate to="/names" replace />} />
         <Route path="/market" element={<Market />} />
@@ -274,7 +276,6 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/mint-success" element={<MintSuccess />} />
         <Route path="/discord-verify" element={<DiscordVerify />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/growth/handle-mint-payments" element={<HandleMintPayments />} />
