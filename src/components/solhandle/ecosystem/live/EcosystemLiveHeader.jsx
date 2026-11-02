@@ -7,11 +7,12 @@ import PublicNavigation from '@/components/solhandle/ecosystem/live/PublicNaviga
 export default function EcosystemLiveHeader() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
-  const isHome = useLocation().pathname === '/';
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
   const submit = event => { event.preventDefault(); const q = search.trim().replace(/^@/, ''); if (q) navigate(`/search?q=${encodeURIComponent(q)}`); };
   return <header className={`ep-header${isHome ? ' el-home-header' : ''}`}>
     <Link to="/" className="ep-brand" aria-label="SolHandle public homepage"><Image src="https://media.base44.com/images/public/6a86b7e4bcec5dfac8ee9a44/0c7a77521_image.png" alt="" fittingType="fit" className="ep-logo" loading="eager"/><span>SolHandle<small>ONE IDENTITY. ONE ECOSYSTEM.</small></span></Link>
     {isHome ? <PublicNavigation/> : <form onSubmit={submit} className="ep-global-search" role="search"><Search size={18}/><input value={search} onChange={event => setSearch(event.target.value)} aria-label="Search SolHandle names" placeholder="Search @handles on Solana..." maxLength={20} required/><button type="submit" aria-label="Search names"><ArrowRight size={17}/></button></form>}
-    <div className="ep-header-actions">{isHome && <PublicNavigation mobile/>}<Link to="/search" className="ep-icon ep-mobile-search" aria-label="Search handles"><Search size={20}/></Link><WalletButton className="ep-button el-wallet-button"/></div>
+    <div className="ep-header-actions">{!pathname.startsWith('/admin') && <PublicNavigation mobile/>}<Link to="/search" className="ep-icon ep-mobile-search" aria-label="Search handles"><Search size={20}/></Link><WalletButton className="ep-button el-wallet-button"/></div>
   </header>;
 }

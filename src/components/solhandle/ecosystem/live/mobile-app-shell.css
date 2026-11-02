@@ -1,0 +1,34 @@
+.eco-live .el-app-dock{display:none}
+@media(max-width:767px){
+ .eco-preview.eco-live.el-mobile-app{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+ .eco-preview.eco-live.el-mobile-app .ep-app{overflow:visible;padding-bottom:0}
+ .eco-preview.eco-live.el-mobile-app .ep-header{position:sticky;top:0;z-index:45;min-height:72px;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;gap:6px;background:var(--eco-sidebar)}
+ .eco-preview.eco-live.el-mobile-app .ep-header .ep-brand{gap:6px;min-height:44px}
+ .eco-preview.eco-live.el-mobile-app .ep-header .ep-brand>span{font-size:18px;letter-spacing:-.04em;white-space:nowrap}
+ .eco-preview.eco-live.el-mobile-app .ep-header .ep-brand small{display:none}
+ .eco-preview.eco-live.el-mobile-app .ep-header .ep-header-actions{gap:6px;flex-direction:row-reverse}
+ .eco-preview.eco-live.el-mobile-app .ep-header .ep-mobile-search{display:none}
+ .eco-preview.eco-live.el-mobile-app .ep-header .public-mobile-menu summary{min-width:44px;min-height:44px;border:1px solid var(--eco-border);border-radius:10px}
+ .eco-preview.eco-live.el-mobile-app .ep-header .public-mobile-menu nav{right:0;width:min(280px,calc(100vw - 24px));max-height:calc(100dvh - 170px);overflow-y:auto;padding:8px}
+ .eco-preview.eco-live.el-mobile-app .ep-header .public-mobile-menu nav a{min-height:48px;font-size:15px}
+ .eco-preview.eco-live.el-mobile-app .ep-header .el-wallet-button{width:clamp(116px,36vw,144px);max-width:144px;min-height:44px;padding:10px 8px;font-size:13px;line-height:1.3;border-radius:10px;gap:5px}
+ .eco-preview.eco-live.el-mobile-app .ep-header .el-wallet-button>svg{width:15px;height:15px}
+ .eco-preview.eco-live.el-mobile-app .ep-main{padding:20px 16px 24px}
+ .eco-preview.eco-live.el-mobile-app .ep-main :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select){font-size:16px;min-height:44px;max-width:100%}
+ .eco-preview.eco-live.el-mobile-app :is(.ep-link,.ep-small-button,.ep-icon){min-height:44px}
+ .eco-preview.eco-live.el-mobile-app :is(.ep-icon,button.identity-copy){min-width:44px}
+ .eco-preview.eco-live.el-mobile-app .ep-welcome h1{font-size:26px;line-height:1.25}
+ .eco-preview.eco-live.el-mobile-app .ep-welcome p:last-child{font-size:14px;line-height:1.6}
+ .eco-preview.eco-live.el-mobile-app .ep-card{box-shadow:none;border-radius:14px}
+ .eco-preview.eco-live.el-mobile-app .ep-card-heading{gap:10px;align-items:center}
+ .eco-preview.eco-live.el-mobile-app .ep-card-heading h2{font-size:17px;line-height:1.4}
+ .eco-preview.eco-live.el-mobile-app [id]{scroll-margin-top:100px}
+ .eco-preview.eco-live.el-mobile-app .el-app-dock{position:fixed;inset:auto 0 0;z-index:55;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--eco-border);background:var(--eco-sidebar)}
+ .eco-preview.eco-live.el-mobile-app .el-app-dock a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:54px;border-radius:12px;color:var(--eco-muted);font-size:11px;line-height:1.3;font-weight:500;text-decoration:none}
+ .eco-preview.eco-live.el-mobile-app .el-app-dock a[aria-current]{background:var(--eco-raised);color:var(--eco-cyan);font-weight:700}
+ .eco-preview.eco-live.el-mobile-app .el-app-dock a:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:1px}
+ .eco-preview.eco-live.el-mobile-app .el-footer{padding:24px 16px;gap:14px;background:var(--eco-canvas)}
+ .eco-preview.eco-live.el-mobile-app .el-footer-group summary{min-height:48px;font-size:14px}
+ .eco-preview.eco-live.el-mobile-app .el-footer-group-links a{font-size:14px}
+ .eco-preview.eco-live.el-mobile-app .el-footer>p{font-size:12px;line-height:1.6}
+}

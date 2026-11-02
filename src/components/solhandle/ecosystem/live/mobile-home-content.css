@@ -1,0 +1,40 @@
+@media(max-width:767px){
+ .eco-preview.eco-live .ep-public>.ep-public-content{padding:8px 16px 24px;gap:24px}
+ .eco-preview.eco-live .ep-public-content>.home-ecosystem-bar{order:1;padding:0 0 20px;border-top:0}
+ .eco-preview.eco-live .ep-public-content>.ep-projects{order:2}
+ .eco-preview.eco-live .ep-public-content>.home-public-profiles{order:3}
+ .eco-preview.eco-live .ep-public-content>.el-home-how{order:4;padding:4px 0 0}
+ .eco-preview.eco-live .home-ecosystem-bar>h2{font-size:18px;line-height:1.4;margin-bottom:14px}
+ .eco-preview.eco-live .home-ecosystem-bar-items{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .eco-preview.eco-live .home-ecosystem-bar-items>a{display:grid;grid-template-columns:22px minmax(0,1fr);align-content:start;gap:8px;padding:12px;border:1px solid var(--eco-border);border-radius:12px;background:var(--eco-card)}
+ .eco-preview.eco-live .home-ecosystem-bar-items>a>div{display:contents}
+ .eco-preview.eco-live .home-ecosystem-bar-items h3{font-size:15px;line-height:1.5}
+ .eco-preview.eco-live .home-ecosystem-bar-items p{grid-column:1/-1;font-size:13px;line-height:1.5}
+ .eco-preview.eco-live .home-ecosystem-bar-items .ep-link{grid-column:1/-1;min-height:32px;font-size:11px;gap:4px}
+ .eco-preview.eco-live .home-public-profiles{padding:0}
+ .eco-preview.eco-live .home-public-profiles .ep-public-intro{padding:0;margin-bottom:14px;gap:10px}
+ .eco-preview.eco-live .home-public-profiles .ep-public-intro h2{font-size:24px;line-height:1.25}
+ .eco-preview.eco-live .home-public-profiles .ep-public-intro p{font-size:14px;line-height:1.6}
+ .eco-preview.eco-live .home-ownership-note{font-size:12px;line-height:1.6;margin-bottom:12px}
+ .eco-preview.eco-live .home-public-profiles .profile-directory-grid{gap:12px}
+ .eco-preview.eco-live .home-profile-card{height:auto;min-height:200px;padding:14px}
+ .eco-preview.eco-live .home-profile-body{grid-template-columns:minmax(0,1fr) 84px;gap:12px;align-items:center}
+ .eco-preview.eco-live .home-profile-person{min-height:172px}
+ .eco-preview.eco-live .home-profile-card .profile-directory-heading{flex-wrap:wrap;gap:8px;min-height:44px}
+ .eco-preview.eco-live .home-profile-card .profile-directory-avatar.profile-avatar{width:44px;height:44px}
+ .eco-preview.eco-live .home-profile-card h3{font-size:18px;line-height:1.3}
+ .eco-preview.eco-live .home-profile-bio{font-size:13px;line-height:1.6;margin-top:10px}
+ .eco-preview.eco-live .home-handle-nft-image{width:84px;height:84px;border-radius:10px;box-shadow:none}
+ .eco-preview.eco-live .home-profile-checked{font-size:11px;line-height:1.5;margin-top:12px}
+ .eco-preview.eco-live .home-profile-link{font-size:13px;margin-top:auto}
+ .eco-preview.eco-live .el-home-how>h2{font-size:23px;margin:8px 0 16px}
+ .eco-preview.eco-live .el-home-step-grid{grid-template-columns:minmax(0,1fr);gap:0}
+ .eco-preview.eco-live .el-home-step-grid>div{display:grid;grid-template-columns:30px minmax(0,1fr);gap:5px 10px;padding:14px 0}
+ .eco-preview.eco-live .el-home-step-grid>div>span{grid-row:1/3;font-size:13px}
+ .eco-preview.eco-live .el-home-step-grid h3{font-size:16px}
+ .eco-preview.eco-live .el-home-step-grid p{grid-column:2;font-size:14px;line-height:1.6}
+ .eco-preview.eco-live .home-protocol-stats dl{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+ .eco-preview.eco-live .home-protocol-stats dl>div{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;padding:10px 0;border:0}
+ .eco-preview.eco-live .home-protocol-stats dd{order:-1;font-size:22px;text-align:left;line-height:1.3}
+ .eco-preview.eco-live .home-protocol-stats dt{font-size:12px;line-height:1.5}
+}
