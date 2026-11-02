@@ -1,0 +1,4 @@
+import SetPrimaryButton from '@/components/solhandle/SetPrimaryButton';
+export default function PostMintPrimary({ handle, current, isPrimary, onRefresh }) {
+  return <section aria-label="Choose your primary identity"><h3>Make @{handle} your primary identity</h3><p>Your Primary Handle is the name that represents your wallet across SolHandle.</p>{isPrimary ? <p role="status">@{handle} is already your Primary Handle. No transaction is needed.</p> : <><p>{current ? `Your current Primary Handle is @${current.replace(/^@/, '')}. Changing it is optional.` : 'You can select this handle as your primary identity.'} This action requires approval in your wallet and may incur a Solana network fee.</p><SetPrimaryButton handle={handle} onSuccess={onRefresh}/></>}<p className="ep-small">Nothing changes automatically. Your NFT stays in your wallet.</p></section>;
+}

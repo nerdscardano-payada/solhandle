@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { ContactRound, Send } from 'lucide-react';
+export default function PostMintExplore({ step }) {
+  const contacts = step === 'contacts';
+  return <section aria-label={contacts ? 'Contacts introduction' : 'Payments introduction'}>{contacts ? <ContactRound size={26}/> : <Send size={26}/>}<h3>{contacts ? 'Build your private address book' : 'Pay with a name, not a long address'}</h3><p>{contacts ? 'Save people by their @handle or wallet address. Your Contacts remain private and require a separate wallet signature to unlock.' : 'SolHandle Pay resolves an @handle to its current wallet. Review the recipient, asset, amount and network fee before approving any payment.'}</p><p>{contacts ? 'Nothing is unlocked or saved by opening this introduction.' : 'This introduction does not prepare or send a transaction. A payment is never required to finish setup.'}</p><Link className="ep-button" to={contacts ? '/contacts' : '/pay'}>{contacts ? 'Open My Contacts' : 'Explore SolHandle Pay'}</Link><p className="ep-small">Use Back to return here, or resume from My Handles → Set up identity.</p></section>;
+}

@@ -1,0 +1,12 @@
+.eco-live .post-mint{margin:28px 0;text-align:left;color:var(--eco-text)}
+.eco-live .post-mint h2{font-size:26px;letter-spacing:-.025em;margin:8px 0 12px}
+.eco-live .post-mint h3{font-size:21px;margin:12px 0}
+.eco-live .post-mint p{color:var(--eco-muted);line-height:1.75;margin:12px 0}
+.eco-live .post-mint-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:24px 0}
+.eco-live .post-mint-steps button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 8px;border:1px solid var(--eco-border);border-radius:10px;font-size:13px;color:var(--eco-muted)}
+.eco-live .post-mint-steps button[aria-current]{color:var(--eco-cyan);border-color:var(--eco-cyan);background:var(--eco-raised)}
+.eco-live .post-mint-footer{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:16px;border-top:1px solid var(--eco-border);padding-top:20px;margin-top:24px}
+.eco-live .post-mint-footer>div{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.eco-live .post-mint :is(a,button,summary):focus-visible{outline:2px solid var(--eco-cyan);outline-offset:4px}
+.eco-live .post-mint .handle-profile-panel{margin:20px 0}
+@media(max-width:560px){.eco-live .post-mint-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.eco-live .post-mint{padding:18px}.eco-live .post-mint-footer{align-items:flex-start;flex-direction:column}}

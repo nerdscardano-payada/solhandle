@@ -76,6 +76,7 @@ const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
 const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
 const ParallaxIntegration = lazy(() => import('@/pages/ParallaxIntegration'));
 const MintSuccess = lazy(() => import('@/pages/MintSuccess'));
+const Onboarding = lazy(() => import('@/pages/Onboarding'));
 const Financials = lazy(() => import('@/pages/Financials'));
 const Roadmap = lazy(() => import('@/pages/Roadmap'));
 const ProtocolPaper = lazy(() => import('@/pages/ProtocolPaper'));
@@ -181,6 +182,7 @@ const AuthenticatedApp = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/my-handles" element={<MyHandles />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/profile/:handle" element={<PublicProfile />} />
           <Route path="/profiles" element={<Profiles />} />
           <Route path="/pay" element={<Pay />} />

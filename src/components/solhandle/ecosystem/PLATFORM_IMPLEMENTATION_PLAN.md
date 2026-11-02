@@ -70,7 +70,17 @@ Remaining: runtime acceptance, accessible/mobile journey checks and optional ser
 8. Introduce People/Projects Discover tabs with compatible legacy paths.
 Exit: all wallet states and wallet switching produce correct next actions without leaking previous-wallet state.
 
-## Sprint 4: post-mint and profiles — pending
+## Sprint 4: post-mint onboarding implemented; remaining profile work and runtime acceptance pending
+Post-mint implementation on 2026-11-02:
+- Both existing confirmed mainnet success paths (SOL and $HANDLE, including the confirmed receipt link) now display the same four-step onboarding.
+- Setup is gated by the existing on-chain owned-handle service, connected wallet and receipt asset where available. A URL is not treated as ownership proof.
+- Reuses the existing explicit Primary Handle transaction and signed profile editor. No automatic primary change, profile publication, private-profile load, contact unlock or payment is introduced.
+- Steps: Primary Handle, optional public profile, Contacts introduction, non-transactional Pay introduction.
+- Steps can be skipped and revisited through /onboarding?handle=... from each owned handle. URL step selection is navigation only; progress comes from current ownership, primary status and verified profile publication, never local completion flags.
+- Wallet changes unmount the editing session; success-receipt wallet mismatch pauses setup. Devnet partner receipts remain separate and are not represented as mainnet success.
+- Existing 100-character bio limit and private-by-default publishing remain intact. No entities, proof payloads, contract logic or payment logic changed.
+- Runtime wallet/signature, transfer, refresh and mobile acceptance checks are pending; compilation alone is not a passed journey test.
+Remaining acceptance requirements and profile work:
 1. Add a skippable, resumable flow to every real successful-mint path, never a signature-request event.
 2. Reuse on-chain Primary Handle action with explicit consent and signature handling.
 3. Route to profile editing, Contacts and a non-transactional Pay introduction.
