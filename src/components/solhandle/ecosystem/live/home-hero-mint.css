@@ -1,0 +1,7 @@
+.eco-live .el-hero-mint{width:100%;max-width:500px;min-width:0}
+.eco-live .el-hero-mint .ep-claim-search{width:100%;max-width:none}
+.eco-live .el-hero-mint .home-result-card{padding:18px;border:1px solid var(--eco-border);border-radius:14px;background:color-mix(in srgb,var(--eco-sidebar) 94%,transparent)}
+.eco-live .el-hero-mint .home-mint-artwork{display:none}
+.eco-live .el-hero-mint .home-primary-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border-radius:10px;font-size:14px;font-weight:700;background:var(--brand-action-gradient);color:hsl(var(--brand-action-foreground))}
+.eco-live .el-hero-mint button:disabled{opacity:.5;cursor:not-allowed}
+.eco-live .el-hero-mint .home-mint-search>p{display:none}
