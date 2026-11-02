@@ -6,4 +6,11 @@
 .eco-live .home-protocol-stats dt{font-size:12px;white-space:normal;flex-shrink:1;color:var(--eco-muted)}
 .eco-live .home-protocol-stats dd{order:-1;font-size:30px;font-weight:700;line-height:1.2;color:var(--eco-cyan);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;text-align:left}
 .eco-live .home-protocol-stats .home-protocol-stats-source{margin-top:12px;font-size:11px;line-height:1.6;color:var(--eco-muted)}
+.eco-live .home-stats-recent{margin-top:24px}
+.eco-live .home-stats-recent h3{font-size:15px;margin-bottom:12px}
+.eco-live .home-stats-recent>p{font-size:12px;color:var(--eco-muted)}
+.eco-live .home-stats-recent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,180px));gap:14px}
+.eco-live .home-stats-recent-grid>a{min-width:0;text-decoration:none;color:var(--eco-text)}
+.eco-live .home-stats-recent-grid>a>span{display:block;margin-top:8px;font-size:12px;overflow-wrap:anywhere}
+.eco-live .home-stats-recent-grid>a:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:4px;border-radius:12px}
 @media(max-width:767px){.eco-live .home-protocol-stats dl{gap:8px}.eco-live .home-protocol-stats dl>div{padding:13px 10px}.eco-live .home-protocol-stats dd{font-size:23px}.eco-live .home-protocol-stats dt{font-size:11px}.eco-live .home-protocol-stats>header h2{font-size:18px}}
