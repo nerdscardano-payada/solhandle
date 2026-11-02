@@ -1,7 +1,11 @@
 .eco-live .el-city-entrance{position:absolute;z-index:2;left:74%;top:59%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:16px;text-decoration:none;color:var(--eco-text);text-align:center}
-.eco-live .el-hero-search-group{position:relative}
-.eco-live .el-hero-search-group>.el-city-entrance{position:relative;inset:auto;transform:none;width:auto;height:auto;min-height:0;margin:0 0 8px;align-items:flex-end;justify-content:flex-end}
-.eco-live .el-hero-search-group>.el-city-entrance .el-city-entrance-label{position:static;transform:none;flex:none;padding:4px 0;justify-content:flex-end}
+.eco-live .el-hero-intro-row{display:flex;align-items:center;gap:24px}
+.eco-live .el-hero-intro-row>p{flex-shrink:0}
+.eco-live .el-intro-ecosystem-link{display:inline-flex;align-items:center;gap:8px;color:var(--eco-text);font-size:13px;font-weight:500;white-space:nowrap;text-decoration:none;text-shadow:0 1px 3px var(--eco-canvas)}
+.eco-live .el-intro-ecosystem-link:hover{text-decoration:underline;text-underline-offset:4px}
+.eco-live .el-city-logo-link{position:absolute;z-index:3;left:71.2%;top:32.3%;width:14%;height:24%;transform:translate(-50%,-50%);cursor:pointer;border-radius:50%}
+.eco-live :is(.el-city-logo-link,.el-intro-ecosystem-link):focus-visible{outline:2px solid var(--eco-cyan);outline-offset:6px}
+@media(max-width:767px){.eco-live .el-hero-intro-row{flex-wrap:wrap;gap:0}.eco-live .el-hero-intro-row>p{flex-shrink:1}.eco-live .el-intro-ecosystem-link{margin-bottom:16px}.eco-live .el-city-logo-link{display:none}}
 .eco-live .el-city-entrance-marker{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;border:1px solid color-mix(in srgb,var(--eco-cyan) 70%,transparent);background:color-mix(in srgb,var(--eco-canvas) 55%,transparent);box-shadow:0 0 35px color-mix(in srgb,var(--eco-cyan) 20%,transparent),inset 0 0 20px color-mix(in srgb,var(--eco-cyan) 12%,transparent);backdrop-filter:blur(10px);color:var(--eco-cyan);transition:box-shadow .3s,transform .3s}
 .eco-live .el-city-entrance-label{display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--eco-text);font-size:13px;font-weight:500;text-shadow:0 1px 3px var(--eco-canvas),0 0 8px var(--eco-canvas);white-space:nowrap}
 .eco-live .el-city-entrance:hover .el-city-entrance-label{color:var(--eco-text);text-decoration:underline;text-underline-offset:4px}
