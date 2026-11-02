@@ -9,7 +9,7 @@ export default function BuybackAllocation({ stats }) {
     <div className="mt-3 grid gap-2 sm:grid-cols-3">
       <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><p className="text-xs text-slate-400">Recorded first-mint revenue</p><strong className="mt-1 block text-lg text-white">{sol(stats.primaryMintRevenueSol)}</strong></div>
       <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><p className="text-xs text-slate-400">10% of first mints · proposed</p><strong className="mt-1 block text-lg text-cyan-200">{sol(stats.primaryBuybackBudgetSol)}</strong></div>
-      <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><p className="text-xs text-slate-400">1% of native secondary sales · indicative</p><strong className="mt-1 block text-lg text-violet-200">{sol(stats.secondaryBuybackBudgetSol)}</strong></div>
+      <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><p className="text-xs text-slate-400">1% of recorded historical resales · indicative</p><strong className="mt-1 block text-lg text-violet-200">{sol(stats.secondaryBuybackBudgetSol)}</strong></div>
     </div>
     <BuybackCurve budget={stats.primaryBuybackBudgetSol}/>
     <p className="mt-3 text-xs leading-relaxed text-slate-400">Each 1 SOL threshold is a potential buyback and burn, not an automatic transaction. This indicative figure includes historical mints; it is not segregated funds or available treasury balance. Previous milestones do not confirm completed buys or burns, and the 10% proposal is not applied on-chain.</p>

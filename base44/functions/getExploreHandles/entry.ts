@@ -1,4 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { secrets } from 'base44:runtime';
+import { rpc } from '../../shared/solanaRpc.ts';
+import { externalListingQuery, externalListingMatches } from '../../shared/externalHandleListings.ts';
 
 const rarityFor = (length) => length === 1 ? 'LEGENDARY' : length === 2 ? 'ULTRA_RARE' : length === 3 ? 'RARE' : length === 4 ? 'UNCOMMON' : 'STANDARD';
 const characterTypeFor = (handle) => /^\d+$/.test(handle) ? 'NUMBERS' : /^[a-z]+$/.test(handle) ? 'LETTERS' : 'ALPHANUMERIC';
@@ -17,8 +20,11 @@ export default async function(req: Request): Promise<Response> {
     if (input.length) query.length = input.length === '5+' ? { $gte: 5 } : Number(input.length);
     if (input.characterType) query.character_type = input.characterType;
     const sort = input.sort === 'oldest' ? 'minted_at' : input.sort === 'shortest' ? 'length' : '-minted_at';
-    const listings = await base44.asServiceRole.entities.MarketplaceListing.filter({ status: 'ACTIVE', marketplace: 'Magic Eden' }, 'price', 200);
-    const listingByAsset = new Map(listings.map((listing) => [listing.asset_address, listing]));
+    const listings = await base44.asServiceRole.entities.MarketplaceListing.filter(externalListingQuery(), 'price', 200);
+    const ids = [...new Set(listings.map(row => row.asset_address))];
+    const assets = ids.length ? await rpc(secrets.get('SOLANA_RPC_URL'), 'getAssetBatch', { ids }).catch(() => []) : [];
+    const owners = new Map((Array.isArray(assets) ? assets : []).filter(Boolean).map(asset => [asset.id, asset.ownership?.owner]));
+    const listingByAsset = new Map(listings.filter(row => externalListingMatches(row, row.asset_address, owners.get(row.asset_address))).map(row => [row.asset_address, row]));
     const records = input.tab === 'sale'
       ? (await base44.asServiceRole.entities.HandleIndex.filter(query, sort, 200)).filter((record) => listingByAsset.has(record.asset_address)).slice((page - 1) * 48, page * 48 + 1)
       : await base44.asServiceRole.entities.HandleIndex.filter(query, sort, 49, (page - 1) * 48);
@@ -36,7 +42,8 @@ export default async function(req: Request): Promise<Response> {
           price: listingByAsset.get(record.asset_address).price,
           currency: listingByAsset.get(record.asset_address).currency,
           url: listingByAsset.get(record.asset_address).listing_url,
-          marketplace: listingByAsset.get(record.asset_address).marketplace
+          marketplace: listingByAsset.get(record.asset_address).marketplace,
+          checkedAt: listingByAsset.get(record.asset_address).last_verified_at
         } : null
       })),
       page,

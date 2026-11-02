@@ -90,6 +90,15 @@ Remaining acceptance requirements and profile work:
 7. Verify owner editing, transfer invalidation and safe empty profiles; do not inherit former-owner personal content.
 Exit: mint-to-profile journey works, skips/resumes safely and resets on wallet change.
 
+## External-only sale discovery cleanup — 2026-11-02
+- Removed internal market, market preview and recovery pages, internal action/notification hooks and their backend recovery/transaction handlers. Old routes return not found.
+- Removed NativeListing/NativeBid reads from names, home search, portfolio and ownership-index synchronization.
+- On sale uses the existing external MarketplaceListing cache and Magic Eden sync. Only positive SOL-priced offers checked within 15 minutes, with an approved asset URL and seller matching current RPC asset ownership, may be shown. Provider/source timestamp is visible; checkout stays external.
+- External cache writes are admin-only; public reads contain public marketplace data. Unknown, stale or failed verification never creates an On sale badge.
+- Removed internal-market claims from navigation, roadmap, protocol paper and public activity copy.
+- Preserved historical financial/audit records and deployed Solana contracts. Deleting app features does not cancel blockchain positions, refund funds or upgrade/pause the program.
+- Scoped checks: build completed; external sale lookup for ansem returned no verified offers; existing external sync checked 100 indexed handles and returned zero active offers in this run. This is not a claim of exhaustive provider coverage or a real purchase test.
+
 ## Sprint 5: contacts and payments — pending
 1. Audit existing controls before duplicating add/edit/remove/search capabilities.
 2. Default remembered-device choice off; review actual server session scope, revocation and proof recency.

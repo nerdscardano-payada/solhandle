@@ -6,8 +6,8 @@ import { ArrowUpRight } from 'lucide-react';
 const stages = [
   { title: 'Mint @', detail: 'A confirmed first mint creates a unique identity on Solana.', action: 'Find your handle', path: '/' },
   { title: 'Use @', detail: 'Put that identity to work as your recognizable on-chain name.', action: 'Explore handles', path: '/explore' },
-  { title: 'Pay / trade / share', detail: 'Use your @handle for payments or discover the native marketplace.', action: 'Explore SolHandle Pay', path: '/pay' },
-  { title: 'Protocol activity', detail: 'Real recorded mints, payments and marketplace activity power these figures.', action: 'View the market', path: '/market' },
+  { title: 'Pay / connect / share', detail: 'Use your @handle for payments and connect with the ecosystem.', action: 'Explore SolHandle Pay', path: '/pay' },
+  { title: 'Protocol activity', detail: 'Recorded mints and payments help measure protocol activity.', action: 'Explore external offers', path: '/names?tab=for-sale' },
   { title: '$HANDLE rewards + buybacks', detail: 'Community milestones are tracked separately. Buyback figures are indicative budgets, not executed purchases or burns.', action: 'View Growth Curve', path: '/growth' },
   { title: 'More attention & adoption', detail: 'The loop closes when more people discover, claim and use their own @handle.', action: 'Find your handle', path: '/' }
 ];

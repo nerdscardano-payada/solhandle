@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import NamesOwnedFilters from '@/components/solhandle/names/NamesOwnedFilters';
 import MobileSelect from '@/components/solhandle/MobileSelect';
-const tabs = [['trending', 'Trending'], ['available', 'Available'], ['owned', 'Owned'], ['for-sale', 'For sale'], ['watchlist', 'Watchlist']];
+const tabs = [['trending', 'Trending'], ['available', 'Available'], ['owned', 'Owned'], ['for-sale', 'On sale'], ['watchlist', 'Watchlist']];
 export default function NamesControls({ tab, search, filters, rank, preset, onTab, onSearch, onFilters, onRank, onPreset }) {
   return <><div className="relative mt-4 sm:mt-7"><Search className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground"/><input value={search} onChange={e => onSearch(e.target.value)} placeholder="Search names…" aria-label="Search names" maxLength={21} className="w-full rounded-xl border border-border bg-card py-3 pl-12 pr-4 outline-none focus:border-names-accent"/></div>
     <div className="my-3 flex gap-2 overflow-x-auto pb-1 sm:my-5 sm:flex-wrap sm:overflow-visible sm:pb-0" role="tablist" aria-label="Names"><>{tabs.map(([value, label]) => <button key={value} type="button" role="tab" aria-selected={tab === value} onClick={() => onTab(value)} className={`shrink-0 rounded-full border px-3 py-2 text-xs sm:px-4 sm:text-sm ${tab === value ? 'border-names-accent bg-names-accent text-background' : 'border-border text-muted-foreground hover:text-foreground'}`}>{label}</button>)}</></div>

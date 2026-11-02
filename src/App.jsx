@@ -86,8 +86,6 @@ const PremiumDirectory = lazy(() => import('@/pages/PremiumDirectory'));
 const DiscordVerify = lazy(() => import('@/pages/DiscordVerify'));
 const UpcomingProjects = lazy(() => import('@/pages/UpcomingProjects'));
 const TokenLaunchPreview = lazy(() => import('@/pages/TokenLaunchPreview'));
-const Market = lazy(() => import('@/pages/Market'));
-const MarketplaceRecovery = lazy(() => import('@/pages/MarketplaceRecovery'));
 const Statistics = lazy(() => import('@/pages/Statistics'));
 const LastMinted = lazy(() => import('@/pages/LastMinted'));
 const Promo = lazy(() => import('@/pages/Promo'));
@@ -250,7 +248,7 @@ const AuthenticatedApp = () => {
           <Route path="/developers/partner-mint/devnet-sdk" element={user?.role === 'admin' ? <PartnerMintSdkDevnet /> : <Navigate to="/" replace />} />
         </Route>
         <Route path="/upcoming" element={<UpcomingProjects />} />
-        <Route path="/upcoming/marketplace" element={<Market />} />
+        <Route path="/upcoming/marketplace" element={<PageNotFound />} />
         <Route path="/promo" element={<Promo />} />
 
         {growthHubVisible ? <Route element={<GrowthHubLayout />}>
@@ -271,8 +269,8 @@ const AuthenticatedApp = () => {
 
         <Route path="/fun" element={<Fun />} />
         <Route path="/explore" element={<Navigate to="/names" replace />} />
-        <Route path="/market" element={<Market />} />
-        <Route path="/marketplace-recovery" element={<MarketplaceRecovery />} />
+        <Route path="/market" element={<PageNotFound />} />
+        <Route path="/marketplace-recovery" element={<PageNotFound />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

@@ -36,10 +36,10 @@ export const roadmapMilestones = [
     upcoming: ["Complete remaining Devnet wallet, concurrency, security and legacy-flow acceptance gates", "Review partner-scoped access and domain verification before approving an external Devnet pilot", "Package and release developer tools only after their acceptance gates pass", "Require independent review and separate approval before any Mainnet Partner Mint activation"]
   },
   {
-    number: "07", status: "retired", title: "Native marketplace, Share & Earn and Embed retired",
-    summary: "SolHandle has stopped operating its native trading service and removed Share & Earn, the Earn Litepaper and public SolHandle Embed. These are retired services, not future launch milestones.",
-    completed: ["New managed native listings, bids and purchases blocked", "Share & Earn participation, attribution and new reward accrual disabled", "Public Earn, litepaper and Embed entry points removed", "Existing financial history and owner-authorized marketplace cancellation/recovery preserved"],
-    next: "Keep recovery available for existing positions. Service retirement does not disable permissionless on-chain contracts or change NFT ownership; retired services are not scheduled for reactivation."
+    number: "07", status: "current", title: "External offers and focused identity discovery",
+    summary: "SolHandle is an identity and discovery layer. On-sale offers come exclusively from supported external marketplaces; listing and settlement take place on those services.",
+    completed: ["External-only On sale discovery", "Recently checked source, price and external destination displayed", "Internal trading interfaces and notifications removed"],
+    next: "Continue validating external data freshness and wallet compatibility. App changes do not alter deployed contracts or existing blockchain positions."
   },
   {
     number: "08", status: "completed", title: "SolHandle Pay — native SOL transfers",

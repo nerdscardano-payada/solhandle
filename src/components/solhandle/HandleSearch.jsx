@@ -79,10 +79,7 @@ export default function HandleSearch({ wallet, initialHandle = '', compact = fal
       try {
         const data = await client.fetchQuery({ queryKey: ['handle-availability', handle], queryFn: async () => (await invokeWithRetry('getHandleAvailability', { handle })).data, staleTime: 15000, retry: false });
         if (active && data?.handle === handle) setResult(data);
-        if (funnel && data?.status === 'CLAIMED') {
-          const listing = await client.fetchQuery({ queryKey: ['home-name-listing', handle], queryFn: async () => (await base44.entities.NativeListing.filter({ handle, status: 'ACTIVE' }, { limit: 1, fields: ['handle', 'price_lamports'] })).items[0] || null, staleTime: 30000 }).catch(() => null);
-          if (active && data.handle === handle) setResult({ ...data, listing });
-        }
+
       } catch {
         if (active) setResult({ handle, display: `@${handle}`, available: false, status: "UNAVAILABLE", state: "unavailable" });
       }

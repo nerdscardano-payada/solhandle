@@ -1,2 +1,0 @@
-import MarketplaceRetirementNotice from '@/components/solhandle/retirement/MarketplaceRetirementNotice';
-export default function HomeMarketplacePreview() { return <div className="home-content-section"><MarketplaceRetirementNotice/></div>; }

@@ -3,6 +3,7 @@ import { secrets } from 'base44:runtime';
 import { verifyNamesWallet } from '../../shared/namesAuthorization.ts';
 import { namesInterest, interestFor } from '../../shared/namesInterest.ts';
 import { namesChain } from '../../shared/namesChain.ts';
+import { externalListingQuery } from '../../shared/externalHandleListings.ts';
 import { getFallbackSuggestions } from '../../shared/handleSuggestionPool.ts';
 export default async function(req: Request): Promise<Response> {
   try {
@@ -16,7 +17,7 @@ export default async function(req: Request): Promise<Response> {
     if (tab === 'owned' || tab === 'watchlist' || tab === 'for-sale') {
       let page;
       if (tab === 'for-sale') {
-        page = await base44.asServiceRole.entities.NativeListing.filter({ ...query, status: 'ACTIVE' }, { sort: '-created_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
+        page = await base44.asServiceRole.entities.MarketplaceListing.filter({ ...query, ...externalListingQuery() }, { sort: '-last_verified_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
       } else if (tab === 'watchlist') {
         const wallet = await verifyNamesWallet(input.proof);
         page = await base44.asServiceRole.entities.NameWatch.filter({ ...query, wallet }, { sort: '-watched_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
@@ -30,7 +31,7 @@ export default async function(req: Request): Promise<Response> {
         const sort = input.sort === 'oldest' ? 'minted_at' : input.sort === 'shortest' ? 'length' : '-minted_at';
         page = await base44.asServiceRole.entities.HandleIndex.filter({ ...query, status: 'active' }, { sort, limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
       }
-      handles = page.items.map(r => r.handle); nextCursor = page.next_cursor; hasMore = page.has_more;
+      handles = [...new Set(page.items.map(r => r.handle).filter(handle => /^[a-z0-9]{1,20}$/.test(handle)))]; nextCursor = page.next_cursor; hasMore = page.has_more;
       interest = handles.length ? await namesInterest(base44, { handle: { $in: handles } }) : null;
     } else {
       interest = await namesInterest(base44, query, input.rank === 'watched' ? 'watched' : 'searches');

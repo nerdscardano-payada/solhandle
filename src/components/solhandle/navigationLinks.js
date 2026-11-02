@@ -18,7 +18,7 @@ export const mobileGroups = [
   ['Legal', legalLinks],
 ];
 export const footerGroups = [
-  ['Use SolHandle', [['SolHandle Network', '/network'], ['Search handles', '/search'], ['Discover names', '/names'], ['Marketplace', '/market'], ['My Handles', '/my-handles'], ['Pay', '/pay'], ['Android app', '/android'], ['Live integrations', '/live-integrations']]],
+  ['Use SolHandle', [['SolHandle Network', '/network'], ['Search handles', '/search'], ['Discover names', '/names'], ['On sale · external', '/names?tab=for-sale'], ['My Handles', '/my-handles'], ['Pay', '/pay'], ['Android app', '/android'], ['Live integrations', '/live-integrations']]],
   ['$HANDLE & Growth', tokenLinks],
   ['Developers', developerLinks],
   ['About & Support', aboutLinks],

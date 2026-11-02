@@ -4,7 +4,7 @@ import { Search, Tag, Send, ArrowLeftRight, ArrowUpRight } from 'lucide-react';
 
 const actions = [
   { title: 'Search & buy @handles', description: 'Find your name and make it yours.', to: '/search', icon: Search },
-  { title: 'Sell @handles', description: 'List your handles on the marketplace.', to: '/market', icon: Tag },
+  { title: 'On sale · external', description: 'Explore offers on external marketplaces.', to: '/names?tab=for-sale', icon: Tag },
   { title: 'Pay @handles', description: 'Send and receive SOL using a handle.', to: '/pay', icon: Send },
   { title: 'Trade $HANDLE', description: 'Buy and sell the community token.', to: '/upcoming/token-launch', icon: ArrowLeftRight },
 ];

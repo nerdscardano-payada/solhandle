@@ -7,7 +7,7 @@ import { mobileGroups as groups, canViewNavigationLink } from '@/components/solh
 import CommunityLinks from '@/components/solhandle/CommunityLinks';
 import { useAuth } from '@/lib/AuthContext';
 
-const mainLinks = [["Search handles", "/search"], ["Discover names", "/names"], ["Marketplace", "/market"], ["My Handles", "/my-handles"], ["$HANDLE Token", "/upcoming/token-launch"]];
+const mainLinks = [["Search handles", "/search"], ["Discover names", "/names"], ["On sale · external", "/names?tab=for-sale"], ["My Handles", "/my-handles"], ["$HANDLE Token", "/upcoming/token-launch"]];
 
 export default function MobileNavigation({ onNavigate, tokenIsLive }) {
   const [expanded, setExpanded] = useState({});

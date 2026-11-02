@@ -17,11 +17,11 @@ export default async function(req: Request): Promise<Response> {
 
     for (let index = 0; index < handles.length; index += 1) {
       const item = handles[index];
-      const response = await fetch(`${API_ROOT}/tokens/${item.asset_address}/listings?listingAggMode=true`, { headers: { accept: 'application/json' } });
+      const response = await fetch(`${API_ROOT}/tokens/${item.asset_address}/listings?listingAggMode=true`, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10000) });
       if (!response.ok) throw new Error(`Magic Eden returned ${response.status} for @${item.handle}.`);
       const listings = await response.json();
       const listing = Array.isArray(listings)
-        ? listings.filter((row) => Number.isFinite(Number(row.price))).sort((a, b) => Number(a.price) - Number(b.price))[0]
+        ? listings.filter((row) => Number.isFinite(Number(row.price)) && Number(row.price) > 0 && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(String(row.seller || '')) && row.tokenMint === item.asset_address).sort((a, b) => Number(a.price) - Number(b.price))[0]
         : null;
       if (listing) active.push({ item, listing });
       if (index < handles.length - 1) await new Promise((resolve) => setTimeout(resolve, 550));
