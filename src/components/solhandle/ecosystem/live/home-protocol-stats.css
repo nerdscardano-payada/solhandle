@@ -2,11 +2,11 @@
 .eco-live .home-protocol-stats>header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
 .eco-live .home-protocol-stats>header h2{font-size:18px;font-weight:600}
 .eco-live .home-protocol-stats dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:0;padding:0;background:none}
-.eco-live .home-protocol-stats dl>div{display:flex;align-items:center;gap:12px;padding:6px 24px;border:0;border-radius:0;background:none;min-width:0}
+.eco-live .home-protocol-stats dl>div{display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:6px 24px;border:0;border-radius:0;background:none;min-width:0}
 .eco-live .home-protocol-stats dl>div:first-child{padding-left:0}
 .eco-live .home-protocol-stats dl>div:last-child{padding-right:0}
 .eco-live .home-protocol-stats dl>div+div{border-left:1px solid var(--eco-border)}
-.eco-live .home-protocol-stats dt{font-size:12px;white-space:normal;flex-shrink:1;color:var(--eco-muted)}
+.eco-live .home-protocol-stats dt{font-size:15px;white-space:normal;flex-shrink:1;color:var(--eco-muted)}
 .eco-live .home-protocol-stats dd{order:-1;font-size:26px;font-weight:700;line-height:1.2;color:var(--eco-cyan);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;text-align:left}
 .eco-live .home-protocol-stats .home-protocol-stats-source{margin-top:12px;font-size:11px;line-height:1.6;color:var(--eco-muted)}
 .eco-live .home-stats-recent{margin-top:24px}
