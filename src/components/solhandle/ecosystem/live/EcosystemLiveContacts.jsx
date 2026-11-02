@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ContactRound, Send } from 'lucide-react';
-import useContacts from '@/components/solhandle/contacts/useContacts';
 import ContactsAccess from '@/components/solhandle/contacts/ContactsAccess';
 import ContactAvatar from '@/components/solhandle/contacts/ContactAvatar';
 import { contactMessage } from '@/components/solhandle/contacts/contactClient';
 
-export default function EcosystemLiveContacts() {
-  const data = useContacts();
+export default function EcosystemLiveContacts({ data }) {
   return <section className="ep-card">
     <div className="ep-card-heading"><h2><ContactRound size={19}/>Your Contacts</h2><Link to="/contacts" className="ep-link">View all <ArrowUpRight size={15}/></Link></div>
     {!data.unlocked ? <ContactsAccess access={data}/> : <div className="space-y-3">

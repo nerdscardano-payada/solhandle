@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Plus, Send, Download, ContactRound, ArrowUpRight } from 'lucide-react';
-const actions = [[Plus, 'Claim a Handle', '/search'], [Send, 'Send Payment', '/pay'], [Download, 'Receive Payment', '/receive'], [ContactRound, 'My Contacts', '/contacts']];
+import { UsersRound, Compass, Send, ContactRound, ArrowUpRight } from 'lucide-react';
+const actions = [[ContactRound, 'My Contacts', 'Manage your private address book', '/contacts'], [Send, 'Send Payment', 'Review and pay using an @handle', '/pay'], [UsersRound, 'Discover People', 'Explore public profiles', '/discover?tab=people'], [Compass, 'Explore Projects', 'Discover Solana builders', '/discover?tab=projects']];
 export default function EcosystemLiveActions() {
-  return null;
+  return <nav className="dashboard-quick-actions" aria-label="Ecosystem quick actions">{actions.map(([Icon, label, description, to]) => <Link className="ep-card" key={to} to={to}><Icon size={22}/><strong>{label}</strong><span>{description}</span><ArrowUpRight size={16}/></Link>)}</nav>;
 }

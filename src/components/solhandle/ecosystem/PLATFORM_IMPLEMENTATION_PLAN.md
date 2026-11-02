@@ -48,7 +48,18 @@ Remaining:
 - Review integration evidence and the destination pages before certifying current integrations.
 - Runtime and responsive acceptance testing remains pending.
 
-## Sprint 3: personal dashboard and navigation — pending
+## Sprint 3: personal dashboard and navigation — implemented core, runtime acceptance pending
+Implemented on 2026-11-02:
+- Personal welcome uses the existing verified primary-identity response scoped to the connected wallet.
+- Existing owned-handle service determines no-handle versus no-primary next actions, with explicit failure/loading states.
+- Next actions lead to existing claim, primary management, public-profile and contacts flows; no automatic wallet mutations.
+- Removed repetitive introductory summary cards from the dashboard; retained the existing identity, contacts and projects functionality.
+- Added four direct quick actions and an actual-state getting-started checklist. Essential setup collapses automatically; no persisted dismissal preference is introduced.
+- Shared the existing Contacts read between checklist and contact panel instead of duplicating private-data requests. Locked contacts are marked unknown, not incomplete or zero.
+- Added grouped Overview, Identity, Network, Payments and Resources navigation, including My Handles under Identity. Token remains accessible as a secondary link.
+- Added People/Projects Discover destinations while preserving /profiles and every existing public profile route.
+- Added public Claim, Explore, Ecosystem, Developers and token navigation with a compact mobile menu.
+Remaining: runtime acceptance, accessible/mobile journey checks and optional server-persisted checklist dismissal. The numbered items below remain acceptance requirements, not a claim of completed tests.
 1. Use verified wallet identity to distinguish disconnected, no handles, no primary, incomplete profile and activated states.
 2. Show verified primary identity, wallet, avatar, public profile and manage-identity actions.
 3. Offer existing primary selection rather than silently assigning one.
