@@ -138,6 +138,10 @@
  .eco-live .el-wallet-button{max-width:150px;padding:8px 10px;font-size:11px;gap:5px;min-height:40px}
  .eco-live .el-wallet-button>svg{width:14px}
  .eco-live .ep-public-hero{padding:42px 20px 35px}
+ /* Keep the city independent of expanding search results and the keyboard. */
+ .eco-live .ep-public-city{height:500px;bottom:auto;object-fit:cover;object-position:center top}
+ .eco-live .ep-public-hero:after{height:500px;bottom:auto}
+ .eco-live .el-hero-mint .ep-claim-search input{font-size:16px}
  .eco-live .ep-public-copy h1{font-size:36px}
  .eco-live .ep-hero-panels a{padding:13px 8px;gap:13px;min-height:180px}
  .eco-live .ep-hero-panels a strong{font-size:14px}
