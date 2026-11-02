@@ -1,0 +1,15 @@
+.eco-live .home-public-profiles{padding-block:30px;min-width:0}
+.eco-live .home-public-profiles .ep-public-intro{margin-bottom:24px}
+.eco-live .home-public-profiles .profile-directory-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.eco-live .home-ownership-note{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(--eco-muted);line-height:1.7}
+.eco-live .home-ownership-note svg{flex-shrink:0;margin-top:3px;color:var(--eco-cyan)}
+.eco-live .home-profiles-more{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:20px}
+.eco-live .home-use-case-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:24px}
+.eco-live .home-use-case-grid>a{display:flex;flex-direction:column;align-items:flex-start;gap:14px;text-decoration:none;min-width:0;color:var(--eco-text)}
+.eco-live .home-use-case-grid h3{font-size:19px;font-weight:700}
+.eco-live .home-use-case-grid p{font-size:14px;line-height:1.8;color:var(--eco-muted)}
+.eco-live .home-use-case-grid svg{color:var(--eco-cyan);flex-shrink:0}
+.eco-live .home-use-case-grid .ep-link{margin-top:auto;min-height:44px;display:inline-flex;align-items:center;gap:8px}
+.eco-live :is(.home-public-profiles,.home-use-case-grid) a:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:4px}
+@media(max-width:1000px){.eco-live .home-public-profiles .profile-directory-grid,.eco-live .home-use-case-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.eco-live .home-public-profiles .profile-directory-grid,.eco-live .home-use-case-grid{grid-template-columns:minmax(0,1fr)}}
