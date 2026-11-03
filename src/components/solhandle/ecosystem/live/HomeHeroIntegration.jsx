@@ -9,10 +9,10 @@ export default function HomeHeroIntegration() {
     navigate(`/integrate/ai?${new URLSearchParams({ website })}`);
   }
   return <section className="el-hero-entry el-hero-entry-project" aria-labelledby="hero-integration-heading">
-    <div className="el-hero-entry-audience flex-wrap"><Code2 size={18}/><span>FOR PROJECTS & DEVELOPERS</span><span className="inline-flex items-center gap-2 rounded-full border border-ecosystem-cyan bg-ecosystem-raised px-3 py-1 font-bold text-ecosystem-cyan"><span aria-hidden="true">✦</span> AI POWERED</span></div>
+    <div className="el-hero-entry-audience flex-wrap"><Code2 size={18}/><span>FOR PROJECTS & DEVELOPERS</span></div>
     <h2 id="hero-integration-heading">Bring @handles to your project</h2>
     <p>Your website. A tailored integration plan.</p>
-    <div className="el-hero-entry-context"><code>@ansem → wallet address</code><span>Handle lookup · Identity labels · SOL recipients</span></div>
+    <div className="el-hero-entry-context"><code>@ansem → wallet address</code><span className="flex flex-wrap items-center gap-2"><span>Handle lookup · Identity labels · SOL recipients</span><span className="inline-flex items-center gap-2 rounded-full border border-ecosystem-cyan bg-ecosystem-raised px-3 py-1 font-bold text-ecosystem-cyan"><span aria-hidden="true">✦</span> AI POWERED</span></span></div>
     <form className="ep-claim-search el-hero-project-form" onSubmit={explore}>
       <span aria-hidden="true"><Globe size={22}/></span>
       <label htmlFor="hero-project-website" className="sr-only">Public HTTPS project website</label>
