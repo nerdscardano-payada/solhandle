@@ -1,15 +1,24 @@
 import { Link } from 'react-router-dom';
 import AIAdvisorCode from '@/components/solhandle/ai-advisor/AIAdvisorCode';
-const phases=['Prepare','Implement','Security review','Test','Next action'];
-export default function AIAdvisorChecklistGroup({ group, checked, toggle }) {
+const phases=[
+ {title:'Choose where it fits',phases:['Prepare']},
+ {title:'Add the integration',phases:['Implement']},
+ {title:'Validate before going live',phases:['Security review','Test']}
+];
+export default function AIAdvisorChecklistGroup({ group }) {
  return <div className="advisor-checklist-group"><h4>{group.title}</h4>
-  {phases.filter(phase=>group.tasks.some(task=>task.phase===phase)).map((phase,index)=><div key={phase}>
-   <h4>{index+1}. {phase==='Prepare'?'Prepare your integration':phase==='Implement'?'Install and integrate':phase==='Test'?'Test before going live':phase}</h4>
-   <ol className="advisor-checklist-items">{group.tasks.filter(task=>task.phase===phase).map(task=><li key={task.id}>
-    <label className="advisor-checklist-item"><input type="checkbox" checked={checked.includes(task.id)} onChange={()=>toggle(task.id)}/><span><span className={checked.includes(task.id)?'advisor-checklist-done':''}>{task.text}</span></span></label>
-   </li>)}</ol>
-   {phase==='Implement'&&group.capability&&<AIAdvisorCode capability={group.capability} inline/>}
+  {phases.map((step,index)=><div key={step.title}>
+   <h4>{index+1}. {step.title}</h4>
+   {index===0&&<p>Start with the relevant screen or user flow in your product; keep your existing wallet connection and signing.</p>}
+   {step.phases.map(phase=>{
+    const tasks=group.tasks.filter(task=>task.phase===phase);
+    return tasks.length>0&&<div key={phase}>
+     {index===2&&<p className="advisor-muted">{phase==='Security review'?'Security considerations':'Tests to perform, not yet executed'}</p>}
+     <ul>{tasks.map(task=><li key={task.id}>{task.text}</li>)}</ul>
+    </div>;
+   })}
+   {index===1&&group.capability&&<AIAdvisorCode capability={group.capability} inline/>}
   </div>)}
-  {group.guide&&<Link to={`/integrations/${group.guide}`}>Open integration guide</Link>}
+  {group.guide&&<Link to={`/integrations/${group.guide}`}>Detailed integration guide</Link>}
  </div>;
 }
