@@ -3,11 +3,12 @@ import IntakeTurnstile from '@/components/solhandle/onboarding/IntakeTurnstile';
 export default function AIAdvisorForm({ flow }) {
  const [token,setToken]=useState('');
  const config=flow.config;
+ const initialWebsite=(new URLSearchParams(window.location.search).get('website')||'').slice(0,500);
  function submit(event){event.preventDefault();const values=Object.fromEntries(new FormData(event.currentTarget));flow.start({...values,human_token:token,consent:values.consent==='on'});setToken('');}
  if(config.isPending)return <p role="status">Preparing secure project submission…</p>;
  if(config.isError)return <div role="alert"><p>The submission form could not be loaded.</p><button className="ep-button" onClick={()=>config.refetch()}>Try again</button></div>;
  return <div className="advisor-panel"><form className="advisor-form" onSubmit={submit}>
- <label className="advisor-wide">Project website <input name="website" type="url" placeholder="https://…" maxLength={500} required pattern="https://.*"/></label>
+ <label className="advisor-wide">Project website <input name="website" type="url" placeholder="https://…" defaultValue={initialWebsite} maxLength={500} required pattern="https://.*"/></label>
  <label>Project name (optional)<input name="project_name" maxLength={80}/></label>
  <label>Preferred development language<select name="language" defaultValue="Automatic"><option>Automatic</option><option>TypeScript</option><option>JavaScript</option><option>Other</option></select></label>
  <label className="advisor-wide">Project description (optional)<textarea name="description" maxLength={1000} placeholder="AI will independently research the public website."/></label>
