@@ -21,6 +21,17 @@
 .eco-preview.eco-live .el-dual-hero .el-hero-entry .ep-claim-search .ep-button{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:12px;font-size:15px;font-weight:700}
 .eco-live .el-hero-entry>small{margin:0;font-size:11px;line-height:1.7;color:var(--eco-muted)}
 .eco-live .el-hero-entry :is(input,button):focus-visible{outline:2px solid var(--eco-cyan);outline-offset:3px}
+@media(min-width:768px){
+ .eco-preview.eco-live .ep-public-hero.el-dual-hero{min-height:560px;padding-top:44px;padding-bottom:110px;gap:52px}
+ .eco-preview.eco-live .el-dual-hero .ep-public-copy{max-width:640px}
+ .eco-preview.eco-live .el-dual-hero .ep-public-copy h1{font-size:clamp(42px,4.8vw,66px)}
+ .eco-live .el-hero-entries{gap:44px;max-width:1080px}
+ .eco-live .el-hero-entry{padding:0;border:0;border-radius:0;background:none;box-shadow:none;gap:10px}
+ .eco-live .el-hero-entry h2{font-size:clamp(23px,2.15vw,29px)}
+ .eco-live .el-hero-entry-context{min-height:40px}
+ .eco-preview.eco-live .el-dual-hero .el-hero-entry .ep-claim-search{background:color-mix(in srgb,var(--eco-sidebar) 72%,transparent);border-color:color-mix(in srgb,var(--eco-cyan) 30%,var(--eco-border))}
+ .eco-live .el-hero-entry>small{max-width:48ch;text-shadow:0 1px 4px var(--eco-canvas)}
+}
 @media(max-width:767px){
  .eco-preview.eco-live .ep-public-hero.el-dual-hero{padding:28px 20px 24px;gap:22px}
  .eco-preview.eco-live .el-dual-hero .ep-public-copy{gap:12px}
