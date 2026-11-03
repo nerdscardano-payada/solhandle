@@ -11,6 +11,7 @@ export default function AIAdvisorReport({ analysis, onReset, resetLabel = 'New a
  {showRecoveryLink&&<p className="advisor-muted">Not part of this project? Share the report link with its owner or team. Anyone with the link can read and download this analysis without logging in, until {new Date(analysis.expires_at).toLocaleDateString()}. The link does not grant editing rights or establish project ownership, endorsement or a partnership.</p>}
  <section><h3>Integration proposal</h3>{r.no_fit_reason&&<p>{r.no_fit_reason}</p>}{r.opportunities.map((o,i)=><AIAdvisorOpportunity key={i} item={o} sources={r.sources}/>)}{!r.opportunities.length&&!r.no_fit_reason&&<p>No source-backed proposal was generated. This is not a conclusion that the project is unsuitable.</p>}</section>
  <section><h3>Next steps</h3><ol>{r.next_actions.map((v,i)=><li key={i}>{v}</li>)}</ol><div className="advisor-links"><Link to="/developers">Official SDK</Link><Link to="/integrations">Integration guides</Link><Link to="/integrate">Request technical review</Link></div></section>
+ <AIAdvisorChecklist key={JSON.stringify([analysis.website,analysis.completed_at,analysis.prompt_version])} analysis={analysis}/>
  <section><h2>Research overview</h2><h3>Project understanding</h3><p>{r.summary}</p><p><strong>Audience:</strong> {r.audience}</p><p><strong>Categories:</strong> {r.categories.join(', ')||'Unknown'}</p><p><strong>Technology:</strong> {r.technology_stack.join(', ')||'Not established from public evidence.'}</p></section>
  <section><h3>What AI discovered</h3>{!r.findings.length&&<p>No source-backed findings were established. Review the research limitations and unknowns below.</p>}<ul>{r.findings.map((f,i)=><li key={i}>{f.claim} <small className="advisor-muted">({f.certainty}) </small>{f.source_indexes.map(n=><a key={n} href={r.sources[n].url} target="_blank" rel="noopener noreferrer nofollow">[{n+1}] </a>)}</li>)}</ul></section>
  {r.unknowns.length>0&&<section><h3>Unknowns to clarify</h3><ul>{r.unknowns.map((v,i)=><li key={i}>{v}</li>)}</ul></section>}
@@ -18,5 +19,5 @@ export default function AIAdvisorReport({ analysis, onReset, resetLabel = 'New a
 
  <section><h3>Research references</h3><ol>{r.sources.map((s,i)=><li key={i}><a href={s.url} target="_blank" rel="noopener noreferrer nofollow">{s.title}</a><p>{s.evidence}</p></li>)}</ol></section>
  <p className="advisor-muted">Knowledge: {analysis.knowledge_version} · Prepared {new Date(analysis.completed_at).toLocaleString()} · Recovery access expires {new Date(analysis.expires_at).toLocaleDateString()}. This is not a partnership announcement or ownership certificate.</p>
- <AIAdvisorChecklist key={JSON.stringify([analysis.website,analysis.completed_at,analysis.prompt_version])} analysis={analysis}/></article>;
+ </article>;
 }

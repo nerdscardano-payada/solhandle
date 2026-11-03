@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import AIAdvisorChecklistGroup from '@/components/solhandle/ai-advisor/AIAdvisorChecklistGroup';
 import '@/components/solhandle/ai-advisor/advisor-checklist.css';
 
 export default function AIAdvisorChecklist({ analysis }) {
  const report=analysis.report;
  const storageKey=`advisor-checklist:${JSON.stringify([analysis.website,analysis.completed_at,analysis.prompt_version])}`;
  const groups=(report.opportunities||[]).map((opportunity,index)=>({
-  title:opportunity.title,guide:opportunity.guide,
+  title:opportunity.title,guide:opportunity.guide,capability:opportunity.capability,
   tasks:[['Prepare',opportunity.requirements],['Implement',opportunity.steps],['Security review',opportunity.security_notes],['Test',opportunity.tests]]
    .flatMap(([phase,items])=>(items||[]).map((text,i)=>({id:`${index}:${phase}:${i}`,phase,text})))
  }));
@@ -24,19 +24,13 @@ export default function AIAdvisorChecklist({ analysis }) {
   setProgress({checked,persistent});
  }
  return <section className="advisor-checklist" aria-label="Interactive integration checklist">
-  <h3>Step-by-step integration checklist</h3>
-  <p>Action points for {report.project_name}, based on this analysis. Tick each item as you work through it.</p>
+  <h3>Integration onboarding: steps and code</h3>
+  <p>Follow these steps for {report.project_name}: prepare, integrate the SDK example, review security and test. The code is visible in the implementation step; adapt it to your platform. Tick each action as you work through it.</p>
   {!report.opportunities?.length&&<p className="advisor-muted">No integration proposal is available yet. Complete these clarification steps before starting implementation.</p>}
   {tasks.length>0?<>
    <p role="status" className="advisor-muted">{completed} of {tasks.length} actions checked</p>
    <progress className="advisor-checklist-progress" value={completed} max={tasks.length} aria-label="Checklist completion"/>
-   {groups.filter(group=>group.tasks.length).map((group,index)=><div className="advisor-checklist-group" key={index}>
-    <h4>{group.title}</h4>
-    <ol className="advisor-checklist-items">{group.tasks.map(task=><li key={task.id}>
-     <label className="advisor-checklist-item"><input type="checkbox" checked={progress.checked.includes(task.id)} onChange={()=>toggle(task.id)}/><span><small>{task.phase}</small><span className={progress.checked.includes(task.id)?'advisor-checklist-done':''}>{task.text}</span></span></label>
-    </li>)}</ol>
-    {group.guide&&<Link to={`/integrations/${group.guide}`}>Open integration guide</Link>}
-   </div>)}
+   {groups.filter(group=>group.tasks.length).map((group,index)=><AIAdvisorChecklistGroup key={index} group={group} checked={progress.checked} toggle={toggle}/>)}
    <p className="advisor-muted">{progress.persistent?'Your checklist progress is saved only in this browser.':'Progress is kept for this visit only; browser storage is unavailable.'} Sharing the report does not share your checkmarks. Checking an item does not run tests, execute an integration or grant official verification.</p>
   </>:<p className="advisor-muted">This analysis contains no actionable steps. Start a new analysis or request technical review before integrating.</p>}
  </section>;
