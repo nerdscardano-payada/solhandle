@@ -1,0 +1,13 @@
+@media (max-width: 767px) {
+  .eco-preview.eco-live .statistics-page > div { padding-block: 16px 24px; }
+  .eco-preview.eco-live .statistics-page h1 { font-size: 25px; }
+  .eco-preview.eco-live .statistics-page > div > p { margin-top: 6px; font-size: 13px; }
+  .eco-preview.eco-live .statistics-page > div > section { margin-top: 20px; padding: 0; }
+  .eco-preview.eco-live .statistics-page h2 { font-size: 18px; line-height: 1.35; }
+  .eco-preview.eco-live .statistics-page section > p { margin-top: 6px; font-size: 12px; line-height: 1.5; }
+  .eco-preview.eco-live .statistics-page dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 0; padding: 0; border: 0; background: none; }
+  .eco-preview.eco-live .statistics-page dl > div { display: flex; flex-direction: column; align-items: stretch; justify-content: space-between; gap: 6px; padding: 12px; border: 1px solid var(--eco-border); border-radius: 10px; background: var(--eco-card); }
+  .eco-preview.eco-live .statistics-page dt { display: block; min-width: 0; min-height: 2.8em; flex-shrink: 1; font-size: 12px; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; }
+  .eco-preview.eco-live .statistics-page dd { display: block; margin: 0; text-align: left; font-size: 18px; font-weight: 650; line-height: 1.3; color: hsl(var(--names-accent)); overflow-wrap: anywhere; }
+  .eco-preview.eco-live .statistics-page section:last-child dd { color: hsl(var(--names-secondary)); }
+}

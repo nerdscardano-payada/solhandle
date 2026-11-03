@@ -2,10 +2,11 @@ import Header from '@/components/solhandle/Header';
 import { useLanguage } from '@/components/i18n/LanguageProvider';
 import HandleMintStatistics from '@/components/solhandle/HandleMintStatistics';
 import TokenBurnStatistics from '@/components/solhandle/TokenBurnStatistics';
+import '@/components/solhandle/statistics-mobile.css';
 
 export default function Statistics() {
   const { t } = useLanguage();
-  return <main className="dark min-h-screen bg-hero-canvas text-foreground">
+  return <main className="statistics-page dark min-h-screen bg-hero-canvas text-foreground">
     <Header />
     <div className="mx-auto max-w-5xl px-5 py-7 width-min-[768px]:py-12">
       <h1 className="text-3xl font-semibold">{t('Statistics')}</h1>
