@@ -1,0 +1,76 @@
+{
+  "name": "AIIntegrationAnalysis",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "knowledge_version": {
+      "type": "string"
+    },
+    "prompt_version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "researching",
+        "completed",
+        "partial",
+        "failed"
+      ]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "error_code": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "request_id",
+    "website",
+    "status",
+    "knowledge_version",
+    "prompt_version",
+    "expires_at"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

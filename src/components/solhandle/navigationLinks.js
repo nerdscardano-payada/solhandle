@@ -6,7 +6,7 @@ export const canViewNavigationLink = (path, user) => {
 };
 export const tokenLinks = [['Trade $HANDLE', '/upcoming/token-launch'], ...(growthHubVisible ? [['Growth Hub', '/quests']] : []), ['Growth Curve', '/growth'], ['Flywheel', '/flywheel'], ['Burn Dashboard', '/growth/burn']];
 export const aboutLinks = [['About / How it works', '/about'], ['FAQ', '/faq'], ['Roadmap', '/roadmap'], ['Brand Protection', '/protected-brands'], ['Contact', '/contact']];
-export const developerLinks = [['Demo Lab', '/demos'], ['Integrate SolHandle', '/integrations'], ['Integration Onboarding', '/integrate'], ['SDK / API', '/developers'], ['Partner Mint Plan', '/developers/partner-mint'], ['Documentation', '/docs']];
+export const developerLinks = [['Demo Lab', '/demos'], ['Integrate SolHandle', '/integrations'], ['Integration Onboarding', '/integrate'], ['AI Integration Advisor', '/integrate/ai'], ['SDK / API', '/developers'], ['Partner Mint Plan', '/developers/partner-mint'], ['Documentation', '/docs']];
 export const legalLinks = [['Legal notice & disclaimer', '/legal'], ['Privacy policy', '/privacy']];
 export const communityLinks = [['X · @Solhandle', 'https://x.com/Solhandle'], ['Discord · Join the community', 'https://discord.gg/xYbZ9Gb5Jx']];
 export const mobileGroups = [

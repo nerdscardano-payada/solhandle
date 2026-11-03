@@ -1,0 +1,7 @@
+import { Loader2 } from 'lucide-react';
+export default function AIAdvisorProgress({ flow }) {
+ const {query}=flow, value=query.data;
+ if(query.isError)return <div className="advisor-status" role="alert"><p className="advisor-error">{query.error.response?.data?.error||'The report could not be loaded.'}</p><div className="advisor-actions"><button className="ep-button" onClick={()=>query.refetch()}>Check again</button><button className="ep-link" onClick={flow.reset}>New analysis</button></div></div>;
+ const failed=value?.status==='failed';
+ return <div className="advisor-status" aria-live="polite"><div className="advisor-status-title">{!failed&&<Loader2 className="animate-spin" size={22}/>}<strong>{failed?'Research could not finish':value?.status==='researching'?'Researching your project':'Analysis queued'}</strong></div><p>{value?.message||'Waiting for the current job status…'}</p><p className="advisor-muted">Status comes from the background job, not a simulated progress bar. This may take several minutes. Keep the private link to reopen your report.</p><div className="advisor-actions">{!failed&&<button type="button" className="ep-link" onClick={()=>query.refetch()}>Refresh status</button>}<button className="ep-link" type="button" onClick={flow.reset}>Start a new analysis</button></div></div>;
+}

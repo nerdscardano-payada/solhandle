@@ -1,0 +1,74 @@
+{
+  "name": "AIAnalysisRequest",
+  "type": "object",
+  "properties": {
+    "website": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "project_name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "Automatic",
+        "TypeScript",
+        "JavaScript",
+        "Other"
+      ]
+    },
+    "access_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "human_token": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "researching",
+        "completed",
+        "partial",
+        "failed"
+      ],
+      "default": "queued"
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "website",
+    "access_hash",
+    "human_token",
+    "language"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

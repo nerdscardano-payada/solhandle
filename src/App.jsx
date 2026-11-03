@@ -71,6 +71,7 @@ const PartnerMint = lazy(() => import('@/pages/PartnerMint'));
 const PartnerMintSdkDevnet = lazy(() => import('@/pages/PartnerMintSdkDevnet'));
 const Integrations = lazy(() => import('@/pages/Integrations'));
 const Integrate = lazy(() => import('@/pages/Integrate'));
+const AIIntegrationAdvisor = lazy(() => import('@/pages/AIIntegrationAdvisor'));
 const AdminIntegrations = lazy(() => import('@/pages/AdminIntegrations'));
 const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
 const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
@@ -207,6 +208,7 @@ const AuthenticatedApp = () => {
             <Route path="/demos" element={<Demos />} />
             <Route path="/demos/:slug" element={<DemoDetail />} />
             <Route path="/integrate" element={<Integrate />} />
+            <Route path="/integrate/ai" element={<AIIntegrationAdvisor />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/statistics" element={<Statistics />} />
             <Route path="/last-minted" element={<LastMinted />} />

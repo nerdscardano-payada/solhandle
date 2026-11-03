@@ -1,0 +1,47 @@
+{
+  "description": "Removes AI project reports and submissions after their 30-day private recovery period.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 3 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Brussels",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "name": "AI Advisor Report Retention",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_advisor_report_retention",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "purge_expired": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "aiAdvisorRetention",
+            "args": {
+              "action": "purge_expired"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Verlopen rapporten verwijderen",
+            "description": "Bewaartijd van 30 dagen toepassen"
+          }
+        }
+      }
+    ]
+  }
+}

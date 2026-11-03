@@ -1,0 +1,18 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import AIAdvisorOpportunity from '@/components/solhandle/ai-advisor/AIAdvisorOpportunity';
+import { advisorMarkdown, downloadAdvisorReport } from '@/components/solhandle/ai-advisor/advisorExport';
+export default function AIAdvisorReport({ analysis, onReset }) {
+ const r=analysis.report,[notice,setNotice]=useState('');
+ async function copy(value){try{await navigator.clipboard.writeText(value);setNotice('Copied. Keep recovery links private.');}catch{setNotice('Copy is unavailable in this browser. Use the report download instead.');}}
+ return <article className="advisor-report"><p className="ep-eyebrow">{analysis.status==='partial'?'PARTIAL RESEARCH':'ANALYSIS COMPLETE'} · NOT INTEGRATION VERIFIED</p><h2>{r.project_name}</h2><p><a href={analysis.website} rel="noopener noreferrer nofollow" target="_blank">{analysis.website}</a></p><p className="advisor-muted">Independent AI analysis. Project ownership has not been established. Source citations are AI-reported, not an independent audit. No generated implementation has been executed or Mainnet verified.</p>
+ <div className="advisor-actions"><button className="ep-link" onClick={()=>downloadAdvisorReport(analysis,'pdf')}>Download PDF</button><button className="ep-link" onClick={()=>downloadAdvisorReport(analysis,'md')}>Export Markdown</button><button className="ep-link" onClick={()=>copy(advisorMarkdown(analysis))}>Copy report</button><button className="ep-link" onClick={()=>copy(window.location.href)}>Copy private recovery link</button><button className="ep-link" onClick={onReset}>New analysis</button></div><p role="status" className="advisor-muted">{notice}</p>
+ <section><h3>Project understanding</h3><p>{r.summary}</p><p><strong>Audience:</strong> {r.audience}</p><p><strong>Categories:</strong> {r.categories.join(', ')||'Unknown'}</p><p><strong>Technology:</strong> {r.technology_stack.join(', ')||'Not established from public evidence.'}</p></section>
+ <section><h3>What AI discovered</h3><ul>{r.findings.map((f,i)=><li key={i}>{f.claim} <small className="advisor-muted">({f.certainty}) </small>{f.source_indexes.map(n=><a key={n} href={r.sources[n].url} target="_blank" rel="noopener noreferrer nofollow">[{n+1}] </a>)}</li>)}</ul></section>
+ {r.unknowns.length>0&&<section><h3>Unknowns to clarify</h3><ul>{r.unknowns.map((v,i)=><li key={i}>{v}</li>)}</ul></section>}
+ {r.limitations.length>0&&<section><h3>Research limitations</h3><ul>{r.limitations.map((v,i)=><li key={i}>{v}</li>)}</ul></section>}
+ <section><h3>Your integration opportunities</h3>{r.no_fit_reason&&<p>{r.no_fit_reason}</p>}{r.opportunities.map((o,i)=><AIAdvisorOpportunity key={i} item={o} sources={r.sources}/>)}{!r.opportunities.length&&!r.no_fit_reason&&<p>No evidence-backed integration opportunity was found.</p>}</section>
+ <section><h3>Start building</h3><ol>{r.next_actions.map((v,i)=><li key={i}>{v}</li>)}</ol><div className="advisor-links"><Link to="/developers">Official SDK</Link><Link to="/integrations">Integration guides</Link><Link to="/integrate">Request technical review</Link></div></section>
+ <section><h3>Research references</h3><ol>{r.sources.map((s,i)=><li key={i}><a href={s.url} target="_blank" rel="noopener noreferrer nofollow">{s.title}</a><p>{s.evidence}</p></li>)}</ol></section>
+ <p className="advisor-muted">Knowledge: {analysis.knowledge_version} · Prepared {new Date(analysis.completed_at).toLocaleString()} · Recovery access expires {new Date(analysis.expires_at).toLocaleDateString()}. This is not a partnership announcement or ownership certificate.</p></article>;
+}
