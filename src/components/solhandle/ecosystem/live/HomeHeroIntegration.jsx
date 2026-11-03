@@ -8,7 +8,7 @@ export default function HomeHeroIntegration() {
     const website = new FormData(event.currentTarget).get('website').trim();
     navigate(`/integrate/ai?${new URLSearchParams({ website })}`);
   }
-  return <section className="el-hero-entry" aria-labelledby="hero-integration-heading">
+  return <section className="el-hero-entry el-hero-entry-project" aria-labelledby="hero-integration-heading">
     <div className="el-hero-entry-audience"><Code2 size={18}/><span>FOR PROJECTS & DEVELOPERS</span></div>
     <h2 id="hero-integration-heading">Bring @handles to your project</h2>
     <p>Your website. A tailored integration plan.</p>
