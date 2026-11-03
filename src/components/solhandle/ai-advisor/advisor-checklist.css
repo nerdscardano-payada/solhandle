@@ -1,0 +1,10 @@
+.ai-advisor .advisor-checklist{padding-top:24px;border-top:1px solid var(--eco-border)}
+.ai-advisor .advisor-checklist-progress{display:block;width:100%;height:8px;accent-color:var(--eco-cyan)}
+.ai-advisor .advisor-checklist-group{margin-top:24px}
+.ai-advisor .advisor-checklist .advisor-checklist-items{list-style:none;margin:12px 0;padding:0;display:grid;gap:8px}
+.ai-advisor .advisor-checklist-items li{margin:0}
+.ai-advisor .advisor-checklist-item{display:flex;align-items:flex-start;gap:12px;min-height:44px;padding:12px;border:1px solid var(--eco-border);border-radius:9px;background:var(--eco-sidebar);cursor:pointer}
+.ai-advisor .advisor-checklist-item>span{min-width:0;overflow-wrap:anywhere}
+.ai-advisor .advisor-checklist-item small{display:block;color:var(--eco-muted);margin-bottom:4px}
+.ai-advisor .advisor-checklist-item input[type=checkbox]{appearance:auto;accent-color:var(--eco-cyan);padding:0;width:20px;height:20px;min-height:20px;flex:none;margin-top:3px}
+.ai-advisor .advisor-checklist-done{color:var(--eco-muted);text-decoration:line-through}
