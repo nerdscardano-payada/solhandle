@@ -28,7 +28,7 @@
  .eco-live .el-hero-entries{gap:44px;max-width:1080px}
  .eco-live .el-hero-entry{padding:0;border:0;border-radius:0;background:none;box-shadow:none;gap:10px}
  .eco-live .el-hero-entry-project{position:relative;isolation:isolate}
- .eco-live .el-hero-entry-project::before{content:'';position:absolute;inset:-20px;z-index:-1;pointer-events:none;border-radius:24px;background:var(--eco-canvas);opacity:.60;filter:blur(18px)}
+ .eco-live .el-hero-entry-project::before{content:'';position:absolute;inset:-20px;z-index:-1;pointer-events:none;border-radius:48px;background:var(--eco-canvas);opacity:.60;filter:blur(24px)}
  .eco-live .el-hero-entry h2{font-size:clamp(23px,2.15vw,29px)}
  .eco-live .el-hero-entry-context{min-height:40px}
  .eco-preview.eco-live .el-dual-hero .el-hero-entry .ep-claim-search{background:color-mix(in srgb,var(--eco-sidebar) 72%,transparent);border-color:color-mix(in srgb,var(--eco-cyan) 30%,var(--eco-border))}
