@@ -9,7 +9,7 @@ export default function HomeHeroIntegration() {
     navigate(`/integrate/ai?${new URLSearchParams({ website })}`);
   }
   return <section className="el-hero-entry el-hero-entry-project" aria-labelledby="hero-integration-heading">
-    <div className="el-hero-entry-audience"><Code2 size={18}/><span>FOR PROJECTS & DEVELOPERS</span></div>
+    <div className="el-hero-entry-audience flex-wrap"><Code2 size={18}/><span>FOR PROJECTS & DEVELOPERS</span><span className="inline-flex items-center gap-2 rounded-full border border-ecosystem-cyan bg-ecosystem-raised px-3 py-1 font-bold text-ecosystem-cyan"><span aria-hidden="true">✦</span> AI POWERED</span></div>
     <h2 id="hero-integration-heading">Bring @handles to your project</h2>
     <p>Your website. A tailored integration plan.</p>
     <div className="el-hero-entry-context"><code>@ansem → wallet address</code><span>Handle lookup · Identity labels · SOL recipients</span></div>
