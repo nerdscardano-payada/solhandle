@@ -73,6 +73,7 @@ const Integrations = lazy(() => import('@/pages/Integrations'));
 const Integrate = lazy(() => import('@/pages/Integrate'));
 const AIIntegrationAdvisor = lazy(() => import('@/pages/AIIntegrationAdvisor'));
 const AdminIntegrations = lazy(() => import('@/pages/AdminIntegrations'));
+const AdminAIAdvisor = lazy(() => import('@/pages/AdminAIAdvisor'));
 const LiveIntegrations = lazy(() => import('@/pages/LiveIntegrations'));
 const IntegrationGuide = lazy(() => import('@/pages/IntegrationGuide'));
 const ParallaxIntegration = lazy(() => import('@/pages/ParallaxIntegration'));
@@ -169,6 +170,7 @@ const AuthenticatedApp = () => {
                 <Route path="/admin/network-safety" element={<AdminNetworkSafety />} />
                 <Route path="/admin/growth" element={growthHubVisible ? <AdminGrowthHub /> : <Navigate to="/" replace />} />
                 <Route path="/admin/integrations" element={<AdminIntegrations />} />
+                <Route path="/admin/ai-advisor" element={<AdminAIAdvisor />} />
                 <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
                 <Route path="/admin/financials" element={<Financials />} />
                 <Route path="/admin/burn" element={<AdminBurn />} />
