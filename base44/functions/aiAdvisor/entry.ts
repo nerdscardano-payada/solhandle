@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 import { advisorHash, publicWebsite } from '../../shared/aiAdvisorContract.ts';
-import { advisorUnavailableOutcome } from '../../shared/aiAdvisorOutcome.ts';
+import { advisorResearchLimit } from '../../shared/aiAdvisorResearchLimit.ts';
 export default async function(req) {
  try {
   const base44=createClientFromRequest(req), body=await req.json().catch(()=>({}));
@@ -27,7 +27,10 @@ export default async function(req) {
   const message=stalled?'The background job has not finished within ten minutes. A diagnostic result is shown; a later completed report can still replace it.':request.message||'';
   const stage=status==='queued'?(message.startsWith('Checking the submission')?'submission':'queued'):message.startsWith('Checking source references')?'validation':message.startsWith('Preparing concrete integration')?'proposals':'research';
   const ready=analysis&&['completed','partial'].includes(analysis.status);
-  const outcome=ready?{website:analysis.website,status:analysis.status,report:analysis.report,knowledge_version:analysis.knowledge_version,prompt_version:analysis.prompt_version,completed_at:analysis.completed_at,expires_at:analysis.expires_at}:status==='failed'?advisorUnavailableOutcome(request,analysis,stalled?message:analysis?'The research attempt ended without a validated report. Product features and integration suitability remain unconfirmed.':message):null;
-  return Response.json({id:request.id,status,stage,message,analysis:outcome});
+  const limited=status==='failed'&&/research limit has been reached|research limit for this website has been reached/.test(message);
+  const limit=limited?await advisorResearchLimit(base44.asServiceRole.entities,request.website):null;
+  const outcome=ready?{website:analysis.website,status:analysis.status,report:analysis.report,knowledge_version:analysis.knowledge_version,prompt_version:analysis.prompt_version,completed_at:analysis.completed_at,expires_at:analysis.expires_at}:null;
+  const failureMessage=stalled?'The background job has not finished within ten minutes. No completed report is available yet. A later completed report can still appear.':limited?(limit?.message||'This request was blocked by the research limit. Capacity is available again; start a new analysis and complete the anti-spam check.'):message;
+  return Response.json({id:request.id,status,stage,message:failureMessage,error_code:limited?(limit?.code||'DAILY_LIMIT'):undefined,retry_after:limit?.retry_after||null,analysis:outcome});
  } catch(error) {console.error('Advisor request failed',error.message);return Response.json({error:'The analysis service is temporarily unavailable. Please try again.'},{status:500});}
 }

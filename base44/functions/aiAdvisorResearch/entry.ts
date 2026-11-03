@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 import { advisorUnavailableOutcome } from '../../shared/aiAdvisorOutcome.ts';
+import { advisorResearchLimit } from '../../shared/aiAdvisorResearchLimit.ts';
 import { publicWebsite } from '../../shared/aiAdvisorContract.ts';
 import { researchAdvisorProject, proposeAdvisorIntegrations } from '../../shared/aiAdvisorProjectResearch.ts';
 import { advisorKnowledge, advisorKnowledgeVersion, advisorPromptVersion } from '../../shared/aiAdvisorKnowledge.ts';
@@ -25,10 +26,12 @@ export default async function(req) {
   const appUrl=req.headers.get('x-base44-app-url');if(appUrl)hosts.push(new URL(appUrl).hostname);
   if(!human.success||human.action!=='ai_advisor'||!hosts.includes(human.hostname)) throw new Error('HUMAN_CHECK_FAILED');
   await db.AIAnalysisRequest.update(request.id,{human_token:''});
-  const since=new Date(Date.now()-86400000).toISOString();
-  const [daily,domain,existing]=await Promise.all([db.AIIntegrationAnalysis.count({created_date:{$gte:since}}),db.AIIntegrationAnalysis.count({website,created_date:{$gte:since}}),db.AIIntegrationAnalysis.count({request_id:request.id})]);
+  const [limit,existing]=await Promise.all([advisorResearchLimit(db,website),db.AIIntegrationAnalysis.count({request_id:request.id})]);
   if(existing) return Response.json({skipped:true});
-  if(daily>=20||domain>=2) throw new Error('DAILY_LIMIT');
+  if(limit) {
+   await db.AIAnalysisRequest.update(request.id,{status:'failed',message:limit.message,human_token:''});
+   return Response.json({status:'failed',error:limit.code,retry_after:limit.retry_after});
+  }
   analysis=await db.AIIntegrationAnalysis.create({request_id:request.id,website,status:'researching',knowledge_version:advisorKnowledgeVersion,prompt_version:advisorPromptVersion,started_at:new Date().toISOString(),expires_at:new Date(Date.now()+30*86400000).toISOString()});
   await db.AIAnalysisRequest.update(request.id,{status:'researching',message:'Researching the submitted project: product features, audience and public documentation.'});
   projectResearch=await researchAdvisorProject(base44,request,website);
