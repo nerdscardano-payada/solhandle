@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import { advisorExamples, advisorInstall } from '@/components/solhandle/ai-advisor/advisorExamples';
+import AdvisorCopyBlock from '@/components/solhandle/ai-advisor/AdvisorCopyBlock';
+import { advisorExamples, advisorInstall, advisorUsage } from '@/components/solhandle/ai-advisor/advisorExamples';
 export default function AIAdvisorCode({ capability, inline=false }) {
  const Container=inline?'div':'details';
- const [notice,setNotice]=useState('');
  const code=advisorExamples[capability];
- async function copy(){try{await navigator.clipboard.writeText(`${advisorInstall}\n\n${code}`);setNotice('Copied');}catch{setNotice('Select the code to copy it manually.');}}
- return <Container className="advisor-code">{inline?<h4>SDK code to adapt · not executed for this project</h4>:<summary>Official SDK example · not executed for this project</summary>}<p>JavaScript server-side example, not a ready-made patch for this platform. Keep private RPC credentials on your server and preserve your existing wallet connection and signing. Adapt loading and error states to your application; test with a real existing handle.</p><h4>Install the SDK</h4><pre><code>{advisorInstall}</code></pre><h4>Add the integration helper on your server</h4><pre><code>{code}</code></pre><button type="button" className="ep-link" onClick={copy}>Copy installation and code</button><span role="status">{notice}</span></Container>;
+ return <Container className="advisor-code">{inline?<h4>SDK code to adapt · not executed for this project</h4>:<summary>Official SDK example · not executed for this project</summary>}<p>JavaScript server-side example, not a ready-made patch for this platform. Keep private RPC credentials on your server and preserve your existing wallet connection and signing. Adapt loading and error states to your application; test with a real existing handle.</p><AdvisorCopyBlock label="1. Install the SDK" value={advisorInstall}/><AdvisorCopyBlock label="2. Add this server helper" value={code}/><p>Use the helper in your existing server handler as shown below. Supply your Mainnet RPC URL on the server. Connect your interface to that handler using your existing API; the input names below are placeholders to adapt, not a complete endpoint.</p><AdvisorCopyBlock label="3. Call it from your existing server flow" value={advisorUsage[capability]}/></Container>;
 }

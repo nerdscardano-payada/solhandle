@@ -44,6 +44,10 @@
 .eco-live .ai-advisor summary small{display:block;margin-top:6px;color:var(--eco-muted);font-size:12px;font-weight:400}
 .eco-live .ai-advisor h4{margin:16px 0 6px;font-size:15px;font-weight:650}
 .eco-live .ai-advisor .advisor-code{margin:18px 0}
+.eco-live .ai-advisor .advisor-copy-block{margin-top:14px}
+.eco-live .ai-advisor .advisor-copy-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.eco-live .ai-advisor .advisor-copy-heading h4{margin:0}
+.eco-live .ai-advisor .advisor-copy-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none;padding:6px 10px}
 .eco-live .ai-advisor pre{max-width:100%;overflow-x:auto;padding:14px;border-radius:10px;background:var(--eco-canvas);color:var(--eco-text);font-size:12px;line-height:1.6;white-space:pre}
 .eco-live .ai-advisor pre code{white-space:pre;overflow-wrap:normal}
 @media(max-width:767px){.eco-live .ai-advisor .advisor-content{padding:16px 0 28px}.eco-live .ai-advisor .advisor-hero{grid-template-columns:minmax(0,1fr);gap:22px}.eco-live .ai-advisor .advisor-hero-results li{grid-template-columns:minmax(0,1fr);gap:4px}.eco-live .ai-advisor .advisor-hero-visual{border-radius:14px}.eco-live .ai-advisor .advisor-form{grid-template-columns:minmax(0,1fr)}.eco-live .ai-advisor .advisor-panel,.eco-live .ai-advisor .advisor-report{padding:16px}.eco-live .ai-advisor .advisor-opportunity{padding:12px}.eco-live .ai-advisor .advisor-actions>*{flex:1 1 auto}}
