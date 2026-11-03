@@ -3,8 +3,9 @@ import { secrets } from 'base44:runtime';
 import { advisorUnavailableOutcome } from '../../shared/aiAdvisorOutcome.ts';
 import { advisorResearchLimit } from '../../shared/aiAdvisorResearchLimit.ts';
 import { publicWebsite } from '../../shared/aiAdvisorContract.ts';
-import { researchAdvisorProject, proposeAdvisorIntegrations } from '../../shared/aiAdvisorProjectResearch.ts';
-import { advisorKnowledge, advisorKnowledgeVersion, advisorPromptVersion } from '../../shared/aiAdvisorKnowledge.ts';
+import { researchAdvisorProject, validateProjectResearch } from '../../shared/aiAdvisorProjectResearch.ts';
+import { completeAdvisorProposals } from '../../shared/aiAdvisorCompletion.ts';
+import { advisorKnowledgeVersion, advisorPromptVersion } from '../../shared/aiAdvisorKnowledge.ts';
 export default async function(req) {
  let base44,request,analysis,projectResearch;
  try {
@@ -16,6 +17,17 @@ export default async function(req) {
   const db=base44.entities;
   request=await db.AIAnalysisRequest.get(body.request_id).catch(e=>e.status===404?null:Promise.reject(e));
   if(!request)return Response.json({error:'Request not found.'},{status:404});
+  if(body.action==='reassess_proposals') {
+   const page=await db.AIIntegrationAnalysis.filter({request_id:request.id},{sort:'-created_date',limit:1}),saved=page.items[0];
+   if(!saved||!['completed','partial'].includes(saved.status)||Date.parse(saved.expires_at)<=Date.now())return Response.json({error:'No retained research available.'},{status:409});
+   if(saved.prompt_version===advisorPromptVersion)return Response.json({skipped:true,reason:'Already assessed with the current instructions.'});
+   // Admin-only, once per instruction version. Reuse evidence; do not bypass public submission limits.
+   projectResearch=validateProjectResearch(saved.report,request.website);
+   analysis=saved;
+   await db.AIIntegrationAnalysis.update(analysis.id,{status:'researching',prompt_version:advisorPromptVersion});
+   await db.AIAnalysisRequest.update(request.id,{status:'researching'});
+   return Response.json(await completeAdvisorProposals(base44,request,analysis,projectResearch));
+  }
   if(request.status!=='queued') return Response.json({skipped:true});
   await db.AIAnalysisRequest.update(request.id,{message:'Checking the submission, anti-spam verification and research limits.'});
   const website=publicWebsite(request.website);
@@ -36,13 +48,7 @@ export default async function(req) {
   await db.AIAnalysisRequest.update(request.id,{status:'researching',message:'Researching the submitted project: product features, audience and public documentation.'});
   projectResearch=await researchAdvisorProject(base44,request,website);
   await db.AIIntegrationAnalysis.update(analysis.id,{report:projectResearch});
-  await db.AIAnalysisRequest.update(request.id,{message:'Preparing concrete integration proposals based on the researched project features.'});
-  const report=await proposeAdvisorIntegrations(base44,request,projectResearch);
-  await db.AIAnalysisRequest.update(request.id,{message:'Checking source references, evidence and integration recommendations.'});
-  const partial=!report.sources.length||report.limitations.length>0||report.findings.every(f=>f.certainty==='inference');
-  await db.AIIntegrationAnalysis.update(analysis.id,{status:partial?'partial':'completed',report,completed_at:new Date().toISOString()});
-  await db.AIAnalysisRequest.update(request.id,{status:partial?'partial':'completed',message:partial?'Research returned partial findings. Review the documented limitations.':'Research report ready. No integration has been tested or officially verified.'});
-  return Response.json({status:partial?'partial':'completed',opportunities:report.opportunities.length});
+  return Response.json(await completeAdvisorProposals(base44,request,analysis,projectResearch));
  } catch(error) {
   console.error('Advisor research failed',error.message);
   const known=['HUMAN_CHECK_FAILED','HUMAN_CHECK_UNAVAILABLE','INVALID_SUBMISSION','DAILY_LIMIT'];

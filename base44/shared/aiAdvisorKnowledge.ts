@@ -1,5 +1,5 @@
 export const advisorKnowledgeVersion='solhandle-mainnet-v2-review-2026-11-03';
-export const advisorPromptVersion='project-first-proposals-2';
+export const advisorPromptVersion='project-first-product-fit-3';
 export const advisorKnowledge={
   version:advisorKnowledgeVersion,validated:'2026-11-03',
   sources:[{title:'Published developer guide',url:'https://solhandle.io/developers'},{title:'Integration product guides',url:'https://solhandle.io/integrations'},{title:'Protocol documentation',url:'https://solhandle.io/docs'},{title:'Protocol paper',url:'https://solhandle.io/protocol-paper'},{title:'SDK source reviewed',path:'src/lib/solhandle-sdk/index.js',version:'1.1.0 local source; npm published resolution release 1.0.1'}],
