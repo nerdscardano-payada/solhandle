@@ -12,7 +12,7 @@ export default function AIAdvisorReport({ analysis, onReset, resetLabel = 'New a
  {r.unknowns.length>0&&<section><h3>Unknowns to clarify</h3><ul>{r.unknowns.map((v,i)=><li key={i}>{v}</li>)}</ul></section>}
  {r.limitations.length>0&&<section><h3>Research limitations</h3><ul>{r.limitations.map((v,i)=><li key={i}>{v}</li>)}</ul></section>}
  <section><h3>Your integration opportunities</h3>{r.no_fit_reason&&<p>{r.no_fit_reason}</p>}{r.opportunities.map((o,i)=><AIAdvisorOpportunity key={i} item={o} sources={r.sources}/>)}{!r.opportunities.length&&!r.no_fit_reason&&<p>No evidence-backed integration opportunity was found.</p>}</section>
- <section><h3>Start building</h3><ol>{r.next_actions.map((v,i)=><li key={i}>{v}</li>)}</ol><div className="advisor-links"><Link to="/developers">Official SDK</Link><Link to="/integrations">Integration guides</Link><Link to="/integrate">Request technical review</Link></div></section>
+ <section><h3>{r.opportunities.length?'Start building':'Next steps'}</h3><ol>{r.next_actions.map((v,i)=><li key={i}>{v}</li>)}</ol><div className="advisor-links"><Link to="/developers">Official SDK</Link><Link to="/integrations">Integration guides</Link><Link to="/integrate">Request technical review</Link></div></section>
  <section><h3>Research references</h3><ol>{r.sources.map((s,i)=><li key={i}><a href={s.url} target="_blank" rel="noopener noreferrer nofollow">{s.title}</a><p>{s.evidence}</p></li>)}</ol></section>
  <p className="advisor-muted">Knowledge: {analysis.knowledge_version} · Prepared {new Date(analysis.completed_at).toLocaleString()} · Recovery access expires {new Date(analysis.expires_at).toLocaleDateString()}. This is not a partnership announcement or ownership certificate.</p></article>;
 }

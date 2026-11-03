@@ -1,11 +1,12 @@
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
 const steps=[
  ['Submission checks','Validate the public website address, anti-spam check and research limits.'],
- ['Public research & integration assessment','AI looks for product pages and documentation, identifies actual features and audience, and assesses @handle resolution, wallet labels and SOL recipient checks.'],
+ ['Project research','AI first researches the submitted website, product features, audience and public documentation.'],
+ ['Concrete integration proposals','Only after project research, AI assesses where, why and how SolHandle can improve existing project features.'],
  ['Evidence & report checks','Check the report format and source references, remove unsupported recommendations and rank the remaining opportunities.']
 ];
 export default function AIAdvisorResearchSteps({ stage }) {
- const current=stage==='queued'?-1:stage==='validation'?2:stage==='research'?1:0;
+ const current=stage==='queued'?-1:stage==='validation'?3:stage==='proposals'?2:stage==='research'?1:0;
  return <ol className="advisor-research-steps" aria-label="Research stages">{steps.map(([title,description],i)=>{
  const done=i<current,active=i===current;
  const Icon=done?CheckCircle2:active?Loader2:Circle;

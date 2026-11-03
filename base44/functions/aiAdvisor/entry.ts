@@ -25,7 +25,7 @@ export default async function(req) {
   const stalled=['queued','researching'].includes(analysis?.status||request.status)&&Date.parse(analysis?.started_at||request.created_date)<Date.now()-10*60000;
   const status=stalled?'failed':analysis?.status||request.status;
   const message=stalled?'The background job has not finished within ten minutes. A diagnostic result is shown; a later completed report can still replace it.':request.message||'';
-  const stage=status==='queued'?(message.startsWith('Checking the submission')?'submission':'queued'):message.startsWith('Checking source references')?'validation':'research';
+  const stage=status==='queued'?(message.startsWith('Checking the submission')?'submission':'queued'):message.startsWith('Checking source references')?'validation':message.startsWith('Preparing concrete integration')?'proposals':'research';
   const ready=analysis&&['completed','partial'].includes(analysis.status);
   const outcome=ready?{website:analysis.website,status:analysis.status,report:analysis.report,knowledge_version:analysis.knowledge_version,prompt_version:analysis.prompt_version,completed_at:analysis.completed_at,expires_at:analysis.expires_at}:status==='failed'?advisorUnavailableOutcome(request,analysis,stalled?message:analysis?'The research attempt ended without a validated report. Product features and integration suitability remain unconfirmed.':message):null;
   return Response.json({id:request.id,status,stage,message,analysis:outcome});
