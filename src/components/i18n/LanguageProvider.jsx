@@ -25,7 +25,8 @@ export const useLanguage = () => useContext(LanguageContext);
 export default function LanguageProvider({ children }) {
   const [language, updateLanguage] = useState(() => {
     const saved = localStorage.getItem('solhandle_language');
-    return languages.some(([code]) => code === saved) ? saved : 'en';
+    const usesEnglishDefault = localStorage.getItem('solhandle_language_default') === 'en-v1';
+    return usesEnglishDefault && languages.some(([code]) => code === saved) ? saved : 'en';
   });
   const [loaded, setLoaded] = useState({ language: 'en', texts: emptyTranslations });
   const demoTexts = language === 'en' ? emptyTranslations : demoLocales[`/demo-locales/${language}.json`] || emptyTranslations;
@@ -50,6 +51,7 @@ export default function LanguageProvider({ children }) {
   }, [language]);
   useEffect(() => {
     localStorage.setItem('solhandle_language', language);
+    localStorage.setItem('solhandle_language_default', 'en-v1');
     document.documentElement.lang = language;
   }, [language]);
   const t = text => { const demoText = translateDemo(text, true); return demoText !== text ? demoText : androidTranslations[language]?.[text] || bannerHeroTranslations[language]?.[text] || pageTranslations[language]?.[text] || homeStatusTranslations[language]?.[text] || homeTranslations[language]?.[text] || coreTranslations[language]?.[text] || translations[language]?.[text] || staticTranslations[text] || translatePay(text); };
