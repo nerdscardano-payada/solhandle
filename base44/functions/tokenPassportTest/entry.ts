@@ -6,6 +6,7 @@ import { passportInput, passportOwner, issuePassportChallenge, savePassportAssoc
 import { resolveOnChain } from '../../shared/solhandleResolver.ts';
 import { passportTestPage, passportEvidenceCsv } from '../../shared/tokenPassportTestQueries.ts';
 import { passportPublication } from '../../shared/tokenIdentityPublication.ts';
+import { passportTokenLogo } from '../../shared/passportTokenLogo.ts';
 export default async function(req) {
   const headers={'Cache-Control':'no-store'};
   try {
@@ -38,7 +39,8 @@ export default async function(req) {
     if(action==='inspect') {
       let current=null,ownership='unavailable';
       try {current=await resolveOnChain(url,item.handle);ownership=current?.address===item.wallet&&current.assetAddress===item.asset?'observed':'historical';} catch {ownership='unavailable';}
-      return Response.json({item,history:registry.history.filter(row=>row.association_id===item.id),ownership,checked_at:new Date().toISOString(),preview_available:item.status==='approved'&&ownership==='observed',environment:'ADMIN_TEST'},{headers});
+      const token_logo=await passportTokenLogo(url,item.mint);
+      return Response.json({item,token_logo,history:registry.history.filter(row=>row.association_id===item.id),ownership,checked_at:new Date().toISOString(),preview_available:item.status==='approved'&&ownership==='observed',environment:'ADMIN_TEST'},{headers});
     }
     if(!['approved','rejected','suspended'].includes(body.status)||typeof body.reason!=='string'||body.reason.trim().length<5||body.reason.length>300||!Number.isInteger(body.revision)) return Response.json({error:'Choose a decision and give a reason of 5–300 characters.'},{status:400,headers});
     if(item.revision!==body.revision) throw passportFailure('This registration changed. Reload before reviewing.',409);
