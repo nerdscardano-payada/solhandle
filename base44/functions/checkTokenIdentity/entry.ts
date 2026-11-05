@@ -7,12 +7,12 @@ const cache=new Map();
 export default async function(req) {
   const headers={'Cache-Control':'no-store'};
   try {
-    if(req.method!=='POST')return Response.json({error:'Gebruik POST.'},{status:405,headers});
+    if(req.method!=='POST')return Response.json({error:'Use POST.'},{status:405,headers});
     const raw=await req.text();
-    if(raw.length>200)return Response.json({error:'Aanvraag te groot.'},{status:413,headers});
-    let body;try{body=JSON.parse(raw);}catch{return Response.json({error:'Ongeldige aanvraag.'},{status:400,headers});}
-    if(!body||typeof body.mint!=='string')return Response.json({error:'Vul een Solana-tokenadres in.'},{status:400,headers});
-    let mint;try{mint=passportAddress(body.mint.trim());}catch{return Response.json({error:'Vul een geldig Solana-adres in.'},{status:400,headers});}
+    if(raw.length>200)return Response.json({error:'Request too large.'},{status:413,headers});
+    let body;try{body=JSON.parse(raw);}catch{return Response.json({error:'Invalid request.'},{status:400,headers});}
+    if(!body||typeof body.mint!=='string')return Response.json({error:'Enter a Solana token address.'},{status:400,headers});
+    let mint;try{mint=passportAddress(body.mint.trim());}catch{return Response.json({error:'Enter a valid Solana address.'},{status:400,headers});}
     const client=createClientFromRequest(req);
     // Intentionally public, user-scoped reads of the public projection only. Never reads the private test register.
     const binding=await publicIdentityRows(client.entities,mint);
@@ -23,6 +23,6 @@ export default async function(req) {
     cache.set(key,{at:Date.now(),result});
     return Response.json({...result,cached:false},{headers});
   } catch(error) {
-    return Response.json({error:error.status===409?'Meerdere koppelingen gevonden. Een beheerder moet dit nakijken.':'Tokencontrole tijdelijk niet beschikbaar. Probeer later opnieuw.'},{status:error.status===409?409:503,headers});
+    return Response.json({error:error.status===409?'Multiple associations found. An administrator needs to review this.':'Token check temporarily unavailable. Please try again later.'},{status:error.status===409?409:503,headers});
   }
 }

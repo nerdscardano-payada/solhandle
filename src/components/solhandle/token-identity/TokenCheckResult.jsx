@@ -2,28 +2,28 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Image } from '@/components/ui/image';
 const states={
-  ACTIVE:['Koppeling actueel bevestigd','De ondertekenende wallet bezit deze officiële handle bij deze controle.'],
-  NOT_REGISTERED:['Geen openbare koppeling','Dit tokenadres bestaat, maar heeft geen openbare SolHandle-koppeling. Dit betekent niet dat het token onveilig is.'],
-  OWNERSHIP_CHANGED:['Koppeling niet meer actueel','Het actuele handle-eigendom komt niet meer overeen met de gepubliceerde koppeling, of de handle bestaat niet meer.'],
-  WITHDRAWN:['Koppeling ingetrokken','Deze koppeling is ingetrokken. Er wordt geen actuele relatie bevestigd.'],
-  UNAVAILABLE:['Controle tijdelijk niet mogelijk','De blockchaincontrole kon niet worden afgerond. Een eerdere bevestiging is geen actuele bevestiging.'],
-  NOT_TOKEN:['Geen ondersteund tokenadres','Dit adres is geen geïnitialiseerd SPL- of Token-2022-tokenmint op Solana Mainnet.']
+  ACTIVE:['Association currently confirmed','The signing wallet owns this official handle at the time of this check.'],
+  NOT_REGISTERED:['No public association','This token address exists, but has no public SolHandle association. This does not mean the token is unsafe.'],
+  OWNERSHIP_CHANGED:['Association no longer current','Current handle ownership no longer matches the published association, or the handle no longer exists.'],
+  WITHDRAWN:['Association withdrawn','This association has been withdrawn. No current relationship is confirmed.'],
+  UNAVAILABLE:['Check temporarily unavailable','The blockchain check could not be completed. A previous confirmation is not a current confirmation.'],
+  NOT_TOKEN:['Unsupported token address','This address is not an initialized SPL or Token-2022 token mint on Solana Mainnet.']
 };
-const date=value=>value?new Date(value).toLocaleString('nl-BE',{dateStyle:'medium',timeStyle:'long'}):'Niet beschikbaar';
+const date=value=>value?new Date(value).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'long'}):'Unavailable';
 export default function TokenCheckResult({result}) {
   const [label,description]=states[result.status],binding=result.binding;
   const [failedLogo,setFailedLogo]=useState(null);
   const logo=result.token?.logo,showLogo=logo&&failedLogo!==logo;
-  return <article className="token-check-result" data-status={result.status} aria-live="polite"><span className="ep-eyebrow">RESULTAAT · SOLANA MAINNET</span><h2>{label}</h2><p>{description}</p>
-    {result.token&&<div className="token-check-identity"><div className="token-check-logo">{showLogo?<Image key={logo} src={logo} alt={`Logo van ${result.token.name||result.token.symbol||'het token'}`} fittingType="fit" className="h-full w-full object-contain" referrerPolicy="no-referrer" onError={()=>setFailedLogo(logo)}/>:<span aria-hidden="true">{(result.token.symbol||result.token.name||'T').slice(0,2).toUpperCase()}</span>}</div><p><strong>{result.token.name||'Naam niet beschikbaar'}</strong>{result.token.symbol&&` · $${result.token.symbol}`}</p></div>}
-    <dl><div><dt>Exact gecontroleerd tokenadres</dt><dd className="select-text">{result.mint}</dd></div>
-    {binding&&<><div><dt>Gepubliceerde handle</dt><dd><Link to={`/profile/${binding.handle}`}>@{binding.handle}</Link></dd></div><div><dt>Ondertekenende wallet</dt><dd className="select-text">{binding.wallet}</dd></div><div><dt>Gepubliceerd op</dt><dd>{date(binding.published_at)}</dd></div></>}
-    <div><dt>Laatste afgeronde blockchaincontrole</dt><dd>{date(result.checked_at)}</dd></div>
-    {binding&&<div><dt>Laatste bevestiging van de koppeling</dt><dd>{date(result.last_verified_at)}</dd></div>}
-    {binding?.withdrawn_at&&<div><dt>Ingetrokken op</dt><dd>{date(binding.withdrawn_at)}</dd></div>}
-    <div><dt>Opgevraagd op</dt><dd>{date(result.attempted_at)}</dd></div></dl>
-    {result.cached&&<p className="ep-small">Resultaat uit kort geheugen, maximaal 30 seconden oud; bovenstaande controledatum blijft leidend.</p>}
-    {result.status==='WITHDRAWN'&&<p className="ep-small">Bij een ingetrokken koppeling wordt geen nieuwe eigendomscontrole uitgevoerd.</p>}
-    <a className="ep-link" href={`https://explorer.solana.com/address/${result.mint}`} target="_blank" rel="noopener noreferrer">Bekijk het adres op Solana Explorer</a>
+  return <article className="token-check-result" data-status={result.status} aria-live="polite"><span className="ep-eyebrow">RESULT · SOLANA MAINNET</span><h2>{label}</h2><p>{description}</p>
+    {result.token&&<div className="token-check-identity"><div className="token-check-logo">{showLogo?<Image key={logo} src={logo} alt={`Logo of ${result.token.name||result.token.symbol||'the token'}`} fittingType="fit" className="h-full w-full object-contain" referrerPolicy="no-referrer" onError={()=>setFailedLogo(logo)}/>:<span aria-hidden="true">{(result.token.symbol||result.token.name||'T').slice(0,2).toUpperCase()}</span>}</div><p><strong>{result.token.name||'Name unavailable'}</strong>{result.token.symbol&&` · $${result.token.symbol}`}</p></div>}
+    <dl><div><dt>Exact token address checked</dt><dd className="select-text">{result.mint}</dd></div>
+    {binding&&<><div><dt>Published handle</dt><dd><Link to={`/profile/${binding.handle}`}>@{binding.handle}</Link></dd></div><div><dt>Signing wallet</dt><dd className="select-text">{binding.wallet}</dd></div><div><dt>Published on</dt><dd>{date(binding.published_at)}</dd></div></>}
+    <div><dt>Last completed blockchain check</dt><dd>{date(result.checked_at)}</dd></div>
+    {binding&&<div><dt>Last association confirmation</dt><dd>{date(result.last_verified_at)}</dd></div>}
+    {binding?.withdrawn_at&&<div><dt>Withdrawn on</dt><dd>{date(binding.withdrawn_at)}</dd></div>}
+    <div><dt>Requested on</dt><dd>{date(result.attempted_at)}</dd></div></dl>
+    {result.cached&&<p className="ep-small">Cached result, no more than 30 seconds old; the check time above remains authoritative.</p>}
+    {result.status==='WITHDRAWN'&&<p className="ep-small">No new ownership check is performed for a withdrawn association.</p>}
+    <a className="ep-link" href={`https://explorer.solana.com/address/${result.mint}`} target="_blank" rel="noopener noreferrer">View address on Solana Explorer</a>
   </article>;
 }

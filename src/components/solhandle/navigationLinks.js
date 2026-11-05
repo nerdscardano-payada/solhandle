@@ -10,7 +10,7 @@ export const developerLinks = [['Demo Lab', '/demos'], ['Integrate SolHandle', '
 export const legalLinks = [['Legal notice & disclaimer', '/legal'], ['Privacy policy', '/privacy']];
 export const communityLinks = [['X · @Solhandle', 'https://x.com/Solhandle'], ['Discord · Join the community', 'https://discord.gg/xYbZ9Gb5Jx']];
 export const mobileGroups = [
-  ['Use SolHandle', [['SolHandle Network', '/network'], ['Pay', '/pay'], ['Tokencontrole', '/token-check'], ['Android app', '/android'], ['Live integrations', '/live-integrations']]],
+  ['Use SolHandle', [['SolHandle Network', '/network'], ['Pay', '/pay'], ['Token check', '/token-check'], ['Android app', '/android'], ['Live integrations', '/live-integrations']]],
   ['Discover names', [['Premium Directory', '/directory'], ['Handle Wheel', '/fun']]],
   ['$HANDLE & Growth', tokenLinks],
   ['Developers', developerLinks],
@@ -18,7 +18,7 @@ export const mobileGroups = [
   ['Legal', legalLinks],
 ];
 export const footerGroups = [
-  ['Use SolHandle', [['SolHandle Network', '/network'], ['Search handles', '/search'], ['Discover names', '/names'], ['On sale · external', '/names?tab=for-sale'], ['My Handles', '/my-handles'], ['Pay', '/pay'], ['Tokencontrole', '/token-check'], ['Android app', '/android'], ['Live integrations', '/live-integrations']]],
+  ['Use SolHandle', [['SolHandle Network', '/network'], ['Search handles', '/search'], ['Discover names', '/names'], ['On sale · external', '/names?tab=for-sale'], ['My Handles', '/my-handles'], ['Pay', '/pay'], ['Token check', '/token-check'], ['Android app', '/android'], ['Live integrations', '/live-integrations']]],
   ['$HANDLE & Growth', tokenLinks],
   ['Developers', developerLinks],
   ['About & Support', aboutLinks],
