@@ -44,3 +44,15 @@ These remain the next phases, rather than shipping incomplete or publicly expose
 ## Acceptance still required
 
 Backend deployment checks and frontend compilation are engineering checks, NOT end-to-end or security acceptance. No real wallet is signed or transaction submitted by the builder. Browser/wallet acceptance must cover valid signature, tampered payload, expired/reused proof, wallet switch mid-sign, simultaneous duplicate submits, review-version conflict, transfer, chain outage, non-admin denial, metadata absence and table/export operations. Use the Testing Agent for functional browser acceptance; independent crypto/security review remains separate. No public release until those checks and the public-access design are complete.
+
+## Engineering checks performed in this implementation turn
+
+- Frontend targeted lint and production build commands completed with exit code 0; an existing outdated Browserslist-data warning remains.
+- Admin list returned 200 with zero real registrations and computed zero counts, without seeded mock associations.
+- Read-only lookup of the existing canonical $HANDLE mint returned 200, Token-2022 on-mint metadata, six decimals and the raw supply string. No external URI was fetched.
+- Invalid mint input returned 400 before chain lookup.
+- Reviewing a nonexistent association returned 404 and did not mutate storage.
+- Empty evidence export returned a CSV header with no invented records.
+- A Mainnet genesis comparison initially used the shorter CAIP reference; this was corrected to the full genesis hash, then the token lookup succeeded.
+
+These are narrow implementation checks under the builder's administrator context. Anonymous/regular-user runtime denial, signed wallet creation, concurrent mutations, NFT transfers and browser interactions have not been acceptance-tested. No security clearance or live-production release is implied.

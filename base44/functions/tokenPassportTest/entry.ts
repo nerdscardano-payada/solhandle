@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { secrets } from 'base44:runtime';
 import { readPassportTest, changePassportTest, passportFailure, passportEvent, passportItem } from '../../shared/tokenPassportTestStore.ts';
-import { assertPassportMainnet, passportToken } from '../../shared/tokenPassportMetadata.ts';
+import { assertPassportMainnet, passportToken, passportAddress } from '../../shared/tokenPassportMetadata.ts';
 import { passportInput, passportOwner, issuePassportChallenge, savePassportAssociation } from '../../shared/tokenPassportTestProof.ts';
 import { resolveOnChain } from '../../shared/solhandleResolver.ts';
 import { passportTestPage, passportEvidenceCsv } from '../../shared/tokenPassportTestQueries.ts';
@@ -22,6 +22,9 @@ export default async function(req) {
     const registry=await readPassportTest(db);
     if(action==='list') return Response.json(passportTestPage(registry,body),{headers});
     if(action==='exportEvidence') return Response.json(passportEvidenceCsv(registry,body),{headers});
+    if(action==='lookup') passportAddress(body.mint);
+    if(action==='challenge'||action==='create') passportInput(body);
+    if(action==='inspect'||action==='review') passportItem(registry,body.id);
     const url=secrets.get('SOLANA_RPC_URL');
     await assertPassportMainnet(url);
     if(action==='lookup') return Response.json({token:await passportToken(url,body.mint)},{headers});

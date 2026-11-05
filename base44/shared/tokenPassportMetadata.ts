@@ -8,7 +8,7 @@ export function passportAddress(value) {
   catch { throw passportFailure('Enter a valid Solana address.'); }
 }
 export async function assertPassportMainnet(url) {
-  if (await rpc(url, 'getGenesisHash') !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp') throw passportFailure('The configured connection is not Solana Mainnet. Test registration is blocked.', 503);
+  if (await rpc(url, 'getGenesisHash') !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d') throw passportFailure('The configured connection is not Solana Mainnet. Test registration is blocked.', 503);
 }
 const clean = (value, max) => typeof value === 'string' ? value.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, max) : '';
 function readMetadata(encoded, mint) {
