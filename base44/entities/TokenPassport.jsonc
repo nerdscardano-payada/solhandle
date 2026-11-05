@@ -1,0 +1,122 @@
+{
+  "name": "TokenPassport",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string"
+    },
+    "pilot_id": {
+      "type": "string"
+    },
+    "enrollment_id": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "asset": {
+      "type": "string"
+    },
+    "mint": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "mainnet-beta"
+      ],
+      "enumColors": [
+        "blue"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "withdrawn"
+      ],
+      "enumColors": [
+        "green",
+        "gray"
+      ]
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "token": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "creator": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "message": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "proof_version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "key",
+    "pilot_id",
+    "enrollment_id",
+    "wallet",
+    "handle",
+    "asset",
+    "mint",
+    "network",
+    "status",
+    "checked_at",
+    "token",
+    "creator",
+    "message",
+    "signature",
+    "proof_version"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

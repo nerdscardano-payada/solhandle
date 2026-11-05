@@ -23,6 +23,7 @@ const EcosystemPreview = lazy(() => import('@/pages/EcosystemPreview'));
 const Ecosystem = lazy(() => import('@/pages/Ecosystem'));
 const EcosystemDiscover = lazy(() => import('@/pages/EcosystemDiscover'));
 const DiscoverSubmit = lazy(() => import('@/pages/DiscoverSubmit'));
+const TokenPassports = lazy(() => import('@/pages/TokenPassports'));
 const EcosystemLiveFrame = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemLiveFrame'));
 import { isEcosystemPath, isEcosystemInformationPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 const EcosystemInformationLayout = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemInformationLayout'));
@@ -161,6 +162,7 @@ const AuthenticatedApp = () => {
           <Route path="/ecosystem" element={<Ecosystem />} />
           <Route path="/discover" element={<EcosystemDiscover />} />
           <Route path="/discover/submit" element={<DiscoverSubmit />} />
+          <Route path="/token-passports" element={<TokenPassports />} />
           <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<Admin />} />

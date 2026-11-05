@@ -11,6 +11,7 @@ const links = [
   [ChartNoAxesCombined, 'Analytics', '/admin/analytics'],
   [Plug, 'Integration Pipeline', '/admin/integrations'],
   [Plug, 'AI Advisor', '/admin/ai-advisor'],
+  [FlaskConical, 'Token Passport pilot', '/admin/token-passports'],
   ...(growthHubVisible ? [[Trophy, 'Growth Hub', '/admin/growth']] : []),
   [FlaskConical, 'Mainnet Tests', '/admin/mainnet-tests'],
   [Landmark, 'Financials', '/admin/financials']
