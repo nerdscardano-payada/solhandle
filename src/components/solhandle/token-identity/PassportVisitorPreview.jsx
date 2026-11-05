@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import PassportCard from '@/components/solhandle/token-identity/PassportCard';
 export default function PassportVisitorPreview({data,open,onOpenChange}) {
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="passport-test-dialog"><DialogHeader><DialogTitle>How a visitor would see your passport</DialogTitle><DialogDescription>Display preview only. This passport is not public and this preview does not publish anything.</DialogDescription></DialogHeader><PassportCard data={data} visitor/>{!data.preview_available&&<p className="passport-test-error" role="status">This is a layout preview only: a current approved association has not been confirmed.</p>}</DialogContent></Dialog>;
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="passport-test-dialog"><DialogHeader><DialogTitle>How a visitor would see your passport</DialogTitle><DialogDescription>Display preview only. This preview does not publish or change any association.</DialogDescription></DialogHeader><PassportCard data={data} visitor/>{!data.preview_available&&<p className="passport-test-error" role="status">This is a layout preview only: a current approved association has not been confirmed.</p>}</DialogContent></Dialog>;
 }

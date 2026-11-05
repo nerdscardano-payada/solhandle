@@ -32,10 +32,10 @@ export default async function(req) {
       return Response.json(await memberRegistration(db,url,input.wallet,origin,body,user.id,'ADMIN'),{headers});
     }
     const item=await getPassport(db,body.id);
-    if(action==='history')return Response.json(await passportHistory(db,item.id,body.cursor),{headers});
+    if(action==='history')return Response.json(await passportHistory(db,item.id,body.cursor,item.last_event),{headers});
     if(action==='inspect') {
       await assertPassportMainnet(url);
-      const [detail,history]=await Promise.all([inspectPassport(url,item),passportHistory(db,item.id)]);
+      const [detail,history]=await Promise.all([inspectPassport(url,item),passportHistory(db,item.id,undefined,item.last_event)]);
       return Response.json({...detail,history:history.items,history_next_cursor:history.next_cursor,history_has_more:history.has_more},{headers});
     }
     if(action==='review') {

@@ -9,6 +9,7 @@ export async function memberRegistration(db,url,wallet,origin,body,operator=wall
   const input=passportInput(body);
   if(input.wallet!==wallet)throw passportFailure('The connected wallet changed. Unlock again.',403);
   if(body.action==='challenge') {
+    if(source==='MEMBER'&&await db.TokenPassportRegistration.count({wallet,created_at:{$gt:new Date(Date.now()-60000).toISOString()}})>=5)throw passportFailure('Please wait a minute before registering another association.',429);
     const owner=await passportOwner(url,input.handle,wallet);
     return memberPassportChallenge(wallet,origin,purpose,input,owner.assetAddress);
   }

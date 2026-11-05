@@ -17,9 +17,10 @@ export async function passportPage(db,body,wallet) {
   for(const row of grouped.rows){counts[row.status]=row.count;counts.all+=row.count;}
   return {...page,items,counts,total:filter==='all'?counts.all:counts[filter]};
 }
-export async function passportHistory(db,id,cursor) {
+export async function passportHistory(db,id,cursor,pending) {
   const page=await db.TokenPassportEvent.filter({association_id:id},{sort:'-at',limit:25,...passportCursor(cursor)});
-  return {items:page.items,next_cursor:page.next_cursor,has_more:page.has_more};
+  const items=!cursor&&pending&&!page.items.some(e=>e.event_key===pending.event_key)?[{...pending,id:pending.event_key},...page.items]:page.items;
+  return {items,next_cursor:page.next_cursor,has_more:page.has_more};
 }
 export async function passportExportPage(db,body) {
   const filter=body.filter||'all';

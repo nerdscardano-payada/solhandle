@@ -5,11 +5,11 @@ import '@/components/solhandle/token-identity/passport-card.css';
 const reviews={pending:'Pending review',approved:'Approved (test)',rejected:'Rejected',suspended:'Suspended'};
 export default function PassportCard({data,visitor=false}) {
   const {item,ownership,checked_at,preview_available,token_logo}=data;
-  const member=item.source==='MEMBER';
+  const member=item.source!=='LEGACY_TEST';
   const [failedLogo,setFailedLogo]=useState(null);
   const showLogo=token_logo&&failedLogo!==token_logo;
   const ownershipLabel=ownership==='observed'?'Original wallet owns the handle':ownership==='historical'?'Historical: handle has a different owner':'Current ownership not confirmed';
-  return <article className="token-passport-card" aria-label="Token Identity test passport">
+  return <article className="token-passport-card" aria-label="Token Identity Passport">
     <header className="token-passport-top"><div className="token-passport-brand"><Fingerprint size={26} aria-hidden="true"/><div><strong>SOLHANDLE</strong><span>TOKEN IDENTITY PASSPORT</span></div></div><span className="token-passport-private">{visitor?'PREVIEW':member?'REGISTRATION':'PRIVATE TEST'}</span></header>
     <div className="token-passport-identity"><div className="token-passport-monogram overflow-hidden">{showLogo?<Image key={token_logo} src={token_logo} alt={`Logo of ${item.token_name||item.token_symbol||'the token'}`} fittingType="fit" className="h-full w-full object-contain" referrerPolicy="no-referrer" onError={()=>setFailedLogo(token_logo)}/>:<span aria-hidden="true">{(item.token_symbol||item.token_name||'T').slice(0,2).toUpperCase()}</span>}</div><div><span className="token-passport-caption">TOKEN</span><h2>{item.token_name||'Name unavailable'}</h2><p>{item.token_symbol?'$'+item.token_symbol.replace(/^\$/,'').toUpperCase():'Symbol unavailable'} · Solana Mainnet</p></div></div>
     <div className="token-passport-binding"><Link2 size={22} aria-hidden="true"/><div><span className="token-passport-caption">WALLET-SIGNED ASSOCIATION</span><strong>@{item.handle}</strong></div><span className="token-passport-review" data-review={item.status}>{(visitor||member)&&item.status==='approved'?'Association reviewed':reviews[item.status]||item.status}</span></div>
