@@ -10,13 +10,15 @@ async function signingKey() {
 }
 export async function memberPassportChallenge(wallet, origin, purpose, input = null, asset = null) {
   const expires_at=new Date(Date.now()+(purpose==='access'?3600000:180000)).toISOString(), nonce=crypto.randomUUID();
-  const message=`SolHandle Token Passport ${purpose==='access'?'private wallet access':'private registration'}\nOrigin: ${origin}\nNetwork: mainnet-beta\nWallet: ${wallet}\nNonce: ${nonce}\nExpires: ${expires_at}\n${purpose==='access'?'Allow access to my own registrations for one hour. This does not create or publish an association.':`Handle: @${input.handle}\nHandle asset: ${asset}\nToken mint: ${input.mint}\nNote: ${JSON.stringify(input.note)}\nI submit this association for administrator review. It remains private until I give separate signed publication consent.`}\nNo payment or blockchain transaction. No proof of token creation, endorsement or safety.`;
+  const project=input?.flow==='PROJECT_V1';
+  const projectConsent=project?`Project website: ${input.project_website}\nProject evidence: ${input.project_evidence_url}\nI represent this token project and submit the evidence for manual project verification. I consent to automatic public display in SolHandle Discover after approval: token, handle, wallet, handle asset, project website and review/publication dates. My note, evidence link and review history remain private. For an application submitted within the signing window, this publication consent continues through review until I withdraw it.`:'';
+  const message=`SolHandle Token Passport ${purpose==='access'?'private wallet access':'private registration'}\nOrigin: ${origin}\nNetwork: mainnet-beta\nWallet: ${wallet}\nNonce: ${nonce}\nExpires: ${expires_at}\n${purpose==='access'?'Allow access to my own registrations for one hour. This does not create or publish an association.':`Handle: @${input.handle}\nHandle asset: ${asset}\nToken mint: ${input.mint}\nNote: ${JSON.stringify(input.note)}\n${project?projectConsent:'I submit this association for administrator review. It remains private until I give separate signed publication consent.'}`}\nNo payment or blockchain transaction. No proof of token creation, endorsement or safety.`;
   const payload=encode(JSON.stringify({scope:'SOLHANDLE_MEMBER_PASSPORT_V1',wallet,origin,purpose,input,asset,nonce,expires_at,message}));
   const mac=await crypto.subtle.sign('HMAC',await signingKey(),new TextEncoder().encode(payload));
   return {proof:payload+'.'+btoa(String.fromCharCode(...new Uint8Array(mac))),message,expires_at};
 }
 export async function verifyMemberPassport(proof, signature, origin, purpose) {
-  if(typeof proof!=='string'||proof.length>6000)throw passportFailure('Unlock Token Passport with your wallet first.',401);
+  if(typeof proof!=='string'||proof.length>10000)throw passportFailure('Unlock Token Passport with your wallet first.',401);
   let data;
   try {
     const parts=proof.split('.');

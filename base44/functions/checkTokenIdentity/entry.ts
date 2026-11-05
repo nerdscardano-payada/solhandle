@@ -4,14 +4,16 @@ import { passportAddress } from '../../shared/tokenPassportMetadata.ts';
 import { publicIdentityRows } from '../../shared/tokenIdentityPublication.ts';
 import { publicTokenCheck } from '../../shared/publicTokenCheck.ts';
 import { passportPublicAuthority } from '../../shared/passportPublicAuthority.ts';
+import { publicProjectPassports } from '../../shared/publicProjectPassports.ts';
 const cache=new Map();
 export default async function(req) {
   const headers={'Cache-Control':'no-store'};
   try {
     if(req.method!=='POST')return Response.json({error:'Use POST.'},{status:405,headers});
     const raw=await req.text();
-    if(raw.length>200)return Response.json({error:'Request too large.'},{status:413,headers});
+    if(raw.length>4500)return Response.json({error:'Request too large.'},{status:413,headers});
     let body;try{body=JSON.parse(raw);}catch{return Response.json({error:'Invalid request.'},{status:400,headers});}
+    if(body?.action==='directory')return Response.json(await publicProjectPassports(createClientFromRequest(req),body),{headers});
     if(!body||typeof body.mint!=='string')return Response.json({error:'Enter a Solana token address.'},{status:400,headers});
     let mint;try{mint=passportAddress(body.mint.trim());}catch{return Response.json({error:'Enter a valid Solana address.'},{status:400,headers});}
     const client=createClientFromRequest(req);
@@ -25,6 +27,7 @@ export default async function(req) {
     cache.set(key,{at:Date.now(),result});
     return Response.json({...result,cached:false},{headers});
   } catch(error) {
+    if(error.status===400)return Response.json({error:error.message},{status:400,headers});
     return Response.json({error:error.status===409?'Multiple associations found. An administrator needs to review this.':'Token check temporarily unavailable. Please try again later.'},{status:error.status===409?409:503,headers});
   }
 }

@@ -2,6 +2,8 @@ import { passportFailure } from './tokenPassportTestStore.ts';
 import { withPassportLock } from './passportLock.ts';
 import { getPassport, commitPassport } from './passportRegistrationStore.ts';
 import { passportOwner, checkPassportSignature } from './tokenPassportTestProof.ts';
+import { publicPassportData } from './projectPassportFlow.ts';
+import { passportTokenLogo } from './passportTokenLogo.ts';
 export async function publicIdentityRows(db, mint) {
   const page=await db.PublicTokenIdentity.filter({mint},{limit:2});
   if(page.items.length>1) throw passportFailure('Conflicting public records. Administrator review is required.',409);
@@ -10,20 +12,20 @@ export async function publicIdentityRows(db, mint) {
 export async function passportPublication(db,url,user,_registry,item,body,origin) {
   if(body.action==='publication') {
     const existing=await publicIdentityRows(db,item.mint);
-    return {publication:existing?.association_id===item.id?{status:item.public_active&&item.status==='approved'?existing.status:'WITHDRAWN',published_at:existing.published_at}:null};
+    return {auto_publish:item.flow==='PROJECT_V1'&&item.publication_opt_in===true,publication:existing?.association_id===item.id?{status:item.public_active&&item.status==='approved'?existing.status:'WITHDRAWN',published_at:existing.published_at}:null};
   }
   if(body.action!=='withdrawPublic')await passportOwner(url,item.handle,item.wallet,item.asset);
   return withPassportLock(db,item.mint,async guard=>{
     let live=await getPassport(db,item.id);
     const existing=await publicIdentityRows(db,item.mint);
     if(body.action==='withdrawPublic') {
-      if(existing?.association_id!==live.id)throw passportFailure('No public association found for this registration.',404);
-      await commitPassport(db,live,{public_active:false,publication_challenge:null},user.id,'public_withdrawn',guard);
-      await guard();
-      await db.PublicTokenIdentity.update(existing.id,{status:'WITHDRAWN',withdrawn_at:new Date().toISOString()});
+      if(existing?.association_id!==live.id&&!(live.flow==='PROJECT_V1'&&live.publication_opt_in))throw passportFailure('No public association or queued publication found for this registration.',404);
+      await commitPassport(db,live,{public_active:false,publication_opt_in:false,publication_challenge:null},user.id,'public_withdrawn',guard);
+      if(existing?.association_id===live.id){await guard();await db.PublicTokenIdentity.update(existing.id,{status:'WITHDRAWN',withdrawn_at:new Date().toISOString()});}
       return {status:'WITHDRAWN'};
     }
     if(live.status!=='approved')throw passportFailure('The association must be approved before requesting publication.',409);
+    if(live.flow==='PROJECT_V1'&&live.project_verification?.status!=='reviewed')throw passportFailure('Project verification is required before publication.',409);
     if(existing&&existing.association_id!==live.id)throw passportFailure('This token already has another public association. Administrator review is required.',409);
     if(body.action==='publishChallenge') {
       const now=Date.now(),windowStart=live.signature_window||0,count=now-windowStart<60000?(live.signature_count||0):0;
@@ -39,7 +41,7 @@ export async function passportPublication(db,url,user,_registry,item,body,origin
     await checkPassportSignature(proof,body.signature);
     if(proof.used&&(!live.public_active||live.public_consent?.challenge_key!==proof.key))throw passportFailure('Publication consent already used. Sign again.',401);
     if(!proof.used)live=await commitPassport(db,live,{public_active:true,publication_challenge:{...proof,used:true},public_consent:{challenge_key:proof.key,message:proof.message,signature:body.signature,signed_at:new Date().toISOString(),revision:live.revision}},user.id,'public_published',guard);
-    const signed_at=live.public_consent.signed_at,data={mint:live.mint,handle:live.handle,wallet:live.wallet,asset:live.asset,association_id:live.id,token_name:live.token_name||'',token_symbol:live.token_symbol||'',status:'ACTIVE',signed_at,published_at:signed_at,last_verified_at:new Date().toISOString(),withdrawn_at:null};
+    const data=publicPassportData(live,live.flow==='PROJECT_V1'?await passportTokenLogo(url,live.mint):null);
     await guard();
     if(existing)await db.PublicTokenIdentity.update(existing.id,data);else await db.PublicTokenIdentity.create(data);
     return {status:'ACTIVE'};

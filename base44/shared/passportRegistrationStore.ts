@@ -28,7 +28,13 @@ export async function insertPassport(db,item,guard) {
   if(existing.items.length>1)throw passportFailure('Conflicting registrations require administrator review.',409);
   if(existing.items.length) {
     if(existing.items[0].member_nonce===item.member_nonce)return {id:existing.items[0].registration_id};
-    throw passportFailure('This wallet already registered this token and handle. Open the existing registration.',409);
+    const live=passportRecord(existing.items[0]);
+    if(item.flow!=='PROJECT_V1'||live.public_active||live.flow==='PROJECT_V1'&&live.status==='pending'&&live.publication_opt_in)throw passportFailure('This token and handle already have an active application. Open the existing registration.',409);
+    await guard();
+    await flushPassportEvent(db,{...passportAudit(live,item.operator,'submission_archived'),evidence:{signature:live.signature,signed_message:live.signed_message,payload_hash:live.payload_hash,token:live.token,source:live.source,project_website:live.project_website,project_evidence_url:live.project_evidence_url,submission_consent:live.submission_consent?{scope:live.submission_consent.scope,signed_at:live.submission_consent.signed_at}:null,public_consent:live.public_consent?.message===live.signed_message?{...live.public_consent,message:undefined,signature:undefined}:live.public_consent,project_verification:live.project_verification}});
+    const {id,version,...replacement}=item;
+    await commitPassport(db,live,{...replacement,created_at:live.created_at,revision:live.revision+1,publication_challenge:null},item.operator,'project_application_submitted',guard);
+    return {id:live.id};
   }
   const event=passportAudit(item,item.operator,'signed_association_created');
   const {id,...data}=item;

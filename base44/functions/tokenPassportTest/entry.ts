@@ -16,7 +16,7 @@ export default async function(req) {
     if(!user) return Response.json({error:'Sign in as an administrator.'},{status:401,headers});
     if(user.role!=='admin') return Response.json({error:'This review workspace is administrator-only.'},{status:403,headers});
     const raw=await req.text();
-    if(raw.length>16000) return Response.json({error:'Request too large.'},{status:413,headers});
+    if(raw.length>24000) return Response.json({error:'Request too large.'},{status:413,headers});
     let body;try{body=JSON.parse(raw);}catch{return Response.json({error:'Invalid request.'},{status:400,headers});}
     if(!body||typeof body!=='object'||Array.isArray(body)) return Response.json({error:'Invalid request.'},{status:400,headers});
     const action=body.action;

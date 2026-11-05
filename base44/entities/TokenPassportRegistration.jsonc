@@ -147,6 +147,40 @@
         "null"
       ],
       "additionalProperties": true
+    },
+    "flow": {
+      "type": "string",
+      "enum": [
+        "PROJECT_V1"
+      ],
+      "enumColors": [
+        "blue"
+      ]
+    },
+    "project_website": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "project_evidence_url": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "publication_opt_in": {
+      "type": "boolean"
+    },
+    "submission_consent": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    },
+    "project_verification": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
     }
   },
   "required": [

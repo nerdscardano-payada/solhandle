@@ -2,12 +2,13 @@ import { PublicKey } from 'npm:@solana/web3.js@1.98.4';
 import { resolveOnChain } from './solhandleResolver.ts';
 import { passportAddress } from './tokenPassportMetadata.ts';
 import { passportFailure } from './tokenPassportTestStore.ts';
+import { projectFields } from './projectPassportFlow.ts';
 export function passportInput(body) {
   const wallet = passportAddress(body.wallet), mint = passportAddress(body.mint);
   if (!PublicKey.isOnCurve(new PublicKey(wallet).toBytes())) throw passportFailure('Use a wallet that supports message signing.');
   const handle = String(body.handle || '').trim().replace(/^@/,'').toLowerCase();
   if (!/^[a-z0-9]{1,20}$/.test(handle) || typeof body.note !== 'string' || body.note.length > 240) throw passportFailure('Choose a valid handle and a note up to 240 characters.');
-  return { wallet, mint, handle, note:body.note.trim() };
+  return { wallet, mint, handle, note:body.note.trim(), ...projectFields(body) };
 }
 export async function passportOwner(url, handle, wallet, asset = null) {
   const current = await resolveOnChain(url,handle);

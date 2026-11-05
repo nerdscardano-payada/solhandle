@@ -2,7 +2,7 @@ import { assertPassportMainnet, passportToken } from './tokenPassportMetadata.ts
 import { resolveOnChain } from './solhandleResolver.ts';
 import { passportTokenLogo } from './passportTokenLogo.ts';
 export async function publicTokenCheck(url,mint,binding) {
-  const base={mint,attempted_at:new Date().toISOString(),checked_at:null,last_verified_at:binding?.last_verified_at||null,binding:binding?{handle:binding.handle,wallet:binding.wallet,asset:binding.asset,published_at:binding.published_at,withdrawn_at:binding.withdrawn_at||null}:null};
+  const base={mint,attempted_at:new Date().toISOString(),checked_at:null,last_verified_at:binding?.last_verified_at||null,binding:binding?{handle:binding.handle,wallet:binding.wallet,asset:binding.asset,published_at:binding.published_at,withdrawn_at:binding.withdrawn_at||null,project_reviewed:binding.project_reviewed===true,project_website:binding.project_website||null,project_reviewed_at:binding.project_reviewed_at||null}:null};
   if(binding?.status==='WITHDRAWN') return {...base,status:'WITHDRAWN',token:{name:binding.token_name,symbol:binding.token_symbol,logo:await passportTokenLogo(url,mint)}};
   try {
     await assertPassportMainnet(url);

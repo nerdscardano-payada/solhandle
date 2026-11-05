@@ -12,7 +12,7 @@ export default async function(req) {
   try {
     if(req.method!=='POST')return Response.json({error:'Use POST.'},{status:405,headers});
     const raw=await req.text();
-    if(raw.length>16000)return Response.json({error:'Request too large.'},{status:413,headers});
+    if(raw.length>24000)return Response.json({error:'Request too large.'},{status:413,headers});
     let body;try{body=JSON.parse(raw);}catch{return Response.json({error:'Invalid request.'},{status:400,headers});}
     if(!body||typeof body!=='object'||Array.isArray(body))return Response.json({error:'Invalid request.'},{status:400,headers});
     if(!['accessChallenge','list','lookup','challenge','create','inspect','publication','publishChallenge','publish','withdrawPublic'].includes(body.action))return Response.json({error:'Unsupported member operation.'},{status:400,headers});

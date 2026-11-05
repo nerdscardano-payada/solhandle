@@ -59,6 +59,28 @@
         "null"
       ],
       "format": "date-time"
+    },
+    "project_reviewed": {
+      "type": "boolean",
+      "default": false
+    },
+    "project_website": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "project_reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "token_logo": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2048
     }
   },
   "required": [

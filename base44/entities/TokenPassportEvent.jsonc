@@ -28,6 +28,10 @@
     "at": {
       "type": "string",
       "format": "date-time"
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": true
     }
   },
   "required": [

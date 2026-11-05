@@ -16,6 +16,6 @@ export default function MemberPassportWorkspace({session}) {
       {list.hasNextPage&&<button className="ep-button" disabled={list.isFetchingNextPage} onClick={()=>list.fetchNextPage()}>{list.isFetchingNextPage?'Loading…':'Load more registrations'}</button>}
     </section>
     <MemberPassportDetail key={selected} id={selected} wallet={access.wallet} request={access.request}/>
-    <PassportCreate member request={access.request} onCreated={created}/>
+    <PassportCreate request={access.request} onCreated={created}/>
   </>;
 }

@@ -8,7 +8,7 @@ export default function MemberPassportDetail({id,wallet,request}) {
     <h2>Registration & review</h2>
     {detail.isPending?<p role="status">Loading your registration and checking ownership…</p>:detail.error?<div role="alert"><p>{detail.error.message}</p><button className="ep-button" onClick={()=>detail.refetch()}>Try again</button></div>:<>
       <PassportCard data={detail.data}/>
-      <p>Review status: <strong>{detail.data.item.status}</strong>. Approval does not publish this registration.</p>
+      <p>Review status: <strong>{detail.data.item.status}</strong>. {detail.data.item.flow==='PROJECT_V1'?'Project evidence is reviewed manually. With your signed consent, approval publishes the passport in Discover automatically.':'This older association requires separate signed publication consent and is not a reviewed project passport.'}</p>
       {detail.data.item.review_reason&&<p>Administrator review: {detail.data.item.review_reason}</p>}
       {detail.data.item.note&&<blockquote>{detail.data.item.note}</blockquote>}
       <PassportPublication key={detail.data.item.revision} item={detail.data.item} request={request} walletScope={wallet}/>
