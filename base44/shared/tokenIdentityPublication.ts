@@ -13,12 +13,12 @@ export async function passportPublication(db,url,user,registry,item,body,origin)
     await db.PublicTokenIdentity.update(existing.id,{status:'WITHDRAWN',withdrawn_at:new Date().toISOString()});
     return {status:'WITHDRAWN'};
   }
-  if(item.status!=='approved') throw passportFailure('Approve the test association before requesting public publication.',409);
+  if(item.status!=='approved') throw passportFailure('The association must be approved before requesting public publication.',409);
   if(existing&&existing.association_id!==item.id) throw passportFailure('This mint already has another public association. Review it before replacing anything.',409);
   await passportOwner(url,item.handle,item.wallet,item.asset);
   if(body.action==='publishChallenge') {
     const key=crypto.randomUUID(),now=Date.now(),expires_at=new Date(now+180000).toISOString();
-    const message=`SolHandle PUBLIC token identity publication\nOrigin: ${origin}\nNetwork: mainnet-beta\nOperator: ${user.id}\nAssociation: ${item.id}\nRevision: ${item.revision}\nToken mint: ${item.mint}\nHandle: @${item.handle}\nWallet: ${item.wallet}\nOfficial handle asset: ${item.asset}\nNonce: ${key}\nExpires: ${expires_at}\nI consent to publicly display this token-to-handle association, wallet, handle asset and publication dates. This is a new public consent, separate from the private test signature. It does not prove token creation, endorsement or safety. No payment or blockchain transaction.`;
+    const message=`SolHandle PUBLIC token identity publication\nOrigin: ${origin}\nNetwork: mainnet-beta\nOperator: ${user.id}\nAssociation: ${item.id}\nRevision: ${item.revision}\nToken mint: ${item.mint}\nHandle: @${item.handle}\nWallet: ${item.wallet}\nOfficial handle asset: ${item.asset}\nNonce: ${key}\nExpires: ${expires_at}\nI consent to publicly display this token-to-handle association, wallet, handle asset and publication dates. This is a new public consent, separate from the private registration signature. It does not prove token creation, endorsement or safety. No payment or blockchain transaction.`;
     await changePassportTest(db,state=>{
       state.challenges=state.challenges.filter(row=>Date.parse(row.expires_at)>now);
       if(state.challenges.filter(row=>row.wallet===item.wallet&&Date.parse(row.issued_at)>now-60000).length>=5) throw passportFailure('Wait a minute before signing again.',429);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import TokenCheckResult from '@/components/solhandle/token-identity/TokenCheckResult';
 import '@/components/solhandle/token-identity/token-check.css';
@@ -16,6 +16,7 @@ export default function TokenCheck() {
   },[requested,params.get('refresh')]);
   function submit(e){e.preventDefault();setParams({mint:mint.trim(),refresh:String(Date.now())},{replace:true});}
   return <main className="ep-page token-check-page space-y-6"><header className="ep-page-heading"><span className="ep-eyebrow">SOLHANDLE · TOKEN IDENTITY</span><h1>Check a token address</h1><p>See which @handle is publicly associated with this exact address and whether handle ownership still matches at the time of the check. No account or wallet needed.</p></header>
+    <Link className="ep-button" to="/token-passport">Register or manage my Token Passport</Link>
     <form className="token-check-form" onSubmit={submit}><label htmlFor="token-check-mint">Solana token address</label><div className="token-check-input"><input id="token-check-mint" value={mint} disabled={busy} onChange={e=>{setMint(e.target.value);setResult(null);setError('');}} placeholder="Paste the exact token mint address" maxLength={44} required autoComplete="off" spellCheck={false}/><button className="ep-button ep-primary" disabled={busy||!mint.trim()}>{busy?'Checking…':'Check token'}</button></div><p className="ep-small">Supports SPL and Token-2022 token mints on Solana Mainnet.</p></form>
     {busy&&<p role="status">Checking public registration and blockchain…</p>}
     {error&&<div role="alert"><p>{error}</p><button className="ep-button" disabled={busy} onClick={submit}>Try again</button></div>}

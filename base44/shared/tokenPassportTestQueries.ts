@@ -8,7 +8,7 @@ export function passportTestPage(registry,body) {
   if (!Number.isInteger(page) || page<1 || page>3) throw passportFailure('Invalid test page.');
   const counts=Object.fromEntries(['all',...states].map(status=>[status,status==='all'?registry.items.length:registry.items.filter(row=>row.status===status).length]));
   const matches=registry.items.filter(row=>filter==='all'||row.status===filter).sort((a,b)=>String(a[key]||'').localeCompare(String(b[key]||''))*(sort.startsWith('-')?-1:1));
-  const items=matches.slice((page-1)*8,page*8).map(row=>Object.fromEntries(['id','created_at','token_name','token_symbol','handle','wallet','status','proof_level','ownership'].map(key=>[key,row[key]])));
+  const items=matches.slice((page-1)*8,page*8).map(row=>Object.fromEntries(['id','created_at','token_name','token_symbol','handle','wallet','status','proof_level','ownership','source'].map(key=>[key,row[key]])));
   return {items,total:matches.length,counts,version:registry.version,capacity:20};
 }
 export function passportEvidenceCsv(registry,body) {

@@ -3,10 +3,9 @@ import { secrets } from 'base44:runtime';
 import { readPassportTest, changePassportTest, passportFailure, passportEvent, passportItem } from '../../shared/tokenPassportTestStore.ts';
 import { assertPassportMainnet, passportToken, passportAddress } from '../../shared/tokenPassportMetadata.ts';
 import { passportInput, passportOwner, issuePassportChallenge, savePassportAssociation } from '../../shared/tokenPassportTestProof.ts';
-import { resolveOnChain } from '../../shared/solhandleResolver.ts';
 import { passportTestPage, passportEvidenceCsv } from '../../shared/tokenPassportTestQueries.ts';
 import { passportPublication } from '../../shared/tokenIdentityPublication.ts';
-import { passportTokenLogo } from '../../shared/passportTokenLogo.ts';
+import { inspectPassport } from '../../shared/passportInspection.ts';
 export default async function(req) {
   const headers={'Cache-Control':'no-store'};
   try {
@@ -37,10 +36,7 @@ export default async function(req) {
     if(action==='create') return Response.json(await savePassportAssociation(db,url,user,body,origin,registry,await passportToken(url,body.mint)),{headers});
     const item=passportItem(registry,body.id);
     if(action==='inspect') {
-      let current=null,ownership='unavailable';
-      try {current=await resolveOnChain(url,item.handle);ownership=current?.address===item.wallet&&current.assetAddress===item.asset?'observed':'historical';} catch {ownership='unavailable';}
-      const token_logo=await passportTokenLogo(url,item.mint);
-      return Response.json({item,token_logo,history:registry.history.filter(row=>row.association_id===item.id),ownership,checked_at:new Date().toISOString(),preview_available:item.status==='approved'&&ownership==='observed',environment:'ADMIN_TEST'},{headers});
+      return Response.json({...await inspectPassport(url,item),history:registry.history.filter(row=>row.association_id===item.id),environment:item.source==='MEMBER'?'MEMBER_PILOT':'ADMIN_TEST'},{headers});
     }
     if(!['approved','rejected','suspended'].includes(body.status)||typeof body.reason!=='string'||body.reason.trim().length<5||body.reason.length>300||!Number.isInteger(body.revision)) return Response.json({error:'Choose a decision and give a reason of 5–300 characters.'},{status:400,headers});
     if(item.revision!==body.revision) throw passportFailure('This registration changed. Reload before reviewing.',409);
