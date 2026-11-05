@@ -3,6 +3,7 @@ import { secrets } from 'base44:runtime';
 import { passportAddress } from '../../shared/tokenPassportMetadata.ts';
 import { publicIdentityRows } from '../../shared/tokenIdentityPublication.ts';
 import { publicTokenCheck } from '../../shared/publicTokenCheck.ts';
+import { passportPublicAuthority } from '../../shared/passportPublicAuthority.ts';
 const cache=new Map();
 export default async function(req) {
   const headers={'Cache-Control':'no-store'};
@@ -15,8 +16,9 @@ export default async function(req) {
     let mint;try{mint=passportAddress(body.mint.trim());}catch{return Response.json({error:'Enter a valid Solana address.'},{status:400,headers});}
     const client=createClientFromRequest(req);
     // Intentionally public, user-scoped reads of the public projection only. Never reads the private test register.
-    const binding=await publicIdentityRows(client.entities,mint);
-    const key=mint+':'+(binding?.id||'none')+':'+(binding?.updated_date||''),cached=cache.get(key);
+    const projection=await publicIdentityRows(client.entities,mint);
+    const {binding,version}=await passportPublicAuthority(client.asServiceRole.entities,projection);
+    const key=mint+':'+(binding?.id||'none')+':'+(binding?.updated_date||'')+':'+version,cached=cache.get(key);
     if(cached&&Date.now()-cached.at<30000)return Response.json({...cached.result,cached:true},{headers});
     const result=await publicTokenCheck(secrets.get('SOLANA_RPC_URL'),mint,binding);
     if(cache.size>=100)cache.delete(cache.keys().next().value);
