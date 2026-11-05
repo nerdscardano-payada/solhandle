@@ -1,0 +1,45 @@
+{
+  "name": "TokenPassportLock",
+  "type": "object",
+  "properties": {
+    "bucket": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 63
+    },
+    "holder": {
+      "type": "string",
+      "maxLength": 36
+    },
+    "expires_at": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "bucket",
+    "holder",
+    "expires_at"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "TokenPassportEvent",
+  "type": "object",
+  "properties": {
+    "event_key": {
+      "type": "string",
+      "maxLength": 150
+    },
+    "association_id": {
+      "type": "string",
+      "maxLength": 36
+    },
+    "revision": {
+      "type": "integer"
+    },
+    "actor": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "action": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "event_key",
+    "association_id",
+    "revision",
+    "actor",
+    "action",
+    "at"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

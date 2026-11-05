@@ -1,0 +1,189 @@
+{
+  "name": "TokenPassportRegistration",
+  "type": "object",
+  "properties": {
+    "registration_id": {
+      "type": "string",
+      "maxLength": 36
+    },
+    "wallet": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "mint": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "handle": {
+      "type": "string",
+      "pattern": "^[a-z0-9]{1,20}$"
+    },
+    "asset": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "MEMBER",
+        "ADMIN",
+        "LEGACY_TEST"
+      ],
+      "enumColors": [
+        "blue",
+        "purple",
+        "gray"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "suspended"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red",
+        "gray"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "review_reason": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 240
+    },
+    "token": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "token_name": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "token_symbol": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "proof_level": {
+      "type": "integer"
+    },
+    "signature": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "signed_message": {
+      "type": "string",
+      "maxLength": 6000
+    },
+    "payload_hash": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "operator": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "member_nonce": {
+      "type": "string",
+      "maxLength": 36
+    },
+    "ownership": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "public_active": {
+      "type": "boolean",
+      "default": false
+    },
+    "public_consent": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    },
+    "publication_challenge": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    },
+    "signature_window": {
+      "type": "number"
+    },
+    "signature_count": {
+      "type": "integer"
+    },
+    "last_event": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "registration_id",
+    "wallet",
+    "mint",
+    "handle",
+    "asset",
+    "source",
+    "status",
+    "version",
+    "revision",
+    "created_at",
+    "signature",
+    "signed_message",
+    "public_active"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

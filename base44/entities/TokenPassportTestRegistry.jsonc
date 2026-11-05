@@ -38,6 +38,14 @@
         "type": "object",
         "additionalProperties": true
       }
+    },
+    "production_migrated": {
+      "type": "boolean",
+      "default": false
+    },
+    "production_migrated_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
