@@ -13,7 +13,7 @@ export default async function(req) {
     const raw=await req.text();
     if(raw.length>4500)return Response.json({error:'Request too large.'},{status:413,headers});
     let body;try{body=JSON.parse(raw);}catch{return Response.json({error:'Invalid request.'},{status:400,headers});}
-    if(body?.action==='directory')return Response.json(await publicProjectPassports(createClientFromRequest(req),body),{headers});
+    if(body?.action==='directory')return Response.json(await publicProjectPassports(createClientFromRequest(req),body,secrets.get('SOLANA_RPC_URL')),{headers});
     if(!body||typeof body.mint!=='string')return Response.json({error:'Enter a Solana token address.'},{status:400,headers});
     let mint;try{mint=passportAddress(body.mint.trim());}catch{return Response.json({error:'Enter a valid Solana address.'},{status:400,headers});}
     const client=createClientFromRequest(req);
