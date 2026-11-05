@@ -1,0 +1,6 @@
+import { useState } from 'react';
+export default function PassportEvidence({item,history}) {
+  const [notice,setNotice]=useState('');
+  async function copy() {try{await navigator.clipboard.writeText(window.location.href);setNotice('Private administrator link copied. Sign-in is required.');}catch{setNotice('Copy the address from your browser.');}}
+  return <section className="passport-test-evidence"><h3>Original signed evidence</h3><p className="passport-test-muted">The wallet and asset below never move to a new handle owner. This evidence proves only this signed test association.</p><dl className="passport-test-facts"><div><dt>Original wallet</dt><dd>{item.wallet}</dd></div><div><dt>Official handle asset</dt><dd>{item.asset}</dd></div><div><dt>Signed payload SHA-256</dt><dd>{item.payload_hash}</dd></div><div><dt>Signature</dt><dd>{item.signature}</dd></div></dl><details><summary>Read the signed message</summary><pre className="select-text">{item.signed_message}</pre></details><h4>Preserved history</h4><ol>{history.map(event=><li key={event.id}>{new Date(event.at).toLocaleString()} · {event.action.replaceAll('_',' ')} · revision {event.revision}{event.reason&&<p>{event.reason}</p>}</li>)}</ol><button className="ep-button" onClick={copy}>Copy private review link</button>{notice&&<p role="status">{notice}</p>}</section>;
+}

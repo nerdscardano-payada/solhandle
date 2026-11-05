@@ -13,6 +13,7 @@ const links = [
   [Plug, 'AI Advisor', '/admin/ai-advisor'],
   ...(growthHubVisible ? [[Trophy, 'Growth Hub', '/admin/growth']] : []),
   [FlaskConical, 'Mainnet Tests', '/admin/mainnet-tests'],
+  [FlaskConical, 'Token Identity Test', '/admin/token-passports'],
   [Landmark, 'Financials', '/admin/financials']
 ];
 export default function AdminOperationsNavigation() {
