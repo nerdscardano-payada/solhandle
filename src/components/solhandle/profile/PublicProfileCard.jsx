@@ -1,4 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import ProfileBusinessCard from '@/components/solhandle/profile/ProfileBusinessCard';
 import { Shield, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Image } from '@/components/ui/image';
@@ -23,7 +25,7 @@ export default function PublicProfileCard({ profile }) {
         <div className="public-profile-personal"><ProfileAvatar avatar={profile.avatar} handle={profile.handle}/><div className="min-w-0"><ProfileHandleTitle handle={profile.handle}/><p className="handle-profile-bio !mt-4">{profile.bio || 'No bio added.'}</p></div></div>
         <div className="public-profile-social-actions">
           <div className="handle-profile-links">{profile.social_links.map((url, index) => <a key={`${index}-${url}`} href={url} target="_blank" rel="noopener noreferrer nofollow ugc">{url}</a>)}</div>
-          <SaveProfileContact key={profile.handle} handle={profile.handle} quiet/>
+          <SaveProfileContact key={profile.handle} handle={profile.handle} quiet inlineAction={<Link className="ep-button" to="/pay" state={{ profileHandle: profile.handle }}>Pay @{profile.handle}</Link>}/>
         </div>
       </section>
       <section className="public-profile-ownership" aria-label="On-chain handle ownership">
@@ -31,6 +33,7 @@ export default function PublicProfileCard({ profile }) {
         {query.isPending ? <p role="status">Loading handle details…</p> : query.isError ? <p role="alert">Handle details could not be loaded.</p> : <dl><div><dt>Handle</dt><dd>@{profile.handle}</dd></div><div><dt>Wallet</dt><dd>{owner ? <>{owner.slice(0, 6)}…{owner.slice(-4)}<IdentityCopy value={owner} label="Copy wallet address"/></> : 'Not verified'}</dd></div>{owner && <div><dt>Last checked</dt><dd>{new Date(query.dataUpdatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</dd></div>}</dl>}
         <button type="button" className="ep-link" disabled={query.isFetching} onClick={() => query.refetch()}><RefreshCw size={14} className={query.isFetching ? 'animate-spin' : ''}/>{query.isFetching ? 'Checking…' : 'Refresh identity'}</button>
       </section>
+      <ProfileBusinessCard key={profile.handle} profile={profile}/>
       <p className="public-profile-social-announcement">We’re expanding socials with live feeds, following and likes. Coming real soon.</p>
       <div className="public-profile-record"><HandleDetailRecord handle={profile.handle} data={data} owner={owner} invalid={data?.status === 'INVALID'} available={data?.available}/></div>
       <section className="handle-profile-panel public-profile-artwork !mt-0"><h2>Handle mint artwork</h2><IdentityMintTablet handle={profile.handle}/></section>

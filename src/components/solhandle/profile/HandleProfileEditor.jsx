@@ -1,4 +1,7 @@
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import ProfileLinkActions from '@/components/solhandle/profile/ProfileLinkActions';
+import '@/components/solhandle/profile/profile-business-card.css';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQueryClient } from '@tanstack/react-query';
 import HandleProfileFields from '@/components/solhandle/profile/HandleProfileFields';
@@ -30,6 +33,7 @@ export default function HandleProfileEditor({ initialHandle = '', onProfileChang
     <label>Owned handle<input required maxLength={21} value={handle} onChange={event => { setHandle(event.target.value.trim().replace(/^@/, '').toLowerCase()); setValue({ bio: '', links: '', avatar: null, published: false, savedPublished: false }); setMessage(''); setError(''); }} placeholder="ansem" pattern="[a-z0-9]{1,20}" disabled={busy || lockHandle}/></label>
     <p>Already saved a profile? Load it before editing so you keep your existing details. Loading requires a signature because saved details may be private. Loading replaces the draft below; saving without loading replaces the saved profile with this draft.</p><button type="button" className="ep-button" disabled={busy || !wallet || !handle} onClick={() => run('load')}>{busy ? 'Verifying…' : 'Sign to load existing profile'}</button>
     <HandleProfileFields handle={handle} value={value} setValue={setValue} busy={busy} save={() => run('save')}/>
+    {value.savedPublished && <div><Link className="ep-link" to={`/profile/@${handle}`}>Open public profile & digital card</Link><ProfileLinkActions handle={handle}/></div>}
     {error && <div role="alert">{error}</div>}{message && <div role="status">{message}</div>}
   </details></section>;
 }

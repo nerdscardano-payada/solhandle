@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import ProfileLinkActions from '@/components/solhandle/profile/ProfileLinkActions';
+import '@/components/solhandle/profile/profile-business-card.css';
 import { useQuery } from '@tanstack/react-query';
 import { publicProfileRequest } from '@/components/solhandle/profile/publicProfileClient';
 import useProfileIdentity from '@/components/solhandle/profile/useProfileIdentity';
@@ -16,5 +19,5 @@ export default function Profile() {
   const published = useQuery({ queryKey: ['public-handle-profile', handle], queryFn: () => publicProfileRequest({ action: 'public', handle }), enabled: !!handle, retry: false, staleTime: 0, refetchInterval: 30000 });
   const profile = draft?.wallet === state.address && draft?.handle === handle ? draft.profile : published.data?.profile;
   const updateProfile = (editedHandle, value) => setDraft({ wallet: state.address, handle: editedHandle, profile: value });
-  return <main className="el-profile"><header className="ep-page-heading"><span className="ep-eyebrow">YOUR NAME. YOUR CORNER OF SOLANA.</span><h1>Identity</h1><p>Your connected wallet and its verified Primary Handle.</p></header><EcosystemLiveIdentity state={state} profile={profile} full/>{state.address && <IdentityDetails {...state} identity={identity}/>}{state.address && <HandleProfileEditor key={`${state.address}:${identity?.primaryHandle || ''}`} initialHandle={identity?.primaryHandle || ''} onProfileChange={updateProfile}/>}</main>;
+  return <main className="el-profile"><header className="ep-page-heading"><span className="ep-eyebrow">YOUR NAME. YOUR CORNER OF SOLANA.</span><h1>Identity</h1><p>Your connected wallet and its verified Primary Handle.</p></header><EcosystemLiveIdentity state={state} profile={profile} full/>{handle && !published.isError && published.data?.profile && <section className="handle-profile-panel"><h2>Share your identity</h2><ProfileLinkActions handle={handle}/><Link className="ep-link" to={`/profile/@${handle}`}>Open profile & download identity card</Link></section>}{state.address && <IdentityDetails {...state} identity={identity}/>}{state.address && <HandleProfileEditor key={`${state.address}:${identity?.primaryHandle || ''}`} initialHandle={identity?.primaryHandle || ''} onProfileChange={updateProfile}/>}</main>;
 }
