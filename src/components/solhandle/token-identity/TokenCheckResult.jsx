@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Image } from '@/components/ui/image';
 const states={
   ACTIVE:['Koppeling actueel bevestigd','De ondertekenende wallet bezit deze officiële handle bij deze controle.'],
   NOT_REGISTERED:['Geen openbare koppeling','Dit tokenadres bestaat, maar heeft geen openbare SolHandle-koppeling. Dit betekent niet dat het token onveilig is.'],
@@ -10,8 +12,10 @@ const states={
 const date=value=>value?new Date(value).toLocaleString('nl-BE',{dateStyle:'medium',timeStyle:'long'}):'Niet beschikbaar';
 export default function TokenCheckResult({result}) {
   const [label,description]=states[result.status],binding=result.binding;
+  const [failedLogo,setFailedLogo]=useState(null);
+  const logo=result.token?.logo,showLogo=logo&&failedLogo!==logo;
   return <article className="token-check-result" data-status={result.status} aria-live="polite"><span className="ep-eyebrow">RESULTAAT · SOLANA MAINNET</span><h2>{label}</h2><p>{description}</p>
-    {result.token?.name&&<p><strong>{result.token.name}</strong>{result.token.symbol&&` · $${result.token.symbol}`}</p>}
+    {result.token&&<div className="token-check-identity"><div className="token-check-logo">{showLogo?<Image key={logo} src={logo} alt={`Logo van ${result.token.name||result.token.symbol||'het token'}`} fittingType="fit" className="h-full w-full object-contain" referrerPolicy="no-referrer" onError={()=>setFailedLogo(logo)}/>:<span aria-hidden="true">{(result.token.symbol||result.token.name||'T').slice(0,2).toUpperCase()}</span>}</div><p><strong>{result.token.name||'Naam niet beschikbaar'}</strong>{result.token.symbol&&` · $${result.token.symbol}`}</p></div>}
     <dl><div><dt>Exact gecontroleerd tokenadres</dt><dd className="select-text">{result.mint}</dd></div>
     {binding&&<><div><dt>Gepubliceerde handle</dt><dd><Link to={`/profile/${binding.handle}`}>@{binding.handle}</Link></dd></div><div><dt>Ondertekenende wallet</dt><dd className="select-text">{binding.wallet}</dd></div><div><dt>Gepubliceerd op</dt><dd>{date(binding.published_at)}</dd></div></>}
     <div><dt>Laatste afgeronde blockchaincontrole</dt><dd>{date(result.checked_at)}</dd></div>
