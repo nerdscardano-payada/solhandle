@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { signPassport, passportError } from '@/components/solhandle/passports/passportClient';
 export default function usePassportForm(pilot) {
   const session = useWallet(), navigate = useNavigate(), [params] = useSearchParams();
-  const [value, setValue] = useState({ handle: '', mint: '', project_name: '', description: '', launch_tx: '', maker_type: 'existing' });
+  const [value, setValue] = useState({ handle: params.get('handle') || '', mint: params.get('mint') || '', project_name: '', description: '', launch_tx: '', maker_type: 'existing' });
   const [token,setToken] = useState(''), [reset,setReset] = useState(0), [busy,setBusy] = useState(false), [error,setError] = useState(''), [notice,setNotice] = useState(''), [checked,setChecked] = useState(null);
   const wallet = session.publicKey?.toBase58() || '', latest = useRef(wallet); latest.current = wallet;
   const identityKey = JSON.stringify([wallet, value.handle, value.mint]);

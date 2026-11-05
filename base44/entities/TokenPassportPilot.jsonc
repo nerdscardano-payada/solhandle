@@ -18,6 +18,13 @@
     },
     "target_completions": {
       "type": "integer"
+    },
+    "write_lock": {
+      "type": "string"
+    },
+    "lock_until": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [

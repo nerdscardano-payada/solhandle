@@ -4,6 +4,7 @@ export async function passportEnrollment(db, url, pilot, input, proof, signature
   const found = await db.TokenPassportEnrollment.filter({ pilot_id: pilot.id, wallet: input.wallet }, { limit: 1 }); let entry = found.items[0];
   if (input.operation === 'withdraw') {
     if (!entry) throw profileError('Geen deelname gevonden.', 404);
+    if (entry.handle !== input.handle || entry.mint !== input.mint) throw profileError('Gebruik de handle en mint van je bestaande deelname om deze in te trekken.', 409);
     await db.TokenPassportEnrollment.update(entry.id, { status: 'withdrawn', reason: 'Ingetrokken door wallet-eigenaar.' });
     await db.TokenPassport.updateMany({ enrollment_id: entry.id, status: 'published' }, { $set: { status: 'withdrawn' } });
     return { withdrawn: true };
@@ -28,6 +29,7 @@ export async function passportEnrollment(db, url, pilot, input, proof, signature
     return { started: true, chain };
   }
   const creator = await passportCreator(url, input);
+  if (Date.now() >= Date.parse(pilot.ends_at)) throw profileError('De pilotperiode is tijdens de controle geëindigd; er is geen publicatie bevestigd.', 409);
   // A random, stable public key makes retry after a partial save idempotent.
   const key = entry.passport_key || crypto.randomUUID();
   if (!entry.passport_key) await db.TokenPassportEnrollment.update(entry.id, { passport_key: key });

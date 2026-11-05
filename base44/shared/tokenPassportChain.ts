@@ -18,7 +18,9 @@ export async function passportChain(url, input, requireOwner = true) {
 export async function passportCreator(url, input) {
   const base = { status: 'not_provided', method: 'Pump create/create_v2 transaction; creator parameter + user + transaction signer', docs: DOCS, checked_at: new Date().toISOString(), launch_tx: input.launch_tx || '' };
   if (!input.launch_tx) return base;
-  const tx = await rpc(url, 'getTransaction', [input.launch_tx, { encoding: 'jsonParsed', commitment: 'finalized', maxSupportedTransactionVersion: 0 }]);
+  let tx;
+  try { tx = await rpc(url, 'getTransaction', [input.launch_tx, { encoding: 'jsonParsed', commitment: 'finalized', maxSupportedTransactionVersion: 0 }]); }
+  catch { return { ...base, status: 'source_unavailable', reason: 'De transactiebewijsbron is niet beschikbaar. Er is geen makerrelatie bevestigd.' }; }
   if (!tx || tx.meta?.err || !tx.meta) return { ...base, status: 'not_established', reason: 'Geen beschikbare succesvolle, definitieve transactie.' };
   const signer = tx.transaction.message.accountKeys.some(key => key.pubkey === input.wallet && key.signer === true);
   for (const ix of tx.transaction.message.instructions) {

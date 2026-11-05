@@ -4,6 +4,7 @@ import { passportInput, issuePassportProof, verifyPassportProof } from '../../sh
 import { passportEnrollment } from '../../shared/tokenPassportEnrollment.ts';
 import { passportAdmin } from '../../shared/tokenPassportAdmin.ts';
 import { passportChain } from '../../shared/tokenPassportChain.ts';
+import { withPassportLock } from '../../shared/tokenPassportLock.ts';
 export default async function(req) {
   const headers = { 'Cache-Control': 'no-store' };
   try {
@@ -37,7 +38,7 @@ export default async function(req) {
     const origin = new URL(req.headers.get('X-Base44-App-Url') || 'https://sol-handle-core.base44.app').origin;
     if (body.action === 'challenge') return Response.json(await issuePassportProof(req, db, input, body, origin), { headers });
     const proof = await verifyPassportProof(db, input, body, origin);
-    return Response.json(await passportEnrollment(db, secrets.get('SOLANA_RPC_URL'), pilot, input, proof, body.signature), { headers });
+    return Response.json(await withPassportLock(db, pilot, () => passportEnrollment(db, secrets.get('SOLANA_RPC_URL'), pilot, input, proof, body.signature)), { headers });
   } catch (error) {
     return Response.json({ error: error.status ? error.message : 'De controle is tijdelijk niet beschikbaar. Er is geen succesvolle verificatie bevestigd; probeer opnieuw.' }, { status: error.status || 503, headers });
   }

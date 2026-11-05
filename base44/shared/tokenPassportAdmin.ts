@@ -1,4 +1,5 @@
 import { profileError } from './handleProfileProof.ts';
+import { withPassportLock } from './tokenPassportLock.ts';
 export async function passportAdmin(base44, body) {
   const user = await base44.auth.me().catch(error => error.status === 401 ? null : Promise.reject(error));
   if (user?.role !== 'admin') throw profileError('Alleen beheerders hebben toegang.', 403);
@@ -16,8 +17,10 @@ export async function passportAdmin(base44, body) {
   if (body.action === 'adminExclude') {
     if (!/^[a-f0-9]{24}$/.test(body.enrollment_id || '') || typeof body.reason !== 'string' || body.reason.trim().length < 5 || body.reason.length > 400) throw profileError('Geef een deelnemer en een duidelijke uitsluitingsreden.');
     const row = (await db.TokenPassportEnrollment.filter({ id: body.enrollment_id, pilot_id: pilot.id }, { limit: 1 })).items[0]; if (!row) throw profileError('Deelnemer niet gevonden.', 404);
-    await db.TokenPassportEnrollment.update(row.id, { status: 'ineligible', eligible: false, reason: `Beheer: ${body.reason.trim()}` });
-    await db.TokenPassport.updateMany({ enrollment_id: row.id, status: 'published' }, { $set: { status: 'withdrawn' } });
+    await withPassportLock(db, pilot, async () => {
+      await db.TokenPassportEnrollment.update(row.id, { status: 'ineligible', eligible: false, reason: `Beheer: ${body.reason.trim()}` });
+      await db.TokenPassport.updateMany({ enrollment_id: row.id, status: 'published' }, { $set: { status: 'withdrawn' } });
+    });
   }
   const eligible = { pilot_id: pilot.id, eligible: true, status: { $in: ['started','completed'] }, started_at: { $gte: pilot.starts_at, $lt: pilot.ends_at } };
   const [cohort, participants, groups, total] = await Promise.all([
