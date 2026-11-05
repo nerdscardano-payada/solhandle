@@ -4,7 +4,7 @@ import { checkPassportSignature } from './tokenPassportTestProof.ts';
 const encode = value => btoa(String.fromCharCode(...new TextEncoder().encode(value)));
 const decode = value => new TextDecoder().decode(Uint8Array.from(atob(value), c => c.charCodeAt(0)));
 async function signingKey() {
-  const secret=secrets.get('ACTOR_TOKEN_SECRET');
+  const secret=secrets.get('TOKEN_PASSPORT_AUTH_SECRET');
   if(!secret||secret.length<32)throw passportFailure('Wallet authorization is temporarily unavailable.',503);
   return crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);
 }
