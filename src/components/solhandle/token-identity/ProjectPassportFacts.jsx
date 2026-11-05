@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+const date=value=>value?new Date(value).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}):'Not available';
+export default function ProjectPassportFacts({passport,result}) {
+  const fields=[['Token address',passport.mint],['Signing wallet',passport.wallet],['Official handle asset',passport.assetAddress],['Passport reference',passport.reference],['Project evidence reviewed',date(passport.project_reviewed_at)],['Published',date(passport.published_at)],['Last completed blockchain check',date(result.checked_at)],['Last association confirmation',date(result.last_verified_at)]];
+  return <section className="project-passport-details"><h2>Identity record</h2><dl>{fields.map(([label,value])=><div key={label}><dt>{label}</dt><dd className="select-text">{value}</dd></div>)}</dl><div className="project-passport-actions"><Link className="ep-button" to={`/token-check?mint=${encodeURIComponent(passport.mint)}`}>Check token</Link><a className="ep-link" href={`https://explorer.solana.com/address/${passport.mint}`} target="_blank" rel="noopener noreferrer">View on Solana Explorer</a></div></section>;
+}
