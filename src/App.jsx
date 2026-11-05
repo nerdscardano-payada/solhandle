@@ -23,9 +23,6 @@ const EcosystemPreview = lazy(() => import('@/pages/EcosystemPreview'));
 const Ecosystem = lazy(() => import('@/pages/Ecosystem'));
 const EcosystemDiscover = lazy(() => import('@/pages/EcosystemDiscover'));
 const DiscoverSubmit = lazy(() => import('@/pages/DiscoverSubmit'));
-const TokenPassports = lazy(() => import('@/pages/TokenPassports'));
-const TokenPassport = lazy(() => import('@/pages/TokenPassport'));
-const AdminTokenPassports = lazy(() => import('@/pages/AdminTokenPassports'));
 const EcosystemLiveFrame = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemLiveFrame'));
 import { isEcosystemPath, isEcosystemInformationPath } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 const EcosystemInformationLayout = lazy(() => import('@/components/solhandle/ecosystem/live/EcosystemInformationLayout'));
@@ -164,8 +161,6 @@ const AuthenticatedApp = () => {
           <Route path="/ecosystem" element={<Ecosystem />} />
           <Route path="/discover" element={<EcosystemDiscover />} />
           <Route path="/discover/submit" element={<DiscoverSubmit />} />
-          <Route path="/token-passports" element={<TokenPassports />} />
-          <Route path="/token-passports/:passportKey" element={<TokenPassport />} />
           <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />} />}>
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<Admin />} />
@@ -176,7 +171,6 @@ const AuthenticatedApp = () => {
                 <Route path="/admin/growth" element={growthHubVisible ? <AdminGrowthHub /> : <Navigate to="/" replace />} />
                 <Route path="/admin/integrations" element={<AdminIntegrations />} />
                 <Route path="/admin/ai-advisor" element={<AdminAIAdvisor />} />
-                <Route path="/admin/token-passports" element={<AdminTokenPassports />} />
                 <Route path="/admin/mainnet-tests" element={<AdminMainnetTests />} />
                 <Route path="/admin/financials" element={<Financials />} />
                 <Route path="/admin/burn" element={<AdminBurn />} />

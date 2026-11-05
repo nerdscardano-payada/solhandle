@@ -13,7 +13,7 @@ export default function EcosystemDiscover() {
   const args = { q, category, type, expertise: role };
   return <main className="ep-page ep-discover space-y-6">
     <header className="ep-page-heading"><span className="ep-eyebrow">A WIDER WORLD OF SOLANA.</span><h1>Discover</h1><p>Explore Solana projects, builders and people. Curated by SolHandle, open to community suggestions.</p></header>
-    <nav className="discover-primary-tabs" aria-label="Discover sections"><Link to="?tab=people" aria-current={people ? 'page' : undefined}>People</Link><Link to="?tab=projects" aria-current={!people ? 'page' : undefined}>Projects</Link><Link to="/token-passports">Token Passport pilot</Link></nav>
+    <nav className="discover-primary-tabs" aria-label="Discover sections"><Link to="?tab=people" aria-current={people ? 'page' : undefined}>People</Link><Link to="?tab=projects" aria-current={!people ? 'page' : undefined}>Projects</Link></nav>
     {people ? <PublicPeopleDirectory embedded/> : <>
     <div className="discover-search-tabs"><form className="ep-search-field" role="search" onSubmit={(event) => {event.preventDefault();setQ(search.trim());}}><Search size={19} /><input aria-label="Search Discover" placeholder="Search names, projects, expertise…" value={search} onChange={(event) => {setSearch(event.target.value);if (!event.target.value) setQ('');}} maxLength={80} /><button className="ep-link" type="submit">Search</button></form>
     <div className="discover-tabs" aria-label="Listing type">{Object.entries({ ALL: 'All', ...listingTypes }).map(([value, label]) => <button key={value} type="button" aria-pressed={type === value} onClick={() => {setType(value);setCategory('ALL');setExpertise('');setRole('');}}>{label}</button>)}</div></div>
