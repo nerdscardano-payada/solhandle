@@ -1,0 +1,4 @@
+const states = [['all','All'],['pending','Pending'],['approved','Approved'],['rejected','Rejected'],['suspended','Suspended']];
+export default function PassportFilters({ counts, value, onChange }) {
+  return <div className="dt1-chips" role="group" aria-label="Filter registrations by review status">{states.map(([key,label],i)=><button type="button" key={key} className="dt1-fcard" data-dt1-filter={key} aria-pressed={value===key} onClick={()=>onChange(key)} style={{'--dt1-i':i}}><span className="dt1-fcard-dot" aria-hidden="true"/><span className="dt1-fcard-name">{label}</span><span className="dt1-fcard-n">{counts?.[key] ?? '…'}</span></button>)}</div>;
+}
