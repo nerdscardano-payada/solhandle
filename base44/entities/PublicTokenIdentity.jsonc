@@ -1,0 +1,93 @@
+{
+  "name": "PublicTokenIdentity",
+  "type": "object",
+  "properties": {
+    "mint": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "handle": {
+      "type": "string",
+      "pattern": "^[a-z0-9]{1,20}$"
+    },
+    "wallet": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "asset": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "association_id": {
+      "type": "string",
+      "maxLength": 36
+    },
+    "token_name": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "token_symbol": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "WITHDRAWN"
+      ],
+      "enumColors": [
+        "green",
+        "red"
+      ]
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "withdrawn_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "mint",
+    "handle",
+    "wallet",
+    "asset",
+    "association_id",
+    "status",
+    "signed_at",
+    "published_at",
+    "last_verified_at"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

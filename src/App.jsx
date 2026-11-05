@@ -57,6 +57,7 @@ const AdminProjects = lazy(() => import('@/pages/AdminProjects'));
 const NetworkProject = lazy(() => import('@/pages/NetworkProject'));
 const AdminMainnetTests = lazy(() => import('@/pages/AdminMainnetTests'));
 const AdminTokenPassports = lazy(() => import('@/pages/AdminTokenPassports'));
+const TokenCheck = lazy(() => import('@/pages/TokenCheck'));
 const HandlePage = lazy(() => import('@/pages/HandlePage'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
@@ -192,6 +193,7 @@ const AuthenticatedApp = () => {
           <Route path="/contacts" element={<MyContacts />} />
           <Route path="/receive" element={<Receive />} />
           <Route element={<EcosystemInformationLayout />}>
+            <Route path="/token-check" element={<TokenCheck />} />
             <Route path="/about" element={<About />} />
             <Route path="/names" element={<Explore />} />
             <Route path="/developers" element={<Developers />} />
