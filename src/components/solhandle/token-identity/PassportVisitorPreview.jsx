@@ -1,0 +1,5 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import PassportCard from '@/components/solhandle/token-identity/PassportCard';
+export default function PassportVisitorPreview({data,open,onOpenChange}) {
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="passport-test-dialog"><DialogHeader><DialogTitle>Zo zou een bezoeker je paspoort zien</DialogTitle><DialogDescription>Alleen een weergavevoorbeeld. Dit paspoort staat niet openbaar en deze preview maakt niets publiek.</DialogDescription></DialogHeader><PassportCard data={data} visitor/>{!data.preview_available&&<p className="passport-test-error" role="status">Dit is alleen een opmaakvoorbeeld: een actuele goedgekeurde koppeling is niet bevestigd.</p>}</DialogContent></Dialog>;
+}
