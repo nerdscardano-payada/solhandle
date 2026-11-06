@@ -4,7 +4,7 @@ import '@/components/solhandle/names/secondary-market.css';
 
 export default function SecondaryMarketGuide({handle, asset, onBrowse}) {
   const validAsset=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(asset || '');
-  const marketUrl=validAsset ? `https://magiceden.io/item-details/${asset}` : 'https://magiceden.io';
+  const marketUrl=validAsset ? `https://magiceden.io/item-details/${asset}` : 'https://magiceden.io/marketplace/solhandle';
   return <section className="secondary-market-guide" aria-label="Secondary market">
     <div className="secondary-market-intro">
       <div><p className="secondary-market-eyebrow"><Repeat2 size={16}/>SECONDARY MARKET · EXTERNAL TRADING</p><h2>{handle ? `A new chapter for @${handle}.` : 'Great @handles can find a new owner.'}</h2><p>Discover already-minted handles and explore resale on external marketplaces. You keep control of your NFT; SolHandle does not run the sale.</p></div>
