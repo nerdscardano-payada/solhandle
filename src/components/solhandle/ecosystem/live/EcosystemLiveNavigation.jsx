@@ -5,7 +5,7 @@ import EcosystemResourceNavigation from '@/components/solhandle/ecosystem/live/E
 import AdminEcosystemLinks from '@/components/solhandle/admin/AdminEcosystemLinks';
 import { ecosystemAssets } from '@/components/solhandle/ecosystem/live/ecosystemRoutes';
 import '@/components/solhandle/ecosystem/live/ecosystem-navigation.css';
-const groups = [['Overview', [[Home, 'Dashboard', '/ecosystem']]], ['Identity', [[UserRound, 'My Identity', '/profile'], [Layers3, 'My Handles', '/my-handles']]], ['Network', [[Compass, 'Discover', '/discover'], [ContactRound, 'Contacts', '/contacts']]], ['Payments', [[Send, 'SolHandle Pay', '/pay']]]];
+const groups = [['Overview', [[Home, 'Dashboard', '/ecosystem']]], ['Identity', [[UserRound, 'My Identity', '/profile'], [Layers3, 'My Handles', '/my-handles']]], ['Network', [[Compass, 'Discover', '/discover'], [ArrowLeftRight, 'Secondary Market', '/names?tab=for-sale'], [ContactRound, 'Contacts', '/contacts']]], ['Payments', [[Send, 'SolHandle Pay', '/pay']]]];
 const mobileItems = [[Home, 'Dashboard', '/ecosystem'], [Compass, 'Discover', '/discover'], [ContactRound, 'Contacts', '/contacts'], [Send, 'Pay', '/pay'], [UserRound, 'Identity', '/profile']];
 export default function EcosystemLiveNavigation({ mobile = false }) {
   const searchPage = useLocation().pathname === '/search';
