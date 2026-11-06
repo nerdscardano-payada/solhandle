@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import HandleCard from '@/components/solhandle/HandleCard';
 import SimilarHandles from '@/components/solhandle/SimilarHandles';
 import ExternalHandleListings from '@/components/solhandle/names/ExternalHandleListings';
+import SecondaryMarketGuide from '@/components/solhandle/names/SecondaryMarketGuide';
 import NameInterest from '@/components/solhandle/names/NameInterest';
 import HandlePublicProfile from '@/components/solhandle/profile/HandlePublicProfile';
 import HandleDetailHeading from '@/components/solhandle/handles/HandleDetailHeading';
@@ -17,6 +18,7 @@ export default function HandlePage() {
     <div className="el-handle-grid"><section className="ep-card el-handle-artwork" aria-label="SolHandle NFT"><span className="ep-eyebrow">SOLHANDLE NFT</span><HandleCard handle={handle} display={`@${handle || '—'}`}/></section><HandleDetailRecord {...state}/></div>
     <div className="el-handle-actions">{available && <Link to={`/?claim=${handle}`} className="ep-button ep-primary">Mint @{handle}</Link>}<nav aria-label="Handle navigation"><Link to="/names" className="ep-link">Explore Names</Link><Link to="/" className="ep-link">Search another handle</Link></nav></div>
     {handle && !validateHandle(handle) && <HandlePublicProfile key={handle} handle={handle}/>}
-    <div className="el-handle-support">{data && !validateHandle(handle) && <NameInterest key={handle} handle={handle}/>} {data?.assetAddress && owner && <ExternalHandleListings handle={handle} asset={data.assetAddress}/>}<SimilarHandles handle={handle}/></div>
+    {data?.assetAddress && owner && <><SecondaryMarketGuide handle={handle} asset={data.assetAddress}/><ExternalHandleListings handle={handle} asset={data.assetAddress}/></>}
+    <div className="el-handle-support">{data && !validateHandle(handle) && <NameInterest key={handle} handle={handle}/>}<SimilarHandles handle={handle}/></div>
   </main>;
 }

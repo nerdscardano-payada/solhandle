@@ -8,6 +8,6 @@ export default function ExternalHandleListings({ handle, asset }) {
   if (query.isPending) return <p role="status" className="ep-small">Checking external offers…</p>;
   if (query.isError) return <p className="ep-small">External offers could not be checked. <button className="ep-link" onClick={() => query.refetch()}>Retry</button></p>;
   const listing = query.data;
-  if (!listing) return null;
+  if (!listing) return <p className="ep-small">No recently verified external offer was found for @{handle}. The marketplace link above opens the NFT, not a confirmed sale.</p>;
   return <section className="ep-card"><h2>On sale · external marketplace</h2><p className="mt-3">{listing.price} {listing.currency}</p><a className="ep-link mt-3 inline-flex min-h-11 items-center gap-2" href={listing.url} target="_blank" rel="noopener noreferrer">View on {listing.marketplace}<ArrowUpRight size={16}/></a><p className="ep-small mt-3">Source checked {new Date(listing.checkedAt).toLocaleString()}. Availability and purchase are confirmed on the external marketplace. SolHandle does not process the purchase.</p></section>;
 }

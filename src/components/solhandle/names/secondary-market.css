@@ -1,0 +1,24 @@
+.secondary-market-guide{margin-block:24px;padding:clamp(20px,3vw,32px);border:1px solid var(--eco-border);border-radius:24px;background:linear-gradient(125deg,var(--eco-card),var(--eco-sidebar));color:var(--eco-text);min-width:0}
+.secondary-market-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,240px);gap:28px;align-items:center}
+.secondary-market-eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.1em;color:var(--eco-cyan);font-weight:700}
+.secondary-market-guide h2{margin-block:12px;font-size:clamp(22px,3vw,32px);line-height:1.2;font-weight:750;overflow-wrap:anywhere}
+.secondary-market-intro>div>p:last-child{max-width:640px;color:var(--eco-muted);font-size:14px;line-height:1.8}
+.secondary-market-provider{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:24px;border:1px solid var(--eco-blue);border-radius:18px;background:var(--eco-raised);color:var(--eco-text);text-decoration:none}
+.secondary-market-provider>svg{color:var(--eco-cyan)}
+.secondary-market-provider strong{font-size:24px;font-weight:750}
+.secondary-market-provider span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--eco-cyan)}
+.secondary-market-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px;padding-top:24px;border-top:1px solid var(--eco-border);list-style:none}
+.secondary-market-steps li{display:flex;gap:12px;min-width:0}
+.secondary-market-steps svg{flex-shrink:0;color:var(--eco-cyan);margin-top:3px}
+.secondary-market-steps strong{font-size:14px;font-weight:650}
+.secondary-market-steps p,.secondary-market-footer p{font-size:12px;line-height:1.8;color:var(--eco-muted);margin-top:6px}
+.secondary-market-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:24px}
+.secondary-market-footer .ep-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--eco-cyan);font-size:14px;font-weight:600}
+.secondary-market-footer p{max-width:520px}
+.secondary-market-guide a:focus-visible,.secondary-market-guide button:focus-visible{outline:2px solid var(--eco-cyan);outline-offset:4px}
+.home-secondary-market{padding-block:24px;min-width:0}
+.home-secondary-market>h3{font-size:20px;font-weight:700;margin-bottom:16px;color:var(--eco-text)}
+.home-secondary-market-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.secondary-market-empty{padding:24px;border:1px dashed var(--eco-border);border-radius:18px;color:var(--eco-muted);font-size:14px;line-height:1.8}
+@media(max-width:900px){.secondary-market-steps{grid-template-columns:minmax(0,1fr)}.home-secondary-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.secondary-market-intro{grid-template-columns:minmax(0,1fr);gap:20px}.secondary-market-provider{padding:18px}.secondary-market-provider strong{font-size:22px}.secondary-market-guide{border-radius:18px}.home-secondary-market-grid{gap:10px}}
