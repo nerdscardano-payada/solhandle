@@ -10,11 +10,9 @@ export default function ProjectPassportTrade({mint}) {
     catch { setCopyMessage('Copy the full address shown above manually.'); }
   }
   if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint||''))return null;
-  const token=encodeURIComponent(mint),sol='So11111111111111111111111111111111111111112';
+  const token=encodeURIComponent(mint);
   const platforms=[
-    {name:'Jupiter · token page',url:`https://jup.ag/tokens/${token}`},
-    {name:'Raydium',url:`https://raydium.io/swap/?inputMint=sol&outputMint=${token}`},
-    {name:'Orca',url:`https://www.orca.so/trade?tokenIn=${sol}&tokenOut=${token}`}
+    {name:'Jupiter · token page',url:`https://jup.ag/tokens/${token}`}
   ];
   return <DropdownMenu>
     <DropdownMenuTrigger asChild><button type="button" className="ep-button min-h-11"><ArrowLeftRight size={16}/>Trade<ChevronDown size={16}/></button></DropdownMenuTrigger>
@@ -27,7 +25,7 @@ export default function ProjectPassportTrade({mint}) {
       <DropdownMenuSeparator className="bg-ecosystem-border"/>
       {platforms.map(platform=><DropdownMenuItem key={platform.name} asChild className="min-h-11 cursor-pointer focus:bg-ecosystem-raised focus:text-ecosystem-text"><a href={platform.url} target="_blank" rel="noopener noreferrer">{platform.name}<ExternalLink className="ml-auto"/></a></DropdownMenuItem>)}
       <DropdownMenuSeparator className="bg-ecosystem-border"/>
-      <p className="px-2 py-2 text-xs text-ecosystem-muted">If a platform shows ORCA or another default token, the passport token has NOT been selected. Paste the address above into its token search; if not found, do not trade a substitute. External platforms may ignore token links or not support this token. Availability and liquidity are not checked. A passport is not a safety endorsement or investment advice.</p>
+      <p className="px-2 py-2 text-xs text-ecosystem-muted">Opens this token’s page on Jupiter. Verify the exact token address before trading. Availability and liquidity are not checked. A passport is not a safety endorsement or investment advice.</p>
     </DropdownMenuContent>
   </DropdownMenu>;
 }
