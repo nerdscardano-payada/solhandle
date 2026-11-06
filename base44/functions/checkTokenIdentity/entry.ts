@@ -6,6 +6,7 @@ import { publicTokenCheck } from '../../shared/publicTokenCheck.ts';
 import { passportPublicAuthority } from '../../shared/passportPublicAuthority.ts';
 import { publicProjectPassports } from '../../shared/publicProjectPassports.ts';
 import { handleProfileArtwork } from '../../shared/handleProfileArtwork.ts';
+import { projectTokenDescription } from '../../shared/projectTokenDescription.ts';
 const cache=new Map();
 export default async function(req) {
   const headers={'Cache-Control':'no-store'};
@@ -25,7 +26,8 @@ export default async function(req) {
       if(!binding?.project_reviewed)return Response.json({error:'No public project passport found.'},{status:404,headers});
       const result=await publicTokenCheck(secrets.get('SOLANA_RPC_URL'),mint,binding);
       const [passport]=await handleProfileArtwork(secrets.get('SOLANA_RPC_URL'),[{mint,reference:binding.association_id,handle:binding.handle,wallet:binding.wallet,owner:binding.wallet,assetAddress:binding.asset,token_name:binding.token_name||result.token?.name||'',token_symbol:binding.token_symbol||result.token?.symbol||'',token_logo:binding.token_logo||result.token?.logo||null,project_website:binding.project_website||null,project_reviewed_at:binding.project_reviewed_at||null,published_at:binding.published_at}]);
-      return Response.json({passport,result},{headers});
+      const metadata=await projectTokenDescription(secrets.get('SOLANA_RPC_URL'),mint);
+      return Response.json({passport:{...passport,metadata},result},{headers});
     }
     const key=mint+':'+(binding?.id||'none')+':'+(binding?.updated_date||'')+':'+version,cached=cache.get(key);
     if(cached&&Date.now()-cached.at<30000)return Response.json({...cached.result,cached:true},{headers});
