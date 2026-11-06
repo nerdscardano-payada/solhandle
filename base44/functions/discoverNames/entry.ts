@@ -13,11 +13,12 @@ export default async function(req: Request): Promise<Response> {
     const search = String(input.search || '').trim().replace(/^@+/, '').toLowerCase();
     if (search && !/^[a-z0-9]{1,20}$/.test(search)) return Response.json({ error: 'Use up to 20 letters or numbers.' }, { status: 400 });
     const query = search ? { handle: { $regex: search } } : {};
+    const saleLimit = Math.min(16, Math.max(1, Math.floor(Number(input.limit) || 16)));
     let handles = [], interest, nextCursor = null, hasMore = false;
     if (tab === 'owned' || tab === 'watchlist' || tab === 'for-sale') {
       let page;
       if (tab === 'for-sale') {
-        page = await base44.asServiceRole.entities.MarketplaceListing.filter({ ...query, ...externalListingQuery() }, { sort: '-last_verified_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });
+        page = await base44.asServiceRole.entities.MarketplaceListing.filter({ ...query, ...externalListingQuery() }, { sort: '-last_verified_at', limit: saleLimit, cursor: input.cursor || undefined, fields: ['handle'] });
       } else if (tab === 'watchlist') {
         const wallet = await verifyNamesWallet(input.proof);
         page = await base44.asServiceRole.entities.NameWatch.filter({ ...query, wallet }, { sort: '-watched_at', limit: 16, cursor: input.cursor || undefined, fields: ['handle'] });

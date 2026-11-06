@@ -6,6 +6,7 @@ import { cacheProtocolConfigAccount, readLatestProtocolConfigCache, readProtocol
 import { SEEDS } from '../../shared/solhandleProtocol.ts';
 import { calculateHandlePrice, normalizeHandle } from '../../shared/handlePricing.ts';
 import { getRushPricing } from '../../shared/rushPricing.ts';
+import { externalListingQuery, checkedExternalListings } from '../../shared/externalHandleListings.ts';
 
 function calculateHandleScore(handle: string) {
   const lengthPoints = [0, 24, 14, 16, 14, 12, 10, 8, 6, 5, 4];
@@ -59,7 +60,8 @@ export default async function(req: Request): Promise<Response> {
     const currentOwner = chainRecord ? await getAssetOwner(rpcUrl, chainRecord.assetAddress, record?.current_owner_cached || '') : indexedClaimed ? record.current_owner_cached || null : null;
     console.info('getHandleAvailability RPC calls', { rpcCalls: rpcVerified ? (chainRecord ? 2 : 1) : 0, configCacheHit: Boolean(cachedProtocol), verificationSource: rpcVerified ? 'blockchain' : 'indexer' });
     const assetAddress = chainRecord?.assetAddress || (indexedClaimed ? record.asset_address : null);
-    const listings = assetAddress ? await base44.asServiceRole.entities.MarketplaceListing.filter({ asset_address: assetAddress, status: 'ACTIVE', marketplace: 'Magic Eden' }, 'price', 1) : [];
+    const candidates = assetAddress ? await base44.asServiceRole.entities.MarketplaceListing.filter({ ...externalListingQuery(), asset_address: assetAddress }, 'price', 1) : [];
+    const listings = await checkedExternalListings(candidates, false);
     if (record && chainRecord && (record.current_owner_cached !== currentOwner || record.last_chain_sync === null)) await base44.asServiceRole.entities.HandleIndex.update(record.id, { current_owner_cached: currentOwner, last_chain_sync: new Date().toISOString() });
     const claimed = rpcVerified ? Boolean(chainRecord) : indexedClaimed;
     const indexedRestriction = protectedRows[0] ? { active: true, restrictionType: protectedRows[0].restriction_type || 'PROTECTED', reservedFor: protectedRows[0].reserved_for || '' } : null;

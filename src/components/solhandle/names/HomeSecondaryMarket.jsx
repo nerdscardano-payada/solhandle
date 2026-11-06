@@ -5,8 +5,9 @@ import NameCard from '@/components/solhandle/names/NameCard';
 
 export default function HomeSecondaryMarket() {
   const query=useQuery({queryKey:['homepage-external-offers'],retry:false,staleTime:60000,queryFn:async()=>{
-    const page=await base44.entities.MarketplaceListing.filter({status:'ACTIVE',marketplace:'Magic Eden',currency:'SOL',price:{$gt:0},handle:{$regex:'^[a-z0-9]{1,20}$'},asset_address:{$regex:'^[1-9A-HJ-NP-Za-km-z]{32,44}$'}},{sort:'-last_verified_at',limit:4});
-    return {items:page.items.map(row=>({handle:row.handle,asset:row.asset_address,status:'FOR_SALE',externalListing:{marketplace:row.marketplace,price:row.price,currency:row.currency,url:`https://magiceden.io/item-details/${row.asset_address}`,checkedAt:row.last_verified_at}}))};
+    const {data}=await base44.functions.invoke('discoverNames',{tab:'for-sale',limit:4});
+    if(data.error)throw new Error(data.error);
+    return data;
   }});
   const offers=query.data?.items || [];
   return <section className="home-secondary-market" aria-label="Explore the secondary market">
