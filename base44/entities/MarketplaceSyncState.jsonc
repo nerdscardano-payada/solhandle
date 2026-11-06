@@ -1,0 +1,61 @@
+{
+  "name": "MarketplaceSyncState",
+  "type": "object",
+  "properties": {
+    "marketplace": {
+      "type": "string"
+    },
+    "last_asset_id": {
+      "type": "string"
+    },
+    "retry_after": {
+      "type": "number"
+    },
+    "last_status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "partial",
+        "deferred"
+      ],
+      "enumColors": [
+        "green",
+        "yellow",
+        "gray"
+      ]
+    },
+    "last_message": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "marketplace"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
