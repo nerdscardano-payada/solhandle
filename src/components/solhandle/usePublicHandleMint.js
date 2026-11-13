@@ -32,7 +32,7 @@ export default function usePublicHandleMint(wallet) {
     const timer = setInterval(() => confirm(), 3000); return () => clearInterval(timer);
   }, [receipt, wallet, checking]);
   const mint = async ({ handle, uri, quote, publicKey, signTransaction, premium }) => {
-    if (receipt?.status === 'pending') throw new Error('Resolve your pending transaction before minting again.');
+    if (receipt?.wallet === publicKey.toBase58() && receipt?.status === 'pending') throw new Error('Resolve your pending transaction before minting again.');
     if (!signTransaction || !quote || quote.wallet !== publicKey.toBase58() || quote.handle !== handle || !quote.paymentAvailable || !quote.quoteEligible || !quote.sufficientBalance || !quote.singleAccountSufficient) throw new Error('Review an eligible quote for this wallet first.');
     const prepared = await request({ action: 'prepare', handle, uri, wallet: publicKey.toBase58(), max_amount_raw: quote.totalRaw, sol_reference_lamports: quote.solReferenceLamports });
     const transaction = prepared.transaction_version === 0 ? VersionedTransaction.deserialize(from64(prepared.transaction_base64)) : Transaction.from(from64(prepared.transaction_base64));
@@ -42,5 +42,5 @@ export default function usePublicHandleMint(wallet) {
     try { const response = await request({ action: 'submit', transaction_base64: to64(signed.serialize()) }); const next = { ...pending, ...response }; save(next); return next; }
     catch (caught) { if (caught.response?.status >= 400 && caught.response?.status < 500) { save(null); throw caught; } setError('Connection interrupted. Check the saved transaction before retrying.'); return pending; }
   };
-  return { receipt: receipt?.wallet === wallet ? receipt : null, hasPending: receipt?.status === 'pending', checking, error, mint, confirm: () => confirm(), clear: () => save(null) };
+  return { receipt: receipt?.wallet === wallet ? receipt : null, hasPending: receipt?.wallet === wallet && receipt?.status === 'pending', checking, error, mint, confirm: () => confirm(), clear: () => save(null) };
 }

@@ -19,9 +19,11 @@ import useMintCostReview from '@/components/solhandle/home/useMintCostReview';
 import MintCostReview from '@/components/solhandle/home/MintCostReview';
 import useChainActionMutation from '@/components/solhandle/useChainActionMutation';
 import PendingChainActions from '@/components/solhandle/PendingChainActions';
+import signMintTransaction from '@/lib/signMintTransaction';
 
 export default function MintReadinessDialog({ open, onOpenChange, wallet, result, initialPaymentMethod = "SOL", reviewCosts = false, inline = false }) {
-  const { publicKey, signTransaction } = useWallet();
+  const { publicKey, signTransaction, wallet: selectedWallet } = useWallet();
+  const signMint = transaction => signMintTransaction(transaction, selectedWallet, publicKey, signTransaction);
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [phase, setPhase] = useState("");
@@ -60,11 +62,11 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
       const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle, image_url: file_url });
       setPhase("wallet");
       if (paymentMethod === 'HANDLE') {
-        await tokenMint.mint({ handle, uri: upload.data.uri, quote: tokenQuote, publicKey, signTransaction, premium: Boolean(result?.premium) });
+        await tokenMint.mint({ handle, uri: upload.data.uri, quote: tokenQuote, publicKey, signTransaction: signMint, premium: Boolean(result?.premium) });
         setPhase('');
         return;
       }
-      const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction, onReviewCosts: reviewCosts && window.matchMedia('(min-width:768px)').matches ? async costs => { setPhase('review'); await costReview.review(costs); setPhase('wallet'); } : undefined });
+      const mintResult = await mintSolHandle({ handle, uri: upload.data.uri, maxPriceLamports: result.priceLamports, wallet: publicKey, signTransaction: signMint, onReviewCosts: reviewCosts && window.matchMedia('(min-width:768px)').matches ? async costs => { setPhase('review'); await costReview.review(costs); setPhase('wallet'); } : undefined });
       setSignature(mintResult.signature);
       setPhase("confirmed");
       trackFunnel("MINT_CONFIRMED", handle);
