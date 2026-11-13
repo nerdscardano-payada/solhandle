@@ -33,6 +33,8 @@ export default function useIrysFunding() {
       await refresh();
     } catch (e) {
       setError(e.response?.data?.error || 'The response could not be confirmed. Refresh the balances before doing anything else.');
+      // Only unlock when the server confirms no deposit is executing or uncertain.
+      await refresh().catch(() => setUncertain(true));
     }
   });
   return { data, proposal, busy, error, blocked: uncertain || ['executing', 'unknown'].includes(data?.status), refresh: () => run(refresh), prepare, confirm, cancel: () => setProposal(null) };

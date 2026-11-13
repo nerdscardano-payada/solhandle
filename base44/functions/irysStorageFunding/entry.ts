@@ -42,7 +42,7 @@ export default async function(req) {
     const deposit = control.amount_lamports;
     if (!Number.isSafeInteger(deposit) || deposit < 1000 || deposit > 100000000) return Response.json({ error: 'Invalid deposit amount' }, { status: 400 });
     if (walletBalance < deposit + reserve) return Response.json({ error: 'Uploader wallet balance changed; insufficient SOL for deposit and fee reserve.' }, { status: 400 });
-    if (await rpc.getGenesisHash() !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp') return Response.json({ error: 'Funding requires a Solana Mainnet RPC.' }, { status: 400 });
+    if (await rpc.getGenesisHash() !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d') return Response.json({ error: 'Funding requires a Solana Mainnet RPC.' }, { status: 400 });
     const claim = await db.updateMany({ id: control.id, request_id: body.request_id, operator_id: user.id, status: 'prepared', expires_at: { $gt: Date.now() }, amount_lamports: deposit, wallet: uploader.address }, { $set: { status: 'executing', message: 'Deposit in progress. Do not submit another deposit.' } });
     if (claim.updated !== 1) return Response.json({ error: 'This deposit was already submitted or expired.' }, { status: 409 });
     try {
