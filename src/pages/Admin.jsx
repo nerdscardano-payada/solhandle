@@ -7,6 +7,7 @@ import AdminClaimRequests from '@/components/solhandle/AdminClaimRequests';
 import AdminClaimPolicies from '@/components/solhandle/AdminClaimPolicies';
 import DiscordPublisher from '@/components/solhandle/DiscordPublisher';
 import AdminTokenLaunchSettings from '@/components/solhandle/AdminTokenLaunchSettings';
+import AdminIrysFunding from '@/components/solhandle/admin/AdminIrysFunding';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import '@/components/solhandle/admin/ecosystem-admin.css';
@@ -25,6 +26,6 @@ export default function Admin() {
   return <main className="ep-page el-admin">
     <header className="ep-page-heading el-admin-heading"><div><span className="ep-eyebrow">PROTOCOL OPERATIONS</span><h1>Developer dashboard</h1><p>Treasury, income and on-chain claims for SolHandle.</p></div><button onClick={loadDashboard} disabled={loading} className="ep-button"><RefreshCw size={17} className={loading ? 'animate-spin' : ''}/>Refresh</button></header>
     <AdminOperationsNavigation/>
-    <div className="el-admin-content"><AdminTokenLaunchSettings/>{data ? <><AdminMetrics data={data}/><DiscordPublisher/><AdminClaimPolicies/><AdminClaimRequests/><AdminMintTable mints={data.recentMints}/><p className="ep-small mt-4">Indexer last synced: {data.lastSync ? new Date(data.lastSync).toLocaleString() : 'Not available'}</p></> : <div className="ep-card mt-8" role="status">Loading protocol data…</div>}</div>
+    <div className="el-admin-content"><AdminIrysFunding/><AdminTokenLaunchSettings/>{data ? <><AdminMetrics data={data}/><DiscordPublisher/><AdminClaimPolicies/><AdminClaimRequests/><AdminMintTable mints={data.recentMints}/><p className="ep-small mt-4">Indexer last synced: {data.lastSync ? new Date(data.lastSync).toLocaleString() : 'Not available'}</p></> : <div className="ep-card mt-8" role="status">Loading protocol data…</div>}</div>
   </main>;
 }

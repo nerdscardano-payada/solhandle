@@ -1,0 +1,86 @@
+{
+  "name": "IrysStorageFunding",
+  "type": "object",
+  "properties": {
+    "scope": {
+      "type": "string",
+      "enum": [
+        "IRYS_MAINNET"
+      ],
+      "enumColors": [
+        "blue"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "prepared",
+        "executing",
+        "confirmed",
+        "unknown"
+      ],
+      "enumColors": [
+        "gray",
+        "yellow",
+        "yellow",
+        "green",
+        "red"
+      ]
+    },
+    "request_id": {
+      "type": "string",
+      "maxLength": 36
+    },
+    "operator_id": {
+      "type": "string"
+    },
+    "wallet": {
+      "type": "string",
+      "maxLength": 44
+    },
+    "amount_lamports": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 100000000
+    },
+    "expires_at": {
+      "type": "number"
+    },
+    "transaction_id": {
+      "type": "string",
+      "maxLength": 150
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "scope",
+    "status",
+    "request_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,18 +1,12 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { secrets } from 'base44:runtime';
-import { Uploader } from 'npm:@irys/upload@0.0.15';
-import { Solana } from 'npm:@irys/upload-solana@0.1.8';
-import bs58 from 'npm:bs58@5.0.0';
+import createIrysUploader from '../../shared/irysUploader.ts';
 import { buildHandleCardSvg } from '../../shared/handleCardSvg.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));
-    const storedKeypair = secrets.get('IRYS_UPLOADER_PRIVATE_KEY').trim();
-    const keypair = storedKeypair.startsWith('[') ? bs58.encode(Uint8Array.from(JSON.parse(storedKeypair))) : storedKeypair;
-    const rpcUrl = secrets.get('SOLANA_RPC_URL');
-    const uploader = await Uploader(Solana).withWallet(keypair).withRpc(rpcUrl).mainnet();
+    const uploader = await createIrysUploader();
     const irysGateway = 'https://gateway.irys.xyz';
 
     if (body.kind === 'uploader-address') {
