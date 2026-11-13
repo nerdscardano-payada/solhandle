@@ -38,7 +38,7 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
   useEffect(() => { setPaymentMethod(initialPaymentMethod === "HANDLE" ? "HANDLE" : "SOL"); }, [open, handle, publicKey?.toBase58(), initialPaymentMethod]);
   const costReview = useMintCostReview(open);
   const optimistic = useChainActionMutation();
-  const minting = phase === "metadata" || phase === "wallet" || phase === "review";
+  const minting = phase === "storage" || phase === "metadata" || phase === "wallet" || phase === "review";
   useEffect(() => {
     const receipt = tokenMint.receipt;
     if (!open || receipt?.status !== 'confirmed' || receipt.handle !== handle) return;
@@ -53,10 +53,13 @@ export default function MintReadinessDialog({ open, onOpenChange, wallet, result
     if (!launch.isLive || tokenMint.hasPending || (paymentMethod === 'HANDLE' && !tokenReady)) return;
     setError("");
     setSignature("");
-    setPhase("metadata");
+    setPhase("storage");
     trackFunnel("MINT_STARTED", handle);
     try {
       await optimistic.mutateAsync({ action: 'mint', handle, wallet: publicKey.toBase58(), execute: async () => {
+      const storage = await base44.functions.invoke('uploadProtocolMetadata', { kind: 'storage-status' });
+      if (!storage.data?.ready) throw new Error(storage.data?.error || 'NFT storage could not be checked. No mint transaction was sent.');
+      setPhase('metadata');
       const png = await buildHandlePngBlob(handle);
       const { file_url } = await base44.integrations.Core.UploadPublicFile({ file: png });
       const upload = await base44.functions.invoke("uploadProtocolMetadata", { handle, image_url: file_url });

@@ -24,6 +24,17 @@ export default async function(req: Request): Promise<Response> {
     if (body.kind === 'collection') {
       const user = await base44.auth.me();
       if (!user || user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    const storageError = 'SolHandle NFT storage is temporarily unavailable because its Irys upload credit needs topping up. This is not your wallet SOL balance. No mint transaction was sent.';
+    const storageBalance = await uploader.getLoadedBalance();
+    if (body.kind === 'storage-status') {
+      const minimumPrice = await uploader.getPrice(1500);
+      const ready = !storageBalance.lt(minimumPrice);
+      return Response.json({ ready, ...(ready ? {} : { error: storageError, code: 'NFT_STORAGE_UNFUNDED' }) });
+    }
+    if (storageBalance.lte(0)) return Response.json({ error: storageError, code: 'NFT_STORAGE_UNFUNDED' }, { status: 503 });
+
+    if (body.kind === 'collection') {
       const artwork = buildHandleCardSvg('solhandle');
       const imageReceipt = await uploader.upload(artwork, {
         tags: [
@@ -99,6 +110,9 @@ export default async function(req: Request): Promise<Response> {
     });
     return Response.json({ handle, uri: `${irysGateway}/${receipt.id}`, transactionId: receipt.id, metadata });
   } catch (error) {
+    if (/not enough (funds|balance)|insufficient (funds|balance)|balance.*too low/i.test(error.message || '')) {
+      return Response.json({ error: 'SolHandle NFT storage is temporarily unavailable because its Irys upload credit needs topping up. This is not your wallet SOL balance. No mint transaction was sent.', code: 'NFT_STORAGE_UNFUNDED' }, { status: 503 });
+    }
     return Response.json({ error: error.message || 'Metadata upload failed' }, { status: 500 });
   }
 }
