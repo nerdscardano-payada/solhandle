@@ -1,0 +1,43 @@
+.solhandle-mint-dialog .mint-review-body,
+.solhandle-mint-dialog .mint-review-action { display: contents; }
+
+@media (max-width: 767px) {
+  .solhandle-mint-overlay[data-state] { z-index: 120; }
+  .solhandle-mint-dialog[data-state] {
+    z-index: 121;
+    top: var(--mint-viewport-top, 0px);
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: var(--mint-viewport-height, 100dvh);
+    max-height: var(--mint-viewport-height, 100dvh);
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border-radius: 0;
+    padding: 0;
+    animation: none;
+  }
+  .solhandle-mint-dialog .mint-review-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    padding: calc(3.5rem + env(safe-area-inset-top, 0px)) 1.25rem 1.25rem;
+  }
+  .solhandle-mint-dialog .mint-review-body > * { flex-shrink: 0; }
+  .solhandle-mint-dialog .mint-review-action {
+    display: block;
+    flex: none;
+    padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid hsl(var(--names-accent) / .25);
+  }
+}
